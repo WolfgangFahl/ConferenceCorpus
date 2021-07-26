@@ -16,15 +16,15 @@ setup(name='ConferenceCorpus',
       description='python api providing access to academic events and event series from different sources',
       long_description=long_description,
       long_description_content_type='text/markdown',
-      url='https://www.openresearch.org/wiki/Main_Page',
-      download_url='https://github.com/SmartDataAnalytics/OpenResearch',
+      url='http://wiki.bitplan.com/index.php/ConferenceCorpus',
+      download_url='https://github.com/WolfgangFahl/ConferenceCorpus',
       author='Wolfgang Fahl',
       author_email='wf@bitplan.com',
       license='Apache',
       project_urls=OrderedDict(
         (
-            ("Code", "https://github.com/SmartDataAnalytics/OpenResearch"),
-            ("Issue tracker", "https://github.com/SmartDataAnalytics/OpenResearch/issues"),
+            ("Code", "https://github.com/WolfgangFahl/ConferenceCorpus"),
+            ("Issue tracker", "https://github.com/WolfgangFahl/ConferenceCorpus/issues"),
         )
       ),
       classifiers=[
