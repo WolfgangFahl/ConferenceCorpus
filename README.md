@@ -1,4 +1,4 @@
-[![Github Actions Build](https://github.com/WolfgangFahl/ConferenceCorpus/workflows/Build/badge.svg?branch=master)](https://github.com/WolfgangFahl/ConferenceCorpus/actions?query=workflow%3ABuild+branch%3Amaster)
+[![Github Actions Build](https://github.com/WolfgangFahl/ConferenceCorpus/workflows/Build/badge.svg?branch=master)](https://github.com/WolfgangFahl/ConferenceCorpus/actions?query=workflow%3ABuild+branch%3Amain)
 [![PyPI Status](https://img.shields.io/pypi/v/ConferenceCorpus.svg)](https://pypi.python.org/pypi/ConferenceCorpus/)
 [![pypi](https://img.shields.io/pypi/pyversions/ConferenceCorpus)](https://pypi.org/project/ConferenceCorpus/)
 
