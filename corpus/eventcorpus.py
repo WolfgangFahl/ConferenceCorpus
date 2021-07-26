@@ -3,10 +3,10 @@ Created on 2021-04-16
 
 @author: wf
 '''
-from openresearch.event import EventList,EventSeriesList
-from ormigrate.toolbox import HelperFunctions as hf
+
 from wikifile.wikiFileManager import WikiFileManager
 from os.path import expanduser
+import os
 from lodstorage.csv import CSV
 from lodstorage.lod import LOD
 
@@ -111,14 +111,15 @@ class EventCorpus(object):
         """
         if filepath is None:
             home=expanduser("~")
-            filepath= f"{home}/.or/csvs/"
+            filepath= f"{home}/.or/csvs"
         lod = self.wikiFileManager.exportWikiSonToLOD(pageTitles, 'Event')
         if self.debug:
             print(pageTitles)
             print(lod)
 
-        savepath =f"{filepath}{filename}.csv"
-        hf.ensureDirectoryExists(savepath)
+        savepath =f"{filepath}/{filename}.csv"
+        if not os.path.exists(filepath):
+            os.makedirs(filepath)
         CSV.storeToCSVFile(lod, savepath,withPostfix=True)
         return savepath
 
