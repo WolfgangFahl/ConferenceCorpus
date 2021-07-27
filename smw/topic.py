@@ -17,19 +17,19 @@ import os
 import time
 
 
-class Entity(JSONAble):
+class SMWEntity(JSONAble):
     '''
     an Entity stored in Semantic MediaWiki in WikiSon notation
     '''
 
 
-    def __init__(self,wikiFile=None):
+    def __init__(self, wikiFile=None):
         '''
         Constructor
         '''
+        super().__init__()
         self.wikiFile=wikiFile
-        pass
-    
+
     @classmethod
     def fromWikiSonToLod(cls,record:dict,lookup:dict)->dict:
         '''
@@ -54,12 +54,12 @@ class Entity(JSONAble):
                         #del record[key]
         return result
     
-class EntityList(JSONAbleList):
+class SMWEntityList(JSONAbleList):
     '''
     Semantic MediaWiki backed entity list
     '''
     def __init__(self,listName:str=None,clazz=None,tableName:str=None):
-        super(EntityList, self).__init__(listName,clazz,tableName)
+        super(SMWEntityList, self).__init__(listName, clazz, tableName)
         self.profile=False
         self.debug=False
         self.wikiClient=None
@@ -100,6 +100,8 @@ class EntityList(JSONAbleList):
         '''
         get my entity name
         '''
+        if 'entityName' in self.clazz.__dict__:
+            return self.clazz.__dict__['entityName']
         return self.clazz.__name__
     
     def getEntityLookup(self,attrName:str)->dict:
@@ -168,7 +170,7 @@ class EntityList(JSONAbleList):
             wikiuser(WikiUser): the wikiuser to use
             force(bool): if true force updating the cache
         '''
-        jsonFilePath=EntityList.getJsonFile(self.getEntityName())
+        jsonFilePath=SMWEntityList.getJsonFile(self.getEntityName())
         # TODO: fix upstream pyLodStorage
         jsonPrefix=jsonFilePath.replace(".json","")
         if os.path.isfile(jsonFilePath) and not force:
@@ -176,12 +178,13 @@ class EntityList(JSONAbleList):
         else:
             self.fromWiki(wikiuser,askExtra=self.askExtra,profile=self.profile)
             self.storeToJsonFile(jsonPrefix)
+        return self
 
     def toCache(self):
         '''
         store my content to the cache
         '''
-        jsonFilePath = EntityList.getJsonFile(self.getEntityName())
+        jsonFilePath = SMWEntityList.getJsonFile(self.getEntityName())
         jsonPrefix = jsonFilePath.replace(".json", "")
         self.storeToJsonFile(jsonPrefix)
 
@@ -190,7 +193,7 @@ class EntityList(JSONAbleList):
         read me from a wiki using the given WikiUser configuration
         '''
         if self.wikiClient is None:
-            self.wikiclient=WikiClient.ofWikiUser(wikiuser)
+            self.wikiClient=WikiClient.ofWikiUser(wikiuser)
             self.wikiPush = WikiPush(fromWikiId=wikiuser.wikiId)
         askQuery=self.getAskQuery(askExtra)
         if self.debug:
@@ -252,6 +255,7 @@ class EntityList(JSONAbleList):
         self.wikiFileManager= wikiFileManager
         wikiFileDict=wikiFileManager.getAllWikiFiles()
         self.fromWikiFiles(wikiFileDict.values())
+        return self
         
     def fromWikiFiles(self,wikiFileList:list):
         '''
@@ -308,7 +312,7 @@ class EntityList(JSONAbleList):
             for record in wikiSonRecords:
                 if not isinstance(record, dict):
                     continue
-                normalizedDict=Entity.fromWikiSonToLod(record,lookup)
+                normalizedDict=SMWEntity.fromWikiSonToLod(record, lookup)
                 # make sure the pageTitle survives (it is not in the property mapping ...)
                 if "pageTitle" in record:
                     normalizedDict["pageTitle"]=record["pageTitle"]

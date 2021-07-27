@@ -4,19 +4,37 @@ Created on 26.07.2021
 @author: wf
 '''
 # from lodstorage.entity import EntityManager
-# TODO Fix class hierarchy 
-from smw.topic import Entity, EntityList
+# TODO Fix class hierarchy
+from lodstorage.jsonable import JSONAbleList, JSONAble
+
+
+class EntityList(object):
+    '''
+    ToDo: Migrate to pyLODstorage?
+    '''
+
+    def __init__(self):
+        pass
+
+
+class Entity(object):
+    '''
+    ToDo: Migrate to pyLODstorage?
+    '''
+
+    def __init__(self):
+        pass
 
 class EventEntity(Entity):
     '''
     base class for Event entities
     '''
-    def __init__(self):
+    def __init__(self,**kwargs):
         '''
         Constructor
         '''
-        pass
-      
+        super().__init__()
+
     def __str__(self):
         '''
         return my
@@ -35,8 +53,8 @@ class EventEntityList(EntityList):
     '''
     Event entity list
     '''
-    def __init__(self,listName:str=None,clazz=None,tableName:str=None):
+    def __init__(self,**kwargs):
         '''
         constructor 
         '''
-        super(EventEntityList, self).__init__(listName,clazz,tableName)
+        super(EventEntityList, self).__init__()
