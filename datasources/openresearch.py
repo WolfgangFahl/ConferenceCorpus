@@ -100,7 +100,7 @@ class OREventManager(EventManager):
                                              clazz=OREvent,
                                              primaryKey="pageTitle",
                                              config=config)
-        self.smwHandler=SMWEntityList()
+        self.smwHandler=SMWEntityList(self)
         self.debug=debug
         if self.debug:
             self.profile = True
