@@ -7,10 +7,44 @@ from corpus.event import EventSeriesManager,EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 from datasources.dblpxml import Dblp
 
+class DblpEvent(Event):
+    
+    pass
+
 
 class DblpEventSeries(EventSeries):
     pass
 
+class DblpEventManager(EventManager):
+    '''
+    dblp event access (in fact proceedings)
+    
+    Example event: https://dblp.org/db/conf/aaai/aaai2020.html
+    
+    '''
+    def __init__(self, dblp:Dblp,config: StorageConfig = None):
+        '''
+        Constructor
+        '''
+        super(DblpEventManager, self).__init__(name="Dblp", clazz=DblpEventSeries,
+                                                         tableName="dblp_eventseries", config=config)
+        self.dblp=dblp
+        self.sqlDb=self.dblp.getXmlSqlDB()
+    pass
+
+    def getLoDfromDblp(self)->list:
+        '''
+        get the LoD for the event series
+            
+        Return:
+            list: the list of dict with my series data
+
+        '''
+        query = """select conf as acronym,title,year,url,series
+        from proceedings 
+        order by acronym,year"""
+        listOfDicts = self.sqlDb.query(query)
+        return listOfDicts
 
 class DblpEventSeriesManager(EventSeriesManager):
     '''
@@ -20,29 +54,28 @@ class DblpEventSeriesManager(EventSeriesManager):
     dblp provides regular dblp xml dumps
     '''
 
-    def __init__(self, config: StorageConfig = None):
+    def __init__(self, dblp:Dblp,config: StorageConfig = None):
         '''
         Constructor
         '''
-        super(DblpEventSeriesManager, self).__init__(name="DblpEventSeries", clazz=DblpEventSeries,
+        super(DblpEventSeriesManager, self).__init__(name="Dblp", clazz=DblpEventSeries,
                                                          tableName="dblp_eventseries", config=config)
+        self.dblp=dblp
+        self.sqlDb=self.dblp.getXmlSqlDB()
 
-
-    def fromDblp(self, dblp:Dblp):
+    def getLoDfromDblp(self)->list:
         '''
 
-        Args:
-            dblp(Dblp): xml dump access code
+        get the list of dicts for the event data
+            
+        Return:
+            list: the list of dict with my event data
 
         '''
-        self.sqlDb=dblp.getXmlSqlDB()
-        query = """select conf,count(*) as count,min(year) as minYear,max(year) as maxYear
+        query = """select conf as acronym,count(*) as count,min(year) as minYear,max(year) as maxYear
         from proceedings 
-        where conf is not null
-        group by conf
+        where acronym is not null
+        group by acronym
         order by 2 desc"""
         listOfDicts = self.sqlDb.query(query)
-        for record in listOfDicts:
-            es = DblpEventSeries()
-            es.fromDict(record)
-            self.getList().append(es)
+        return listOfDicts

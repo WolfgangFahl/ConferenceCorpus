@@ -14,7 +14,7 @@ class TestWikiData(unittest.TestCase):
 
     def setUp(self):
         self.debug=True
-        self.forceUpdate=True
+        self.forceUpdate=False
         pass
 
 

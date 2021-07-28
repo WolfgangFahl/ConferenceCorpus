@@ -190,22 +190,6 @@ see also [[https://github.com/WolfgangFahl/dblpconf dblp conf open source projec
         self.assertTrue("Record <|-- article" in plantUml)
         self.assertTrue("class Record " in plantUml)
 
-    def testDblpEventSeriesManager(self):
-        '''
-        test getting the conference series from dblp xml dump
-        '''
-        config = StorageConfig.getSQL()
-        dblpEventSeriesManager=DblpEventSeriesManager(config=config)
-        dblp=Dblp(verbose=self.verbose)
-        dblpEventSeriesManager.fromDblp(dblp)
-
-        esl = dblpEventSeriesManager.getList()
-        if self.debug:
-            print(f"Found {len(esl)} dblp event Series")
-        if not dblpEventSeriesManager.isCached():
-            dblpEventSeriesManager.store()
-        self.assertTrue(len(esl) > 4200)
-
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
