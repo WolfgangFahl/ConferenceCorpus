@@ -115,8 +115,8 @@ class SMWEntityList(object):
 |?Last editor is=lastEditor
 """ % (selector, askExtra)
         if propertyLookupList is None:
-            if self.entityManager is not None and'propertyLookupList' in self.entityManager.__dict__:
-                propertyLookupList = self.entityManager.__dict__['propertyLookupList']
+            if self.entityManager is not None and'propertyLookupList' in self.entityManager.__class__.__dict__:
+                propertyLookupList = self.entityManager.__class__.__dict__['propertyLookupList']
         for propertyLookup in propertyLookupList:
             propName = propertyLookup['prop']
             name = propertyLookup['name']
@@ -158,11 +158,11 @@ class SMWEntityList(object):
         '''
         templateName = self.entityManager.clazz.templateName
         wikiSonLod = WikiFileManager.convertWikiFilesToLOD(wikiFileList, templateName)
-        lod = self.normalizeLodFromWikiSonToLod(wikiSonLod)
+        propertyLookup=self.getPropertyLookup()
+        lod = self.normalizeLodFromWikiSonToLod(wikiSonLod,propertyLookup)
         self.entityManager.fromLoD(lod)
 
-    @classmethod
-    def getPropertyLookup(cls) -> dict:
+    def getPropertyLookup(self) -> dict:
         '''
         get my PropertyLookupList as a map
 
@@ -170,8 +170,8 @@ class SMWEntityList(object):
             dict: my mapping from wiki property names to LoD attribute Names or None if no mapping is defined
         '''
         lookup = None
-        if 'propertyLookupList' in cls.__dict__:
-            propertyLookupList = cls.__dict__['propertyLookupList']
+        if 'propertyLookupList' in self.entityManager.__class__.__dict__:
+            propertyLookupList = self.entityManager.__class__.__dict__['propertyLookupList']
             lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
         return lookup
 
@@ -189,8 +189,8 @@ class SMWEntityList(object):
             wikiFileList.append(wikiFile)
         self.fromWikiFiles(wikiFileList)
 
-    @classmethod
-    def normalizeLodFromWikiSonToLod(cls, wikiSonRecords: list) -> list:
+    @staticmethod
+    def normalizeLodFromWikiSonToLod(wikiSonRecords: list, lookup:dict) -> list:
         '''
         normalize the given LOD to the properties in the propertyLookupList
 
@@ -200,7 +200,6 @@ class SMWEntityList(object):
         Return:
             list: a list of dict to retrieve entities from
         '''
-        lookup = cls.getPropertyLookup()
         lod = []
         if lookup is not None:
             # convert all my records (in place)
