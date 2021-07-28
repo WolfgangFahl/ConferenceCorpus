@@ -17,7 +17,7 @@ import os
 import time
 
 
-class Entity(JSONAble):
+class SMWEntity(JSONAble):
     '''
     an Entity stored in Semantic MediaWiki in WikiSon notation
     '''
@@ -75,9 +75,6 @@ class EntityList(JSONAbleList):
         home = str(Path.home())
         cachedir=f"{home}/.smw" 
         return cachedir
-
-    def getList(self):
-        return self.__dict__[self.listName]
 
     def updateEntity(self,entity,identifier='pageTitle'):
         '''
@@ -177,14 +174,6 @@ class EntityList(JSONAbleList):
             self.fromWiki(wikiuser,askExtra=self.askExtra,profile=self.profile)
             self.storeToJsonFile(jsonPrefix)
 
-    def toCache(self):
-        '''
-        store my content to the cache
-        '''
-        jsonFilePath = EntityList.getJsonFile(self.getEntityName())
-        jsonPrefix = jsonFilePath.replace(".json", "")
-        self.storeToJsonFile(jsonPrefix)
-
     def fromWiki(self,wikiuser:WikiUser,askExtra="",profile=False):
         '''
         read me from a wiki using the given WikiUser configuration
@@ -211,39 +200,7 @@ class EntityList(JSONAbleList):
         lod=sqlDB.queryAll(entityInfo)
         self.fromLoD(lod)
 
-    def fromLoD(self,lod,append:bool=True,filterInvalidListTypes:bool=True):
-        '''
-        load my entityList from the given list of dicts
-        
-        Args:
-            lod(list): the list of dicts to load
-            append(bool): if True append to my existing entries
-            filterInvalidListTypes(bool): ignore records containing list entries
-        
-        '''
-        errors=[]
-        if append:
-            entityList=self.getList()
-        else:
-            entityList=[]
-        if filterInvalidListTypes:
-            LOD.handleListTypes(lod=lod,doFilter=True)
-
-        for record in lod:
-            # call the constructor to get a new instance
-            try:
-                entity=self.clazz()
-                entity.fromDict(record)
-                entityList.append(entity)
-            except Exception as ex:
-                error={
-                    self.getEntityName():record,
-                    "error": ex
-                }
-                errors.append(error)
-                if self.debug:
-                    print(error)
-        return errors
+   
 
     def fromWikiFileManager(self,wikiFileManager):
         """
@@ -314,15 +271,6 @@ class EntityList(JSONAbleList):
                     normalizedDict["pageTitle"]=record["pageTitle"]
                 lod.append(normalizedDict)
         return lod
-
-    def getLoD(self):
-        """
-        Return the LoD of the entities in the list
-        """
-        LoD= []
-        for entity in self.getList():
-            LoD.append(entity.__dict__)
-        return LoD
 
 
     def getRatedLod(self,ratingCallback=None):

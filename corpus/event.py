@@ -3,11 +3,11 @@ Created on 26.07.2021
 
 @author: wf
 '''
-# from lodstorage.entity import EntityManager
-# TODO Fix class hierarchy 
-from smw.topic import Entity, EntityList
+from lodstorage.entity import EntityManager
+from lodstorage.jsonable import JSONAble,JSONAbleList
+from lodstorage.storageconfig import StorageConfig
 
-class EventEntity(Entity):
+class Event(JSONAble):
     '''
     base class for Event entities
     '''
@@ -22,7 +22,7 @@ class EventEntity(Entity):
         return my
         '''
         text=self.__class__.__name__
-        attrs=["pageTitle","acronym","title"]
+        attrs=["pageTitle","acronym","eventId","title","year","source","url"]
         delim=":"
         for attr in attrs:
             if hasattr(self, attr):
@@ -30,13 +30,34 @@ class EventEntity(Entity):
                 text+=f"{delim}{value}"
                 delim=":" 
         return text
-        
-class EventEntityList(EntityList):
+    
+class EventSeries(JSONAble):
     '''
-    Event entity list
+    base class for Event Series entities
     '''
-    def __init__(self,listName:str=None,clazz=None,tableName:str=None):
+    def __init__(self):
+        '''
+        Constructor
+        '''
+        pass
+    
+class EventSeriesManager(EntityManager):
+    '''
+    Event series list
+    '''
+    def __init__(self,name:str,clazz=None,tableName:str=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
         '''
         constructor 
         '''
-        super(EventEntityList, self).__init__(listName,clazz,tableName)
+        super(EventSeriesManager, self).__init__(name=name,entityName="EventSeries",entityPluralName="EventSeries",primaryKey=primaryKey,listName="series",clazz=clazz,tableName=tableName,config=config,debug=debug)
+            
+class EventManager(EntityManager,JSONAbleList):
+    '''
+    Event entity list
+    '''
+    
+    def __init__(self,name:str,clazz=None,tableName:str=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
+        '''
+        constructor 
+        '''
+        super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,tableName=tableName,config=config,debug=debug)
