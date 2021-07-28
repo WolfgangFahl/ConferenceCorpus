@@ -181,9 +181,9 @@ class WikidataEventSeriesManager(EventSeriesManager):
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
         for record in listOfDicts:
-            wes=WikidataEventSeries()
-            wes.fromDict(record)
-            self.getList().append(wes)
+            es=WikidataEventSeries()
+            es.fromDict(record)
+            self.getList().append(es)
             
         
         

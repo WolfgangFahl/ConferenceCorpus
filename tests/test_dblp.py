@@ -4,7 +4,11 @@ Created on 2021-01-25
 @author: wf
 '''
 import unittest
-from dblp.dblpxml import Dblp
+
+from lodstorage.storageconfig import StorageConfig
+
+from datasources.dblp import DblpEventSeriesManager
+from datasources.dblpxml import Dblp
 from lodstorage.schema import SchemaManager
 from datetime import datetime
 import time
@@ -18,7 +22,8 @@ class TestDblp(unittest.TestCase):
     '''
 
     def setUp(self):
-        self.debug=False
+        self.debug=True
+        self.verbose=True
 #        if self.debug:
 #            logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 #        else:
@@ -180,6 +185,22 @@ see also [[https://github.com/WolfgangFahl/dblpconf dblp conf open source projec
             print(plantUml.replace('#/','#'))
         self.assertTrue("Record <|-- article" in plantUml)
         self.assertTrue("class Record " in plantUml)
+
+    def testDblpEventSeriesManager(self):
+        '''
+        test getting the conference series from dblp xml dump
+        '''
+        config = StorageConfig.getSQL()
+        dblpEventSeriesManager=DblpEventSeriesManager(config=config)
+        dblp=Dblp(verbose=self.verbose)
+        dblpEventSeriesManager.fromDblp(dblp)
+
+        esl = dblpEventSeriesManager.getList()
+        if self.debug:
+            print(f"Found {len(esl)} dblp event Series")
+        if not dblpEventSeriesManager.isCached():
+            dblpEventSeriesManager.store()
+        self.assertTrue(len(esl) > 4200)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
