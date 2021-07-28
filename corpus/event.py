@@ -5,6 +5,7 @@ Created on 26.07.2021
 '''
 from lodstorage.entity import EntityManager
 from lodstorage.jsonable import JSONAble,JSONAbleList
+from lodstorage.lod import LOD
 from lodstorage.storageconfig import StorageConfig
 
 class Event(JSONAble):
@@ -61,3 +62,28 @@ class EventManager(EntityManager,JSONAbleList):
         constructor 
         '''
         super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,tableName=tableName,config=config,debug=debug)
+
+    def linkSeriesAndEvent(self, eventSeriesManager:EventSeriesManager, seriesKey:str="series"):
+        '''
+        link Series and Event using the given foreignKey
+
+        Args:
+            seriesKey(str): the key to be use for lookup
+            eventSeriesManager(EventSeriesManager):
+        '''
+        # get foreign key hashtable
+        self.seriesLookup = LOD.getLookup(self.getList(), seriesKey, withDuplicates=True)
+        # get "primary" key hashtable
+        self.seriesAcronymLookup = LOD.getLookup(eventSeriesManager.getList(), "acronym", withDuplicates=True)
+
+        for seriesAcronym in self.seriesLookup.keys():
+            if seriesAcronym in self.seriesAcronymLookup:
+                seriesEvents = self.seriesLookup[seriesAcronym]
+                if self.verbose:
+                    print(f"{seriesAcronym}:{len(seriesEvents):4d}")
+            else:
+                if self.debug:
+                    print(f"Event Series Acronym {seriesAcronym} lookup failed")
+        if self.debug:
+            print("%d events/%d eventSeries -> %d linked" % (
+            len(self.eventList.getList()), len(self.eventSeriesList.getList()), len(self.seriesLookup)))

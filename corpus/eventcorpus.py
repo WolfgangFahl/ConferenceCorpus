@@ -22,29 +22,6 @@ class EventCorpus(object):
         self.debug=debug
         self.verbose=verbose
 
-        
-    def linkSeriesAndEvent(self,seriesKey="Series"):
-        '''
-        link Series and Event using the given foreignKey
-        
-        Args:
-            seriesKey(str): the key to be use for lookup
-        '''          
-        # get foreign key hashtable
-        self.seriesLookup = LOD.getLookup(self.eventList.getList(),seriesKey, withDuplicates=True)
-        # get "primary" key hashtable
-        self.seriesAcronymLookup = LOD.getLookup(self.eventSeriesList.getList(),"acronym", withDuplicates=True)
-
-        for seriesAcronym in self.seriesLookup.keys():
-            if seriesAcronym in self.seriesAcronymLookup:
-                seriesEvents=self.seriesLookup[seriesAcronym]
-                if self.verbose:
-                    print(f"{seriesAcronym}:{len(seriesEvents):4d}" )
-            else:
-                if self.debug:
-                    print(f"Event Series Acronym {seriesAcronym} lookup failed")
-        if self.debug:
-            print ("%d events/%d eventSeries -> %d linked" % (len(self.eventList.getList()),len(self.eventSeriesList.getList()),len(self.seriesLookup)))
 
     def generateCSV(self,pageTitles,filename,filepath=None):
         """
