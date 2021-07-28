@@ -4,7 +4,7 @@ Created on 27.07.2021
 @author: wf
 '''
 import unittest
-from datasources.openresearch import OrEvent,OrEventList,OrEventSeries,OrEventSeriesList
+from datasources.openresearch import OrEvent,OrEventManager,OrEventSeries,OrEventSeriesManager
 
 class TestOpenResearch(unittest.TestCase):
 

@@ -1,9 +1,12 @@
 import inspect
 from datetime import datetime
 
+from lodstorage.storageconfig import StorageConfig
+from wikibot.wikiuser import WikiUser
+from wikifile.wikiFile import WikiFile
 from wikifile.wikiFileManager import WikiFileManager
 
-from corpus.event import Event, EventSeries, EventSeriesManager
+from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
 from corpus.eventcorpus import EventCorpus
 from smw.topic import SMWEntity, SMWEntityList
 
@@ -46,21 +49,25 @@ class OREventCorpus(EventCorpus):
             get events with series by knitting / linking the entities together
         '''
         self._wikiFileManager=wikiFileManager
-        self.eventList=OREventList(debug=self.debug).fromWikiFileManager(wikiFileManager)
-        self.eventSeriesList = OREventSeriesList(debug=self.debug).fromWikiFileManager(wikiFileManager)
-        self.linkSeriesAndEvent()
+        self.eventManager=OREventManager(debug=self.debug)
+        self.eventManager.fromWikiFileManager(wikiFileManager)
+        self.eventSeriesManager=OREventSeriesManager(debug=self.debug)
+        self.eventSeriesManager.fromWikiFileManager(wikiFileManager)
+        self.eventManager.linkSeriesAndEvent(self.eventSeriesManager)
 
     def fromWikiUser(self, wikiUser, force=False):
         '''
         get events with series by knitting / linking the entities together
         '''
         self.wikiUser = wikiUser
-        self.eventList = OREventList(debug=self.debug).fromCache(wikiUser, force=force)
-        self.eventSeriesList = OREventSeriesList(debug=self.debug).fromCache(wikiUser, force=force)
-        self.linkSeriesAndEvent("inEventSeries")
+        self.eventManager = OREventManager(debug=self.debug)
+        self.eventManager.fromWikiUser(wikiUser)
+        self.eventSeriesManager = OREventSeriesManager(debug=self.debug)
+        self.eventSeriesManager.fromWikiUser(wikiUser)
+        self.eventManager.linkSeriesAndEvent(self.eventSeriesManager,"inEventSeries")
 
 
-class OREventList(SMWEntityList, EventManager):
+class OREventManager(EventManager):
 
     propertyLookupList=[
             { 'prop':'Acronym',             'name': 'acronym',         'templateParam': "Acronym"},
@@ -84,18 +91,42 @@ class OREventList(SMWEntityList, EventManager):
     i represent a list of Events
     '''
 
-    def __init__(self, debug=False):
+    def __init__(self,config:StorageConfig=None, debug=False):
         '''
         Constructor
         '''
         self.events=[]
-        super(OREventList, self).__init__(listName="events", clazz=OREvent)
+        super(OREventManager, self).__init__(name="OREvents",
+                                             clazz=OREvent,
+                                             primaryKey="pageTitle",
+                                             config=config)
+        self.smwHandler=SMWEntityList()
         self.debug=debug
         if self.debug:
             self.profile = True
 
+    def fromWikiUser(self, wikiuser: WikiUser, askExtra: str = "", profile: bool = False):
+        '''
+        read me from a wiki using the given WikiUser configuration
 
-class OREvent(SMWEntity, EventEntity):
+        Args:
+            wikiuser(wikiuser): wikiuser and thus the wiki that should be queried for the its EventSeries
+            askExtra(string): Extra query selectors that should be included in the query
+            profile(bool): If true profile the query. Otherwise the query runs without tracking the time
+        '''
+        self.smwHandler.fromWiki(wikiuser, askExtra, profile)
+
+    def fromWikiFileManager(self, wikiFileManager: WikiFileManager):
+        '''
+        read me from wiki markup files using the given WikiFileManager
+
+        Args:
+            wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
+        '''
+        self.smwHandler.fromWikiFileManager(wikiFileManager)
+
+
+class OREvent(Event):
     '''
     I represent an Event
 
@@ -104,11 +135,20 @@ class OREvent(SMWEntity, EventEntity):
     templateName = "Event"
     entityName = 'Event'
 
-    def __init__(self):
+    def __init__(self, wikiFile:WikiFile=None):
         '''
         Constructor
         '''
         super().__init__()
+        self.smwHandler=SMWEntity(wikiFile)
+
+    @property
+    def wikiFile(self):
+        return self.smwHandler.wikiFile
+
+    @wikiFile.setter
+    def wikiFile(self, wikiFile: WikiFile):
+        self.smwHandler.wikiFile = wikiFile
 
 
     @classmethod
@@ -236,20 +276,42 @@ class OREventSeriesManager(EventSeriesManager):
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
 
-    def __init__(self, debug=False):
+    def __init__(self,config:StorageConfig, debug=False):
         '''
         construct me
         '''
         self.eventSeries = []
-        super(OREventSeriesManager, self).__init__(listName="eventSeries", clazz=OREventSeries)
+        super(OREventSeriesManager, self).__init__(name="OREventSeries",
+                                                   clazz=OREventSeries,
+                                                   primaryKey="pageTitle",
+                                                   config=config)
         # delegate smw functionality
         self.smwHandler=SMWEntityList(self)
         self.debug = debug
         if self.debug:
             self.profile = True
 
+    def fromWikiUser(self, wikiuser:WikiUser, askExtra:str="", profile:bool=False):
+        '''
+        read me from a wiki using the given WikiUser configuration
 
-class OREventSeries(SMWEntity,EventEntity):
+        Args:
+            wikiuser(wikiuser): wikiuser and thus the wiki that should be queried for the its EventSeries
+            askExtra(string): Extra query selectors that should be included in the query
+            profile(bool): If true profile the query. Otherwise the query runs without tracking the time
+        '''
+        self.smwHandler.fromWiki(wikiuser,askExtra,profile)
+
+    def fromWikiFileManager(self, wikiFileManager:WikiFileManager):
+        '''
+        read me from wiki markup files using the given WikiFileManager
+
+        Args:
+            wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
+        '''
+        self.smwHandler.fromWikiFileManager(wikiFileManager)
+
+class OREventSeries(EventSeries):
     '''
     an event Series
     '''
@@ -258,11 +320,20 @@ class OREventSeries(SMWEntity,EventEntity):
     templateName = "Event series"
     entityName='EventSeries'
 
-    def __init__(self):
+    def __init__(self, wikiFile:WikiFile=None):
         '''
         Constructor
         '''
         super().__init__()
+        self.smwHandler=SMWEntity(wikiFile)
+
+    @property
+    def wikiFile(self):
+        return self.smwHandler.wikiFile
+
+    @wikiFile.setter
+    def wikiFile(self, wikiFile:WikiFile):
+        self.smwHandler.wikiFile=wikiFile
 
     @classmethod
     def getSamples(self):

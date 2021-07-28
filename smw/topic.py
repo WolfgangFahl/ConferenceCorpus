@@ -18,7 +18,7 @@ import os
 import time
 
 
-class SMWEntity(JSONAble):
+class SMWEntity(object):
     '''
     an Entity stored in Semantic MediaWiki in WikiSon notation
     '''
@@ -61,6 +61,7 @@ class SMWEntityList(object):
     '''
 
     def __init__(self, entityManager:EntityManager):
+        self.entityManager=entityManager
         self.profile = False
         self.debug = False
         self.wikiClient = None
@@ -83,14 +84,14 @@ class SMWEntityList(object):
         '''
         if hasattr(entity, identifier):
             attributes = [*entity.__dict__]
-            for origEntity in self.getList():
+            for origEntity in self.entityManager.getList():
                 if origEntity.pageTitle == entity.pageTitle:
                     origAttributes = [*origEntity.__dict__]
                     difference = set(attributes) - set(origAttributes)
                     for attr in difference:
                         setattr(origEntity, attr, getattr(entity, attr))
                     return
-            self.getList().append(entity)
+            self.entityManager.getList().append(entity)
         else:
             raise Exception('identifier not found in entity given')
 
@@ -105,7 +106,7 @@ class SMWEntityList(object):
         Return:
             str: the SMW ask query
         '''
-        entityName = self.getEntityName()
+        entityName = self.entityManager.entityName
         selector = "IsA::%s" % entityName
         ask = """{{#ask:[[%s]]%s
 |mainlabel=pageTitle
@@ -114,7 +115,8 @@ class SMWEntityList(object):
 |?Last editor is=lastEditor
 """ % (selector, askExtra)
         if propertyLookupList is None:
-            propertyLookupList = self.propertyLookupList
+            if self.entityManager is not None and'propertyLookupList' in self.entityManager.__dict__:
+                propertyLookupList = self.entityManager.__dict__['propertyLookupList']
         for propertyLookup in propertyLookupList:
             propName = propertyLookup['prop']
             name = propertyLookup['name']
@@ -122,7 +124,7 @@ class SMWEntityList(object):
         ask += "}}"
         return ask
 
-    def fromWiki(self, wikiuser: WikiUser, askExtra="", profile=False):
+    def fromWiki(self, wikiuser:WikiUser, askExtra="", profile=False):
         '''
         read me from a wiki using the given WikiUser configuration
         '''
@@ -133,12 +135,12 @@ class SMWEntityList(object):
         if self.debug:
             print(askQuery)
         startTime = time.time()
-        entityName = self.getEntityName()
+        entityName = self.entityManager.entityName
         records = self.wikiPush.formatQueryResult(askQuery, self.wikiClient, entityName=entityName)
         elapsed = time.time() - startTime
         if profile:
             print("query of %d %s records took %5.1f s" % (len(records), entityName, elapsed))
-        self.fromLoD(records)
+        self.entityManager.fromLoD(records)
         return records
 
     def fromWikiFileManager(self, wikiFileManager):
@@ -154,10 +156,10 @@ class SMWEntityList(object):
         '''
         initialize me from the given list of wiki files
         '''
-        templateName = self.clazz.templateName
+        templateName = self.entityManager.clazz.templateName
         wikiSonLod = WikiFileManager.convertWikiFilesToLOD(wikiFileList, templateName)
         lod = self.normalizeLodFromWikiSonToLod(wikiSonLod)
-        self.fromLoD(lod)
+        self.entityManager.fromLoD(lod)
 
     @classmethod
     def getPropertyLookup(cls) -> dict:
