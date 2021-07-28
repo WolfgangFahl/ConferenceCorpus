@@ -3,20 +3,44 @@ Created on 26.07.2021
 
 @author: wf
 '''
+<<<<<<< HEAD
 from lodstorage.entity import EntityManager
 from lodstorage.jsonable import JSONAble,JSONAbleList
 from lodstorage.storageconfig import StorageConfig
+=======
+# from lodstorage.entity import EntityManager
+# TODO Fix class hierarchy
+from lodstorage.jsonable import JSONAbleList, JSONAble
+
+
+class EntityList(object):
+    '''
+    ToDo: Migrate to pyLODstorage?
+    '''
+
+    def __init__(self):
+        pass
+
+
+class Entity(object):
+    '''
+    ToDo: Migrate to pyLODstorage?
+    '''
+
+    def __init__(self):
+        pass
+>>>>>>> 1099923a0fbab2d36508ab150f8fcfa018aca3aa
 
 class Event(JSONAble):
     '''
     base class for Event entities
     '''
-    def __init__(self):
+    def __init__(self,**kwargs):
         '''
         Constructor
         '''
-        pass
-      
+        super().__init__()
+
     def __str__(self):
         '''
         return my
@@ -55,9 +79,17 @@ class EventManager(EntityManager,JSONAbleList):
     '''
     Event entity list
     '''
+<<<<<<< HEAD
     
     def __init__(self,name:str,clazz=None,tableName:str=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
         '''
         constructor 
         '''
         super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,tableName=tableName,config=config,debug=debug)
+=======
+    def __init__(self,**kwargs):
+        '''
+        constructor 
+        '''
+        super(EventEntityList, self).__init__()
+>>>>>>> 1099923a0fbab2d36508ab150f8fcfa018aca3aa
