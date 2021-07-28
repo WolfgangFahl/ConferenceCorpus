@@ -10,6 +10,9 @@ import os
 from lodstorage.csv import CSV
 from lodstorage.lod import LOD
 
+from corpus.event import EventManager, EventSeriesManager
+
+
 class EventCorpus(object):
     '''
     Towards a gold standard event corpus  and observatory ...
@@ -21,46 +24,16 @@ class EventCorpus(object):
         '''
         self.debug=debug
         self.verbose=verbose
+        self.eventManagers={}
 
-
-    def generateCSV(self,pageTitles,filename,filepath=None):
-        """
-        Generate a csv with the given pageTitles
+    def addManagers(self, eventManager:EventManager, eventSeriesManager:EventSeriesManager):
+        '''
+        adds the given managers to the eventManagers of this EventCorpus
         Args:
-            pageTitles(list):List of pageTitles to generate CSV from
-            filename(str):CSV file name
-            filepath(str):filepath to create csv. Default: ~/.ptp/csvs/
-        """
-        if filepath is None:
-            home=expanduser("~")
-            filepath= f"{home}/.or/csvs"
-        lod = self.wikiFileManager.exportWikiSonToLOD(pageTitles, 'Event')
-        if self.debug:
-            print(pageTitles)
-            print(lod)
-
-        savepath =f"{filepath}/{filename}.csv"
-        if not os.path.exists(filepath):
-            os.makedirs(filepath)
-        CSV.storeToCSVFile(lod, savepath,withPostfix=True)
-        return savepath
-
-    def getEventCsv(self,eventTitle):
-        """
-        Gives a csv file for the eventTitle
-        """
-        return self.generateCSV([eventTitle],eventTitle)
-
-    def getEventSeriesCsv(self,eventSeriesTitle):
-        """
-        Gives a csv file for all the events the given eventSeriesTitle
-        """
-        eventsInSeries = self.getEventsInSeries(eventSeriesTitle)
-        pageTitles = []
-        for event in eventsInSeries:
-            if hasattr(event, 'pageTitle'):
-                pageTitles.append(event.pageTitle)
-        return self.generateCSV(pageTitles,eventSeriesTitle)
+            eventManager(EventManager):
+            eventSeriesManager(EventSeriesManager):
+        '''
+        pass
 
     def getEventsInSeries(self,seriesAcronym):
         """
