@@ -286,5 +286,4 @@ class Dblp(object):
             self.clear_element(elem)
         return dictOfLod
             
-        
     

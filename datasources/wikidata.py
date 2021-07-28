@@ -8,6 +8,12 @@ from lodstorage.sparql import SPARQL
 from lodstorage.storageconfig import StorageConfig
 
 class Wikidata:
+    '''
+    Wikidata access via SPARQL endpoint
+    
+    make do not want to be dependend on this endpoint since we might have
+    our own copy of Wikidata which might run on Virtuoso or Jena instead of blazegraph
+    '''
     endpoint="https://query.wikidata.org/sparql"
     
 class WikidataEventSeries(EventSeries):
