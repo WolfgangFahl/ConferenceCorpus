@@ -94,7 +94,7 @@ class OREventManager(EventManager):
     i represent a list of Events
     '''
 
-    def __init__(self,config:StorageConfig=None, debug=False):
+    def __init__(self,config:StorageConfig=None, verbose:bool=False, debug=False):
         '''
         Constructor
         '''
@@ -105,6 +105,7 @@ class OREventManager(EventManager):
                                              config=config)
         self.smwHandler=SMWEntityList(self)
         self.debug=debug
+        self.verbose=verbose
         if self.debug:
             self.profile = True
 
@@ -279,7 +280,7 @@ class OREventSeriesManager(EventSeriesManager):
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
 
-    def __init__(self,config:StorageConfig, debug=False):
+    def __init__(self,config:StorageConfig, verbose:bool=False, debug=False):
         '''
         construct me
         '''
@@ -293,6 +294,7 @@ class OREventSeriesManager(EventSeriesManager):
         self.debug = debug
         if self.debug:
             self.profile = True
+        self.verbose=verbose
 
     def fromWikiUser(self, wikiuser:WikiUser, askExtra:str="", profile:bool=False):
         '''
