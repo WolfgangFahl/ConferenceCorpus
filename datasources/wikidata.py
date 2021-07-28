@@ -93,17 +93,14 @@ WHERE
 """
         return query
     
-    def fromEndpoint(self,endpoint=Wikidata.endpoint):
+    def getLoDfromEndpoint(self,endpoint=Wikidata.endpoint):
         '''
         get my content from the given endpoint
         '''
         sparql=SPARQL(endpoint)
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
-        for record in listOfDicts:
-            we=WikidataEvent()
-            we.fromDict(record)
-            self.getList().append(we)
+        return listOfDicts
     
 class WikidataEventSeriesManager(EventSeriesManager):
     '''
@@ -173,17 +170,14 @@ class WikidataEventSeriesManager(EventSeriesManager):
 """
         return query
 
-    def fromEndpoint(self,endpoint=Wikidata.endpoint):
+    def getLoDfromEndpoint(self,endpoint=Wikidata.endpoint)->list:
         '''
         get my content from the given endpoint
         '''
         sparql=SPARQL(endpoint)
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
-        for record in listOfDicts:
-            es=WikidataEventSeries()
-            es.fromDict(record)
-            self.getList().append(es)
+        return listOfDicts
             
         
         
