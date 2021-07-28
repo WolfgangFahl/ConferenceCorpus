@@ -20,6 +20,13 @@ class TestDblp(unittest.TestCase):
     '''
     test the dblp xml parser and pylodstorage extraction for it
     '''
+    
+    @classmethod
+    def setUpClass(cls):
+        cls.mock=True
+        # uncomment for recreation
+        #cls.mock=False
+        pass
 
     def setUp(self):
         self.debug=True
@@ -28,11 +35,8 @@ class TestDblp(unittest.TestCase):
 #            logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 #        else:
 #            logging.basicConfig(stream=sys.stderr, level=logging.INFO)          
-#        self.logger=logging.getLogger("TestDblp")
-        self.mock=True
-        # uncomment for recreation
-        # self.debug=True
-        # self.mock=False
+#        self.logger=logging.getLogger("TestDblp") 
+        self.mock=TestDblp.mock     
         pass
 
     def tearDown(self):

@@ -14,6 +14,7 @@ class TestWikiData(unittest.TestCase):
 
     def setUp(self):
         self.debug=True
+        self.forceUpdate=True
         pass
 
 
@@ -27,15 +28,15 @@ class TestWikiData(unittest.TestCase):
         '''
         config=StorageConfig.getSQL()
         wesm=WikidataEventSeriesManager(config=config)
-        wesm.fromEndpoint()
+        wesm.fromCache(force=self.forceUpdate,getListOfDicts=wesm.getLoDfromEndpoint)
         esl=wesm.getList()
         if self.debug:
             print(f"Found {len(esl)} Wikidata event Series")
         self.assertTrue(len(esl)>4200)
-        if not wesm.isCached():
+        if not wesm.isCached() or self.forceUpdate:
             wesm.store()
         wem=WikidataEventManager(config=config)
-        wem.fromEndpoint()
+        wem.fromCache(force=self.forceUpdate,getListOfDicts=wem.getLoDfromEndpoint)
         el=wem.getList()
         if self.debug:
             print(f"Found {len(el)} Wikidata scientific events")
