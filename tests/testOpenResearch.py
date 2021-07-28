@@ -38,6 +38,35 @@ class TestOpenResearch(unittest.TestCase):
         events=eventManager.getList()
         self.assertTrue(len(events)>8000)
 
+    def testOREventSeriesManagerFromWikiFileManager(self):
+        '''
+        tests the getting conference series form wiki markup files
+        '''
+        config = StorageConfig.getSQL()
+        eventSeriesManager=OREventSeriesManager(config=config)
+        eventSeriesManager.fromWikiFileManager(self.wikiFileManager)
+        eventSeries=eventSeriesManager.getList()
+        self.assertTrue(len(eventSeries)>1000)
+
+    def testOREventManagerFromWikiUser(self):
+        '''
+        tests the getting conferences form wiki markup files
+        '''
+        config = StorageConfig.getSQL()
+        eventManager=OREventManager(config=config)
+        eventManager.fromWikiUser(self.wikiuser)
+        events=eventManager.getList()
+        self.assertTrue(len(events)>8000)
+
+    def testOREventSeriesManagerFromWikiUser(self):
+        '''
+        tests the getting conference series form wiki markup files
+        '''
+        config = StorageConfig.getSQL()
+        eventSeriesManager=OREventSeriesManager(config=config)
+        eventSeriesManager.fromWikiUser(self.wikiuser)
+        eventSeries=eventSeriesManager.getList()
+        self.assertTrue(len(eventSeries)>1000)
 
 
 
