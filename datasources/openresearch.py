@@ -16,11 +16,14 @@ class OREventCorpus(EventCorpus):
     EventCorpus containing the events and eventSeries of openresearch
     '''
 
-    def __init__(self,debug:bool=False):
+    def __init__(self,config:StorageConfig=None,debug:bool=False):
         '''
         Constructor
         '''
         super().__init__(debug=debug)
+        if config is None:
+            config = StorageConfig.getSQL()
+        self.config=config
         self._wikiFileManager = None
         self.wikiUser = None
 
@@ -46,12 +49,12 @@ class OREventCorpus(EventCorpus):
 
     def fromWikiFileManager(self,wikiFileManager):
         '''
-            get events with series by knitting / linking the entities together
+        get events with series by knitting / linking the entities together
         '''
         self._wikiFileManager=wikiFileManager
-        self.eventManager=OREventManager(debug=self.debug)
+        self.eventManager=OREventManager(self.config,debug=self.debug)
         self.eventManager.fromWikiFileManager(wikiFileManager)
-        self.eventSeriesManager=OREventSeriesManager(debug=self.debug)
+        self.eventSeriesManager=OREventSeriesManager(self.config,debug=self.debug)
         self.eventSeriesManager.fromWikiFileManager(wikiFileManager)
         self.eventManager.linkSeriesAndEvent(self.eventSeriesManager)
 
@@ -60,9 +63,9 @@ class OREventCorpus(EventCorpus):
         get events with series by knitting / linking the entities together
         '''
         self.wikiUser = wikiUser
-        self.eventManager = OREventManager(debug=self.debug)
+        self.eventManager = OREventManager(self.config,debug=self.debug)
         self.eventManager.fromWikiUser(wikiUser)
-        self.eventSeriesManager = OREventSeriesManager(debug=self.debug)
+        self.eventSeriesManager = OREventSeriesManager(self.config,debug=self.debug)
         self.eventSeriesManager.fromWikiUser(wikiUser)
         self.eventManager.linkSeriesAndEvent(self.eventSeriesManager,"inEventSeries")
 

@@ -5,20 +5,17 @@ Created on 27.07.2021
 '''
 import unittest
 from sys import path
-
 from lodstorage.storageconfig import StorageConfig
-
 from tests.testSMW import TestSMW
 from wikifile.wikiFileManager import WikiFileManager
-from datasources.openresearch import OREvent,OREventManager,OREventSeries,OREventSeriesManager
-
-
+from datasources.openresearch import OREvent, OREventManager, OREventSeries, OREventSeriesManager, OREventCorpus
 
 
 class TestOpenResearch(unittest.TestCase):
 
 
     def setUp(self):
+        self.debug=False
         self.wikiFileManager=TestSMW.getWikiFileManager()
         self.wikiuser=TestSMW.getWikiUser()
 
@@ -67,6 +64,26 @@ class TestOpenResearch(unittest.TestCase):
         eventSeriesManager.fromWikiUser(self.wikiuser)
         eventSeries=eventSeriesManager.getList()
         self.assertTrue(len(eventSeries)>1000)
+
+    def testOREventCorpus(self):
+        '''
+        tests initializing the OREventCorpus from wiki markup files
+        '''
+        config = StorageConfig.getSQL()
+        corpus=OREventCorpus(config, self.debug)
+        corpus.fromWikiFileManager(self.wikiFileManager)
+        self.assertTrue(len(corpus.eventManager.getList()) > 8000)
+        self.assertTrue(len(corpus.eventSeriesManager.getList()) > 1000)
+
+    def testOREventCorpusFromWikiUser(self):
+        '''
+        tests initializing the OREventCorpus from wiki
+        '''
+        config = StorageConfig.getSQL()
+        corpus=OREventCorpus(config, self.debug)
+        corpus.fromWikiUser(self.wikiuser)
+        self.assertTrue(len(corpus.eventManager.getList()) > 8000)
+        self.assertTrue(len(corpus.eventSeriesManager.getList()) > 1000)
 
 
 
