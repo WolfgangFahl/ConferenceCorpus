@@ -5,14 +5,15 @@ Created on 28.07.2021
 '''
 import unittest
 from lodstorage.storageconfig import StorageConfig
-from datasources.dblp import Dblp
 from datasources.dblp import DblpEventSeriesManager,DblpEventManager
+from tests import testDblpXml
 
-class TestDblp(unittest.TestCase):
+class TestDblpEvents(unittest.TestCase):
     '''
     test the dblp data source
     '''
     def setUp(self):
+        self.mock=testDblpXml.TestDblp.mock
         self.forceUpdate=True
         pass
 
@@ -26,7 +27,7 @@ class TestDblp(unittest.TestCase):
         test getting the conference series and events from dblp xml dump
         '''
         config = StorageConfig.getSQL()
-        dblp=Dblp(verbose=True)
+        dblp=testDblpXml.TestDblp.getDblp(self)
         dblpEventSeriesManager=DblpEventSeriesManager(config=config,dblp=dblp)
         
         dblpEventSeriesManager.fromCache(force=self.forceUpdate,getListOfDicts=dblpEventSeriesManager.getLoDfromDblp)
@@ -35,7 +36,9 @@ class TestDblp(unittest.TestCase):
             print(f"Found {len(esl)} dblp event Series")
         if not dblpEventSeriesManager.isCached():
             dblpEventSeriesManager.store()
-        self.assertTrue(len(esl) > 5200)
+            
+        expected=138 if self.mock else 5200
+        self.assertTrue(len(esl) >= expected)
         
         dblpEventManager=DblpEventManager(config=config,dblp=dblp)
         dblpEventManager.fromCache(force=self.forceUpdate,getListOfDicts=dblpEventManager.getLoDfromDblp)
@@ -44,7 +47,8 @@ class TestDblp(unittest.TestCase):
             print(f"Found {len(el)} dblp events")
         if not dblpEventManager.isCached():
             dblpEventManager.store()
-        self.assertTrue(len(el) > 40000)
+        expected=1000 if self.mock else 40000
+        self.assertTrue(len(el) >= expected)
         
 
 

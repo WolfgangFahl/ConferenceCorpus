@@ -26,7 +26,7 @@ class DblpEventManager(EventManager):
         '''
         Constructor
         '''
-        super(DblpEventManager, self).__init__(name="Dblp", clazz=DblpEventSeries,
+        super(DblpEventManager, self).__init__(name="DblpEvents", clazz=DblpEventSeries,
                                                          tableName="dblp_eventseries", config=config)
         self.dblp=dblp
         self.sqlDb=self.dblp.getXmlSqlDB()
@@ -40,9 +40,9 @@ class DblpEventManager(EventManager):
             list: the list of dict with my series data
 
         '''
-        query = """select conf as acronym,title,year,url,series
+        query = """select conf as series,title,year,url,series as publicationSeries
         from proceedings 
-        order by acronym,year"""
+        order by series,year"""
         listOfDicts = self.sqlDb.query(query)
         return listOfDicts
 
@@ -58,7 +58,7 @@ class DblpEventSeriesManager(EventSeriesManager):
         '''
         Constructor
         '''
-        super(DblpEventSeriesManager, self).__init__(name="Dblp", clazz=DblpEventSeries,
+        super(DblpEventSeriesManager, self).__init__(name="DblpEventSeries", clazz=DblpEventSeries,
                                                          tableName="dblp_eventseries", config=config)
         self.dblp=dblp
         self.sqlDb=self.dblp.getXmlSqlDB()

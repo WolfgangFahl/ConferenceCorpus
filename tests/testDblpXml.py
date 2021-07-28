@@ -5,9 +5,6 @@ Created on 2021-01-25
 '''
 import unittest
 
-from lodstorage.storageconfig import StorageConfig
-
-from datasources.dblp import DblpEventSeriesManager
 from datasources.dblpxml import Dblp
 from lodstorage.schema import SchemaManager
 from datetime import datetime
@@ -20,23 +17,17 @@ class TestDblp(unittest.TestCase):
     '''
     test the dblp xml parser and pylodstorage extraction for it
     '''
+    mock=True
     
-    @classmethod
-    def setUpClass(cls):
-        cls.mock=True
-        # uncomment for recreation
-        #cls.mock=False
-        pass
-
     def setUp(self):
         self.debug=True
         self.verbose=True
+        self.mock=TestDblp.mock
 #        if self.debug:
 #            logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 #        else:
 #            logging.basicConfig(stream=sys.stderr, level=logging.INFO)          
-#        self.logger=logging.getLogger("TestDblp") 
-        self.mock=TestDblp.mock     
+#        self.logger=logging.getLogger("TestDblp")   
         pass
 
     def tearDown(self):
@@ -63,10 +54,13 @@ class TestDblp(unittest.TestCase):
         '''
         get the dblp 
         '''
-        dblp=TestDblp.getMockedDblp(self.mock,debug=self.debug)
+        dblp=TestDblp.getMockedDblp(TestDblp.mock,debug=self.debug)
         return dblp
     
     def getSqlDB(self,recreate=False):
+        '''
+        get the Sql Database
+        '''
         dblp=self.getDblp()
         limit=10000 if self.mock else 10000000
         progress=1000 if self.mock else 100000
