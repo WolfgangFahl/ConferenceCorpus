@@ -86,4 +86,4 @@ class EventManager(EntityManager,JSONAbleList):
                     print(f"Event Series Acronym {seriesAcronym} lookup failed")
         if self.debug:
             print("%d events/%d eventSeries -> %d linked" % (
-            len(self.eventList.getList()), len(self.eventSeriesList.getList()), len(self.seriesLookup)))
+            len(self.getList()), len(eventSeriesManager.getList()), len(self.seriesLookup)))

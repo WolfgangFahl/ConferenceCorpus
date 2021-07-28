@@ -128,6 +128,11 @@ class SMWEntityList(object):
         '''
         read me from a wiki using the given WikiUser configuration
         '''
+        records=self.getLoDfromWiki(wikiuser,askExtra,profile)
+        self.entityManager.fromLoD(records)
+        return records
+
+    def getLoDfromWiki(self, wikiuser:WikiUser, askExtra="", profile=False):
         if self.wikiClient is None:
             self.wikiClient = WikiClient.ofWikiUser(wikiuser)
             self.wikiPush = WikiPush(fromWikiId=wikiuser.wikiId)
@@ -140,26 +145,49 @@ class SMWEntityList(object):
         elapsed = time.time() - startTime
         if profile:
             print("query of %d %s records took %5.1f s" % (len(records), entityName, elapsed))
-        self.entityManager.fromLoD(records)
         return records
+
+    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager):
+        '''
+
+        Args:
+            wikiFileManager(WikiFileManager):
+        Return:
+            list of dicts
+        '''
+        self.wikiFileManager = wikiFileManager
+        wikiFileDict = wikiFileManager.getAllWikiFiles()
+        lod=self.getLoDfromWikiFiles(wikiFileDict.values())
+        return lod
+
+    def getLoDfromWikiFiles(self, wikiFileList: list):
+        '''
+        Convert given wikiFiles to LoD
+
+        Args:
+            wikiFileList(list):
+
+        Return:
+            list of dicts
+        '''
+        templateName = self.entityManager.clazz.templateName
+        wikiSonLod = WikiFileManager.convertWikiFilesToLOD(wikiFileList, templateName)
+        propertyLookup = self.getPropertyLookup()
+        lod = self.normalizeLodFromWikiSonToLod(wikiSonLod, propertyLookup)
+        return lod
 
     def fromWikiFileManager(self, wikiFileManager):
         """
         initialize me from the given WikiFileManager
         """
-        self.wikiFileManager = wikiFileManager
-        wikiFileDict = wikiFileManager.getAllWikiFiles()
-        self.fromWikiFiles(wikiFileDict.values())
-        return self
+        lod=self.getLoDfromWikiFileManager(wikiFileManager)
+        self.entityManager.fromLoD(lod)
 
     def fromWikiFiles(self, wikiFileList: list):
         '''
         initialize me from the given list of wiki files
         '''
-        templateName = self.entityManager.clazz.templateName
-        wikiSonLod = WikiFileManager.convertWikiFilesToLOD(wikiFileList, templateName)
-        propertyLookup=self.getPropertyLookup()
-        lod = self.normalizeLodFromWikiSonToLod(wikiSonLod,propertyLookup)
+        lod=self.getLoDfromWikiFiles(wikiFileList)
         self.entityManager.fromLoD(lod)
 
     def getPropertyLookup(self) -> dict:

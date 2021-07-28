@@ -1,6 +1,7 @@
 import inspect
 from datetime import datetime
 
+from lodstorage.lod import LOD
 from lodstorage.storageconfig import StorageConfig
 from wikibot.wikiuser import WikiUser
 from wikifile.wikiFile import WikiFile
@@ -69,6 +70,15 @@ class OREventCorpus(EventCorpus):
         self.eventSeriesManager.fromWikiUser(wikiUser)
         self.eventManager.linkSeriesAndEvent(self.eventSeriesManager,"inEventSeries")
 
+    def fromCache(self, wikiUser:WikiUser,force=False):
+        self.eventManager = OREventManager(self.config, debug=self.debug)
+        self.eventManager.wikiUser=wikiUser
+        self.eventManager.fromCache(force=force, getListOfDicts=self.eventManager.getLoDfromWikiUser)
+        self.eventSeriesManager = OREventSeriesManager(self.config, debug=self.debug)
+        self.eventSeriesManager.wikiUser = wikiUser
+        self.eventSeriesManager.fromCache(force=force, getListOfDicts=self.eventManager.getLoDfromWikiUser)
+        self.eventManager.linkSeriesAndEvent(self.eventSeriesManager, "inEventSeries")
+
 
 class OREventManager(EventManager):
 
@@ -109,6 +119,20 @@ class OREventManager(EventManager):
         if self.debug:
             self.profile = True
 
+    @classmethod
+    def getPropertyLookup(cls) -> dict:
+        '''
+        get my PropertyLookupList as a map
+
+        Returns:
+            dict: my mapping from wiki property names to LoD attribute Names or None if no mapping is defined
+        '''
+        lookup = None
+        if 'propertyLookupList' in cls.__dict__:
+            propertyLookupList = cls.__dict__['propertyLookupList']
+            lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
+        return lookup
+
     def fromWikiUser(self, wikiuser: WikiUser, askExtra: str = "", profile: bool = False):
         '''
         read me from a wiki using the given WikiUser configuration
@@ -128,6 +152,24 @@ class OREventManager(EventManager):
             wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
         '''
         self.smwHandler.fromWikiFileManager(wikiFileManager)
+
+    def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False):
+        '''
+
+        Args:
+            wikiuser(WikiUser):
+            askExtra(str):
+            profile(bool):
+        '''
+        if wikiuser is None and 'wikiUser' in self.__dict__:
+            wikiuser=self.wikiUser
+        return self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
+
+    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
+        if wikiFileManager is None and 'wikiFileManager' in self.__dict__:
+            wikiFileManager=self.wikiFileManager
+        lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
+        return lod
 
 
 class OREvent(Event):
@@ -296,6 +338,21 @@ class OREventSeriesManager(EventSeriesManager):
             self.profile = True
         self.verbose=verbose
 
+    @classmethod
+    def getPropertyLookup(cls) -> dict:
+        '''
+        get my PropertyLookupList as a map
+
+        Returns:
+            dict: my mapping from wiki property names to LoD attribute Names or None if no mapping is defined
+        '''
+        lookup = None
+        if 'propertyLookupList' in cls.__dict__:
+            propertyLookupList = cls.__dict__['propertyLookupList']
+            lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
+        return lookup
+
+
     def fromWikiUser(self, wikiuser:WikiUser, askExtra:str="", profile:bool=False):
         '''
         read me from a wiki using the given WikiUser configuration
@@ -315,6 +372,24 @@ class OREventSeriesManager(EventSeriesManager):
             wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
         '''
         self.smwHandler.fromWikiFileManager(wikiFileManager)
+
+    def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False):
+        '''
+
+        Args:
+            wikiuser(WikiUser):
+            askExtra(str):
+            profile(bool):
+        '''
+        if wikiuser is None and 'wikiUser' in self.__dict__:
+            wikiuser=self.wikiUser
+        return self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
+
+    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
+        if wikiFileManager is None and 'wikiFileManager' in self.__dict__:
+            wikiFileManager=self.wikiFileManager
+        lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
+        return lod
 
 class OREventSeries(EventSeries):
     '''
