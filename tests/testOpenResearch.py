@@ -4,14 +4,15 @@ Created on 27.07.2021
 @author: wf
 '''
 import unittest
-from sys import path
 from lodstorage.storageconfig import StorageConfig
 from tests.testSMW import TestSMW
-from wikifile.wikiFileManager import WikiFileManager
-from datasources.openresearch import OREvent, OREventManager, OREventSeries, OREventSeriesManager, OREventCorpus
+from datasources.openresearch import OREventManager, OREventSeriesManager, OREventCorpus
 
 
 class TestOpenResearch(unittest.TestCase):
+    '''
+    test the access to OpenResearch
+    '''
 
 
     def setUp(self):
@@ -22,7 +23,6 @@ class TestOpenResearch(unittest.TestCase):
 
     def tearDown(self):
         pass
-
 
 
     def testOREventManagerFromWikiFileManager(self):

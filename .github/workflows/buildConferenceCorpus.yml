@@ -30,6 +30,9 @@ jobs:
     - name: Install dependencies
       run: |
         scripts/install
+    - name: get SMW backups of OPENRESEARCH and Clone
+      run: |
+        scripts/backup
     - name: Run tests
       run: |
         scripts/test

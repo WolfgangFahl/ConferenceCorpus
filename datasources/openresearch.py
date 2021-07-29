@@ -1,4 +1,3 @@
-import inspect
 from datetime import datetime
 
 from lodstorage.lod import LOD
@@ -174,7 +173,7 @@ class OREventManager(EventManager):
 
 class OREvent(Event):
     '''
-    I represent an Event
+    I represent an Event retrieved from OPENRESEARCH
 
     see https://rq.bitplan.com/index.php/Event
     '''
