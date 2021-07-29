@@ -117,6 +117,16 @@ class OREventManager(EventManager):
         self.verbose=verbose
         if self.debug:
             self.profile = True
+    
+    def configure(self):
+        '''
+        configure me
+        '''
+        if not hasattr(self, "getListOfDicts"):
+            if hasattr(self,'wikiFileManager'):
+                self.getListOfDicts=self.getLoDfromWikiFileManager  
+            if hasattr(self,'wikiUser'):
+                self.getListOfDicts=self.getLoDfromWikiUser 
 
     @classmethod
     def getPropertyLookup(cls) -> dict:
@@ -321,7 +331,7 @@ class OREventSeriesManager(EventSeriesManager):
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
 
-    def __init__(self,config:StorageConfig, verbose:bool=False, debug=False):
+    def __init__(self,config:StorageConfig=None, verbose:bool=False, debug=False):
         '''
         construct me
         '''
@@ -336,6 +346,17 @@ class OREventSeriesManager(EventSeriesManager):
         if self.debug:
             self.profile = True
         self.verbose=verbose
+        
+    def configure(self):
+        '''
+        configure me
+        '''
+        if not hasattr(self, "getListOfDicts"):
+            if hasattr(self,'wikiFileManager'):
+                self.getListOfDicts=self.getLoDfromWikiFileManager  
+            if hasattr(self,'wikiUser'):
+                self.getListOfDicts=self.getLoDfromWikiUser               
+        
 
     @classmethod
     def getPropertyLookup(cls) -> dict:
@@ -380,12 +401,17 @@ class OREventSeriesManager(EventSeriesManager):
             askExtra(str):
             profile(bool):
         '''
-        if wikiuser is None and 'wikiUser' in self.__dict__:
+        if wikiuser is None and 'wikiUser' and hasattr(self,'wikiuser'):
             wikiuser=self.wikiUser
         return self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
 
     def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
-        if wikiFileManager is None and 'wikiFileManager' in self.__dict__:
+        '''
+        get my List of Dicts from the given WikiFileManager
+        
+        
+        '''
+        if wikiFileManager is None and hasattr(self,'wikiFileManager'):
             wikiFileManager=self.wikiFileManager
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         return lod

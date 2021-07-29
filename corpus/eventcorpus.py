@@ -30,6 +30,7 @@ class EventDataSource(object):
             eventSeriesManager(EventSeriesManager): manager for the eventSeries
         '''
         self.sourceConfig=sourceConfig
+        self.name=sourceConfig.name
         self.eventManager=eventManager
         self.eventSeriesManager=eventSeriesManager
         
@@ -37,6 +38,8 @@ class EventDataSource(object):
         '''
         load this data source
         '''
+        self.eventSeriesManager.configure()
+        self.eventManager.configure()
         self.eventSeriesManager.fromCache(force=forceUpdate)
         self.eventManager.fromCache(force=forceUpdate)
         

@@ -28,7 +28,8 @@ class TestWikiData(unittest.TestCase):
         '''
         config=StorageConfig.getSQL()
         wesm=WikidataEventSeriesManager(config=config)
-        wesm.fromCache(force=self.forceUpdate,getListOfDicts=wesm.getLoDfromEndpoint)
+        wesm.configure()
+        wesm.fromCache(force=self.forceUpdate)
         esl=wesm.getList()
         if self.debug:
             print(f"Found {len(esl)} Wikidata event Series")
@@ -36,7 +37,8 @@ class TestWikiData(unittest.TestCase):
         if not wesm.isCached() or self.forceUpdate:
             wesm.store()
         wem=WikidataEventManager(config=config)
-        wem.fromCache(force=self.forceUpdate,getListOfDicts=wem.getLoDfromEndpoint)
+        wem.configure()
+        wem.fromCache(force=self.forceUpdate)
         el=wem.getList()
         if self.debug:
             print(f"Found {len(el)} Wikidata scientific events")

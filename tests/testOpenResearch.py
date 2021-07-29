@@ -29,7 +29,9 @@ class TestOpenResearch(unittest.TestCase):
         '''
         config = StorageConfig.getSQL()
         eventManager=OREventManager(config=config)
-        eventManager.fromWikiFileManager(self.wikiFileManager)
+        eventManager.wikiFileManager=self.wikiFileManager
+        eventManager.configure()
+        eventManager.fromWikiFileManager()
         events=eventManager.getList()
         self.assertTrue(len(events)>8000)
 

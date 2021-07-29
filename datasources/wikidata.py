@@ -35,6 +35,13 @@ class WikidataEventManager(EventManager):
         Constructor
         '''
         super(WikidataEventManager,self).__init__(name="WikidataEvents", clazz=WikidataEvent, tableName="wikidata_event",config=config)
+        
+    def configure(self):
+        '''
+        configure me
+        '''
+        if not hasattr(self, "getListOfDicts"):
+            self.getListOfDicts=self.getLoDfromEndpoint    
    
     def getSparqlQuery(self):
         '''
@@ -112,6 +119,13 @@ class WikidataEventSeriesManager(EventSeriesManager):
         Constructor
         '''
         super(WikidataEventSeriesManager,self).__init__(name="WikidataEventSeries", clazz=WikidataEventSeries, tableName="wikidata_eventseries",config=config)
+        
+    def configure(self):
+        '''
+        configure me
+        '''
+        if not hasattr(self, "getListOfDicts"):
+            self.getListOfDicts=self.getLoDfromEndpoint
         
     def getSparqlQuery(self):
         '''

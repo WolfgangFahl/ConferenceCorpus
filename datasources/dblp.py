@@ -8,11 +8,20 @@ from lodstorage.storageconfig import StorageConfig
 from datasources.dblpxml import Dblp
 
 class DblpEvent(Event):
+    '''
+    a Dblp Event
     
+    Example event: https://dblp.org/db/conf/aaai/aaai2020.html
+    '''
     pass
 
 
 class DblpEventSeries(EventSeries):
+    '''
+    a Dblp Event Series
+    
+    Example event series: https://dblp.org/db/conf/aaai/index.html
+    '''
     pass
 
 class DblpEventManager(EventManager):
@@ -22,17 +31,24 @@ class DblpEventManager(EventManager):
     Example event: https://dblp.org/db/conf/aaai/aaai2020.html
     
     '''
-    def __init__(self, dblp:Dblp=None,config: StorageConfig = None):
+    def __init__(self, config: StorageConfig = None):
         '''
         Constructor
         '''
         super(DblpEventManager, self).__init__(name="DblpEvents", clazz=DblpEventSeries,
                                                          tableName="dblp_eventseries", config=config)
-        if dblp is None:
-            dblp=Dblp()
-        self.dblp=dblp
-        self.sqlDb=self.dblp.getXmlSqlDB()
     pass
+
+    def configure(self):
+        '''
+        configure me
+        '''
+        if not hasattr(self, "dblp"): 
+            print("Warning - using full dblp.xml dataset!")   
+            self.dblp=Dblp()
+        self.sqlDb=self.dblp.getXmlSqlDB()
+        if not hasattr(self,"getListOfDicts"):
+            self.getListOfDicts=self.getLoDfromDblp
 
     def getLoDfromDblp(self)->list:
         '''
@@ -56,16 +72,23 @@ class DblpEventSeriesManager(EventSeriesManager):
     dblp provides regular dblp xml dumps
     '''
 
-    def __init__(self, dblp:Dblp=None,config: StorageConfig = None):
+    def __init__(self, config: StorageConfig = None):
         '''
         Constructor
         '''
         super(DblpEventSeriesManager, self).__init__(name="DblpEventSeries", clazz=DblpEventSeries,
                                                          tableName="dblp_eventseries", config=config)
-        if dblp is None:
-            dblp=Dblp()
-        self.dblp=dblp
+        
+    def configure(self):
+        '''
+        configure me
+        '''
+        if not hasattr(self, "dblp"): 
+            print("Warning - using full dblp.xml dataset!")   
+            self.dblp=Dblp()
         self.sqlDb=self.dblp.getXmlSqlDB()
+        if not hasattr(self,"getListOfDicts"):
+            self.getListOfDicts=self.getLoDfromDblp
 
     def getLoDfromDblp(self)->list:
         '''

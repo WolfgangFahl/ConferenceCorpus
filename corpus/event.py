@@ -51,6 +51,12 @@ class EventSeriesManager(EntityManager):
         constructor 
         '''
         super(EventSeriesManager, self).__init__(name=name,entityName="EventSeries",entityPluralName="EventSeries",primaryKey=primaryKey,listName="series",clazz=clazz,tableName=tableName,config=config,debug=debug)
+        
+    def configure(self):
+        '''
+        configure me - abstract method that needs to be overridden
+        '''    
+        raise Exception(f"specialized configure for {self.name} needs to be implemented")
             
 class EventManager(EntityManager,JSONAbleList):
     '''
@@ -62,6 +68,13 @@ class EventManager(EntityManager,JSONAbleList):
         constructor 
         '''
         super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,tableName=tableName,config=config,debug=debug)
+        
+    def configure(self):
+        '''
+        configure me - abstract method that needs to be overridden
+        '''    
+        raise Exception(f"specialized configure for {self.name} needs to be implemented")
+     
 
     def linkSeriesAndEvent(self, eventSeriesManager:EventSeriesManager, seriesKey:str="series"):
         '''

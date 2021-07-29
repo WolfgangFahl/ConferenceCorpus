@@ -14,7 +14,7 @@ class TestDblpEvents(unittest.TestCase):
     '''
     def setUp(self):
         self.mock=testDblpXml.TestDblp.mock
-        self.forceUpdate=True
+        self.forceUpdate=False
         pass
 
 
@@ -28,9 +28,10 @@ class TestDblpEvents(unittest.TestCase):
         '''
         config = StorageConfig.getSQL()
         dblp=testDblpXml.TestDblp.getDblp(self)
-        dblpEventSeriesManager=DblpEventSeriesManager(config=config,dblp=dblp)
-        
-        dblpEventSeriesManager.fromCache(force=self.forceUpdate,getListOfDicts=dblpEventSeriesManager.getLoDfromDblp)
+        dblpEventSeriesManager=DblpEventSeriesManager(config=config)
+        dblpEventSeriesManager.dblp=dblp
+        dblpEventSeriesManager.configure()
+        dblpEventSeriesManager.fromCache(force=self.forceUpdate)
         esl = dblpEventSeriesManager.getList()
         if self.debug:
             print(f"Found {len(esl)} dblp event Series")
@@ -40,7 +41,9 @@ class TestDblpEvents(unittest.TestCase):
         expected=138 if self.mock else 5200
         self.assertTrue(len(esl) >= expected)
         
-        dblpEventManager=DblpEventManager(config=config,dblp=dblp)
+        dblpEventManager=DblpEventManager(config=config)
+        dblpEventManager.dblp=dblp
+        dblpEventManager.configure()
         dblpEventManager.fromCache(force=self.forceUpdate,getListOfDicts=dblpEventManager.getLoDfromDblp)
         el = dblpEventManager.getList()
         if self.debug:
