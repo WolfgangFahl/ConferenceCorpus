@@ -67,7 +67,7 @@ class OREventCorpus(EventCorpus):
         self.eventManager.fromWikiUser(wikiUser)
         self.eventSeriesManager = OREventSeriesManager(self.config,debug=self.debug)
         self.eventSeriesManager.fromWikiUser(wikiUser)
-        self.eventManager.linkSeriesAndEvent(self.eventSeriesManager,"inEventSeries")
+        
 
     def fromCache(self, wikiUser:WikiUser,force=False):
         self.eventManager = OREventManager(self.config, debug=self.debug)

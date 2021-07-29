@@ -42,6 +42,8 @@ class EventDataSource(object):
         self.eventManager.configure()
         self.eventSeriesManager.fromCache(force=forceUpdate)
         self.eventManager.fromCache(force=forceUpdate)
+        # TODO use same foreign key in all dataSources
+        self.eventManager.linkSeriesAndEvent(self.eventSeriesManager,"inEventSeries")
         
 
 class EventCorpus(object):
