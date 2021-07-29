@@ -6,21 +6,30 @@ Created on 2021-04-16
 
 from corpus.event import EventManager, EventSeriesManager
 
+class EventDataSourceConfig(object):
+    '''
+    holds configuration parameters for an EventDataSource
+    '''
+    def __init__(self,name:str,title:str,url:str):
+        self.name=name
+        self.title=title
+        self.url=url
+
 class EventDataSource(object):
     '''
     a data source for events
     '''
     
-    def __init__(self,name:str,eventManager:EventManager,eventSeriesManager:EventSeriesManager):
+    def __init__(self,eventManager:EventManager,eventSeriesManager:EventSeriesManager,sourceConfig=EventDataSourceConfig):
         '''
         constructor
         
         Args:
-            name(str): the name of the data source
+            sourceConfig(EventDataSourceConfig): the configuration for the EventDataSource
             eventManager(EventManager): manager for the events
             eventSeriesManager(EventSeriesManager): manager for the eventSeries
         '''
-        self.name=name
+        self.sourceConfig=sourceConfig
         self.eventManager=eventManager
         self.eventSeriesManager=eventSeriesManager
         
@@ -45,24 +54,30 @@ class EventCorpus(object):
         self.verbose=verbose
         self.eventDataSources={}
 
-    def addDataSource(self, name:str, eventManager:EventManager, eventSeriesManager:EventSeriesManager):
+    def addDataSource(self, eventManager:EventManager, eventSeriesManager:EventSeriesManager, name:str, title:str, url:str):
         '''
         adds the given set as a eventDataSource to the data sources of this EventCorpus
         
         Args:
-            name(str): the name of the data source
             eventManager(EventManager): manager for the events
             eventSeriesManager(EventSeriesManager): manager for the eventSeries
+            name(str): the name of the data source
+            title(str): the title of the data source
+            url(str): the link to the data source homepage
         '''
-        eventDataSource=EventDataSource(name,eventManager,eventSeriesManager)
+        eventDataSourceConfig=EventDataSourceConfig(name,title,url)
+        eventDataSource=EventDataSource(eventManager,eventSeriesManager,eventDataSourceConfig)
         self.eventDataSources[name]=eventDataSource
         pass
     
-    def loadAll(self):
+    def loadAll(self,forceUpdate:bool=False):
         '''
         load all eventDataSources
+        
+        Args:
+            forceUpdate(bool): True if the data should be fetched from the source instead of the cache
         '''
         for eventDataSource in self.eventDataSources.values():
-            eventDataSource.load()
+            eventDataSource.load(forceUpdate=forceUpdate)
 
    

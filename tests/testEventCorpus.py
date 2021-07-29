@@ -4,9 +4,7 @@ Created on 2021-07-26
 @author: wf
 '''
 import unittest
-from corpus.eventcorpus import EventCorpus
-from datasources.dblp import DblpEventManager,DblpEventSeriesManager
-from datasources.wikidata import WikidataEventManager,WikidataEventSeriesManager
+from corpus.lookup import CorpusLookup
 
 
 class TestEventCorpus(unittest.TestCase):
@@ -21,16 +19,13 @@ class TestEventCorpus(unittest.TestCase):
     def tearDown(self):
         pass
 
-
-    def testEventCorpus(self):
+    def testLookup(self):
         '''
-        test the eventCorpus
+        test the lookup
         '''
-        eventCorpus=EventCorpus()
-        eventCorpus.addDataSource("dblp",DblpEventManager(),DblpEventSeriesManager())
-        eventCorpus.addDataSource("wikidata",WikidataEventManager(),WikidataEventSeriesManager())
-        eventCorpus.loadAll()
-        pass
+        lookup=CorpusLookup()
+        lookup.load()
+        self.assertEqual(2,len(lookup.eventCorpus.eventDataSources))
 
 
 if __name__ == "__main__":

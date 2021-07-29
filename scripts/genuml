@@ -1,0 +1,33 @@
+#!/bin/bash
+# WF 2021-07-29
+# generate part of  uml diagram
+
+
+#
+# get the packages
+#
+getPackages() {
+cat << EOF
+dblp;Dblp
+wikidata;Wikidata
+openresearch;OR
+EOF
+}
+
+getPackages| while read line
+do
+  package=$(echo $line| cut -f1 -d ";" )
+  prefix=$(echo $line| cut -f2 -d ";" )
+cat << EOF
+   package $package {
+      class ${prefix}Event {}
+      class ${prefix}EventManager {}
+      class ${prefix}EventSeries {}
+      class ${prefix}EventSeriesManager {}
+      Event <|-- ${prefix}Event
+      EventManager <|-- ${prefix}EventManager
+      EventSeries <|-- ${prefix}EventSeries
+      EventSeriesManager <|-- ${prefix}EventSeriesManager
+   }
+EOF
+done

@@ -14,16 +14,14 @@ class TestOpenResearch(unittest.TestCase):
     test the access to OpenResearch
     '''
 
-
     def setUp(self):
         self.debug=False
+        self.forceUpdate=False
         self.wikiFileManager=TestSMW.getWikiFileManager()
         self.wikiuser=TestSMW.getWikiUser()
 
-
     def tearDown(self):
         pass
-
 
     def testOREventManagerFromWikiFileManager(self):
         '''
