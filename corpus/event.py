@@ -87,3 +87,17 @@ class EventManager(EntityManager,JSONAbleList):
         if self.debug:
             print("%d events/%d eventSeries -> %d linked" % (
             len(self.getList()), len(eventSeriesManager.getList()), len(self.seriesLookup)))
+            
+    def getEventsInSeries(self,seriesAcronym):
+        """
+        Return all the events in a given series.
+        """
+        if seriesAcronym in self.seriesAcronymLookup:
+            seriesEvents = self.seriesLookup[seriesAcronym]
+            if self.debug:
+                print(f"{seriesAcronym}:{len(seriesEvents):4d}")
+        else:
+            if self.debug:
+                print(f"Event Series Acronym {seriesAcronym} lookup failed")
+            return None
+        return seriesEvents

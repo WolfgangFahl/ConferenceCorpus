@@ -4,14 +4,33 @@ Created on 2021-04-16
 @author: wf
 '''
 
-from wikifile.wikiFileManager import WikiFileManager
-from os.path import expanduser
-import os
-from lodstorage.csv import CSV
-from lodstorage.lod import LOD
-
 from corpus.event import EventManager, EventSeriesManager
 
+class EventDataSource(object):
+    '''
+    a data source for events
+    '''
+    
+    def __init__(self,name:str,eventManager:EventManager,eventSeriesManager:EventSeriesManager):
+        '''
+        constructor
+        
+        Args:
+            name(str): the name of the data source
+            eventManager(EventManager): manager for the events
+            eventSeriesManager(EventSeriesManager): manager for the eventSeries
+        '''
+        self.name=name
+        self.eventManager=eventManager
+        self.eventSeriesManager=eventSeriesManager
+        
+    def load(self,forceUpdate=False):
+        '''
+        load this data source
+        '''
+        self.eventSeriesManager.fromCache(force=forceUpdate)
+        self.eventManager.fromCache(force=forceUpdate)
+        
 
 class EventCorpus(object):
     '''
@@ -24,27 +43,26 @@ class EventCorpus(object):
         '''
         self.debug=debug
         self.verbose=verbose
-        self.eventManagers={}
+        self.eventDataSources={}
 
-    def addManagers(self, eventManager:EventManager, eventSeriesManager:EventSeriesManager):
+    def addDataSource(self, name:str, eventManager:EventManager, eventSeriesManager:EventSeriesManager):
         '''
-        adds the given managers to the eventManagers of this EventCorpus
+        adds the given set as a eventDataSource to the data sources of this EventCorpus
+        
         Args:
-            eventManager(EventManager):
-            eventSeriesManager(EventSeriesManager):
+            name(str): the name of the data source
+            eventManager(EventManager): manager for the events
+            eventSeriesManager(EventSeriesManager): manager for the eventSeries
         '''
+        eventDataSource=EventDataSource(name,eventManager,eventSeriesManager)
+        self.eventDataSources[name]=eventDataSource
         pass
+    
+    def loadAll(self):
+        '''
+        load all eventDataSources
+        '''
+        for eventDataSource in self.eventDataSources.values():
+            eventDataSource.load()
 
-    def getEventsInSeries(self,seriesAcronym):
-        """
-        Return all the events in a given series.
-        """
-        if seriesAcronym in self.seriesAcronymLookup:
-            seriesEvents = self.seriesLookup[seriesAcronym]
-            if self.debug:
-                print(f"{seriesAcronym}:{len(seriesEvents):4d}")
-        else:
-            if self.debug:
-                print(f"Event Series Acronym {seriesAcronym} lookup failed")
-            return None
-        return seriesEvents
+   

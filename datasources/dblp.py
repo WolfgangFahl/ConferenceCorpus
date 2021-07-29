@@ -22,12 +22,14 @@ class DblpEventManager(EventManager):
     Example event: https://dblp.org/db/conf/aaai/aaai2020.html
     
     '''
-    def __init__(self, dblp:Dblp,config: StorageConfig = None):
+    def __init__(self, dblp:Dblp=None,config: StorageConfig = None):
         '''
         Constructor
         '''
         super(DblpEventManager, self).__init__(name="DblpEvents", clazz=DblpEventSeries,
                                                          tableName="dblp_eventseries", config=config)
+        if dblp is None:
+            dblp=Dblp()
         self.dblp=dblp
         self.sqlDb=self.dblp.getXmlSqlDB()
     pass
@@ -54,12 +56,14 @@ class DblpEventSeriesManager(EventSeriesManager):
     dblp provides regular dblp xml dumps
     '''
 
-    def __init__(self, dblp:Dblp,config: StorageConfig = None):
+    def __init__(self, dblp:Dblp=None,config: StorageConfig = None):
         '''
         Constructor
         '''
         super(DblpEventSeriesManager, self).__init__(name="DblpEventSeries", clazz=DblpEventSeries,
                                                          tableName="dblp_eventseries", config=config)
+        if dblp is None:
+            dblp=Dblp()
         self.dblp=dblp
         self.sqlDb=self.dblp.getXmlSqlDB()
 

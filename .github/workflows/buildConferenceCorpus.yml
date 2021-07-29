@@ -32,7 +32,7 @@ jobs:
         scripts/install
     - name: get SMW backups of OPENRESEARCH and Clone
       run: |
-        scripts/backup
+        scripts/getbackup
     - name: Run tests
       run: |
         scripts/test
