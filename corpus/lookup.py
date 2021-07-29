@@ -25,6 +25,9 @@ class CorpusLookup(object):
         self.eventCorpus.addDataSource(DblpEventManager(),DblpEventSeriesManager(),name="dblp",url='https://dblp.org/',title='dblp computer science bibliography')
         self.eventCorpus.addDataSource(WikidataEventManager(),WikidataEventSeriesManager(),name="wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata')
         self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),name="or",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH')
+        self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),name="or-backup",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH')
+        self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),name="orclone",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone')
+        self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),name="orclone-backup",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone')
         
     def getDataSource(self,dataSourceName:str)->EventDataSource:
         '''

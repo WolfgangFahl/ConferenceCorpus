@@ -12,6 +12,7 @@ from datasources.openresearch import OREventManager, OREventSeriesManager, OREve
 class TestOpenResearch(unittest.TestCase):
     '''
     test the access to OpenResearch
+    
     '''
 
     def setUp(self):

@@ -4,47 +4,25 @@ Created on 27.07.2021
 @author: wf
 '''
 import unittest
-from datasources.wikidata import WikidataEventSeriesManager,WikidataEventManager
-from lodstorage.storageconfig import StorageConfig
+from tests.datasourcetoolbox import DataSourceTest
+from corpus.lookup import CorpusLookup
 
-class TestWikiData(unittest.TestCase):
+class TestWikiData(DataSourceTest):
     '''
     test wiki data access
     '''
 
     def setUp(self):
-        self.debug=True
-        self.forceUpdate=False
+        DataSourceTest.setUp(self)
         pass
-
-
-    def tearDown(self):
-        pass
-
 
     def testWikidata(self):
         '''
         test getting the wikiData Event Series
         '''
-        config=StorageConfig.getSQL()
-        wesm=WikidataEventSeriesManager(config=config)
-        wesm.configure()
-        wesm.fromCache(force=self.forceUpdate)
-        esl=wesm.getList()
-        if self.debug:
-            print(f"Found {len(esl)} Wikidata event Series")
-        self.assertTrue(len(esl)>4200)
-        if not wesm.isCached() or self.forceUpdate:
-            wesm.store()
-        wem=WikidataEventManager(config=config)
-        wem.configure()
-        wem.fromCache(force=self.forceUpdate)
-        el=wem.getList()
-        if self.debug:
-            print(f"Found {len(el)} Wikidata scientific events")
-        if not wem.isCached():
-            wem.store()
-        pass
+        lookup=CorpusLookup()
+        wikidataDataSource=lookup.getDataSource("wikidata")
+        self.checkDataSource(wikidataDataSource,4200,7500)
 
 
 if __name__ == "__main__":

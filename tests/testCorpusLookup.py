@@ -9,7 +9,7 @@ from tests.testDblpXml import TestDblp
 from corpus.lookup import CorpusLookup
 
 
-class TestEventCorpus(unittest.TestCase):
+class TestCorpusLookup(unittest.TestCase):
     '''
     test the event corpus
     '''
@@ -32,10 +32,16 @@ class TestEventCorpus(unittest.TestCase):
         dblpDataSource.eventManager.dblp=dblp
         dblpDataSource.eventSeriesManager.dblp=dblp
         
-        orDataSource=lookup.getDataSource("or")
-        wikiFileManager=TestSMW.getWikiFileManager()
-        orDataSource.eventManager.wikiFileManager=wikiFileManager
-        orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+        for lookupId in ["or","orclone"]:
+            orDataSource=lookup.getDataSource(lookupId)
+            wikiFileManager=TestSMW.getWikiFileManager(wikiId=lookupId)
+            orDataSource.eventManager.wikiFileManager=wikiFileManager
+            orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
+            wikiUser=TestSMW.getSMW_WikiUser(lookupId)
+            orDataSource.eventManager.wikiUser=wikiUser
+            orDataSource.eventSeriesManager.wikiUser=wikiUser
+        
         #wikiuser=TestSMW.getWikiUser()
         pass
 
@@ -45,7 +51,7 @@ class TestEventCorpus(unittest.TestCase):
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
-        self.assertEqual(3,len(lookup.eventCorpus.eventDataSources))
+        self.assertEqual(6,len(lookup.eventCorpus.eventDataSources))
 
 
 if __name__ == "__main__":

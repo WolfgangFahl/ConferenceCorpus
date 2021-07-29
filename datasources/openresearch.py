@@ -170,7 +170,7 @@ class OREventManager(EventManager):
             askExtra(str):
             profile(bool):
         '''
-        if wikiuser is None and 'wikiUser' in self.__dict__:
+        if wikiuser is None and hasattr(self,'wikiUser'):
             wikiuser=self.wikiUser
         return self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
 
