@@ -173,8 +173,7 @@ class OREventManager(EventManager):
         if wikiuser is None and hasattr(self,'wikiUser'):
             wikiuser=self.wikiUser
         lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
-        # TODO set source more specific
-        self.setAllAttr(lod,"source","or")
+        self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
         return lod
 
     def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
@@ -411,7 +410,9 @@ class OREventSeriesManager(EventSeriesManager):
         '''
         if wikiuser is None and hasattr(self,'wikiUser'):
             wikiuser=self.wikiUser
-        return self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
+        lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
+        self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
+        return lod
 
     def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
         '''

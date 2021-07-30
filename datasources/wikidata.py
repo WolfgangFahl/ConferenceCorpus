@@ -54,48 +54,67 @@ class WikidataEventManager(EventManager):
         query="""PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wikibase: <http://wikiba.se/ontology#>
-
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT 
   (?event as ?eventId)  
-  ?short_nameLabel 
+  ?acronym
   ?ordinal
-  ?eventLabel
+  #?eventLabel
+  ?title
   ?locationLabel 
-  ?countryRefLabel 
-  ?countryRef 
-  ?part_of 
+  #?countryIdLabel
+  ?country
+  ?countryId
+  ?eventInSeries
+  ?eventInSeriesId
   ?startDate
   ?endDate
   ?homepage 
   ?dblpConferenceId
   ?gndId
-  ?main_subjectLabel 
-  ?language_usedLabel 
+  ?mainSubject
+  ?language
  
 WHERE
 {  
+ 
   # wdt:P31 (instance of)  wd:Q52260246 (scientific event)
   # Q2020153 (academic conference)
   ?event wdt:P31 wd:Q2020153 .
   # acronym
-  OPTIONAL { ?event wdt:P1813 ?short_name }
+  OPTIONAL { ?event wdt:P1813 ?acronym }
   # ordinal
   OPTIONAL { ?event wdt:P1545 ?ordinal }
-  # propertyes with type:literal # requiring label
+  # properties with type:literal # requiring label
   OPTIONAL { ?event wdt:P276 ?location . }
-  OPTIONAL { ?event wdt:P17 ?countryRef . }
-  OPTIONAL { ?event wdt:P179 ?part_of . }
-  OPTIONAL { ?event wdt:P2936 ?language_used }
-  OPTIONAL { ?event wdt:P921 ?main_subject }
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } # provide Label in EN
-
+  OPTIONAL { 
+      ?event wdt:P17 ?countryId . 
+      ?countryId rdfs:label ?country filter (lang(?country)   = "en").
+  }
+  OPTIONAL { 
+    ?event wdt:P179 ?eventInSeriesId . 
+    ?eventInSeriesId rdfs:label ?eventInSeries filter (lang(?eventInSeries)   = "en").
+  }
+  OPTIONAL { 
+    ?event wdt:P2936 ?languageId .
+    ?languageId rdfs:label ?language filter (lang(?language)   = "en").
+  }
+  OPTIONAL { 
+    ?event wdt:P921 ?mainSubjectId .
+    ?mainSubjectId rdfs:label ?mainSubject filter (lang(?mainSubject)   = "en").
+  }
   OPTIONAL { ?event wdt:P580 ?startDate . }
   OPTIONAL { ?event wdt:P582 ?endDate . }
   
   OPTIONAL { ?event wdt:P856 ?homepage . }
   OPTIONAL { ?event wdt:P8926 ?dblpConferenceId . } 
   OPTIONAL { ?event wdt:P227 ?gndId. }
+  # labels 
+  # works only with WikiData Query Service / blazegraph
+  # SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } # provide Label in EN        
+  ?event rdfs:label ?title filter (lang(?title)   = "en").
+  
 } 
 """
         return query
@@ -148,7 +167,7 @@ class WikidataEventSeriesManager(EventSeriesManager):
           BIND (COALESCE(?short_name,?confSeriesLabel) AS ?acronym).
           #  official website (P856) 
           OPTIONAL {
-            ?confSeries wdt:P856 ?official_website
+            ?confSeries wdt:P856 ?homepage
           } 
           # any item with a DBLP venue ID 
           OPTIONAL {

@@ -77,6 +77,11 @@ class TestCorpusLookup(unittest.TestCase):
             for table in storageTableList:
                 tableName=table['name']
                 if tableName.endswith(baseEntity):
+                    if 'instances' in table:
+                        instanceNote=""
+                        instanceCount=table['instances']
+                        instanceNote=f"\n{instanceCount} instances "
+                        table['notes']=instanceNote
                     tableList.append(table)
             title=f"""ConfIDent  {baseEntity}
 {nowYMD}
