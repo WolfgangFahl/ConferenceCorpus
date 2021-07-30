@@ -52,6 +52,15 @@ class TestCorpusLookup(unittest.TestCase):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
         self.assertEqual(6,len(lookup.eventCorpus.eventDataSources))
+        
+    def testGetPlantUmlDiagram(self):
+        '''
+        test creating a plantuml diagram of the tables involved in the lookup
+        '''
+        lookup=CorpusLookup(configure=self.configureCorpusLookup)
+        lookup.load()
+        tableMap=lookup.getTableMap()
+        self.assertEqual(12,len(tableMap))
 
 
 if __name__ == "__main__":
