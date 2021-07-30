@@ -4,8 +4,6 @@ Created on 2021-07-21
 @author: wf
 '''
 from lodstorage.entity import EntityManager
-from lodstorage.jsonable import JSONAble, JSONAbleList
-from collections import OrderedDict
 from lodstorage.lod import LOD
 from wikibot.wikiuser import WikiUser
 from wikibot.wikiclient import WikiClient
@@ -14,7 +12,6 @@ from wikifile.wikiFileManager import WikiFileManager
 from wikifile.wikiFile import WikiFile
 from pathlib import Path
 
-import os
 import time
 
 

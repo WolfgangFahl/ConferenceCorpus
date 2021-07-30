@@ -7,7 +7,8 @@ import unittest
 from tests.testSMW import TestSMW
 from tests.testDblpXml import TestDblp
 from corpus.lookup import CorpusLookup
-
+from lodstorage.uml import UML
+from datetime import datetime
 
 class TestCorpusLookup(unittest.TestCase):
     '''
@@ -60,7 +61,24 @@ class TestCorpusLookup(unittest.TestCase):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
         tableMap=lookup.getTableMap()
+        print (tableMap)
+        eventTableList=[]
+        for table in tableMap.values():
+            eventTableList.append(table)
         self.assertEqual(12,len(tableMap))
+        schemaManager=None
+        uml=UML()
+        now=datetime.now()
+        nowYMD=now.strftime("%Y-%m-%d")
+        title="""ConfIDent  Entities
+%s
+[[https://projects.tib.eu/en/confident/ © 2019-2021 ConfIDent project]]
+see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
+""" %nowYMD
+        plantUml=uml.mergeSchema(schemaManager,eventTableList,title=title,packageName='DataSources',generalizeTo="Event")
+        print(plantUml)
+        self.assertTrue("Event <|-- Event_confref" in plantUml)
+        self.assertTrue("class Event " in plantUml)
 
 
 if __name__ == "__main__":

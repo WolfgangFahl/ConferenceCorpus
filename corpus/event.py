@@ -50,7 +50,7 @@ class EventSeriesManager(EntityManager):
         '''
         constructor 
         '''
-        super(EventSeriesManager, self).__init__(name=name,entityName="EventSeries",entityPluralName="EventSeries",primaryKey=primaryKey,listName="series",clazz=clazz,tableName=tableName,config=config,debug=debug)
+        super(EventSeriesManager, self).__init__(name=name,entityName="EventSeries",entityPluralName="EventSeries",primaryKey=primaryKey,listName="series",clazz=clazz,tableName=tableName,handleInvalidListTypes=True,config=config,debug=debug)
         
     def configure(self):
         '''
@@ -67,7 +67,7 @@ class EventManager(EntityManager,JSONAbleList):
         '''
         constructor 
         '''
-        super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,tableName=tableName,config=config,debug=debug)
+        super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,tableName=tableName,config=config,handleInvalidListTypes=True,debug=debug)
         
     def configure(self):
         '''
