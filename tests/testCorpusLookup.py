@@ -61,24 +61,29 @@ class TestCorpusLookup(unittest.TestCase):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
         tableMap=lookup.getTableMap()
-        print (tableMap)
-        eventTableList=[]
-        for table in tableMap.values():
-            eventTableList.append(table)
+        if self.debug:
+            print (tableMap)
         self.assertEqual(12,len(tableMap))
         schemaManager=None
         uml=UML()
         now=datetime.now()
         nowYMD=now.strftime("%Y-%m-%d")
-        title="""ConfIDent  Entities
-%s
+    
+        for baseEntity in ["Event","EventSeries"]:
+            tableList=[]
+            for table in tableMap.values():
+                tableName=table['name']
+                if tableName.endswith(baseEntity):
+                    tableList.append(table)
+            title=f"""ConfIDent  {baseEntity}
+{nowYMD}
 [[https://projects.tib.eu/en/confident/ © 2019-2021 ConfIDent project]]
 see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
-""" %nowYMD
-        plantUml=uml.mergeSchema(schemaManager,eventTableList,title=title,packageName='DataSources',generalizeTo="Event")
-        print(plantUml)
-        self.assertTrue("Event <|-- Event_confref" in plantUml)
-        self.assertTrue("class Event " in plantUml)
+"""
+            plantUml=uml.mergeSchema(schemaManager,tableList,title=title,packageName='DataSources',generalizeTo=baseEntity)
+            print(plantUml)
+            self.assertTrue(f"{baseEntity} <|-- dblp_{baseEntity}" in plantUml)
+            self.assertTrue(f"class {baseEntity} " in plantUml)
 
 
 if __name__ == "__main__":

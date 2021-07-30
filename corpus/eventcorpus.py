@@ -78,6 +78,10 @@ class EventDataSource(object):
             tableList=sqlDB.getTableList()
             for table in tableList:
                 key=f"{eventDataSource.sourceConfig.lookupId}-{entityManager.name}"
+                tableName=table["name"]
+                countQuery="SELECT count(*) as count from %s" % tableName
+                countResult=sqlDB.query(countQuery)
+                table['instances']=countResult[0]['count']
                 tableMap[key]=table
                 pass
         
