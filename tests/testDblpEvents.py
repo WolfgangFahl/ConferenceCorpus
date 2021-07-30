@@ -20,14 +20,17 @@ class TestDblpEvents(DataSourceTest):
         DataSourceTest.setUp(self)
         self.dblp=TestDblp.getDblp(self)
         pass
-
+    
     def testDblp(self):
         '''
         test getting the conference series and events from dblp xml dump
         '''
         lookup=CorpusLookup()
-        dblpSource=lookup.getDataSource("dblp")
-        self.checkDataSource(dblpSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
+        dblpDataSource=lookup.getDataSource("dblp")
+        dblp=TestDblp.getMockedDblp(debug=self.debug)
+        dblpDataSource.eventManager.dblp=dblp
+        dblpDataSource.eventSeriesManager.dblp=dblp
+        self.checkDataSource(dblpDataSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
 
 
 if __name__ == "__main__":
