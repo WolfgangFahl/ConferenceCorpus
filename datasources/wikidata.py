@@ -107,6 +107,7 @@ WHERE
         sparql=SPARQL(endpoint)
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
+        self.setAllAttr(listOfDicts,"source","dblp")
         return listOfDicts
     
 class WikidataEventSeriesManager(EventSeriesManager):
@@ -191,6 +192,7 @@ class WikidataEventSeriesManager(EventSeriesManager):
         sparql=SPARQL(endpoint)
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
+        self.setAllAttr(listOfDicts,"source","wikidata")
         return listOfDicts
             
         

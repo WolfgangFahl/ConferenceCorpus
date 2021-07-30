@@ -49,6 +49,7 @@ class EventDataSource(object):
         self.eventManager.tableName=f"{self.sourceConfig.tablePrefix}_Event"
         self.eventSeriesManager=eventSeriesManager
         self.eventSeriesManager.tableName=f"{self.sourceConfig.tablePrefix}_EventSeries"
+        pass
         
     def load(self,forceUpdate=False):
         '''
@@ -61,39 +62,6 @@ class EventDataSource(object):
         # TODO use same foreign key in all dataSources
         self.eventManager.linkSeriesAndEvent(self.eventSeriesManager,"inEventSeries")
         
-    @staticmethod
-    def addEntityManagerTablesToTableMap(tableMap:dict,eventDataSource,entityManager:EntityManager):
-        '''
-        add the SQL table(s) for the given entity manager to the tableMap
-        
-        Args:
-            tableMap(dict): the map of tables
-            eventDataSource(EventDataSource): the event data source
-            entityManager(EntityManager): the entityManager to add the tables for
-            
-        '''
-        storeMode=entityManager.config.mode
-        if storeMode is StoreMode.SQL:
-            sqlDB=SQLDB(entityManager.getCacheFile())
-            tableList=sqlDB.getTableList()
-            for table in tableList:
-                key=f"{eventDataSource.sourceConfig.lookupId}-{entityManager.name}"
-                tableName=table["name"]
-                countQuery="SELECT count(*) as count from %s" % tableName
-                countResult=sqlDB.query(countQuery)
-                table['instances']=countResult[0]['count']
-                tableMap[key]=table
-                pass
-        
-    def addToTableMap(self,tableMap:dict):
-        '''
-        get the list of SQL Tables involved and add it to the given tableMap
-        
-        Return:
-            list: the list of SQL tables used for caching
-        '''
-        EventDataSource.addEntityManagerTablesToTableMap(tableMap,self,self.eventManager)
-        EventDataSource.addEntityManagerTablesToTableMap(tableMap,self,self.eventSeriesManager)   
 
 class EventCorpus(object):
     '''
@@ -135,15 +103,3 @@ class EventCorpus(object):
         '''
         for eventDataSource in self.eventDataSources.values():
             eventDataSource.load(forceUpdate=forceUpdate)
-
-    def getTableMap(self)->dict:
-        '''
-        get the map of SQL Tables involved
-        
-        Return:
-            dict: the map of SQL tables used for caching
-        '''
-        tableMap={}
-        for eventDataSource in self.eventDataSources.values():
-            eventDataSource.addToTableMap(tableMap)
-        return tableMap

@@ -13,7 +13,10 @@ class DblpEvent(Event):
     
     Example event: https://dblp.org/db/conf/aaai/aaai2020.html
     '''
-    pass
+    def __init__(self):
+        '''constructor '''
+        super().__init__()
+        pass
 
 
 class DblpEventSeries(EventSeries):
@@ -22,7 +25,10 @@ class DblpEventSeries(EventSeries):
     
     Example event series: https://dblp.org/db/conf/aaai/index.html
     '''
-    pass
+    def __init__(self):
+        '''constructor '''
+        super().__init__()
+        pass
 
 class DblpEventManager(EventManager):
     '''
@@ -62,6 +68,7 @@ class DblpEventManager(EventManager):
         from proceedings 
         order by series,year"""
         listOfDicts = self.sqlDb.query(query)
+        self.setAllAttr(listOfDicts,"source","dblp")
         return listOfDicts
 
 class DblpEventSeriesManager(EventSeriesManager):
@@ -105,4 +112,5 @@ class DblpEventSeriesManager(EventSeriesManager):
         group by acronym
         order by 2 desc"""
         listOfDicts = self.sqlDb.query(query)
+        self.setAllAttr(listOfDicts,"source","dblp")
         return listOfDicts

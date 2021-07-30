@@ -26,7 +26,7 @@ class TestDblpEvents(DataSourceTest):
         test getting the conference series and events from dblp xml dump
         '''
         lookup=CorpusLookup()
-        dblpSource=lookup.getDataSource("wikidata")
+        dblpSource=lookup.getDataSource("dblp")
         self.checkDataSource(dblpSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
 
 

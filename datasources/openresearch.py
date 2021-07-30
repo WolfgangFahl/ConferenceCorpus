@@ -172,12 +172,20 @@ class OREventManager(EventManager):
         '''
         if wikiuser is None and hasattr(self,'wikiUser'):
             wikiuser=self.wikiUser
-        return self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
+        lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
+        # TODO set source more specific
+        self.setAllAttr(lod,"source","or")
+        return lod
 
     def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
+        '''
+        get my list of dicts from the given WikiFileManager
+        '''
         if wikiFileManager is None and 'wikiFileManager' in self.__dict__:
             wikiFileManager=self.wikiFileManager
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
+        # TODO set source more specific
+        self.setAllAttr(lod,"source","or")
         return lod
 
 

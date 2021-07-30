@@ -7,6 +7,7 @@ import unittest
 from tests.testSMW import TestSMW
 from tests.testDblpXml import TestDblp
 from corpus.lookup import CorpusLookup
+from corpus.event import EventStorage
 from lodstorage.uml import UML
 from datetime import datetime
 
@@ -60,10 +61,12 @@ class TestCorpusLookup(unittest.TestCase):
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
-        tableMap=lookup.getTableMap()
+        storageTableList=EventStorage.getTableList()
+        self.debug=True
         if self.debug:
-            print (tableMap)
-        self.assertEqual(12,len(tableMap))
+            for table in storageTableList:
+                print(table)
+        self.assertEqual(12,len(storageTableList))
         schemaManager=None
         uml=UML()
         now=datetime.now()
@@ -71,7 +74,7 @@ class TestCorpusLookup(unittest.TestCase):
     
         for baseEntity in ["Event","EventSeries"]:
             tableList=[]
-            for table in tableMap.values():
+            for table in storageTableList:
                 tableName=table['name']
                 if tableName.endswith(baseEntity):
                     tableList.append(table)

@@ -4,6 +4,7 @@ Created on 2021-07-39
 @author: wf
 '''
 from corpus.eventcorpus import EventCorpus, EventDataSource
+from corpus.event import EventStorage
 from datasources.dblp import DblpEventManager,DblpEventSeriesManager
 from datasources.wikidata import WikidataEventManager,WikidataEventSeriesManager
 from datasources.openresearch import OREventManager,OREventSeriesManager
@@ -13,13 +14,14 @@ class CorpusLookup(object):
     search and lookup for different EventCorpora
     '''
 
-    def __init__(self,configure:callable=None):
+    def __init__(self,configure:callable=None,debug=False):
         '''
         Constructor
         
         Args:
             configure(callable): Callback to configure the corpus lookup
         '''
+        self.debug=debug
         self.configure=configure
         self.eventCorpus=EventCorpus()
         self.eventCorpus.addDataSource(DblpEventManager(),DblpEventSeriesManager(),lookupId="dblp",name="dblp",url='https://dblp.org/',title='dblp computer science bibliography',tablePrefix="dblp")
@@ -52,12 +54,3 @@ class CorpusLookup(object):
         if self.configure:
             self.configure(self)
         self.eventCorpus.loadAll()
-        
-    def getTableMap(self)->dict:
-        '''
-        get the map of SQL Tables involved
-        
-        Return:
-            dict: the map of SQL tables used for caching
-        '''
-        return self.eventCorpus.getTableMap()
