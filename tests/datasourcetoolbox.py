@@ -48,5 +48,5 @@ class DataSourceTest(TestCase):
             print(f"Found {len(el)} {eventDataSource.name} scientific events")
         if not em.isCached():
             em.store()
-        self.assertTrue(len(esl)>expectedSeries)
-        self.assertTrue(len(el)>expectedEvents)
+        self.assertTrue(len(esl)>=expectedSeries)
+        self.assertTrue(len(el)>=expectedEvents)
