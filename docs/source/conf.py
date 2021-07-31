@@ -76,11 +76,6 @@ html_static_path = ['_static']
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+#additional settings
 #https://stackoverflow.com/a/5599712/1497139
-def skip(app, what, name, obj, would_skip, options):
-  if name == '__init__':
-    return False
-  return would_skip
-
-def setup(app):
-  app.connect(0, skip)
+autoclass_content = 'both'

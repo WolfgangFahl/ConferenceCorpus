@@ -65,14 +65,9 @@ fixconf() {
     }
     { print }
     END {
+      print ("#additional settings")
       print ("#https://stackoverflow.com/a/5599712/1497139")
-      print ("def skip(app, what, name, obj, would_skip, options):")
-      print ("  if name == '\''__init__'\'':")
-      print ("    return False")
-      print ("  return would_skip")
-      print ("")
-      print ("def setup(app):")
-      print ("  app.connect("autodoc-skip-member", skip)")
+      print ("autoclass_content = '\''both'\''")
     }' > $tmpconf
     #diff $tmpconf $conf
     mv $tmpconf $conf
