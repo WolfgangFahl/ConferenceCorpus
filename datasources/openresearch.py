@@ -80,6 +80,11 @@ class OREventCorpus(EventCorpus):
 
 
 class OREventManager(EventManager):
+    '''
+    Manager for OpenResearch Events
+    
+    see https://www.openresearch.org
+    '''
 
     propertyLookupList=[
             { 'prop':'Acronym',             'name': 'acronym',         'templateParam': "Acronym"},

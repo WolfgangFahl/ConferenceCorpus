@@ -1,0 +1,551 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>tests package &mdash; ConferenceCorpus  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="smw package" href="smw.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ConferenceCorpus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="corpus.html">corpus package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasources.html">datasources package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smw.html">smw package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.datasourcetoolbox">tests.datasourcetoolbox module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testCorpusLookup">tests.testCorpusLookup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testDblpEvents">tests.testDblpEvents module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testDblpXml">tests.testDblpXml module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testOpenResearch">tests.testOpenResearch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testSMW">tests.testSMW module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testStatistics">tests.testStatistics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testWikidata">tests.testWikidata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ConferenceCorpus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>tests package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/tests.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tests-package">
+<h1>tests package<a class="headerlink" href="#tests-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-tests.datasourcetoolbox">
+<span id="tests-datasourcetoolbox-module"></span><h2>tests.datasourcetoolbox module<a class="headerlink" href="#module-tests.datasourcetoolbox" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-07-29</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.datasourcetoolbox.DataSourceTest">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.datasourcetoolbox.</span></span><span class="sig-name descname"><span class="pre">DataSourceTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/datasourcetoolbox.html#DataSourceTest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.datasourcetoolbox.DataSourceTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>test for EventDataSources</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.datasourcetoolbox.DataSourceTest.checkDataSource">
+<span class="sig-name descname"><span class="pre">checkDataSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eventDataSource</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="corpus.html#corpus.eventcorpus.EventDataSource" title="corpus.eventcorpus.EventDataSource"><span class="pre">corpus.eventcorpus.EventDataSource</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expectedSeries</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expectedEvents</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/datasourcetoolbox.html#DataSourceTest.checkDataSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.datasourcetoolbox.DataSourceTest.checkDataSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>check the given DataSource</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>eventDataSource</strong> (<a class="reference internal" href="corpus.html#corpus.eventcorpus.EventDataSource" title="corpus.eventcorpus.EventDataSource"><em>EventDataSource</em></a>) – the event data source to check</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.datasourcetoolbox.DataSourceTest.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/datasourcetoolbox.html#DataSourceTest.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.datasourcetoolbox.DataSourceTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>setUp test environment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.datasourcetoolbox.DataSourceTest.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/datasourcetoolbox.html#DataSourceTest.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.datasourcetoolbox.DataSourceTest.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testCorpusLookup">
+<span id="tests-testcorpuslookup-module"></span><h2>tests.testCorpusLookup module<a class="headerlink" href="#module-tests.testCorpusLookup" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-07-26</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testCorpusLookup.</span></span><span class="sig-name descname"><span class="pre">TestCorpusLookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>test the event corpus</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.configureCorpusLookup">
+<span class="sig-name descname"><span class="pre">configureCorpusLookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lookup</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="corpus.html#corpus.lookup.CorpusLookup" title="corpus.lookup.CorpusLookup"><span class="pre">corpus.lookup.CorpusLookup</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.configureCorpusLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.configureCorpusLookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback to configure the corpus lookup</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.testGetPlantUmlDiagram">
+<span class="sig-name descname"><span class="pre">testGetPlantUmlDiagram</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.testGetPlantUmlDiagram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.testGetPlantUmlDiagram" title="Permalink to this definition">¶</a></dt>
+<dd><p>test creating a plantuml diagram of the tables involved in the lookup</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.testLookup">
+<span class="sig-name descname"><span class="pre">testLookup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.testLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.testLookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>test the lookup</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testDblpEvents">
+<span id="tests-testdblpevents-module"></span><h2>tests.testDblpEvents module<a class="headerlink" href="#module-tests.testDblpEvents" title="Permalink to this headline">¶</a></h2>
+<p>Created on 28.07.2021</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testDblpEvents.TestDblpEvents">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testDblpEvents.</span></span><span class="sig-name descname"><span class="pre">TestDblpEvents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpEvents.html#TestDblpEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpEvents.TestDblpEvents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tests.datasourcetoolbox.DataSourceTest" title="tests.datasourcetoolbox.DataSourceTest"><code class="xref py py-class docutils literal notranslate"><span class="pre">tests.datasourcetoolbox.DataSourceTest</span></code></a></p>
+<p>test the dblp data source</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpEvents.TestDblpEvents.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpEvents.html#TestDblpEvents.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpEvents.TestDblpEvents.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpEvents.TestDblpEvents.testDblp">
+<span class="sig-name descname"><span class="pre">testDblp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpEvents.html#TestDblpEvents.testDblp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpEvents.TestDblpEvents.testDblp" title="Permalink to this definition">¶</a></dt>
+<dd><p>test getting the conference series and events from dblp xml dump</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testDblpXml">
+<span id="tests-testdblpxml-module"></span><h2>tests.testDblpXml module<a class="headerlink" href="#module-tests.testDblpXml" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-01-25</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testDblpXml.</span></span><span class="sig-name descname"><span class="pre">TestDblp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>test the dblp xml parser and pylodstorage extraction for it</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.checkConfColumn">
+<span class="sig-name descname"><span class="pre">checkConfColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sqlDB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.checkConfColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.checkConfColumn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.getDblp">
+<span class="sig-name descname"><span class="pre">getDblp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.getDblp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.getDblp" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the dblp</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.getMockedDblp">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">getMockedDblp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.getMockedDblp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.getMockedDblp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.getSqlDB">
+<span class="sig-name descname"><span class="pre">getSqlDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recreate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.getSqlDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.getSqlDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the Sql Database</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.mock">
+<span class="sig-name descname"><span class="pre">mock</span></span><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#tests.testDblpXml.TestDblp.mock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testCreateSample">
+<span class="sig-name descname"><span class="pre">testCreateSample</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testCreateSample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testCreateSample" title="Permalink to this definition">¶</a></dt>
+<dd><p>test creating a sample file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testDblpDownload">
+<span class="sig-name descname"><span class="pre">testDblpDownload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testDblpDownload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testDblpDownload" title="Permalink to this definition">¶</a></dt>
+<dd><p>test dblp access</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testDblpXmlParser">
+<span class="sig-name descname"><span class="pre">testDblpXmlParser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testDblpXmlParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testDblpXmlParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>test parsing the xml file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testParameterizedQuery">
+<span class="sig-name descname"><span class="pre">testParameterizedQuery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testParameterizedQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testParameterizedQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>test the parameterized query</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testSqlLiteDatabaseCreation">
+<span class="sig-name descname"><span class="pre">testSqlLiteDatabaseCreation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testSqlLiteDatabaseCreation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testSqlLiteDatabaseCreation" title="Permalink to this definition">¶</a></dt>
+<dd><p>get  dict of list of dicts (tables)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testUml">
+<span class="sig-name descname"><span class="pre">testUml</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testUml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testUml" title="Permalink to this definition">¶</a></dt>
+<dd><p>test generating the uml diagram for the entities</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testOpenResearch">
+<span id="tests-testopenresearch-module"></span><h2>tests.testOpenResearch module<a class="headerlink" href="#module-tests.testOpenResearch" title="Permalink to this headline">¶</a></h2>
+<p>Created on 27.07.2021</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testOpenResearch.TestOpenResearch">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testOpenResearch.</span></span><span class="sig-name descname"><span class="pre">TestOpenResearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testOpenResearch.html#TestOpenResearch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testOpenResearch.TestOpenResearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tests.datasourcetoolbox.DataSourceTest" title="tests.datasourcetoolbox.DataSourceTest"><code class="xref py py-class docutils literal notranslate"><span class="pre">tests.datasourcetoolbox.DataSourceTest</span></code></a></p>
+<p>test the access to OpenResearch</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testOpenResearch.TestOpenResearch.configureCorpusLookup">
+<span class="sig-name descname"><span class="pre">configureCorpusLookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lookup</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="corpus.html#corpus.lookup.CorpusLookup" title="corpus.lookup.CorpusLookup"><span class="pre">corpus.lookup.CorpusLookup</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testOpenResearch.html#TestOpenResearch.configureCorpusLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testOpenResearch.TestOpenResearch.configureCorpusLookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback to configure the corpus lookup</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testOpenResearch.TestOpenResearch.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testOpenResearch.html#TestOpenResearch.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testOpenResearch.TestOpenResearch.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>setUp test environment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testOpenResearch.TestOpenResearch.testORDataSourceFromWikiFileManager">
+<span class="sig-name descname"><span class="pre">testORDataSourceFromWikiFileManager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testOpenResearch.html#TestOpenResearch.testORDataSourceFromWikiFileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testOpenResearch.TestOpenResearch.testORDataSourceFromWikiFileManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>tests the getting conferences form wiki markup files</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testOpenResearch.TestOpenResearch.testORDataSourceFromWikiUser">
+<span class="sig-name descname"><span class="pre">testORDataSourceFromWikiUser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testOpenResearch.html#TestOpenResearch.testORDataSourceFromWikiUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testOpenResearch.TestOpenResearch.testORDataSourceFromWikiUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>tests initializing the OREventCorpus from wiki</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testSMW">
+<span id="tests-testsmw-module"></span><h2>tests.testSMW module<a class="headerlink" href="#module-tests.testSMW" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testSMW.TestSMW">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testSMW.</span></span><span class="sig-name descname"><span class="pre">TestSMW</span></span><a class="reference internal" href="_modules/tests/testSMW.html#TestSMW"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testSMW.TestSMW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>tests functionalities of the smw package
+provides helper functions for other tests</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testSMW.TestSMW.getSMW_WikiUser">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getSMW_WikiUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'or'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testSMW.html#TestSMW.getSMW_WikiUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testSMW.TestSMW.getSMW_WikiUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>get semantic media wiki users for SemanticMediawiki.org and openresearch.org</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testSMW.TestSMW.getWikiFileManager">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getWikiFileManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testSMW.html#TestSMW.getWikiFileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testSMW.TestSMW.getWikiFileManager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testSMW.TestSMW.getWikiUser">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getWikiUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testSMW.html#TestSMW.getWikiUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testSMW.TestSMW.getWikiUser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testSMW.TestSMW.inPublicCI">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">inPublicCI</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testSMW.html#TestSMW.inPublicCI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testSMW.TestSMW.inPublicCI" title="Permalink to this definition">¶</a></dt>
+<dd><p>are we running in a public Continuous Integration Environment?</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.testSMW.TestSMW.wikiId">
+<span class="sig-name descname"><span class="pre">wikiId</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'orclone'</span></em><a class="headerlink" href="#tests.testSMW.TestSMW.wikiId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testStatistics">
+<span id="tests-teststatistics-module"></span><h2>tests.testStatistics module<a class="headerlink" href="#module-tests.testStatistics" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-07-31</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testStatistics.TestStatistics">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testStatistics.</span></span><span class="sig-name descname"><span class="pre">TestStatistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testStatistics.html#TestStatistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testStatistics.TestStatistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testStatistics.TestStatistics.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testStatistics.html#TestStatistics.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testStatistics.TestStatistics.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testStatistics.TestStatistics.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testStatistics.html#TestStatistics.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testStatistics.TestStatistics.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testStatistics.TestStatistics.testStatistics">
+<span class="sig-name descname"><span class="pre">testStatistics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testStatistics.html#TestStatistics.testStatistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testStatistics.TestStatistics.testStatistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>test statistics</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testWikidata">
+<span id="tests-testwikidata-module"></span><h2>tests.testWikidata module<a class="headerlink" href="#module-tests.testWikidata" title="Permalink to this headline">¶</a></h2>
+<p>Created on 27.07.2021</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testWikidata.TestWikiData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testWikidata.</span></span><span class="sig-name descname"><span class="pre">TestWikiData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikidata.html#TestWikiData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikidata.TestWikiData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tests.datasourcetoolbox.DataSourceTest" title="tests.datasourcetoolbox.DataSourceTest"><code class="xref py py-class docutils literal notranslate"><span class="pre">tests.datasourcetoolbox.DataSourceTest</span></code></a></p>
+<p>test wiki data access</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikidata.TestWikiData.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikidata.html#TestWikiData.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikidata.TestWikiData.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>setUp test environment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikidata.TestWikiData.testWikidata">
+<span class="sig-name descname"><span class="pre">testWikidata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikidata.html#TestWikiData.testWikidata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikidata.TestWikiData.testWikidata" title="Permalink to this definition">¶</a></dt>
+<dd><p>test getting the wikiData Event Series</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="smw.html" class="btn btn-neutral float-left" title="smw package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Wolfgang Fahl.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

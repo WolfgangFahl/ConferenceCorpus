@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>datasources.wikidata &mdash; ConferenceCorpus  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ConferenceCorpus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../corpus.html">corpus package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../datasources.html">datasources package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup.html">setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smw.html">smw package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">tests package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ConferenceCorpus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>datasources.wikidata</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for datasources.wikidata</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 2021-07-21</span>
+
+<span class="sd">@author: wf</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">corpus.event</span> <span class="kn">import</span> <span class="n">EventSeriesManager</span><span class="p">,</span><span class="n">EventSeries</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">EventManager</span>
+<span class="kn">from</span> <span class="nn">lodstorage.sparql</span> <span class="kn">import</span> <span class="n">SPARQL</span>
+<span class="kn">from</span> <span class="nn">lodstorage.storageconfig</span> <span class="kn">import</span> <span class="n">StorageConfig</span>
+
+<div class="viewcode-block" id="Wikidata"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.Wikidata">[docs]</a><span class="k">class</span> <span class="nc">Wikidata</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Wikidata access via SPARQL endpoint</span>
+<span class="sd">    </span>
+<span class="sd">    make do not want to be dependend on this endpoint since we might have</span>
+<span class="sd">    our own copy of Wikidata which might run on Virtuoso or Jena instead of blazegraph</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;https://query.wikidata.org/sparql&quot;</span></div>
+    
+<div class="viewcode-block" id="WikidataEventSeries"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventSeries">[docs]</a><span class="k">class</span> <span class="nc">WikidataEventSeries</span><span class="p">(</span><span class="n">EventSeries</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    event series derived from Wikidata</span>
+<span class="sd">    &#39;&#39;&#39;</span></div>
+    
+<div class="viewcode-block" id="WikidataEvent"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEvent">[docs]</a><span class="k">class</span> <span class="nc">WikidataEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    event derived from Wikidata</span>
+<span class="sd">    &#39;&#39;&#39;</span></div>
+    
+<div class="viewcode-block" id="WikidataEventManager"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventManager">[docs]</a><span class="k">class</span> <span class="nc">WikidataEventManager</span><span class="p">(</span><span class="n">EventManager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    manage wikidata derived scientific events</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="p">:</span><span class="n">StorageConfig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WikidataEventManager</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;WikidataEvents&quot;</span><span class="p">,</span> <span class="n">clazz</span><span class="o">=</span><span class="n">WikidataEvent</span><span class="p">,</span> <span class="n">tableName</span><span class="o">=</span><span class="s2">&quot;wikidata_event&quot;</span><span class="p">,</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="WikidataEventManager.configure"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventManager.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        configure me</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;getListOfDicts&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromEndpoint</span>    </div>
+   
+<div class="viewcode-block" id="WikidataEventManager.getSparqlQuery"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventManager.getSparqlQuery">[docs]</a>    <span class="k">def</span> <span class="nf">getSparqlQuery</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get  the SPARQL query for this series</span>
+<span class="sd">        </span>
+<span class="sd">        see also </span>
+<span class="sd">           https://github.com/TIBHannover/confiDent-dataimports/blob/master/wip/wikidata_academic_conferences.rq</span>
+<span class="sd">           https://confident.dbis.rwth-aachen.de/or/index.php?title=Iteration1_Property_Mapping</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;PREFIX wd: &lt;http://www.wikidata.org/entity/&gt;</span>
+<span class="s2">PREFIX wdt: &lt;http://www.wikidata.org/prop/direct/&gt;</span>
+<span class="s2">PREFIX wikibase: &lt;http://wikiba.se/ontology#&gt;</span>
+<span class="s2">PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</span>
+
+<span class="s2">SELECT DISTINCT </span>
+<span class="s2">  (?event as ?eventId)  </span>
+<span class="s2">  ?acronym</span>
+<span class="s2">  ?ordinal</span>
+<span class="s2">  #?eventLabel</span>
+<span class="s2">  ?title</span>
+<span class="s2">  ?locationLabel </span>
+<span class="s2">  #?countryIdLabel</span>
+<span class="s2">  ?country</span>
+<span class="s2">  ?countryId</span>
+<span class="s2">  ?eventInSeries</span>
+<span class="s2">  ?eventInSeriesId</span>
+<span class="s2">  ?startDate</span>
+<span class="s2">  ?endDate</span>
+<span class="s2">  ?homepage </span>
+<span class="s2">  ?dblpConferenceId</span>
+<span class="s2">  ?gndId</span>
+<span class="s2">  ?mainSubject</span>
+<span class="s2">  ?language</span>
+<span class="s2"> </span>
+<span class="s2">WHERE</span>
+<span class="s2">{  </span>
+<span class="s2"> </span>
+<span class="s2">  # wdt:P31 (instance of)  wd:Q52260246 (scientific event)</span>
+<span class="s2">  # Q2020153 (academic conference)</span>
+<span class="s2">  ?event wdt:P31 wd:Q2020153 .</span>
+<span class="s2">  # acronym</span>
+<span class="s2">  OPTIONAL { ?event wdt:P1813 ?acronym }</span>
+<span class="s2">  # ordinal</span>
+<span class="s2">  OPTIONAL { ?event wdt:P1545 ?ordinal }</span>
+<span class="s2">  # properties with type:literal # requiring label</span>
+<span class="s2">  OPTIONAL { ?event wdt:P276 ?location . }</span>
+<span class="s2">  OPTIONAL { </span>
+<span class="s2">      ?event wdt:P17 ?countryId . </span>
+<span class="s2">      ?countryId rdfs:label ?country filter (lang(?country)   = &quot;en&quot;).</span>
+<span class="s2">  }</span>
+<span class="s2">  OPTIONAL { </span>
+<span class="s2">    ?event wdt:P179 ?eventInSeriesId . </span>
+<span class="s2">    ?eventInSeriesId rdfs:label ?eventInSeries filter (lang(?eventInSeries)   = &quot;en&quot;).</span>
+<span class="s2">  }</span>
+<span class="s2">  OPTIONAL { </span>
+<span class="s2">    ?event wdt:P2936 ?languageId .</span>
+<span class="s2">    ?languageId rdfs:label ?language filter (lang(?language)   = &quot;en&quot;).</span>
+<span class="s2">  }</span>
+<span class="s2">  OPTIONAL { </span>
+<span class="s2">    ?event wdt:P921 ?mainSubjectId .</span>
+<span class="s2">    ?mainSubjectId rdfs:label ?mainSubject filter (lang(?mainSubject)   = &quot;en&quot;).</span>
+<span class="s2">  }</span>
+<span class="s2">  OPTIONAL { ?event wdt:P580 ?startDate . }</span>
+<span class="s2">  OPTIONAL { ?event wdt:P582 ?endDate . }</span>
+<span class="s2">  </span>
+<span class="s2">  OPTIONAL { ?event wdt:P856 ?homepage . }</span>
+<span class="s2">  OPTIONAL { ?event wdt:P8926 ?dblpConferenceId . } </span>
+<span class="s2">  OPTIONAL { ?event wdt:P227 ?gndId. }</span>
+<span class="s2">  # labels </span>
+<span class="s2">  # works only with WikiData Query Service / blazegraph</span>
+<span class="s2">  # SERVICE wikibase:label { bd:serviceParam wikibase:language &quot;en&quot;. } # provide Label in EN        </span>
+<span class="s2">  ?event rdfs:label ?title filter (lang(?title)   = &quot;en&quot;).</span>
+<span class="s2">  </span>
+<span class="s2">} </span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">query</span></div>
+    
+<div class="viewcode-block" id="WikidataEventManager.getLoDfromEndpoint"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventManager.getLoDfromEndpoint">[docs]</a>    <span class="k">def</span> <span class="nf">getLoDfromEndpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="n">Wikidata</span><span class="o">.</span><span class="n">endpoint</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get my content from the given endpoint</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sparql</span><span class="o">=</span><span class="n">SPARQL</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+        <span class="n">query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getSparqlQuery</span><span class="p">()</span>
+        <span class="n">listOfDicts</span><span class="o">=</span><span class="n">sparql</span><span class="o">.</span><span class="n">queryAsListOfDicts</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAllAttr</span><span class="p">(</span><span class="n">listOfDicts</span><span class="p">,</span><span class="s2">&quot;source&quot;</span><span class="p">,</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">listOfDicts</span></div></div>
+    
+<div class="viewcode-block" id="WikidataEventSeriesManager"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventSeriesManager">[docs]</a><span class="k">class</span> <span class="nc">WikidataEventSeriesManager</span><span class="p">(</span><span class="n">EventSeriesManager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    wikidata scientific conference Series Manager</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="p">:</span><span class="n">StorageConfig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WikidataEventSeriesManager</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;WikidataEventSeries&quot;</span><span class="p">,</span> <span class="n">clazz</span><span class="o">=</span><span class="n">WikidataEventSeries</span><span class="p">,</span> <span class="n">tableName</span><span class="o">=</span><span class="s2">&quot;wikidata_eventseries&quot;</span><span class="p">,</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="WikidataEventSeriesManager.configure"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventSeriesManager.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        configure me</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;getListOfDicts&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromEndpoint</span></div>
+        
+<div class="viewcode-block" id="WikidataEventSeriesManager.getSparqlQuery"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventSeriesManager.getSparqlQuery">[docs]</a>    <span class="k">def</span> <span class="nf">getSparqlQuery</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get  the SPARQL query for this series</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        # Conference Series wikidata query</span>
+<span class="s2">        # see https://confident.dbis.rwth-aachen.de/dblpconf/wikidata</span>
+<span class="s2">        # WF 2021-01-30</span>
+<span class="s2">        PREFIX wd: &lt;http://www.wikidata.org/entity/&gt;</span>
+<span class="s2">        PREFIX wdt: &lt;http://www.wikidata.org/prop/direct/&gt;</span>
+<span class="s2">        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</span>
+<span class="s2">        SELECT ?confSeries ?acronym ?confSeriesLabel ?official_website ?DBLP_pid ?WikiCFP_pid ?FreeBase_pid ?Microsoft_Academic_pid ?Publons_pid ?ACM_pid ?GND_pid</span>
+<span class="s2">        WHERE </span>
+<span class="s2">        {</span>
+<span class="s2">          #  scientific conference series (Q47258130) </span>
+<span class="s2">          ?confSeries wdt:P31 wd:Q47258130.</span>
+<span class="s2">          OPTIONAL { ?confSeries wdt:P1813 ?short_name . }</span>
+<span class="s2">          BIND (COALESCE(?short_name,?confSeriesLabel) AS ?acronym).</span>
+<span class="s2">          #  official website (P856) </span>
+<span class="s2">          OPTIONAL {</span>
+<span class="s2">            ?confSeries wdt:P856 ?homepage</span>
+<span class="s2">          } </span>
+<span class="s2">          # any item with a DBLP venue ID </span>
+<span class="s2">          OPTIONAL {</span>
+<span class="s2">            ?confSeries wdt:P8926 ?DBLP_pid.</span>
+<span class="s2">          }</span>
+<span class="s2">          # WikiCFP pid </span>
+<span class="s2">          optional {</span>
+<span class="s2">             ?confSeries wdt:P5127 ?WikiCFP_pid.</span>
+<span class="s2">          }</span>
+<span class="s2">          # FreeBase pid</span>
+<span class="s2">          optional {</span>
+<span class="s2">              ?confSeries wdt:P646 ?FreeBase_pid.</span>
+<span class="s2">          }</span>
+<span class="s2">          # Microsoft Academic ID</span>
+<span class="s2">          optional {</span>
+<span class="s2">              ?confSeries wdt:P6366 ?Microsoft_Academic_pid.</span>
+<span class="s2">          }</span>
+<span class="s2">          # Publons journals/conferences ID </span>
+<span class="s2">          optional {</span>
+<span class="s2">              ?confSeries wdt:P7461 ?Publons_pid.</span>
+<span class="s2">          }</span>
+<span class="s2">          # ACM conference ID   </span>
+<span class="s2">          optional {</span>
+<span class="s2">            ?confSeries wdt:P7979 ?ACM_pid.</span>
+<span class="s2">          }</span>
+<span class="s2">          # GND pid</span>
+<span class="s2">          optional {</span>
+<span class="s2">            ?confSeries wdt:P227 ?GND_pid.</span>
+<span class="s2">          }</span>
+<span class="s2">          # label </span>
+<span class="s2">          ?confSeries rdfs:label ?confSeriesLabel filter (lang(?confSeriesLabel) = &quot;en&quot;).</span>
+<span class="s2">        }</span>
+<span class="s2">        ORDER BY (?acronym)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">query</span></div>
+
+<div class="viewcode-block" id="WikidataEventSeriesManager.getLoDfromEndpoint"><a class="viewcode-back" href="../../datasources.html#datasources.wikidata.WikidataEventSeriesManager.getLoDfromEndpoint">[docs]</a>    <span class="k">def</span> <span class="nf">getLoDfromEndpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="n">Wikidata</span><span class="o">.</span><span class="n">endpoint</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get my content from the given endpoint</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sparql</span><span class="o">=</span><span class="n">SPARQL</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+        <span class="n">query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getSparqlQuery</span><span class="p">()</span>
+        <span class="n">listOfDicts</span><span class="o">=</span><span class="n">sparql</span><span class="o">.</span><span class="n">queryAsListOfDicts</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAllAttr</span><span class="p">(</span><span class="n">listOfDicts</span><span class="p">,</span><span class="s2">&quot;source&quot;</span><span class="p">,</span><span class="s2">&quot;wikidata&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">listOfDicts</span></div></div>
+            
+        
+        
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Wolfgang Fahl.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

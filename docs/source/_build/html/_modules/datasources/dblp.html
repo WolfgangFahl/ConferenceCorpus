@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>datasources.dblp &mdash; ConferenceCorpus  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ConferenceCorpus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../corpus.html">corpus package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../datasources.html">datasources package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup.html">setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smw.html">smw package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">tests package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ConferenceCorpus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>datasources.dblp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for datasources.dblp</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 2021-07-28</span>
+
+<span class="sd">@author: th</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">corpus.event</span> <span class="kn">import</span> <span class="n">EventSeriesManager</span><span class="p">,</span><span class="n">EventSeries</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">EventManager</span>
+<span class="kn">from</span> <span class="nn">lodstorage.storageconfig</span> <span class="kn">import</span> <span class="n">StorageConfig</span>
+<span class="kn">from</span> <span class="nn">datasources.dblpxml</span> <span class="kn">import</span> <span class="n">Dblp</span>
+
+<div class="viewcode-block" id="DblpEvent"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEvent">[docs]</a><span class="k">class</span> <span class="nc">DblpEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    a Dblp Event</span>
+<span class="sd">    </span>
+<span class="sd">    Example event: https://dblp.org/db/conf/aaai/aaai2020.html</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;constructor &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DblpEventSeries"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventSeries">[docs]</a><span class="k">class</span> <span class="nc">DblpEventSeries</span><span class="p">(</span><span class="n">EventSeries</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    a Dblp Event Series</span>
+<span class="sd">    </span>
+<span class="sd">    Example event series: https://dblp.org/db/conf/aaai/index.html</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;constructor &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="DblpEventManager"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventManager">[docs]</a><span class="k">class</span> <span class="nc">DblpEventManager</span><span class="p">(</span><span class="n">EventManager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    dblp event access (in fact proceedings)</span>
+<span class="sd">    </span>
+<span class="sd">    Example event: https://dblp.org/db/conf/aaai/aaai2020.html</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">StorageConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DblpEventManager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;DblpEvents&quot;</span><span class="p">,</span> <span class="n">clazz</span><span class="o">=</span><span class="n">DblpEventSeries</span><span class="p">,</span>
+                                                         <span class="n">tableName</span><span class="o">=</span><span class="s2">&quot;dblp_eventseries&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">pass</span>
+
+<div class="viewcode-block" id="DblpEventManager.configure"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventManager.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        configure me</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dblp&quot;</span><span class="p">):</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning - using full dblp.xml dataset!&quot;</span><span class="p">)</span>   
+            <span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">Dblp</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">.</span><span class="n">getXmlSqlDB</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;getListOfDicts&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromDblp</span></div>
+
+<div class="viewcode-block" id="DblpEventManager.getLoDfromDblp"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventManager.getLoDfromDblp">[docs]</a>    <span class="k">def</span> <span class="nf">getLoDfromDblp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the LoD for the event series</span>
+<span class="sd">            </span>
+<span class="sd">        Return:</span>
+<span class="sd">            list: the list of dict with my series data</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;select conf as series,title,year,url,series as publicationSeries</span>
+<span class="s2">        from proceedings </span>
+<span class="s2">        order by series,year&quot;&quot;&quot;</span>
+        <span class="n">listOfDicts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAllAttr</span><span class="p">(</span><span class="n">listOfDicts</span><span class="p">,</span><span class="s2">&quot;source&quot;</span><span class="p">,</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">listOfDicts</span></div></div>
+
+<div class="viewcode-block" id="DblpEventSeriesManager"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventSeriesManager">[docs]</a><span class="k">class</span> <span class="nc">DblpEventSeriesManager</span><span class="p">(</span><span class="n">EventSeriesManager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    dblp event series access</span>
+<span class="sd">    Example event series: https://dblp.org/db/conf/aaai/index.html</span>
+
+<span class="sd">    dblp provides regular dblp xml dumps</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">StorageConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DblpEventSeriesManager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;DblpEventSeries&quot;</span><span class="p">,</span> <span class="n">clazz</span><span class="o">=</span><span class="n">DblpEventSeries</span><span class="p">,</span>
+                                                         <span class="n">tableName</span><span class="o">=</span><span class="s2">&quot;dblp_eventseries&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="DblpEventSeriesManager.configure"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventSeriesManager.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        configure me</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dblp&quot;</span><span class="p">):</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning - using full dblp.xml dataset!&quot;</span><span class="p">)</span>   
+            <span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">Dblp</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">.</span><span class="n">getXmlSqlDB</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;getListOfDicts&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromDblp</span></div>
+
+<div class="viewcode-block" id="DblpEventSeriesManager.getLoDfromDblp"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventSeriesManager.getLoDfromDblp">[docs]</a>    <span class="k">def</span> <span class="nf">getLoDfromDblp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">        get the list of dicts for the event data</span>
+<span class="sd">            </span>
+<span class="sd">        Return:</span>
+<span class="sd">            list: the list of dict with my event data</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;select conf as acronym,count(*) as count,min(year) as minYear,max(year) as maxYear</span>
+<span class="s2">        from proceedings </span>
+<span class="s2">        where acronym is not null</span>
+<span class="s2">        group by acronym</span>
+<span class="s2">        order by 2 desc&quot;&quot;&quot;</span>
+        <span class="n">listOfDicts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAllAttr</span><span class="p">(</span><span class="n">listOfDicts</span><span class="p">,</span><span class="s2">&quot;source&quot;</span><span class="p">,</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">listOfDicts</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Wolfgang Fahl.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

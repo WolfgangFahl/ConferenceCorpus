@@ -1,0 +1,785 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>datasources package &mdash; ConferenceCorpus  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="setup module" href="setup.html" />
+    <link rel="prev" title="corpus package" href="corpus.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ConferenceCorpus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="corpus.html">corpus package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">datasources package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.dblp">datasources.dblp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.dblpxml">datasources.dblpxml module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.openresearch">datasources.openresearch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.wikidata">datasources.wikidata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smw.html">smw package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ConferenceCorpus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>datasources package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/datasources.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="datasources-package">
+<h1>datasources package<a class="headerlink" href="#datasources-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-datasources.dblp">
+<span id="datasources-dblp-module"></span><h2>datasources.dblp module<a class="headerlink" href="#module-datasources.dblp" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-07-28</p>
+<p>&#64;author: th</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEvent">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.dblp.</span></span><span class="sig-name descname"><span class="pre">DblpEvent</span></span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
+<p>a Dblp Event</p>
+<p>Example event: <a class="reference external" href="https://dblp.org/db/conf/aaai/aaai2020.html">https://dblp.org/db/conf/aaai/aaai2020.html</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEventManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.dblp.</span></span><span class="sig-name descname"><span class="pre">DblpEventManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEventManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEventManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventManager" title="corpus.event.EventManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventManager</span></code></a></p>
+<p>dblp event access (in fact proceedings)</p>
+<p>Example event: <a class="reference external" href="https://dblp.org/db/conf/aaai/aaai2020.html">https://dblp.org/db/conf/aaai/aaai2020.html</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEventManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEventManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEventManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEventManager.getLoDfromDblp">
+<span class="sig-name descname"><span class="pre">getLoDfromDblp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEventManager.getLoDfromDblp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEventManager.getLoDfromDblp" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the LoD for the event series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the list of dict with my series data</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEventSeries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.dblp.</span></span><span class="sig-name descname"><span class="pre">DblpEventSeries</span></span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEventSeries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEventSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeries" title="corpus.event.EventSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeries</span></code></a></p>
+<p>a Dblp Event Series</p>
+<p>Example event series: <a class="reference external" href="https://dblp.org/db/conf/aaai/index.html">https://dblp.org/db/conf/aaai/index.html</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEventSeriesManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.dblp.</span></span><span class="sig-name descname"><span class="pre">DblpEventSeriesManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEventSeriesManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEventSeriesManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeriesManager" title="corpus.event.EventSeriesManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeriesManager</span></code></a></p>
+<p>dblp event series access
+Example event series: <a class="reference external" href="https://dblp.org/db/conf/aaai/index.html">https://dblp.org/db/conf/aaai/index.html</a></p>
+<p>dblp provides regular dblp xml dumps</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEventSeriesManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEventSeriesManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEventSeriesManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEventSeriesManager.getLoDfromDblp">
+<span class="sig-name descname"><span class="pre">getLoDfromDblp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEventSeriesManager.getLoDfromDblp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEventSeriesManager.getLoDfromDblp" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the list of dicts for the event data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the list of dict with my event data</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-datasources.dblpxml">
+<span id="datasources-dblpxml-module"></span><h2>datasources.dblpxml module<a class="headerlink" href="#module-datasources.dblpxml" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-01-25</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.dblpxml.</span></span><span class="sig-name descname"><span class="pre">Dblp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xmlname</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dblp.xml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtd_validation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmlpath</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gzurl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'https://dblp.uni-trier.de/xml/dblp.xml.gz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>handler for <a class="reference external" href="https://dblp.uni-trier.de/xml/">https://dblp.uni-trier.de/xml/</a> dumps
+see <a class="reference external" href="https://github.com/IsaacChanghau/DBLPParser/blob/master/src/dblp_parser.py">https://github.com/IsaacChanghau/DBLPParser/blob/master/src/dblp_parser.py</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.asDictOfLod">
+<span class="sig-name descname"><span class="pre">asDictOfLod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.asDictOfLod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.asDictOfLod" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the dblp data as a dict of list of dicts - effectively separating the content
+into table structures</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>limit</strong> (<em>int</em>) – maximum amount of records to process</p></li>
+<li><p><strong>delim</strong> (<em>str</em>) – the delimiter to use for splitting attributes with multiple values (e.g. author)</p></li>
+<li><p><strong>progress</strong> (<em>int</em>) – if set the interval at which to print a progress dot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.clear_element">
+<span class="sig-name descname"><span class="pre">clear_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.clear_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.clear_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free up memory for temporary element tree after processing the element</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><p>element(node): the etree element to clear together with it’s parent</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.createSample">
+<span class="sig-name descname"><span class="pre">createSample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyEntities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyPrefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'conf/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entityLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">500000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.createSample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.createSample" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a sample with the given entityLimit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keyPrefix</strong> (<em>str</em>) – the keyPrefix to filter for</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.getSize">
+<span class="sig-name descname"><span class="pre">getSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the size of my xmlFile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the size</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.getSqlDB">
+<span class="sig-name descname"><span class="pre">getSqlDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createSample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recreate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postProcess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_same_thread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getSqlDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getSqlDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the SQL database or create it from the XML content</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.getXmlFile">
+<span class="sig-name descname"><span class="pre">getXmlFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getXmlFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getXmlFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the dblp xml file - will download the file if it doesn’t exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reload</strong> (<em>bool</em>) – if True force download</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the xmlfile</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.getXmlSqlDB">
+<span class="sig-name descname"><span class="pre">getXmlSqlDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getXmlSqlDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getXmlSqlDB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.isDownloaded">
+<span class="sig-name descname"><span class="pre">isDownloaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minsize</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">3000000000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.isDownloaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.isDownloaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>check that the dblp file is downloaded</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the dblpfile is fully downloaded and is bigger than the given minimum size</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.iterParser">
+<span class="sig-name descname"><span class="pre">iterParser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.iterParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.iterParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a dblp data iterator of (event, element) pairs for processing
+:returns: etree.iterparse result</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.postProcess">
+<span class="sig-name descname"><span class="pre">postProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.postProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.postProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>postProcess the given row</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.prettyXml">
+<span class="sig-name descname"><span class="pre">prettyXml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span>&#160; <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.prettyXml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.prettyXml" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.reinit">
+<span class="sig-name descname"><span class="pre">reinit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.reinit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.reinit" title="Permalink to this definition">¶</a></dt>
+<dd><p>reinitialize my file names</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-datasources.openresearch">
+<span id="datasources-openresearch-module"></span><h2>datasources.openresearch module<a class="headerlink" href="#module-datasources.openresearch" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.openresearch.OREvent">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.openresearch.</span></span><span class="sig-name descname"><span class="pre">OREvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiFile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">wikifile.wikiFile.WikiFile</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
+<p>I represent an Event retrieved from OPENRESEARCH</p>
+<p>see <a class="reference external" href="https://rq.bitplan.com/index.php/Event">https://rq.bitplan.com/index.php/Event</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.openresearch.OREvent.entityName">
+<span class="sig-name descname"><span class="pre">entityName</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Event'</span></em><a class="headerlink" href="#datasources.openresearch.OREvent.entityName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREvent.getSampleWikiTextList">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getSampleWikiTextList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'legacy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREvent.getSampleWikiTextList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREvent.getSampleWikiTextList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREvent.getSamples">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getSamples</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREvent.getSamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREvent.getSamples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.openresearch.OREvent.templateName">
+<span class="sig-name descname"><span class="pre">templateName</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Event'</span></em><a class="headerlink" href="#datasources.openresearch.OREvent.templateName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="datasources.openresearch.OREvent.wikiFile">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">wikiFile</span></span><a class="headerlink" href="#datasources.openresearch.OREvent.wikiFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventCorpus">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.openresearch.</span></span><span class="sig-name descname"><span class="pre">OREventCorpus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventCorpus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventCorpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.eventcorpus.EventCorpus" title="corpus.eventcorpus.EventCorpus"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.eventcorpus.EventCorpus</span></code></a></p>
+<p>EventCorpus containing the events and eventSeries of openresearch</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventCorpus.fromCache">
+<span class="sig-name descname"><span class="pre">fromCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiUser</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">wikibot.wikiuser.WikiUser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventCorpus.fromCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventCorpus.fromCache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventCorpus.fromWikiFileManager">
+<span class="sig-name descname"><span class="pre">fromWikiFileManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiFileManager</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventCorpus.fromWikiFileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventCorpus.fromWikiFileManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>get events with series by knitting / linking the entities together</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventCorpus.fromWikiUser">
+<span class="sig-name descname"><span class="pre">fromWikiUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiUser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventCorpus.fromWikiUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventCorpus.fromWikiUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>get events with series by knitting / linking the entities together</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventCorpus.wikiFileManager">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">wikiFileManager</span></span><a class="headerlink" href="#datasources.openresearch.OREventCorpus.wikiFileManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>access to wikiFileManager</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.openresearch.</span></span><span class="sig-name descname"><span class="pre">OREventManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventManager" title="corpus.event.EventManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventManager</span></code></a></p>
+<p>Manager for OpenResearch Events</p>
+<p>see <a class="reference external" href="https://www.openresearch.org">https://www.openresearch.org</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager.fromWikiFileManager">
+<span class="sig-name descname"><span class="pre">fromWikiFileManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiFileManager</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">wikifile.wikiFileManager.WikiFileManager</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager.fromWikiFileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager.fromWikiFileManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>read me from wiki markup files using the given WikiFileManager</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wikiFileManager</strong> (<em>WikiFileManager</em>) – WikiFileManager to parse the wiki markup files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager.fromWikiUser">
+<span class="sig-name descname"><span class="pre">fromWikiUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiuser</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">wikibot.wikiuser.WikiUser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">askExtra</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager.fromWikiUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager.fromWikiUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>read me from a wiki using the given WikiUser configuration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wikiuser</strong> (<em>wikiuser</em>) – wikiuser and thus the wiki that should be queried for the its EventSeries</p></li>
+<li><p><strong>askExtra</strong> (<em>string</em>) – Extra query selectors that should be included in the query</p></li>
+<li><p><strong>profile</strong> (<em>bool</em>) – If true profile the query. Otherwise the query runs without tracking the time</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager.getLoDfromWikiFileManager">
+<span class="sig-name descname"><span class="pre">getLoDfromWikiFileManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiFileManager</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">wikifile.wikiFileManager.WikiFileManager</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager.getLoDfromWikiFileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager.getLoDfromWikiFileManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my list of dicts from the given WikiFileManager</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager.getLoDfromWikiUser">
+<span class="sig-name descname"><span class="pre">getLoDfromWikiUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiuser</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">wikibot.wikiuser.WikiUser</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">askExtra</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager.getLoDfromWikiUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager.getLoDfromWikiUser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wikiuser</strong> (<em>WikiUser</em>) – </p></li>
+<li><p><strong>askExtra</strong> (<em>str</em>) – </p></li>
+<li><p><strong>profile</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager.getPropertyLookup">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getPropertyLookup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager.getPropertyLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager.getPropertyLookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my PropertyLookupList as a map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>my mapping from wiki property names to LoD attribute Names or None if no mapping is defined</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager.propertyLookupList">
+<span class="sig-name descname"><span class="pre">propertyLookupList</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[{'prop':</span> <span class="pre">'Acronym',</span> <span class="pre">'name':</span> <span class="pre">'acronym',</span> <span class="pre">'templateParam':</span> <span class="pre">'Acronym'},</span> <span class="pre">{'prop':</span> <span class="pre">'End</span> <span class="pre">date',</span> <span class="pre">'name':</span> <span class="pre">'endDate',</span> <span class="pre">'templateParam':</span> <span class="pre">'End</span> <span class="pre">date'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">in</span> <span class="pre">series',</span> <span class="pre">'name':</span> <span class="pre">'inEventSeries',</span> <span class="pre">'templateParam':</span> <span class="pre">'Series'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">presence',</span> <span class="pre">'name':</span> <span class="pre">'presence',</span> <span class="pre">'templateParam':</span> <span class="pre">'presence'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">type',</span> <span class="pre">'name':</span> <span class="pre">'eventType',</span> <span class="pre">'templateParam':</span> <span class="pre">'Type'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_country',</span> <span class="pre">'name':</span> <span class="pre">'country',</span> <span class="pre">'templateParam':</span> <span class="pre">'Country'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_state',</span> <span class="pre">'name':</span> <span class="pre">'region',</span> <span class="pre">'templateParam':</span> <span class="pre">'State'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_city',</span> <span class="pre">'name':</span> <span class="pre">'city',</span> <span class="pre">'templateParam':</span> <span class="pre">'City'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has</span> <span class="pre">year',</span> <span class="pre">'name':</span> <span class="pre">'year',</span> <span class="pre">'templateParam':</span> <span class="pre">'Year'},</span> <span class="pre">{'prop':</span> <span class="pre">'Homepage',</span> <span class="pre">'name':</span> <span class="pre">'homepage',</span> <span class="pre">'templateParam':</span> <span class="pre">'Homepage'},</span> <span class="pre">{'prop':</span> <span class="pre">'Ordinal',</span> <span class="pre">'name':</span> <span class="pre">'ordinal',</span> <span class="pre">'templateParam':</span> <span class="pre">'Ordinal'},</span> <span class="pre">{'prop':</span> <span class="pre">'Start</span> <span class="pre">date',</span> <span class="pre">'name':</span> <span class="pre">'startDate',</span> <span class="pre">'templateParam':</span> <span class="pre">'Start</span> <span class="pre">date'},</span> <span class="pre">{'prop':</span> <span class="pre">'Title',</span> <span class="pre">'name':</span> <span class="pre">'title',</span> <span class="pre">'templateParam':</span> <span class="pre">'Title'},</span> <span class="pre">{'prop':</span> <span class="pre">'Accepted</span> <span class="pre">papers',</span> <span class="pre">'name':</span> <span class="pre">'acceptedPapers',</span> <span class="pre">'templateParam':</span> <span class="pre">'Accepted</span> <span class="pre">papers'},</span> <span class="pre">{'prop':</span> <span class="pre">'Submitted</span> <span class="pre">papers',</span> <span class="pre">'name':</span> <span class="pre">'submittedPapers',</span> <span class="pre">'templateParam':</span> <span class="pre">'Submitted</span> <span class="pre">papers'}]</span></em><a class="headerlink" href="#datasources.openresearch.OREventManager.propertyLookupList" title="Permalink to this definition">¶</a></dt>
+<dd><p>i represent a list of Events</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.openresearch.</span></span><span class="sig-name descname"><span class="pre">OREventSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiFile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">wikifile.wikiFile.WikiFile</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeries" title="corpus.event.EventSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeries</span></code></a></p>
+<p>an event Series</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeries.entityName">
+<span class="sig-name descname"><span class="pre">entityName</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'EventSeries'</span></em><a class="headerlink" href="#datasources.openresearch.OREventSeries.entityName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeries.getSampleWikiTextList">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getSampleWikiTextList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'legacy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeries.getSampleWikiTextList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeries.getSampleWikiTextList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a sample of Event Series in wikison format
+:param mode: Default legacy, used to provide the mode dependant on updates and changes to structure of Event series
+:type mode: str</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeries.getSamples">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getSamples</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeries.getSamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeries.getSamples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a sample LOD of an event Series</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeries.templateName">
+<span class="sig-name descname"><span class="pre">templateName</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Event</span> <span class="pre">series'</span></em><a class="headerlink" href="#datasources.openresearch.OREventSeries.templateName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeries.wikiFile">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">wikiFile</span></span><a class="headerlink" href="#datasources.openresearch.OREventSeries.wikiFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeriesManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.openresearch.</span></span><span class="sig-name descname"><span class="pre">OREventSeriesManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeriesManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeriesManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeriesManager" title="corpus.event.EventSeriesManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeriesManager</span></code></a></p>
+<p>i represent a list of EventSeries</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeriesManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeriesManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeriesManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeriesManager.fromWikiFileManager">
+<span class="sig-name descname"><span class="pre">fromWikiFileManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiFileManager</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">wikifile.wikiFileManager.WikiFileManager</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeriesManager.fromWikiFileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeriesManager.fromWikiFileManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>read me from wiki markup files using the given WikiFileManager</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wikiFileManager</strong> (<em>WikiFileManager</em>) – WikiFileManager to parse the wiki markup files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeriesManager.fromWikiUser">
+<span class="sig-name descname"><span class="pre">fromWikiUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiuser</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">wikibot.wikiuser.WikiUser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">askExtra</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeriesManager.fromWikiUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeriesManager.fromWikiUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>read me from a wiki using the given WikiUser configuration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wikiuser</strong> (<em>wikiuser</em>) – wikiuser and thus the wiki that should be queried for the its EventSeries</p></li>
+<li><p><strong>askExtra</strong> (<em>string</em>) – Extra query selectors that should be included in the query</p></li>
+<li><p><strong>profile</strong> (<em>bool</em>) – If true profile the query. Otherwise the query runs without tracking the time</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeriesManager.getLoDfromWikiFileManager">
+<span class="sig-name descname"><span class="pre">getLoDfromWikiFileManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiFileManager</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">wikifile.wikiFileManager.WikiFileManager</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeriesManager.getLoDfromWikiFileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeriesManager.getLoDfromWikiFileManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my List of Dicts from the given WikiFileManager</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeriesManager.getLoDfromWikiUser">
+<span class="sig-name descname"><span class="pre">getLoDfromWikiUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiuser</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">wikibot.wikiuser.WikiUser</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">askExtra</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeriesManager.getLoDfromWikiUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeriesManager.getLoDfromWikiUser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wikiuser</strong> (<em>WikiUser</em>) – </p></li>
+<li><p><strong>askExtra</strong> (<em>str</em>) – </p></li>
+<li><p><strong>profile</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeriesManager.getPropertyLookup">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getPropertyLookup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventSeriesManager.getPropertyLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventSeriesManager.getPropertyLookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my PropertyLookupList as a map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>my mapping from wiki property names to LoD attribute Names or None if no mapping is defined</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventSeriesManager.propertyLookupList">
+<span class="sig-name descname"><span class="pre">propertyLookupList</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[{'prop':</span> <span class="pre">'EventSeries</span> <span class="pre">acronym',</span> <span class="pre">'name':</span> <span class="pre">'acronym',</span> <span class="pre">'templateParam':</span> <span class="pre">'Acronym'},</span> <span class="pre">{'prop':</span> <span class="pre">'DblpSeries',</span> <span class="pre">'name':</span> <span class="pre">'dblpSeries',</span> <span class="pre">'templateParam':</span> <span class="pre">'DblpSeries'},</span> <span class="pre">{'prop':</span> <span class="pre">'Homepage',</span> <span class="pre">'name':</span> <span class="pre">'homepage',</span> <span class="pre">'templateParam':</span> <span class="pre">'Homepage'},</span> <span class="pre">{'prop':</span> <span class="pre">'Logo',</span> <span class="pre">'name':</span> <span class="pre">'logo',</span> <span class="pre">'templateParam':</span> <span class="pre">'Logo'},</span> <span class="pre">{'prop':</span> <span class="pre">'Title',</span> <span class="pre">'name':</span> <span class="pre">'title',</span> <span class="pre">'templateParam':</span> <span class="pre">'Title'},</span> <span class="pre">{'prop':</span> <span class="pre">'Wikidataid',</span> <span class="pre">'name':</span> <span class="pre">'wikidataId',</span> <span class="pre">'templateParam':</span> <span class="pre">'WikiDataId'},</span> <span class="pre">{'prop':</span> <span class="pre">'WikiCfpSeries',</span> <span class="pre">'name':</span> <span class="pre">'wikiCfpSeries',</span> <span class="pre">'templateParam':</span> <span class="pre">'WikiCfpSeries'},</span> <span class="pre">{'prop':</span> <span class="pre">'Period',</span> <span class="pre">'name':</span> <span class="pre">'period',</span> <span class="pre">'templateParam':</span> <span class="pre">'Period'},</span> <span class="pre">{'prop':</span> <span class="pre">'Unit',</span> <span class="pre">'name':</span> <span class="pre">'unit',</span> <span class="pre">'templateParam':</span> <span class="pre">'Unit'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has</span> <span class="pre">CORE</span> <span class="pre">Rank',</span> <span class="pre">'name':</span> <span class="pre">'core2018Rank',</span> <span class="pre">'templateParam':</span> <span class="pre">'has</span> <span class="pre">CORE2018</span> <span class="pre">Rank'}]</span></em><a class="headerlink" href="#datasources.openresearch.OREventSeriesManager.propertyLookupList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-datasources.wikidata">
+<span id="datasources-wikidata-module"></span><h2>datasources.wikidata module<a class="headerlink" href="#module-datasources.wikidata" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-07-21</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikidata.Wikidata">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikidata.</span></span><span class="sig-name descname"><span class="pre">Wikidata</span></span><a class="reference internal" href="_modules/datasources/wikidata.html#Wikidata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.Wikidata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Wikidata access via SPARQL endpoint</p>
+<p>make do not want to be dependend on this endpoint since we might have
+our own copy of Wikidata which might run on Virtuoso or Jena instead of blazegraph</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.wikidata.Wikidata.endpoint">
+<span class="sig-name descname"><span class="pre">endpoint</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://query.wikidata.org/sparql'</span></em><a class="headerlink" href="#datasources.wikidata.Wikidata.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEvent">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikidata.</span></span><span class="sig-name descname"><span class="pre">WikidataEvent</span></span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
+<p>event derived from Wikidata</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikidata.</span></span><span class="sig-name descname"><span class="pre">WikidataEventManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventManager" title="corpus.event.EventManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventManager</span></code></a></p>
+<p>manage wikidata derived scientific events</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventManager.getLoDfromEndpoint">
+<span class="sig-name descname"><span class="pre">getLoDfromEndpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://query.wikidata.org/sparql'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventManager.getLoDfromEndpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventManager.getLoDfromEndpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my content from the given endpoint</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventManager.getSparqlQuery">
+<span class="sig-name descname"><span class="pre">getSparqlQuery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventManager.getSparqlQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventManager.getSparqlQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>get  the SPARQL query for this series</p>
+<dl class="simple">
+<dt>see also</dt><dd><p><a class="reference external" href="https://github.com/TIBHannover/confiDent-dataimports/blob/master/wip/wikidata_academic_conferences.rq">https://github.com/TIBHannover/confiDent-dataimports/blob/master/wip/wikidata_academic_conferences.rq</a>
+<a class="reference external" href="https://confident.dbis.rwth-aachen.de/or/index.php?title=Iteration1_Property_Mapping">https://confident.dbis.rwth-aachen.de/or/index.php?title=Iteration1_Property_Mapping</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventSeries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikidata.</span></span><span class="sig-name descname"><span class="pre">WikidataEventSeries</span></span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventSeries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeries" title="corpus.event.EventSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeries</span></code></a></p>
+<p>event series derived from Wikidata</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventSeriesManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikidata.</span></span><span class="sig-name descname"><span class="pre">WikidataEventSeriesManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventSeriesManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventSeriesManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeriesManager" title="corpus.event.EventSeriesManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeriesManager</span></code></a></p>
+<p>wikidata scientific conference Series Manager</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventSeriesManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventSeriesManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventSeriesManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventSeriesManager.getLoDfromEndpoint">
+<span class="sig-name descname"><span class="pre">getLoDfromEndpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://query.wikidata.org/sparql'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventSeriesManager.getLoDfromEndpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventSeriesManager.getLoDfromEndpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my content from the given endpoint</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEventSeriesManager.getSparqlQuery">
+<span class="sig-name descname"><span class="pre">getSparqlQuery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEventSeriesManager.getSparqlQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEventSeriesManager.getSparqlQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>get  the SPARQL query for this series</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-datasources">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-datasources" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="setup.html" class="btn btn-neutral float-right" title="setup module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="corpus.html" class="btn btn-neutral float-left" title="corpus package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Wolfgang Fahl.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
