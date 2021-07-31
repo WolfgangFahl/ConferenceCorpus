@@ -15,7 +15,7 @@ Created on 2020-08-20
   @copyright:  2020-2021 TIB Hannover, Wolfgang Fahl. All rights reserved.
 
 """
-from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager, WikiCfpEvent, WikiCfpEventSeries
+import datasources.wikicfp 
 from datasources.webscrape import WebScrape
 from corpus.event import EventStorage
 import datetime
@@ -85,7 +85,7 @@ class WikiCfpScrape(object):
         '''
         if config is None:
             config=EventStorage.getStorageConfig(self.debug, mode)
-        em=WikiCfpEventManager(config=config)
+        em=datasources.wikicfp.WikiCfpEventManager(config=config)
         return em
     
     def cacheEvents(self):
@@ -126,7 +126,7 @@ class WikiCfpScrape(object):
                 jsonPickleEvents=jsonPickleEm['events']
                 if self.showProgress:
                     print("%4d: %s" % (len(jsonPickleEvents),jsonFilePath))
-                event=WikiCfpEvent()
+                event=datasources.wikicfp.WikiCfpEvent()
                 for rawEvent in jsonPickleEvents.values():
                     if 'title' in rawEvent and rawEvent['title'] is not None:
                         for field in rawEvent:
@@ -187,20 +187,20 @@ class WikiCfpScrape(object):
         if crawlType==CrawlType.EVENT:
             batchEm=self.getEventManager(mode='json')
         elif crawlType==CrawlType.SERIES:
-            batchEm=WikiCfpEventSeriesManager()
+            batchEm=datasources.wikicfp.WikiCfpEventSeriesManager()
  
         # get all ids
         for eventId in range(int(startId), int(stopId+1), step):
             wEvent=WikiCfpEventFetcher(crawlType=crawlType)
             rawEvent=wEvent.fromEventId(eventId)
             if crawlType == CrawlType.EVENT:
-                event=WikiCfpEvent()
+                event=datasources.wikicfp.WikiCfpEvent()
                 event.fromDict(rawEvent)
                 batchEm.add(event)
                 title="? deleted: %r" %event.deleted if not 'title' in rawEvent else event.title
                 print("%06d: %s" % (eventId,title))
             elif crawlType == CrawlType.SERIES:
-                eventSeries=WikiCfpEventSeries()
+                eventSeries=datasources.wikicfp.WikiCfpEventSeries()
                 pass
            
         if crawlType == CrawlType.EVENT:    

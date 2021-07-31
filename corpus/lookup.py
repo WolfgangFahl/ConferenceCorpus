@@ -5,16 +5,20 @@ Created on 2021-07-39
 '''
 from corpus.eventcorpus import EventCorpus, EventDataSource
 from datasources.dblp import DblpEventManager,DblpEventSeriesManager
-from datasources.wikidata import WikidataEventManager,WikidataEventSeriesManager
+from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
 from datasources.openresearch import OREventManager,OREventSeriesManager
 from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager
+import os
+import sys
+from argparse import ArgumentParser
+from argparse import RawDescriptionHelpFormatter
 
 class CorpusLookup(object):
     '''
     search and lookup for different EventCorpora
     '''
 
-    def __init__(self,lookupIds=["dblp","wikidata","or","or-backup","orclone","orclone-backup"],
+    def __init__(self,lookupIds=["dblp","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"],
                  configure:callable=None,debug=False):
         '''
         Constructor
@@ -63,3 +67,68 @@ class CorpusLookup(object):
         if self.configure:
             self.configure(self)
         self.eventCorpus.loadAll()
+        
+__version__ = 0.5
+__date__ = '2020-06-22'
+__updated__ = '2021-07-31'    
+
+DEBUG = 1
+
+    
+def main(argv=None): # IGNORE:C0111
+    '''main program.'''
+
+    if argv is None:
+        argv = sys.argv
+    else:
+        sys.argv.extend(argv)    
+        
+    program_name = os.path.basename(sys.argv[0])
+    program_version = "v%s" % __version__
+    program_build_date = str(__updated__)
+    program_version_message = '%%(prog)s %s (%s)' % (program_version, program_build_date)
+    program_shortdesc = __import__('__main__').__doc__.split("\n")[1]
+    user_name="Wolfgang Fahl"
+    program_license = '''%s
+
+  Created by %s on %s.
+  Copyright 2020 Wolfgang Fahl. All rights reserved.
+
+  Licensed under the Apache License 2.0
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Distributed on an "AS IS" basis without warranties
+  or conditions of any kind, either express or implied.
+
+USAGE
+''' % (program_shortdesc, user_name,str(__date__))
+
+    try:
+        # Setup argument parser
+        parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
+        parser.add_argument("-d", "--debug", dest="debug", action="store_true", help="show debug info")
+        parser.add_argument('-e', '--endpoint', default=Wikidata.endpoint, help="SPARQL endpoint to use for wikidata queries")     
+        parser.add_argument('-v', '--version', action='version', version=program_version_message)
+        
+        # Process arguments
+        args = parser.parse_args()   
+        Wikidata.endpoint=args.endpoint
+        lookup=CorpusLookup()
+        lookup.load()
+        
+        
+    except KeyboardInterrupt:
+        ### handle keyboard interrupt ###
+        return 1
+    except Exception as e:
+        if DEBUG:
+            raise(e)
+        indent = len(program_name) * " "
+        sys.stderr.write(program_name + ": " + repr(e) + "\n")
+        sys.stderr.write(indent + "  for help use --help")
+        return 2         
+        
+if __name__ == "__main__":
+    if DEBUG:
+        sys.argv.append("-d")
+    sys.exit(main())

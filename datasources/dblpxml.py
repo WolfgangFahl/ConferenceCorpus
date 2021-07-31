@@ -38,7 +38,7 @@ class Dblp(object):
         self.verbose=verbose
         if xmlpath is None:
             home = str(Path.home())
-            xmlpath="%s/.dblp" % home
+            xmlpath=f"{home}/.dblp" 
         self.gzurl=gzurl
         self.xmlname=xmlname
         self.xmlpath=xmlpath
@@ -182,9 +182,12 @@ class Dblp(object):
         while element.getprevious() is not None:
             del element.getparent()[0]
             
-    def postProcess(self,kind,index,row):
+    def postProcess(self,_kind,_index,row):
         '''
         postProcess the given row
+        
+        Args:
+            row(dict): the row to process
         '''
         if 'key' in row:
             key=row['key']
@@ -194,6 +197,9 @@ class Dblp(object):
         pass
     
     def getXmlSqlDB(self,reload=False):
+        '''
+        get the SqlDB derived from the XML download 
+        '''
         self.getXmlFile(reload=reload)
         return self.getSqlDB(postProcess=self.postProcess)
         

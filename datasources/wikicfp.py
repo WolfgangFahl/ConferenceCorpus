@@ -6,7 +6,7 @@ Created on 2021-07-31
 
 from corpus.event import EventSeriesManager,EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
-
+import datasources.wikicfpscrape
 
 class WikiCfpEventSeries(EventSeries):
     '''
@@ -58,7 +58,20 @@ class WikiCfpEventManager(EventManager):
         '''
         configure me
         '''
-        # TODO implement    
+        
+    def getListOfDicts(self):
+        '''
+        get my list of dicts
+        '''
+        wikiCFP=datasources.wikicfpscrape.WikiCfpScrape()
+        if not wikiCFP.em.isCached():
+            wikiCFP.cacheEvents()
+        else:
+            wikiCFP.em.fromStore()
+        lod=[]
+        for event in wikiCFP.em.events:
+            lod.append(event.__dict__)
+        return lod    
  
 class WikiCfpEventSeriesManager(EventSeriesManager):
     '''
@@ -77,3 +90,16 @@ class WikiCfpEventSeriesManager(EventSeriesManager):
         configure me
         '''
         # TODO implement
+        
+    def getListOfDicts(self):
+        '''
+        get my list of dicts
+        '''
+        lod=[{
+            "acronym": "ESWC",
+            "wikiCfpId": 933,
+            "title": "Extended Semantic Web Conference"
+        }]
+        # TODO implement
+        # return an empty list for the time being
+        return lod
