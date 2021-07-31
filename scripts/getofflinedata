@@ -1,0 +1,8 @@
+#!/bin/bash
+# WF 2021-07-31
+# get the offline data
+base=$HOME/.conferencecorpus
+mkdir $base
+cd $base
+wget https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/wikicfp.tgz
+tar xvfz wikicfp.tgz
