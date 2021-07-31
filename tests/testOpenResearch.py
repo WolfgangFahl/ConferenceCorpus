@@ -4,9 +4,7 @@ Created on 27.07.2021
 @author: wf
 '''
 import unittest
-from lodstorage.storageconfig import StorageConfig
 from tests.testSMW import TestSMW
-from datasources.openresearch import OREventManager, OREventSeriesManager, OREventCorpus
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 
@@ -38,7 +36,7 @@ class TestOpenResearch(DataSourceTest):
         '''
         tests the getting conferences form wiki markup files
         '''
-        lookup=CorpusLookup()
+        lookup=CorpusLookup(lookupIds=["or","or-backup","orclone","orclone-backup"])
         orDataSource=lookup.getDataSource("or-backup")
         self.checkDataSource(orDataSource,1000,8000)
         orDataSource=lookup.getDataSource("orclone-backup")

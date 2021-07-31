@@ -53,6 +53,12 @@ class WikiCfpEventManager(EventManager):
         Constructor
         '''
         super().__init__(name="WikiCfpEvents", clazz=WikiCfpEvent, tableName="wikicfp_event",config=config)
+        
+    def configure(self):
+        '''
+        configure me
+        '''
+        # TODO implement    
  
 class WikiCfpEventSeriesManager(EventSeriesManager):
     '''
@@ -66,3 +72,8 @@ class WikiCfpEventSeriesManager(EventSeriesManager):
         super(WikiCfpEventSeriesManager,self).__init__(name="WikiCfpEventSeries", clazz=WikiCfpEventSeries, tableName="wikicfp_eventseries",config=config)
    
         
+    def configure(self):
+        '''
+        configure me
+        '''
+        # TODO implement
