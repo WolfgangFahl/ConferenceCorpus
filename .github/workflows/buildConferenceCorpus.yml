@@ -33,6 +33,9 @@ jobs:
     - name: get SMW backups of OPENRESEARCH and Clone
       run: |
         scripts/getbackup
+    - name: get offline data
+      run: |
+        scripts/getofflinedata    
     - name: Run tests
       run: |
         scripts/test
