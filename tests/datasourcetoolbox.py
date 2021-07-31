@@ -18,6 +18,7 @@ class DataSourceTest(TestCase):
         TestCase.setUp(self)
         self.debug=True
         self.forceUpdate=False
+        #self.longMessage=True
         
     def tearDown(self):
         pass    
@@ -48,5 +49,7 @@ class DataSourceTest(TestCase):
             print(f"Found {len(el)} {eventDataSource.name} scientific events")
         if not em.isCached():
             em.store()
-        self.assertTrue(len(esl)>=expectedSeries)
-        self.assertTrue(len(el)>=expectedEvents)
+        msg=f"found {len(esl)} event series"
+        self.assertTrue(len(esl)>=expectedSeries,msg)
+        msg=f"found {len(el)} events"
+        self.assertTrue(len(el)>=expectedEvents,msg)

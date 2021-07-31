@@ -22,7 +22,7 @@ class TestWikiData(DataSourceTest):
         '''
         lookup=CorpusLookup()
         wikidataDataSource=lookup.getDataSource("wikidata")
-        self.checkDataSource(wikidataDataSource,4200,7500)
+        self.checkDataSource(wikidataDataSource,4200,7400)
 
 
 if __name__ == "__main__":
