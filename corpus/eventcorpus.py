@@ -71,6 +71,10 @@ class EventCorpus(object):
     def __init__(self,debug=False,verbose=False):
         '''
         Constructor
+        
+        Args:
+            debug(bool): set debugging if True
+            verbose(bool): set verbose output if True
         '''
         self.debug=debug
         self.verbose=verbose

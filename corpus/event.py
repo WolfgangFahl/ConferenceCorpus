@@ -85,6 +85,7 @@ class EventBaseManager(EntityManager):
     '''
     common entity Manager for ConferenceCorpus
     '''
+    
     def __init__(self,name,entityName,entityPluralName:str,listName:str=None,clazz=None,tableName:str=None,primaryKey:str=None,config=None,handleInvalidListTypes=False,filterInvalidListTypes=False,debug=False):
         '''
         Constructor

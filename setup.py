@@ -9,7 +9,7 @@ try:
 
 except:
     print('Curr dir:', os.getcwd())
-    long_description = open('../README.md').read()
+    long_description = open('../../README.md').read()
 
 setup(name='ConferenceCorpus',
       version='0.0.5',
