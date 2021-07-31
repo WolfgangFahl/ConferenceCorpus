@@ -20,7 +20,7 @@ class TestDblp(unittest.TestCase):
     mock=True
     
     def setUp(self):
-        self.debug=True
+        self.debug=False
         self.verbose=True
         self.mock=TestDblp.mock
 #        if self.debug:

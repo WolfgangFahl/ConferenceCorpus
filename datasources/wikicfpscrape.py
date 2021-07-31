@@ -17,6 +17,7 @@ Created on 2020-08-20
 """
 from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager, WikiCfpEvent, WikiCfpEventSeries
 from datasources.webscrape import WebScrape
+from corpus.event import EventStorage
 import datetime
 from enum import Enum
 import glob
@@ -27,7 +28,8 @@ import threading
 import time
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
-from lodstorage.storageconfig import StorageConfig
+from lodstorage.jsonpicklemixin import JsonPickleMixin
+import jsonpickle
 
 class CrawlType(Enum):
     '''
@@ -51,7 +53,7 @@ class WikiCfpScrape(object):
     '''
     
 
-    def __init__(self,config=None,debug:bool=False,limit=200000,batchSize=1000):
+    def __init__(self,config=None,debug:bool=False,limit=200000,batchSize=1000,showProgress=True):
         '''
         Constructor
         
@@ -60,10 +62,12 @@ class WikiCfpScrape(object):
             debug(bool): if True debug for crawling is on
             limit(int): maximum number of entries to be crawled
             batchSize(int): default size of batches
+            showProgress(bool): if True show Progress
         '''
         self.debug=debug
         self.limit=limit
         self.batchSize=batchSize
+        self.showProgress=showProgress
         self.em=self.getEventManager(config)
         self.profile=self.em.config.profile
         cachePath=self.em.config.getCachePath()
@@ -80,11 +84,8 @@ class WikiCfpScrape(object):
             mode(string): the storage mode to use e.g. "json" - will select a config based on mode if config is None
         '''
         if config is None:
-            if mode=='sql':
-                config=StorageConfig.getSQL()
-            elif mode=='json':
-                config=StorageConfig.getJSON()
-        em=WikiCfpEventManager()
+            config=EventStorage.getStorageConfig(self.debug, mode)
+        em=WikiCfpEventManager(config=config)
         return em
     
     def cacheEvents(self):
@@ -97,7 +98,7 @@ class WikiCfpScrape(object):
         else:    
             self.crawlFilesToJson(jsonEm)
         for event in jsonEm.events:
-            self.em.add(event)
+            self.em.events.append(event)
         self.em.store(limit=self.limit, batchSize=self.batchSize)    
         
     def crawlFilesToJson(self,jsonEm):    
@@ -118,22 +119,39 @@ class WikiCfpScrape(object):
                 
         else:
             for jsonFilePath in jsonFiles:
-                batchEm=self.getEventManager(mode='json')
-                batchEm.fromStore(cacheFile=jsonFilePath)
-                if self.debug:
-                    print("%4d: %s" % (len(batchEm.events),jsonFilePath))
-                for event in batchEm.events.values():
-                    if hasattr(event,'title') and event.title is not None:
-                        event.source=self.em.name
+                #batchEm=self.getEventManager(mode='jsonpickle')
+                # legacy mode -file were created before ORM Mode
+                # was available - TODO: make new files available in ORM mode with jsonable
+                jsonPickleEm=JsonPickleMixin.readJsonPickle(jsonFileName=jsonFilePath,extension='.json')
+                jsonPickleEvents=jsonPickleEm['events']
+                if self.showProgress:
+                    print("%4d: %s" % (len(jsonPickleEvents),jsonFilePath))
+                event=WikiCfpEvent()
+                for rawEvent in jsonPickleEvents.values():
+                    if 'title' in rawEvent and rawEvent['title'] is not None:
+                        for field in rawEvent:
+                            value=rawEvent[field]
+                            # workaround:
+                            # check jsonpickle __reduce__ values
+                            if isinstance(value,dict):
+                                # we need something like
+                                # {"py/object": "datetime.datetime", "__reduce__": [{"py/type": "datetime.datetime"}, ["B+UHHwAAAAAAAA=="]]}
+                                jsonValue=str(value).replace("'", '"')
+                                dvalue=jsonpickle.decode(jsonValue)
+                                value=dvalue
+                            # make sure we ignore field like "py/object"
+                            if not "py/" in field:
+                                setattr(event,field,value)
+                        event.source="wikicfp"
                         for field in ['startDate','endDate','locality','Submission_Deadline','Notification_Due','year']:
-                            if not hasattr(event,field):
-                                event.__dict__[field]=None
+                            if not field in rawEvent:
+                                setattr(event,field,None)
                         if event.startDate is not None:
                             event.year=event.startDate.year
-                        event.url=WikiCFPEventFetcher.getEventUrl(event.wikiCFPId)
-                        jsonEm.add(event)
+                        event.url=WikiCfpEventFetcher.getUrl(event.wikiCFPId)
+                        jsonEm.events.append(event)
             if self.profile:
-                print ("read %d events in %5.1f s" % (len(self.em.events),time.time()-startTime))
+                print ("read %d events in %5.1f s" % (len(jsonEm.events),time.time()-startTime))
             jsonEm.store(limit=self.limit,batchSize=self.batchSize)
      
     def initEventManager(self):
@@ -173,7 +191,7 @@ class WikiCfpScrape(object):
  
         # get all ids
         for eventId in range(int(startId), int(stopId+1), step):
-            wEvent=WikiCFPEventFetcher(crawlType=crawlType)
+            wEvent=WikiCfpEventFetcher(crawlType=crawlType)
             rawEvent=wEvent.fromEventId(eventId)
             if crawlType == CrawlType.EVENT:
                 event=WikiCfpEvent()
@@ -232,9 +250,9 @@ class WikiCfpScrape(object):
             print('crawling done after %5.1f s' % (time.time()-startTime))
                
       
-class WikiCFPEventFetcher(object):
+class WikiCfpEventFetcher(object):
     '''
-    a single WikiCFPEventFetcher to fetch and event or series
+    a single WikiCfpEentFetcher to fetch and event or series
     '''
     def __init__(self,crawlType=CrawlType.EVENT,debug=False,showProgress:bool=True,timeout=20):
         '''
@@ -294,7 +312,7 @@ class WikiCFPEventFetcher(object):
                 recentSummary=None
                 
     @staticmethod       
-    def getUrl(cfpid,crawlType)->str:
+    def getUrl(cfpid,crawlType:CrawlType=CrawlType.EVENT)->str:
         '''
         Args:
             cfpid(int): the WikiCFP id of the event or series
@@ -311,9 +329,9 @@ class WikiCFPEventFetcher(object):
         '''
         get the latest Event doing a binary search
         '''
-        wikicfp=WikiCFPEventFetcher(debug,showProgress=showProgress)
+        wikicfp=WikiCfpEventFetcher(debug,showProgress=showProgress)
         wikicfp.progressCount=0
-        wikicfp.getLatestEventFromPair()
+        wikicfp.getLatesEvetFromPair()
         
     def getHighestNonDeletedIdInRange(self,fromId:int,toId:int)->int:
         '''
@@ -338,7 +356,7 @@ class WikiCFPEventFetcher(object):
                 maxId=eventId
         return maxId
     
-    def getLatestEventFromPair(self,low=5000,high=300000,margin=40):
+    def getLatesEvetFromPair(self,low=5000,high=300000,margin=40):
         '''
         get the latest Event doing a binary search
         
@@ -350,9 +368,9 @@ class WikiCFPEventFetcher(object):
             mid=(high+low)//2
             midId=(self.getHighestNonDeletedIdInRange(mid-margin, mid))
             if midId:
-                return self.getLatestEventFromPair(mid+1,high)
+                return self.getLatesEvetFromPair(mid+1,high)
             else:
-                return self.getLatestEventFromPair(low, mid-1)
+                return self.getLatesEvetFromPair(low, mid-1)
         else:
             return mid
         pass
@@ -364,7 +382,7 @@ class WikiCFPEventFetcher(object):
         Args:
             cfpid(int): the wikicfp id to use
         '''
-        url=WikiCFPEventFetcher.getUrl(cfpid,self.crawlType)
+        url=WikiCfpEventFetcher.getUrl(cfpid,self.crawlType)
         return self.fromUrl(url)
     
     def fromUrl(self,url:str)->dict:
@@ -422,9 +440,9 @@ class WikiCFPEventFetcher(object):
            
         return rawEvent
     
-__version__ = 0.2
+__version__ = 0.3
 __date__ = '2020-06-22'
-__updated__ = '2021-07-24'    
+__updated__ = '2021-07-31'    
 
 DEBUG = 1
 

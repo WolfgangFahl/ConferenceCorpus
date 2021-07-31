@@ -4,10 +4,12 @@ Created on 2020-08-20
 @author: wf
 '''
 import unittest
-from datasources.wikicfpscrape import WikiCfpScrape, WikiCFPEventFetcher, CrawlType
+from datasources.wikicfpscrape import WikiCfpScrape, WikiCfpEventFetcher, CrawlType
 import os
 from pathlib import Path
 from collections import Counter
+import jsonpickle
+from datetime import datetime
 
 class TestWikiCFP(unittest.TestCase):
     '''
@@ -45,6 +47,19 @@ class TestWikiCFP(unittest.TestCase):
         crawlFiles=wikiCfpScrape.jsonFiles()
         print ("found %d wikiCFP crawl files" % len(crawlFiles))
         self.assertTrue(len(crawlFiles)>=70)
+        
+    def testJsonPickleDateTime(self):
+        '''
+        test the JsonPickle datetime encoding mystery
+        
+        '''
+        d=datetime.fromisoformat("2021-07-31")
+        dp=jsonpickle.encode(d)
+        if self.debug:
+            print(dp)
+        d2=jsonpickle.decode(dp)
+        self.assertEqual(d,d2)
+        
 
     def testWikiCFP(self):
         '''
@@ -58,7 +73,7 @@ class TestWikiCFP(unittest.TestCase):
         self.assertTrue(wikiCFP.em.isCached())
         self.assertTrue(len(wikiCFP.em.events)>80000)
         names=[]
-        for event in wikiCFP.em.events.values():
+        for event in wikiCFP.em.events:
             names.append(event.locality)
         self.printDelimiterCount(names)
 
@@ -68,7 +83,7 @@ class TestWikiCFP(unittest.TestCase):
         '''
         make sure only valid urls are accepted
         '''
-        eventFetcher=WikiCFPEventFetcher(debug=True)
+        eventFetcher=WikiCfpEventFetcher(debug=True)
         try:
             eventFetcher.fromUrl("http://google.com")
             self.fail("invalid url should raise an exception")
@@ -85,7 +100,7 @@ class TestWikiCFP(unittest.TestCase):
         '''
         eventIds=[3862,1]
         isDeleted=[False,True]
-        event=WikiCFPEventFetcher(debug=self.debug)
+        event=WikiCfpEventFetcher(debug=self.debug)
         for index,eventId in enumerate(eventIds):
             rawEvent=event.fromEventId(eventId)
             if self.debug:
@@ -99,7 +114,7 @@ class TestWikiCFP(unittest.TestCase):
         self.debug=True
         expectedSeriesId=['1769',None]
         eventIds=[1974,139964]
-        event=WikiCFPEventFetcher(debug=self.debug,timeout=3.5)
+        event=WikiCfpEventFetcher(debug=self.debug,timeout=3.5)
         for index,eventId in enumerate(eventIds):
             rawEvent=event.fromEventId(eventId)
             expected=expectedSeriesId[index]

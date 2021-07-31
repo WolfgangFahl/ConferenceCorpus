@@ -14,17 +14,29 @@ class EventStorage:
     common storage aspects of the EventManager and EventSeriesManager
     '''
     @staticmethod
-    def getStorageConfig(debug:bool=False)->StorageConfig:
+    def getStorageConfig(debug:bool=False,mode='sql')->StorageConfig:
         '''
         get the storageConfiguration
+        
+        Args:
+            debug(bool): if True show debug information
+            mode(str): sql or json
         
         Return:
             StorageConfig: the storage configuration to be used
         '''
-        config=StorageConfig.getSQL(debug=debug)
+        if mode=='sql':
+            config=StorageConfig.getSQL(debug=debug)
+        elif mode=='json':
+            config=StorageConfig.getJSON()
+        elif mode=='jsonpickle':
+            config=StorageConfig.getJsonPickle(debug=debug)
+        else:
+            raise Exception(f"invalid mode {mode}")
         config.cacheDirName="conferencecorpus"
         cachedir=config.getCachePath() 
-        config.cacheFile=f"{cachedir}/EventCorpus.db"
+        if mode=='sql':
+            config.cacheFile=f"{cachedir}/EventCorpus.db"
         return config
     
     @staticmethod
