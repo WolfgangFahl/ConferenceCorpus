@@ -72,6 +72,7 @@ SELECT DISTINCT
   ?endDate
   ?homepage 
   ?dblpConferenceId
+  ?wikiCfpId
   ?gndId
   ?mainSubject
   ?language
@@ -109,6 +110,7 @@ WHERE
   
   OPTIONAL { ?event wdt:P856 ?homepage . }
   OPTIONAL { ?event wdt:P8926 ?dblpConferenceId . } 
+  OPTIONAL { ?event wdt:P5124 ?wikiCfpId . }
   OPTIONAL { ?event wdt:P227 ?gndId. }
   # labels 
   # works only with WikiData Query Service / blazegraph
