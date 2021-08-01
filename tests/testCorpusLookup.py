@@ -62,34 +62,12 @@ class TestCorpusLookup(unittest.TestCase):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
         storageTableList=EventStorage.getTableList()
-        self.debug=True
-        if self.debug:
-            for table in storageTableList:
-                print(table)
         self.assertEqual(14,len(storageTableList))
-        schemaManager=None
-        uml=UML()
-        now=datetime.now()
-        nowYMD=now.strftime("%Y-%m-%d")
-    
         for baseEntity in ["Event","EventSeries"]:
-            tableList=[]
-            for table in storageTableList:
-                tableName=table['name']
-                if tableName.endswith(baseEntity):
-                    if 'instances' in table:
-                        instanceNote=""
-                        instanceCount=table['instances']
-                        instanceNote=f"\n{instanceCount} instances "
-                        table['notes']=instanceNote
-                    tableList.append(table)
-            title=f"""ConfIDent  {baseEntity}
-{nowYMD}
-[[https://projects.tib.eu/en/confident/ © 2019-2021 ConfIDent project]]
-see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
-"""
-            plantUml=uml.mergeSchema(schemaManager,tableList,title=title,packageName='DataSources',generalizeTo=baseEntity)
-            print(plantUml)
+            plantUml=lookup.asPlantUml(baseEntity)
+            debug=self.debug
+            if debug:
+                print(plantUml)
             self.assertTrue(f"{baseEntity} <|-- dblp_{baseEntity}" in plantUml)
             self.assertTrue(f"class {baseEntity} " in plantUml)
 

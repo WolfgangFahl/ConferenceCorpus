@@ -3,13 +3,21 @@ Created on 2021-07-39
 
 @author: wf
 '''
+from corpus.event import EventStorage
 from corpus.eventcorpus import EventCorpus, EventDataSource
+
 from datasources.dblp import DblpEventManager,DblpEventSeriesManager
 from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
 from datasources.openresearch import OREventManager,OREventSeriesManager
 from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager
+
+from lodstorage.uml import UML
+
+from datetime import datetime
+
 import os
 import sys
+
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 
@@ -68,9 +76,37 @@ class CorpusLookup(object):
             self.configure(self)
         self.eventCorpus.loadAll()
         
-__version__ = 0.5
+    def asPlantUml(self,baseEntity='Event'):
+        '''
+        return me as a plantUml Diagram markup
+        '''
+        storageTableList=EventStorage.getTableList()
+        schemaManager=None
+        uml=UML()
+        now=datetime.now()
+        nowYMD=now.strftime("%Y-%m-%d")
+        tableList=[]
+        for table in storageTableList:
+            tableName=table['name']
+            if tableName.endswith(baseEntity):
+                if 'instances' in table:
+                    instanceNote=""
+                    instanceCount=table['instances']
+                    instanceNote=f"\n{instanceCount} instances "
+                    table['notes']=instanceNote
+                tableList.append(table)
+        title=f"""ConfIDent  {baseEntity}
+{nowYMD}
+[[https://projects.tib.eu/en/confident/ © 2019-2021 ConfIDent project]]
+see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
+"""
+        plantUml=uml.mergeSchema(schemaManager,tableList,title=title,packageName='DataSources',generalizeTo=baseEntity)
+        return plantUml
+        
+        
+__version__ = "0.0.6"
 __date__ = '2020-06-22'
-__updated__ = '2021-07-31'    
+__updated__ = '2021-08-01'    
 
 DEBUG = 1
 
@@ -109,12 +145,17 @@ USAGE
         parser.add_argument("-d", "--debug", dest="debug", action="store_true", help="show debug info")
         parser.add_argument('-e', '--endpoint', default=Wikidata.endpoint, help="SPARQL endpoint to use for wikidata queries")     
         parser.add_argument('-v', '--version', action='version', version=program_version_message)
+        parser.add_argument("-u", "--uml", dest="uml", action="store_true", help="output plantuml diagram markup")
         
         # Process arguments
         args = parser.parse_args()   
         Wikidata.endpoint=args.endpoint
-        lookup=CorpusLookup()
+        lookup=CorpusLookup(debug=args.debug)
         lookup.load()
+        if args.uml:
+            for baseEntity in ["Event","EventSeries"]:
+                plantUml=lookup.asPlantUml(baseEntity)
+            print(plantUml)
         
         
     except KeyboardInterrupt:
