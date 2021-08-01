@@ -63,9 +63,8 @@ class TestDblp(unittest.TestCase):
         '''
         dblp=self.getDblp()
         limit=10000 if self.mock else 10000000
-        progress=1000 if self.mock else 100000
         sample=5
-        sqlDB=dblp.getSqlDB(limit, progress=progress, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblp.postProcess)
+        sqlDB=dblp.getSqlDB(limit, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblp.postProcess)
         return sqlDB
     
     def testDblpDownload(self):

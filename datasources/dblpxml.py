@@ -52,16 +52,28 @@ class Dblp(object):
         self.xmlfile="%s/%s" % (self.xmlpath,self.xmlname)
         self.dtdfile="%s/%s" % (self.xmlpath,self.xmlname.replace(".xml",".dtd"))
      
-    def getSize(self):
+    def getSize(self)->int:
         '''
         get the size of my xmlFile
         
         Returns:
-            the size 
+            int: the size 
         '''
         stats=os.stat(self.xmlfile)
         size=stats.st_size
         return size
+    
+    def getExpectedTotal(self)->int:
+        '''
+        get the expected Total of records
+        '''
+        return self.getSize()//380
+    
+    def warnFullSize(self):
+        '''
+        '''
+        print(f"Warning - using full {self.xmlfile} dataset ~{self.getExpectedTotal()/1000000:3.1f}m records!")  
+        
            
     def isDownloaded(self,minsize:int=3000000000)->bool:
         '''
@@ -259,12 +271,14 @@ class Dblp(object):
         return self.getSqlDB(postProcess=self.postProcess)
         
             
-    def getSqlDB(self,limit=1000000000,progress=100000,sample=None,createSample=10000000,debug=False,recreate=False,postProcess=None,check_same_thread=False):
+    def getSqlDB(self,limit=1000000000,sample=None,createSample=10000000,debug=False,recreate=False,postProcess=None,check_same_thread=False):
         '''
         get the SQL database or create it from the XML content
         '''
         dbname="%s/%s" % (self.xmlpath,"dblp.sqlite")
-        expectedTotal=86*progress
+        # estimate size
+        expectedTotal=self.getExpectedTotal()
+        progress=expectedTotal//86
         if sample is None:
             sample=5
         if (os.path.isfile(dbname)) and not recreate:
