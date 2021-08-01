@@ -17,7 +17,7 @@ class TestDblp(unittest.TestCase):
     '''
     test the dblp xml parser and pylodstorage extraction for it
     '''
-    mock=True
+    mock=False
     
     def setUp(self):
         self.debug=False
@@ -57,14 +57,14 @@ class TestDblp(unittest.TestCase):
         dblp=TestDblp.getMockedDblp(TestDblp.mock,debug=self.debug)
         return dblp
     
-    def getSqlDB(self,recreate=False):
+    def getSqlDB(self,recreate=False,showProgress=True):
         '''
         get the Sql Database
         '''
         dblp=self.getDblp()
         limit=10000 if self.mock else 10000000
         sample=5
-        sqlDB=dblp.getSqlDB(limit, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblp.postProcess)
+        sqlDB=dblp.getSqlDB(limit, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblp.postProcess,showProgress=showProgress)
         return sqlDB
     
     def testDblpDownload(self):
@@ -125,7 +125,7 @@ class TestDblp(unittest.TestCase):
         '''
         get  dict of list of dicts (tables)
         '''
-        sqlDB=self.getSqlDB(recreate=True)
+        sqlDB=self.getSqlDB(recreate=True,showProgress=False)
         tableList=sqlDB.getTableList()
         expected=6 if self.mock else 8
         self.assertEqual(expected,len(tableList))

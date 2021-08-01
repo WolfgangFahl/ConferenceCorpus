@@ -246,13 +246,13 @@ class Dblp(object):
             else:
                 print(f'missing title for {index}{row}')
               
-    def postProcess(self,kind:str,index,row:dict):
+    def postProcess(self,_kind:str,_index,row:dict):
         '''
         postProcess the given row
         
         Args:
-            kind(str): e.g. proceedings/article
-            index(int): the index of the row
+            _kind(str): e.g. proceedings/article
+            _index(int): the index of the row
             row(dict): the row to process
         '''
         if 'key' in row:
@@ -260,7 +260,6 @@ class Dblp(object):
             if key.startswith("conf/"):
                 conf=re.sub(r"conf/(.*)/.*",r"\1",key)
                 row['conf']=conf
-                self.checkRow(kind,index,row)
         pass
     
     def getXmlSqlDB(self,reload=False):
@@ -271,14 +270,21 @@ class Dblp(object):
         return self.getSqlDB(postProcess=self.postProcess)
         
             
-    def getSqlDB(self,limit=1000000000,sample=None,createSample=10000000,debug=False,recreate=False,postProcess=None,check_same_thread=False):
+    def getSqlDB(self,limit=1000000000,sample=None,createSample=10000000,debug=False,recreate=False,postProcess=None,check_same_thread=False,showProgress:bool=True):
         '''
         get the SQL database or create it from the XML content
+        
+        Args:
+            limit(int): maximum number of records
         '''
         dbname="%s/%s" % (self.xmlpath,"dblp.sqlite")
         # estimate size
-        expectedTotal=self.getExpectedTotal()
-        progress=expectedTotal//86
+        if showProgress:
+            expectedTotal=self.getExpectedTotal()
+            progress=expectedTotal//86
+        else:
+            expectedTotal=None
+            progress=None
         if sample is None:
             sample=5
         if (os.path.isfile(dbname)) and not recreate:
@@ -340,17 +346,31 @@ class Dblp(object):
                     if not kind in dictOfLod:
                         dictOfLod[kind]=[]
                     lod=dictOfLod[kind]
+                    # copy the attributes (if any)
                     if hasattr(elem, "attrib"):
                         current = {**current, **elem.attrib}
                 elif level==3:
-                    if elem.tag in current:
-                        current[elem.tag]="%s%s%s" % (current[elem.tag],delim,elem.text)
-                    else:
-                        current[elem.tag]=elem.text    
+                    name=elem.tag
+                    newvalue=elem.text
+                    # is there already an entry for the given name
+                    if name in current:
+                        oldvalue=current[name]
+                        newvalue=f"{oldvalue}{delim}{newvalue}"
+                    # set the name/value pair
+                    current[name]=newvalue    
+                    if (kind=="proceedings") and (name=="title") and (elem.text is None):
+                        print(f"{elem.sourceline:6}:{elem.tag} - None text")
+                        pass
+                elif level==4:
+                    # interesting things happen here ...
+                    if elem.sourceline:
+                        print(f"{elem.sourceline:6}:{elem.tag}")
             elif event == 'end':
                 if level==2:
                     lod.append(current)
                     count+=1
+                    kind=elem.tag
+                    self.checkRow(kind,count,current)
                     current={} 
                     if progress is not None:
                         self.printProgressBar(count, expectedTotal,startTime=startTime)        
