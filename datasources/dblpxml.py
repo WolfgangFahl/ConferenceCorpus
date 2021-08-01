@@ -76,6 +76,9 @@ class Dblp(object):
         return result
     
     def prettyXml(self,tree,indent='  '):
+        '''
+        get a pretty XML representation of the given etree
+        '''
         xmlstr = minidom.parseString(etree.tostring(tree.getroot())).toprettyxml(indent=indent)
         return xmlstr
     

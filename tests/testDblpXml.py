@@ -133,6 +133,49 @@ class TestDblp(unittest.TestCase):
         self.checkConfColumn(sqlDB)
         sqlDB.close()
         
+    def testIssue5(self):
+        '''
+        https://github.com/WolfgangFahl/ConferenceCorpus/issues/5
+        
+        dblp xml parser skips some proceedings titles
+        
+        '''
+        xml="""<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE dblp SYSTEM "dblp.dtd">
+<dblp><proceedings mdate="2019-05-14" key="conf/pfe/2001">
+<editor>Frank van der Linden 0001</editor>
+<title>Software Product-Family Engineering, 4th International Workshop, PFE 2001, Bilbao, Spain, October 3-5, 2001, Revised Papers</title>
+<booktitle>PFE</booktitle>
+<series href="db/series/lncs/index.html">Lecture Notes in Computer Science</series>
+<volume>2290</volume>
+<publisher>Springer</publisher>
+<year>2002</year>
+<isbn>3-540-43659-6</isbn>
+<ee>https://doi.org/10.1007/3-540-47833-7</ee>
+<url>db/conf/pfe/pfe2001.html</url>
+</proceedings>
+<proceedings mdate="2019-01-26" key="conf/hpcasia/2019">
+<title>Proceedings of the International Conference on High Performance Computing in Asia-Pacific Region, HPC Asia 2019, Guangzhou, China, January 14-16, 2019</title>
+<publisher>ACM</publisher>
+<booktitle>HPC Asia</booktitle>
+<year>2019</year>
+<isbn>978-1-4503-6632-8</isbn>
+<ee>https://dl.acm.org/citation.cfm?id=3293320</ee>
+<url>db/conf/hpcasia/hpcasia2019.html</url>
+</proceedings>
+</dblp>"""
+        xmlname="dblptitleempty.xml"
+        xmlpath="/tmp"
+        with open(f"{xmlpath}/{xmlname}", 'w') as xmlfile:
+            xmlfile.write(xml)
+        dblp=Dblp(xmlname=xmlname,xmlpath=xmlpath)
+        dictOfLod=dblp.asDictOfLod()
+        self.assertTrue("proceedings" in dictOfLod)
+        procs=dictOfLod["proceedings"]
+        self.assertEqual(2,len(procs))
+        self.assertTrue(procs[0]["title"].startswith("Software Product-Family Engineering"))
+        
+        
     def testQueries(self):
         '''
         test the parameterized query
