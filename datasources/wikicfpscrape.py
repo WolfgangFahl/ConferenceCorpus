@@ -126,8 +126,8 @@ class WikiCfpScrape(object):
                 jsonPickleEvents=jsonPickleEm['events']
                 if self.showProgress:
                     print("%4d: %s" % (len(jsonPickleEvents),jsonFilePath))
-                event=datasources.wikicfp.WikiCfpEvent()
                 for rawEvent in jsonPickleEvents.values():
+                    event=datasources.wikicfp.WikiCfpEvent()
                     if 'title' in rawEvent and rawEvent['title'] is not None:
                         for field in rawEvent:
                             value=rawEvent[field]
