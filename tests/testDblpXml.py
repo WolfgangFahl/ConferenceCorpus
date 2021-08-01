@@ -43,7 +43,7 @@ class TestDblp(unittest.TestCase):
         dblp=Dblp(debug=debug)
         if mock:
             dblp.xmlpath="/tmp/dblp"
-            dblp.gzurl="http://wiki.bitplan.com/images/confident/dblp.xml.gz"
+            dblp.gzurl="https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/dblpsample.xml.gz"
             dblp.reinit()
         xmlfile=dblp.getXmlFile()
         if debug:
@@ -113,6 +113,9 @@ class TestDblp(unittest.TestCase):
         self.assertTrue(index>expectedIndex)
         
     def checkConfColumn(self,sqlDB):
+        '''
+        check teh conference columns
+        '''
         tableDict=sqlDB.getTableDict()
         self.assertTrue("proceedings in tableDict")
         proceedingsTable=tableDict["proceedings"]
@@ -130,7 +133,7 @@ class TestDblp(unittest.TestCase):
         self.checkConfColumn(sqlDB)
         sqlDB.close()
         
-    def testParameterizedQuery(self):
+    def testQueries(self):
         '''
         test the parameterized query
         '''
@@ -138,10 +141,18 @@ class TestDblp(unittest.TestCase):
         dblp.getXmlFile(reload=True)
         sqlDB=self.getSqlDB(recreate=self.mock)
         self.checkConfColumn(sqlDB)
+        
         query="select * from proceedings where conf=?"
         records=sqlDB.query(query,('iccv',))
         self.log("found %d iccv records" % len(records))
         self.assertTrue(len(records)>=19)
+        
+        query="select key,conf,booktitle,title from proceedings where title is null"
+        records=sqlDB.query(query)
+        if len(records)>0:
+            for record in records:
+                print(record)
+        self.assertEqual(0,len(records))
             
     def testUml(self):
         '''

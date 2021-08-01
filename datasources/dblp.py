@@ -50,7 +50,7 @@ class DblpEventManager(EventManager):
         configure me
         '''
         if not hasattr(self, "dblp"): 
-            print("Warning - using full dblp.xml dataset!")   
+            print("Warning - using full dblp.xml dataset ~8.6m records!")   
             self.dblp=Dblp()
         self.sqlDb=self.dblp.getXmlSqlDB()
         if not hasattr(self,"getListOfDicts"):
@@ -91,7 +91,7 @@ class DblpEventSeriesManager(EventSeriesManager):
         configure me
         '''
         if not hasattr(self, "dblp"): 
-            print("Warning - using full dblp.xml dataset!")   
+            print("Warning - using full dblp.xml dataset ~8.6m records!")   
             self.dblp=Dblp()
         self.sqlDb=self.dblp.getXmlSqlDB()
         if not hasattr(self,"getListOfDicts"):

@@ -168,7 +168,7 @@ class Dblp(object):
             raise ("dblp xml file %s not downloaded yet - please call getXmlFile first")
         # with dtd validation
         if self.debug:
-            print("starting parser for %s " % self.xmlfile)
+            print(f"starting parser for {self.xmlfile}"  )
         return etree.iterparse(source=self.xmlfile, events=('end', 'start' ), dtd_validation=self.dtd_validation, load_dtd=True)  
     
     def clear_element(self,element):
@@ -182,11 +182,62 @@ class Dblp(object):
         while element.getprevious() is not None:
             del element.getparent()[0]
             
-    def postProcess(self,_kind,_index,row):
+
+    def printProgressBar (self,iteration, total, prefix = '', suffix = '', decimals = 1, length = 72, fill = '█', printEnd = "\r",startTime=None):
+        """
+        Call in a loop to create terminal progress bar
+        
+        see https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
+        
+        Args:
+            iteration   - Required  : current iteration (Int)
+            total       - Required  : total iterations (Int)
+            prefix      - Optional  : prefix string (Str)
+            suffix      - Optional  : suffix string (Str)
+            decimals    - Optional  : positive number of decimals in percent complete (Int)
+            length      - Optional  : character length of bar (Int)
+            fill        - Optional  : bar fill character (Str)
+            printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+        """
+        percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+        filledLength = int(length * iteration // total)
+        bar = fill * filledLength + '-' * (length - filledLength)
+        if startTime is None:
+            print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+        else:
+            elapsed=time.time()-startTime
+            totalTime=elapsed*float(total)/iteration
+            print(f'\r{prefix} |{bar}| {percent}% {elapsed:3.0f}/{totalTime:3.0f}s {suffix}', end = printEnd)
+            
+            
+        # Print New Line on Complete
+        if iteration == total: 
+            print()
+        
+    def checkRow(self,kind:str,index,row:dict):
+        '''
+        check the row content
+        
+        Args:
+            kind(str): e.g. proceedings/article
+            index(int): the index of the row
+            row(dict): the row to process
+        '''        
+        if kind=='proceedings':
+            if 'title' in row:
+                title=row['title']
+                if not title:
+                    print(f'empty title for {index}{row}')
+            else:
+                print(f'missing title for {index}{row}')
+              
+    def postProcess(self,kind:str,index,row:dict):
         '''
         postProcess the given row
         
         Args:
+            kind(str): e.g. proceedings/article
+            index(int): the index of the row
             row(dict): the row to process
         '''
         if 'key' in row:
@@ -194,6 +245,7 @@ class Dblp(object):
             if key.startswith("conf/"):
                 conf=re.sub(r"conf/(.*)/.*",r"\1",key)
                 row['conf']=conf
+                self.checkRow(kind,index,row)
         pass
     
     def getXmlSqlDB(self,reload=False):
@@ -209,6 +261,7 @@ class Dblp(object):
         get the SQL database or create it from the XML content
         '''
         dbname="%s/%s" % (self.xmlpath,"dblp.sqlite")
+        expectedTotal=86*progress
         if sample is None:
             sample=5
         if (os.path.isfile(dbname)) and not recreate:
@@ -218,7 +271,7 @@ class Dblp(object):
                 os.remove(dbname)
             sqlDB=SQLDB(dbname=dbname,debug=debug,errorDebug=True,check_same_thread=check_same_thread)
             starttime=time.time()
-            dictOfLod=self.asDictOfLod(limit,progress=progress)
+            dictOfLod=self.asDictOfLod(limit,progress=progress,expectedTotal=expectedTotal)
             elapsed=time.time()-starttime
             executeMany=True;
             fixNone=True    
@@ -245,7 +298,7 @@ class Dblp(object):
             sqlDB.execute(viewDDL)
         return sqlDB
             
-    def asDictOfLod(self,limit:int=1000,delim:str=',',progress:int=None):
+    def asDictOfLod(self,limit:int=1000,delim:str=',',progress:int=None,expectedTotal:int=None):
         '''
         get the dblp data as a dict of list of dicts - effectively separating the content
         into table structures
@@ -254,12 +307,14 @@ class Dblp(object):
             limit(int): maximum amount of records to process
             delim(str): the delimiter to use for splitting attributes with multiple values (e.g. author)
             progress(int): if set the interval at which to print a progress dot 
+            expectedTotal(int): the expected Total number 
         '''
         index=0
         count=0
         level=0
         dictOfLod={}
         current={}
+        startTime=time.time()
         for event, elem in self.iterParser():
             if event == 'start': 
                 level += 1;
@@ -281,10 +336,11 @@ class Dblp(object):
                     count+=1
                     current={} 
                     if progress is not None:
-                        if count%progress==0:
-                            print(".",flush=True,end='')
-                        if count%(progress*80)==0:
-                            print("\n",flush=True)
+                        self.printProgressBar(count, expectedTotal,startTime=startTime)        
+                        #if count%progress==0:
+                        #    print(".",flush=True,end='')
+                        #if count%(progress*80)==0:
+                        #    print("\n",flush=True)
                     if count>=limit:
                         break
                 level -= 1;
