@@ -38,10 +38,12 @@ setup(name='ConferenceCorpus',
           'pylodstorage',
           'python-dateutil',
           'py-3rdparty-mediawiki',
-          'wikirender'
+          'wikirender',
+          'habanero'
       ],
       entry_points={
          'console_scripts': [
+             'aelookup = corpus.lookup:main', 
       ],
     },
       zip_safe=False)

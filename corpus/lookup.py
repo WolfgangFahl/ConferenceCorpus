@@ -25,18 +25,22 @@ class CorpusLookup(object):
     '''
     search and lookup for different EventCorpora
     '''
+    lookupIds=["dblp","crossref","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
 
-    def __init__(self,lookupIds=["dblp","crossref","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"],
+    def __init__(self,lookupIds:list=None,
                  configure:callable=None,debug=False):
         '''
         Constructor
         
         Args:
+            lookupIds(list): the list of lookupIds to addDataSources for
             configure(callable): Callback to configure the corpus lookup
         '''
         self.debug=debug
         self.configure=configure
         self.eventCorpus=EventCorpus()
+        if lookupIds is None:
+            lookupIds=CorpusLookup.lookupIds
         if "crossref" in lookupIds:
             self.eventCorpus.addDataSource(CrossrefEventManager(),CrossrefEventSeriesManager(),lookupId="crossref",name="crossref.org",url="https://www.crossref.org/",title="CrossRef",tablePrefix="crossref")
         if "dblp" in lookupIds:
@@ -145,17 +149,21 @@ USAGE
 
     try:
         # Setup argument parser
+        datasourcesDefault=",".join(CorpusLookup.lookupIds)
         parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
         parser.add_argument("-d", "--debug", dest="debug", action="store_true", help="show debug info")
         parser.add_argument('-e', '--endpoint', default=Wikidata.endpoint, help="SPARQL endpoint to use for wikidata queries")     
         parser.add_argument('-v', '--version', action='version', version=program_version_message)
         parser.add_argument("-u", "--uml", dest="uml", action="store_true", help="output plantuml diagram markup")
+        parser.add_argument("-f", "--force",dest="forceUpdate",action="store_true",help="force Update - may take quite a time")
+        parser.add_argument("--datasources",help=", delimited list of datasource lookup ids",default=datasourcesDefault)
         
         # Process arguments
         args = parser.parse_args()   
         Wikidata.endpoint=args.endpoint
-        lookup=CorpusLookup(debug=args.debug)
-        lookup.load()
+        lookupIds=args.datasources.split(",")
+        lookup=CorpusLookup(debug=args.debug,lookupIds=lookupIds)
+        lookup.load(forceUpdate=args.forceUpdate)
         if args.uml:
             for baseEntity in ["Event","EventSeries"]:
                 plantUml=lookup.asPlantUml(baseEntity)
