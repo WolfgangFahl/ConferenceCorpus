@@ -108,9 +108,9 @@ see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
         return plantUml
         
         
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 __date__ = '2020-06-22'
-__updated__ = '2021-08-01'    
+__updated__ = '2021-08-02'    
 
 DEBUG = 1
 
@@ -132,7 +132,7 @@ def main(argv=None): # IGNORE:C0111
     program_license = '''%s
 
   Created by %s on %s.
-  Copyright 2020 Wolfgang Fahl. All rights reserved.
+  Copyright 2020-2021 Wolfgang Fahl. All rights reserved.
 
   Licensed under the Apache License 2.0
   http://www.apache.org/licenses/LICENSE-2.0
