@@ -49,10 +49,12 @@ class TestCrossRef(DataSourceTest):
         ]
         for index,doi in enumerate(dois):
             doimeta=cr.doiMetaData(doi)
-            print (doimeta)
+            if self.debug:
+                print (doimeta)
             self.assertTrue('title' in doimeta)
             title=doimeta['title'][0]
-            print (title)
+            if self.debug:
+                print (title)
             self.assertEqual(expected[index]['title'],title)
         pass
 
