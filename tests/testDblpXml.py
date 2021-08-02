@@ -68,12 +68,13 @@ class TestDblp(unittest.TestCase):
         dblp=TestDblp.getMockedDblp(TestDblp.mock,debug=self.debug)
         return dblp
     
-    def getSqlDB(self,recreate=False,showProgress=True):
+    def getSqlDB(self,recreate=False):
         '''
         get the Sql Database
         '''
         dblp=self.getDblp()
         limit=10000 if self.mock else 10000000
+        showProgress=not self.mock  and not self.inCI()
         sample=5
         sqlDB=dblp.getSqlDB(limit, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblp.postProcess,showProgress=showProgress)
         return sqlDB
@@ -136,8 +137,7 @@ class TestDblp(unittest.TestCase):
         '''
         get  dict of list of dicts (tables)
         '''
-        showProgress=not self.inCI()
-        sqlDB=self.getSqlDB(recreate=True,showProgress=showProgress)
+        sqlDB=self.getSqlDB(recreate=True)
         tableList=sqlDB.getTableList()
         expected=6 if self.mock else 8
         self.assertEqual(expected,len(tableList))
