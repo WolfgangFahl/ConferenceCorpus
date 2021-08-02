@@ -36,7 +36,8 @@ class TestOpenResearch(DataSourceTest):
         '''
         tests the getting conferences form wiki markup files
         '''
-        lookup=CorpusLookup(lookupIds=["or","or-backup","orclone","orclone-backup"])
+        lookup=CorpusLookup(lookupIds=["or","or-backup","orclone","orclone-backup"],configure=self.configureCorpusLookup)
+        lookup.load()
         orDataSource=lookup.getDataSource("or-backup")
         self.checkDataSource(orDataSource,1000,8000)
         orDataSource=lookup.getDataSource("orclone-backup")
@@ -47,7 +48,10 @@ class TestOpenResearch(DataSourceTest):
         '''
         tests initializing the OREventCorpus from wiki
         '''
-        lookup=CorpusLookup()
+        # by convention the lookupId "or" is for the OpenResearch via API / WikiUser access
+        # the lookupId "orclone" is for for the access via API on the OpenResearch clone
+        lookup=CorpusLookup(lookupIds=["or","or-backup","orclone","orclone-backup"],configure=self.configureCorpusLookup)
+        lookup.load()
         orDataSource=lookup.getDataSource("or")
         self.checkDataSource(orDataSource,1000,8000)
         orDataSource=lookup.getDataSource("orclone")

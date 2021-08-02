@@ -26,6 +26,7 @@ class TestDblpEvents(DataSourceTest):
         test getting the conference series and events from dblp xml dump
         '''
         lookup=CorpusLookup(lookupIds=["dblp"])
+        lookup.load()
         dblpDataSource=lookup.getDataSource("dblp")
         dblp=TestDblp.getMockedDblp(debug=self.debug)
         dblpDataSource.eventManager.dblp=dblp

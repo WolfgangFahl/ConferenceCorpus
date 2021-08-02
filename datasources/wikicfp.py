@@ -58,6 +58,8 @@ class WikiCfpEventManager(EventManager):
         '''
         configure me
         '''
+        # no need - getListOfDicts has a specialized implementation
+        pass
         
     def getListOfDicts(self):
         '''

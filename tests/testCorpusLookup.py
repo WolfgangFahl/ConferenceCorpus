@@ -8,8 +8,6 @@ from tests.testSMW import TestSMW
 from tests.testDblpXml import TestDblp
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
-from lodstorage.uml import UML
-from datetime import datetime
 
 class TestCorpusLookup(unittest.TestCase):
     '''
@@ -66,6 +64,7 @@ class TestCorpusLookup(unittest.TestCase):
         for baseEntity in ["Event","EventSeries"]:
             plantUml=lookup.asPlantUml(baseEntity)
             debug=self.debug
+            debug=True
             if debug:
                 print(plantUml)
             self.assertTrue(f"{baseEntity} <|-- dblp_{baseEntity}" in plantUml)
