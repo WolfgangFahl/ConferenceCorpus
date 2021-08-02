@@ -8,6 +8,7 @@ import unittest
 from datasources.dblpxml import Dblp
 from lodstorage.schema import SchemaManager
 from datetime import datetime
+import os
 import time
 #import logging
 from lodstorage.sql import SQLDB
@@ -35,11 +36,11 @@ class TestDblp(unittest.TestCase):
         pass
     
     @staticmethod
-    def inPublicCI():
+    def inCI():
         '''
-        are we running in a public Continuous Integration Environment?
+        are we running in a Continuous Integration Environment?
         '''
-        return getpass.getuser() in ["travis", "runner"];
+        return getpass.getuser() in ["travis", "runner"] or "JENKINS_HOME" in os.environ;
     
     def log(self,msg):
         if self.debug:
@@ -133,7 +134,7 @@ class TestDblp(unittest.TestCase):
         '''
         get  dict of list of dicts (tables)
         '''
-        showProgress=not self.inPublicCI()
+        showProgress=not self.inCI()
         sqlDB=self.getSqlDB(recreate=True,showProgress=showProgress)
         tableList=sqlDB.getTableList()
         expected=6 if self.mock else 8
