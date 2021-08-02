@@ -66,7 +66,7 @@ class DblpEventManager(EventManager):
             list: the list of dict with my series data
 
         '''
-        query = """select conf as series,title,year,url,series as publicationSeries
+        query = """select conf as series,title,year,url,booktitle,series as publicationSeries,ee,isbn,mdate,key as eventId
         from proceedings 
         order by series,year"""
         listOfDicts = self.sqlDb.query(query)
