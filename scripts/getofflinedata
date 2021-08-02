@@ -2,12 +2,17 @@
 # WF 2021-07-31
 # get the offline data
 base=$HOME/.conferencecorpus
-mkdir $base
-cd $base
-for tgz in wikicfp crossref
-do
-   # download 
-   curl -s https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/$tgz.tgz -o $tgz.tgz
-   # unpack and unzip
-   tar xvfz $tgz.tgz
-done
+if [ ! -d $base ]
+then
+  mkdir $base
+  cd $base
+  for tgz in wikicfp crossref
+  do
+    # download 
+    curl -s https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/$tgz.tgz -o $tgz.tgz
+    # unpack and unzip
+    tar xvfz $tgz.tgz
+  done
+else
+  echo "$base exists - will not override any content ..."
+fi
