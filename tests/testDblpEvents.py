@@ -18,14 +18,23 @@ class TestDblpEvents(DataSourceTest):
         '''
         self.mock=TestDblp.mock
         DataSourceTest.setUp(self)
-        self.dblp=TestDblp.getDblp(self)
         pass
+    
+    def configureCorpusLookup(self,lookup:CorpusLookup):
+        '''
+        callback to configure the corpus lookup
+        '''
+        dblpDataSource=lookup.getDataSource("dblp")
+        dblp=TestDblp.getMockedDblp(debug=self.debug)
+        dblpDataSource.eventManager.dblp=dblp
+        dblpDataSource.eventSeriesManager.dblp=dblp
+        
     
     def testDblp(self):
         '''
         test getting the conference series and events from dblp xml dump
         '''
-        lookup=CorpusLookup(lookupIds=["dblp"])
+        lookup=CorpusLookup(lookupIds=["dblp"],configure=self.configureCorpusLookup)
         lookup.load()
         dblpDataSource=lookup.getDataSource("dblp")
         dblp=TestDblp.getMockedDblp(debug=self.debug)
