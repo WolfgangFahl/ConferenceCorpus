@@ -197,8 +197,7 @@ class Dblp(object):
         """
         element.clear()
         while element.getprevious() is not None:
-            del element.getparent()[0]
-            
+            del element.getparent()[0]           
 
     def printProgressBar (self,iteration, total, prefix = '', suffix = '', decimals = 1, length = 72, fill = '█', printEnd = "\r",startTime=None):
         """
@@ -299,12 +298,17 @@ class Dblp(object):
             dictOfLod=self.asDictOfLod(limit,progress=progress,expectedTotal=expectedTotal)
             elapsed=time.time()-starttime
             executeMany=True;
+            if showProgress:
+                print(f"parsing done after {elapsed:5.1f} s ... storing ...")
+            starttime=time.time()    
             fixNone=True    
             for i, (kind, lod) in enumerate(dictOfLod.items()):
                 if postProcess is not None:
                     for j,row in enumerate(lod):
                         postProcess(kind,j,row)
+            rows=0
             for i, (kind, lod) in enumerate(dictOfLod.items()):
+                rows+=len(lod)
                 if debug:
                     print ("#%4d %5d: %s" % (i+1,len(lod),kind))
                 entityInfo=sqlDB.createTable(lod,kind,'key',sampleRecordCount=createSample,failIfTooFew=False)
@@ -314,8 +318,9 @@ class Dblp(object):
                         print ("  %4d: %s" % (j,row)) 
                     if j>sample:
                         break
-            if debug:
-                print ("%5.1f s %5d rows/s" % (elapsed,limit/elapsed))
+            elapsed=time.time()-starttime        
+            if showProgress:
+                print (f"stored {rows} rows in {elapsed:5.1f} s {rows/elapsed:5.0f} rows/s" )
             tableList=sqlDB.getTableList()     
             viewDDL=Schema.getGeneralViewDDL(tableList, "record")
             if debug:
@@ -387,10 +392,12 @@ class Dblp(object):
                     if count>=limit:
                         break
                 level -= 1;
-            index+=1
-            self.clear_element(elem)
+                self.clear_element(elem)
+                index+=1
         if self.debug:
             pass
+        if progress is not None:
+            self.printProgressBar(expectedTotal, expectedTotal,startTime=startTime)     
         return dictOfLod
             
     
