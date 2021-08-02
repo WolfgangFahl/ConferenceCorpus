@@ -1,15 +1,33 @@
 #!/bin/bash
 # WF 2021-07-31
 # get the offline data
+
+force="false"
+# commandline option
+while [  "$1" != ""  ]
+do
+  option="$1"
+  case $option in
+	  -f|--force)
+		  force="true"
+			;;
+	esac
+	shift
+done
+
 base=$HOME/.conferencecorpus
 if [ ! -d $base ]
 then
   mkdir $base
+	force="true"
+fi
+if [ "$force" = "true" ]
+then
   cd $base
   for tgz in wikicfp crossref
   do
     # download 
-    curl -s https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/$tgz.tgz -o $tgz.tgz
+    curl --location -s https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/${tgz}.tgz -o ${tgz}.tgz
     # unpack and unzip
     tar xvfz $tgz.tgz
   done
