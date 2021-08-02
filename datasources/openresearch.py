@@ -243,7 +243,8 @@ class OREvent(Event):
                 "region": "US-MA",
                 "city": "Boston",
                 "acceptedPapers": 41,
-                "submittedPapers": 120
+                "submittedPapers": 120,
+                "presence": "online"
             },
             {
                 "acronym": "5GU 2017",
@@ -260,7 +261,7 @@ class OREvent(Event):
                 "pageTitle": "5GU 2017",
                 "lastEditor": "Wolfgang Fahl",
                 "creationDate": datetime.fromisoformat("2016-09-25T07:36:02"),
-                "modificationDate": datetime.fromisoformat("2020-11-05T12:33:23"),
+                "modificationDate": datetime.fromisoformat("2020-11-05T12:33:23")
             },
             {
                 'acronym': "IDC 2009",
