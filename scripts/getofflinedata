@@ -7,7 +7,7 @@ cd $base
 for tgz in wikicfp crossref
 do
    # download 
-   wget https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/$tgz.tgz
+   curl -s https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/$tgz.tgz -o $tgz.tgz
    # unpack and unzip
    tar xvfz $tgz.tgz
 done
