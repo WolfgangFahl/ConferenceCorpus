@@ -156,13 +156,14 @@ class Dblp(object):
         
         Args:
             reload(bool): if True force download
+            
         Returns:
             str: the xmlfile
         '''
         if not os.path.isfile(self.xmlfile) or reload:
             os.makedirs(self.xmlpath,exist_ok=True)
             if self.verbose:
-                print("downloading %s from %s" % (self.xmlfile, self.gzurl))
+                print(f"downloading {self.xmlfile} from {self.gzurl}")
             urlreq = urllib.request.urlopen(self.gzurl)
             z = GzipFile(fileobj=BytesIO(urlreq.read()), mode='rb')
             with open(self.xmlfile, 'wb') as outfile:
@@ -271,7 +272,7 @@ class Dblp(object):
         return self.getSqlDB(postProcess=self.postProcess,showProgress=showProgress)
         
             
-    def getSqlDB(self,limit=1000000000,sample=None,createSample=10000000,debug=False,recreate=False,postProcess=None,check_same_thread=False,showProgress:bool=True):
+    def getSqlDB(self,limit=1000000000,sample=None,createSample=10000000,debug=False,recreate=False,postProcess=None,check_same_thread=False,showProgress:bool=False):
         '''
         get the SQL database or create it from the XML content
         

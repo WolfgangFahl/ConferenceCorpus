@@ -49,10 +49,12 @@ class DblpEventManager(EventManager):
         '''
         configure me
         '''
+        withProgress=False
         if not hasattr(self, "dblp"): 
             self.dblp=Dblp()
             self.dblp.warnFullSize()
-        self.sqlDb=self.dblp.getXmlSqlDB()
+            withProgress=True
+        self.sqlDb=self.dblp.getXmlSqlDB(showProgress=withProgress)
         if not hasattr(self,"getListOfDicts"):
             self.getListOfDicts=self.getLoDfromDblp
 
@@ -90,10 +92,12 @@ class DblpEventSeriesManager(EventSeriesManager):
         '''
         configure me
         '''
-        if not hasattr(self, "dblp"):  
+        withProgress=False
+        if not hasattr(self, "dblp"): 
             self.dblp=Dblp()
             self.dblp.warnFullSize()
-        self.sqlDb=self.dblp.getXmlSqlDB()
+            withProgress=True
+        self.sqlDb=self.dblp.getXmlSqlDB(showProgress=withProgress)
         if not hasattr(self,"getListOfDicts"):
             self.getListOfDicts=self.getLoDfromDblp
 
