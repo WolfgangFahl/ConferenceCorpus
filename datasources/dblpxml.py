@@ -71,6 +71,7 @@ class Dblp(object):
     
     def warnFullSize(self):
         '''
+        warn if we are using the full dataset
         '''
         print(f"Warning - using full {self.xmlfile} dataset ~{self.getExpectedTotal()/1000000:3.1f}m records!")  
         
