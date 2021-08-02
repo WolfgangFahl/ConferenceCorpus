@@ -67,7 +67,6 @@ class Event(JSONAble):
         '''
         Constructor
         '''
-        
 
     def __str__(self):
         '''
@@ -98,7 +97,7 @@ class EventBaseManager(EntityManager):
     common entity Manager for ConferenceCorpus
     '''
     
-    def __init__(self,name,entityName,entityPluralName:str,listName:str=None,clazz=None,tableName:str=None,primaryKey:str=None,config=None,handleInvalidListTypes=False,filterInvalidListTypes=False,debug=False):
+    def __init__(self,name,entityName,entityPluralName:str,listName:str=None,clazz=None,tableName:str=None,primaryKey:str=None,config=None,handleInvalidListTypes=False,filterInvalidListTypes=False,debug=False,profile=True):
         '''
         Constructor
         
@@ -110,7 +109,9 @@ class EventBaseManager(EntityManager):
             handleInvalidListTypes(bool): True if invalidListTypes should be converted or filtered
             filterInvalidListTypes(bool): True if invalidListTypes should be deleted
             debug(boolean): override debug setting when default of config is used via config=None
+            profile(boolean): True if profiling/timing information should be shown for long-running operations
         '''
+        self.profile=profile
         if config is None:
             config=EventStorage.getStorageConfig(debug=debug)
         super().__init__(name, entityName, entityPluralName, listName, clazz, tableName, primaryKey, config, handleInvalidListTypes, filterInvalidListTypes, debug)

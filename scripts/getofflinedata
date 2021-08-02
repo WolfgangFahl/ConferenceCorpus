@@ -4,5 +4,10 @@
 base=$HOME/.conferencecorpus
 mkdir $base
 cd $base
-wget https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/wikicfp.tgz
-tar xvfz wikicfp.tgz
+for tgz in wikicfp crossref
+do
+   # download 
+   wget https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/$tgz.tgz
+   # unpack and unzip
+   tar xvfz $tgz.tgz
+done

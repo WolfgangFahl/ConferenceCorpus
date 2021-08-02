@@ -51,7 +51,7 @@ class TestCorpusLookup(unittest.TestCase):
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
-        self.assertEqual(7,len(lookup.eventCorpus.eventDataSources))
+        self.assertEqual(8,len(lookup.eventCorpus.eventDataSources))
         
     def testGetPlantUmlDiagram(self):
         '''
@@ -60,7 +60,7 @@ class TestCorpusLookup(unittest.TestCase):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
         storageTableList=EventStorage.getTableList()
-        self.assertEqual(14,len(storageTableList))
+        self.assertEqual(16,len(storageTableList))
         for baseEntity in ["Event","EventSeries"]:
             plantUml=lookup.asPlantUml(baseEntity)
             debug=self.debug

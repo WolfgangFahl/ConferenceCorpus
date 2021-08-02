@@ -5,7 +5,7 @@ The EventCorpus provides access to academic events and event series from differe
 [![Github Actions Build](https://github.com/WolfgangFahl/ConferenceCorpus/workflows/Build/badge.svg?branch=main)](https://github.com/WolfgangFahl/ConferenceCorpus/actions?query=workflow%3ABuild+branch%3Amain)
 [![PyPI Status](https://img.shields.io/pypi/v/ConferenceCorpus.svg)](https://pypi.python.org/pypi/ConferenceCorpus/)
 [![GitHub issues](https://img.shields.io/github/issues/WolfgangFahl/ConferenceCorpus.svg)](https://github.com/WolfgangFahl/ConferenceCorpus/issues)
-[![GitHub closed issues](https://img.shields.io/github/issues-closed/ConferenceCorpus.svg)](https://github.com/WolfgangFahl/ConferenceCorpus/issues/?q=is%3Aissue+is%3Aclosed)
+[![GitHub closed issues](https://img.shields.io/github/issues-closed/WolfgangFahl/ConferenceCorpus.svg)](https://github.com/WolfgangFahl/ConferenceCorpus/issues/?q=is%3Aissue+is%3Aclosed)
 [![pypi](https://img.shields.io/pypi/pyversions/ConferenceCorpus)](https://pypi.org/project/ConferenceCorpus/)
 [![License](https://img.shields.io/github/license/WolfgangFahl/ConferenceCorpus.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 

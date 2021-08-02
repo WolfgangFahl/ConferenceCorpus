@@ -10,7 +10,7 @@ from datasources.dblp import DblpEventManager,DblpEventSeriesManager
 from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
 from datasources.openresearch import OREventManager,OREventSeriesManager
 from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager
-
+from datasources.crossref import CrossrefEventManager,CrossrefEventSeriesManager
 from lodstorage.uml import UML
 
 from datetime import datetime
@@ -26,7 +26,7 @@ class CorpusLookup(object):
     search and lookup for different EventCorpora
     '''
 
-    def __init__(self,lookupIds=["dblp","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"],
+    def __init__(self,lookupIds=["dblp","crossref","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"],
                  configure:callable=None,debug=False):
         '''
         Constructor
@@ -37,6 +37,8 @@ class CorpusLookup(object):
         self.debug=debug
         self.configure=configure
         self.eventCorpus=EventCorpus()
+        if "crossref" in lookupIds:
+            self.eventCorpus.addDataSource(CrossrefEventManager(),CrossrefEventSeriesManager(),lookupId="crossref",name="crossref.org",url="https://www.crossref.org/",title="CrossRef",tablePrefix="crossref")
         if "dblp" in lookupIds:
             self.eventCorpus.addDataSource(DblpEventManager(),DblpEventSeriesManager(),lookupId="dblp",name="dblp",url='https://dblp.org/',title='dblp computer science bibliography',tablePrefix="dblp")
         if "wikidata" in lookupIds: 

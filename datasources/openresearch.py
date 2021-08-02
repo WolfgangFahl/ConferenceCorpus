@@ -267,7 +267,8 @@ class OREvent(Event):
                 'acronym': "IDC 2009",
                 'title': "The 8th International Conference on Interaction Design and Children",
                 'pageTitle': 'IDC 2009',
-                'ordinal': 8
+                'ordinal': 8,
+                year:2009
             }
 
         ]
