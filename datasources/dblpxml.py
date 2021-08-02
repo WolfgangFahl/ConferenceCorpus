@@ -263,12 +263,12 @@ class Dblp(object):
                 row['conf']=conf
         pass
     
-    def getXmlSqlDB(self,reload=False):
+    def getXmlSqlDB(self,reload=False,showProgress=False):
         '''
         get the SqlDB derived from the XML download 
         '''
         self.getXmlFile(reload=reload)
-        return self.getSqlDB(postProcess=self.postProcess)
+        return self.getSqlDB(postProcess=self.postProcess,showProgress=showProgress)
         
             
     def getSqlDB(self,limit=1000000000,sample=None,createSample=10000000,debug=False,recreate=False,postProcess=None,check_same_thread=False,showProgress:bool=True):

@@ -40,7 +40,9 @@ class TestDblp(unittest.TestCase):
         '''
         are we running in a Continuous Integration Environment?
         '''
-        return getpass.getuser() in ["travis", "runner"] or "JENKINS_HOME" in os.environ;
+        publicCI=getpass.getuser() in ["travis", "runner"] 
+        jenkins= "JENKINS_HOME" in os.environ;
+        return publicCI or jenkins
     
     def log(self,msg):
         if self.debug:
