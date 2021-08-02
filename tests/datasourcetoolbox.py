@@ -5,6 +5,7 @@ Created on 2021-07-29
 '''
 from unittest import TestCase
 from corpus.eventcorpus import EventDataSource
+import warnings
 
 class DataSourceTest(TestCase):
     '''
@@ -18,6 +19,8 @@ class DataSourceTest(TestCase):
         TestCase.setUp(self)
         self.debug=True
         self.forceUpdate=False
+        # make sure unclosed socket warnings are not shown 
+        warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
         #self.longMessage=True
         
     def tearDown(self):
