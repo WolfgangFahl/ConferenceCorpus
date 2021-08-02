@@ -279,7 +279,7 @@ class Dblp(object):
         Args:
             limit(int): maximum number of records
         '''
-        dbname="%s/%s" % (self.xmlpath,"dblp.sqlite")
+        dbname=f"{self.xmlpath}/dblp.sqlite"
         # estimate size
         if showProgress:
             expectedTotal=self.getExpectedTotal()
