@@ -70,13 +70,15 @@ class CorpusLookup(object):
             eventDataSource=self.eventCorpus.eventDataSources[lookupId]
         return eventDataSource
         
-    def load(self):
+    def load(self,forceUpdate:bool=False):
         '''
         load the event corpora
+        Args:
+            forceUpdate(bool): True if the data should be fetched from the source instead of the cache
         '''
         if self.configure:
             self.configure(self)
-        self.eventCorpus.loadAll()
+        self.eventCorpus.loadAll(forceUpdate=forceUpdate)
         
     def asPlantUml(self,baseEntity='Event'):
         '''
