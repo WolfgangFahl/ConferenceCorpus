@@ -51,7 +51,7 @@ class OREventCorpus(EventCorpus):
         '''
         get events with series by knitting / linking the entities together
         '''
-        self._wikiFileManager=wikiFileManager
+        self.wikiFileManager=wikiFileManager
         self.eventManager=OREventManager(self.config,debug=self.debug)
         self.eventManager.fromWikiFileManager(wikiFileManager)
         self.eventSeriesManager=OREventSeriesManager(self.config,debug=self.debug)
@@ -75,7 +75,7 @@ class OREventCorpus(EventCorpus):
         self.eventManager.fromCache(force=force, getListOfDicts=self.eventManager.getLoDfromWikiUser)
         self.eventSeriesManager = OREventSeriesManager(self.config, debug=self.debug)
         self.eventSeriesManager.wikiUser = wikiUser
-        self.eventSeriesManager.fromCache(force=force, getListOfDicts=self.eventManager.getLoDfromWikiUser)
+        self.eventSeriesManager.fromCache(force=force, getListOfDicts=self.eventSeriesManager.getLoDfromWikiUser)
         self.eventManager.linkSeriesAndEvent(self.eventSeriesManager, "inEventSeries")
 
 
@@ -129,7 +129,7 @@ class OREventManager(EventManager):
         '''
         if not hasattr(self, "getListOfDicts"):
             if hasattr(self,'wikiFileManager'):
-                self.getListOfDicts=self.getLoDfromWikiFileManager  
+                self.getListOfDicts=self.getLoDfromWikiFileManager
             if hasattr(self,'wikiUser'):
                 self.getListOfDicts=self.getLoDfromWikiUser 
 
