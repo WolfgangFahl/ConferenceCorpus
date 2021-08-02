@@ -8,8 +8,9 @@ from tests.testSMW import TestSMW
 from tests.testDblpXml import TestDblp
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
+from tests.datasourcetoolbox import DataSourceTest
 
-class TestCorpusLookup(unittest.TestCase):
+class TestCorpusLookup(DataSourceTest):
     '''
     test the event corpus
     '''

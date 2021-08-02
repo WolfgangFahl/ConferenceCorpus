@@ -34,7 +34,14 @@ class Crossref(object):
         return metadata
     
     @staticmethod    
-    def fixEncodings(eventInfo,debug=False):    
+    def fixEncodings(eventInfo:dict,debug:bool=False):    
+        '''
+        fix the encoding of the dict entries of the given eventInfo
+        
+        Args:
+            eventInfo(dict): the record to fix
+            debug(bool): show debug information if True
+        '''
         for keyValue in eventInfo.items():
             key,value=keyValue
             oldvalue=value

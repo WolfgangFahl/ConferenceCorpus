@@ -17,7 +17,7 @@ class DataSourceTest(TestCase):
         setUp test environment
         '''
         TestCase.setUp(self)
-        self.debug=True
+        self.debug=False
         self.forceUpdate=False
         # make sure unclosed socket warnings are not shown 
         warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)

@@ -34,7 +34,7 @@ class TestCrossRef(DataSourceTest):
         workaround Umlaut issue see https://stackoverflow.com/questions/63486767/how-can-i-get-the-fuseki-api-via-sparqlwrapper-to-properly-report-a-detailed-err
         '''
         eventInfo={'location':'M\\\"unster, Germany'}
-        CrossrefEvent.fixEncodings(eventInfo,debug=self.debug)
+        Crossref.fixEncodings(eventInfo,debug=self.debug)
         self.assertEqual(eventInfo['location'],"Münster, Germany")
         
     def testCrossref_DOI_Lookup(self):
