@@ -125,7 +125,7 @@ class TestDblp(unittest.TestCase):
         '''
         get  dict of list of dicts (tables)
         '''
-        sqlDB=self.getSqlDB(recreate=True,showProgress=True)
+        sqlDB=self.getSqlDB(recreate=True,showProgress=False)
         tableList=sqlDB.getTableList()
         expected=6 if self.mock else 8
         self.assertEqual(expected,len(tableList))
