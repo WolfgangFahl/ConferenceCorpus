@@ -184,7 +184,9 @@ class Dblp(object):
         # with dtd validation
         if self.debug:
             print(f"starting parser for {self.xmlfile}"  )
-        return etree.iterparse(source=self.xmlfile, events=('end', 'start' ), dtd_validation=self.dtd_validation, load_dtd=True)  
+        # https://lxml.de/api/lxml.etree.iterparse-class.html
+        self.parser=etree.iterparse(source=self.xmlfile, events=('end', 'start' ), dtd_validation=self.dtd_validation, load_dtd=True, huge_tree=True) 
+        return self.parser 
     
     def clear_element(self,element):
         """
@@ -338,9 +340,11 @@ class Dblp(object):
         dictOfLod={}
         current={}
         startTime=time.time()
+        levelCount=Counter()
         for event, elem in self.iterParser():
             if event == 'start': 
                 level += 1;
+                levelCount[level]+=1
                 if level==2:
                     kind=elem.tag
                     if not kind in dictOfLod:
@@ -361,10 +365,12 @@ class Dblp(object):
                     if (kind=="proceedings") and (name=="title") and (elem.text is None):
                         print(f"{elem.sourceline:6}:{elem.tag} - None text")
                         pass
-                elif level==4:
+                elif level>=4:
                     # interesting things happen here ...
-                    if elem.sourceline:
-                        print(f"{elem.sourceline:6}:{elem.tag}")
+                    # sub/sup i and so on see dblp xml faq
+                    #if elem.sourceline:
+                    #    print(f"{elem.sourceline:6}:{elem.tag}")
+                    pass
             elif event == 'end':
                 if level==2:
                     lod.append(current)
@@ -383,6 +389,8 @@ class Dblp(object):
                 level -= 1;
             index+=1
             self.clear_element(elem)
+        if self.debug:
+            pass
         return dictOfLod
             
     

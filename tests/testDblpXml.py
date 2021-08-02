@@ -125,7 +125,7 @@ class TestDblp(unittest.TestCase):
         '''
         get  dict of list of dicts (tables)
         '''
-        sqlDB=self.getSqlDB(recreate=True,showProgress=False)
+        sqlDB=self.getSqlDB(recreate=True,showProgress=True)
         tableList=sqlDB.getTableList()
         expected=6 if self.mock else 8
         self.assertEqual(expected,len(tableList))
@@ -162,6 +162,18 @@ class TestDblp(unittest.TestCase):
 <ee>https://dl.acm.org/citation.cfm?id=3293320</ee>
 <url>db/conf/hpcasia/hpcasia2019.html</url>
 </proceedings>
+<proceedings mdate="2020-03-27" key="journals/corr/OrchardY16a">
+<editor orcid="0000-0002-7058-7842">Dominic A. Orchard</editor>
+<editor orcid="0000-0002-3925-8557">Nobuko Yoshida</editor>
+<title>Proceedings of the Ninth workshop on Programming Language Approaches to Concurrency- and Communication-cEntric Software, PLACES 2016, Eindhoven, The Netherlands, 8th April 2016.</title>
+<booktitle>PLACES</booktitle>
+<year>2016</year>
+<series href="db/series/eptcs/index.html">EPTCS</series>
+<volume>211</volume>
+<url>db/series/eptcs/eptcs211.html</url>
+<ee type="oa">https://doi.org/10.4204/EPTCS.211</ee>
+<ee type="oa">http://arxiv.org/abs/1606.05403</ee>
+</proceedings>
 </dblp>"""
         xmlname="dblptitleempty.xml"
         xmlpath="/tmp"
@@ -171,7 +183,7 @@ class TestDblp(unittest.TestCase):
         dictOfLod=dblp.asDictOfLod()
         self.assertTrue("proceedings" in dictOfLod)
         procs=dictOfLod["proceedings"]
-        self.assertEqual(2,len(procs))
+        self.assertEqual(3,len(procs))
         self.assertTrue(procs[0]["title"].startswith("Software Product-Family Engineering"))
         
         
