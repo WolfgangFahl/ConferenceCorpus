@@ -16,11 +16,7 @@ class TestCorpusLookup(DataSourceTest):
     '''
 
     def setUp(self):
-        self.debug=False
-        pass
-
-
-    def tearDown(self):
+        DataSourceTest.setUp(self)
         pass
     
     def configureCorpusLookup(self,lookup:CorpusLookup):
