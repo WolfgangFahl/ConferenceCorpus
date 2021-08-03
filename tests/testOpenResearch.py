@@ -51,7 +51,7 @@ class TestOpenResearch(DataSourceTest):
         # by convention the lookupId "or" is for the OpenResearch via API / WikiUser access
         # the lookupId "orclone" is for for the access via API on the OpenResearch clone
         lookup=CorpusLookup(lookupIds=["or","or-backup","orclone","orclone-backup"],configure=self.configureCorpusLookup)
-        lookup.load(forceUpdate=True)
+        lookup.load(forceUpdate=False)
         orDataSource=lookup.getDataSource("or")
         self.checkDataSource(orDataSource,1000,8000)
         orDataSource=lookup.getDataSource("orclone")

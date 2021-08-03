@@ -24,9 +24,9 @@ fi
 if [ "$force" = "true" ]
 then
   cd $base
-  for tgz in wikicfp crossref
+  for tgz in wikicfp crossref confref
   do
-    # download 
+    # download
     curl --location -s https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/${tgz}.tgz -o ${tgz}.tgz
     # unpack and unzip
     tar xvfz $tgz.tgz

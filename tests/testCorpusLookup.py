@@ -30,11 +30,11 @@ class TestCorpusLookup(DataSourceTest):
         dblpDataSource.eventSeriesManager.dblp=dblp
         
         for lookupId in ["or","orclone"]:
-            orDataSource=lookup.getDataSource(lookupId)
+            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
             wikiFileManager=TestSMW.getWikiFileManager(wikiId=lookupId)
             orDataSource.eventManager.wikiFileManager=wikiFileManager
             orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
-            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
+            orDataSource=lookup.getDataSource(lookupId)
             wikiUser=TestSMW.getSMW_WikiUser(lookupId)
             orDataSource.eventManager.wikiUser=wikiUser
             orDataSource.eventSeriesManager.wikiUser=wikiUser
@@ -48,7 +48,17 @@ class TestCorpusLookup(DataSourceTest):
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
-        self.assertEqual(8,len(lookup.eventCorpus.eventDataSources))
+        self.assertEqual(9,len(lookup.eventCorpus.eventDataSources))
+        
+    def testDataSource4Table(self):
+        '''
+        test getting datasources by table name
+        '''
+        lookup=CorpusLookup(configure=self.configureCorpusLookup)
+        dataSource=lookup.getDataSource4TableName("confref_Event")
+        if self.debug:
+            print (f"{dataSource.name}")
+        self.assertEqual("confref.org",dataSource.name)
         
     def testGetPlantUmlDiagram(self):
         '''
@@ -57,7 +67,7 @@ class TestCorpusLookup(DataSourceTest):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
         storageTableList=EventStorage.getTableList()
-        self.assertEqual(16,len(storageTableList))
+        self.assertEqual(18,len(storageTableList))
         for baseEntity in ["Event","EventSeries"]:
             plantUml=lookup.asPlantUml(baseEntity)
             debug=self.debug

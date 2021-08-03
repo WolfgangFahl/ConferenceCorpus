@@ -6,11 +6,13 @@ Created on 2021-07-30
 from corpus.event import EventStorage
 from corpus.eventcorpus import EventCorpus, EventDataSource
 
+from datasources.confref import ConfrefEventManager,ConfrefEventSeriesManager
+from datasources.crossref import CrossrefEventManager,CrossrefEventSeriesManager
 from datasources.dblp import DblpEventManager,DblpEventSeriesManager
-from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
 from datasources.openresearch import OREventManager,OREventSeriesManager
 from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager
-from datasources.crossref import CrossrefEventManager,CrossrefEventSeriesManager
+from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
+
 from lodstorage.uml import UML
 from wikibot.wikiuser import WikiUser
 from wikifile.wikiFileManager import WikiFileManager
@@ -39,13 +41,15 @@ class CorpusLookupConfigure:
             wikiTextPath = f"{home}/.or/wikibackup/{wikiUser.wikiId}"
             wikiFileManager = WikiFileManager(wikiId, wikiTextPath, login=False, debug=debug)
      
-            orDataSource=lookup.getDataSource(lookupId)
-            orDataSource.eventManager.wikiFileManager=wikiFileManager
-            orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
-           
-            orDataSource.eventManager.wikiUser=wikiUser
-            orDataSource.eventSeriesManager.wikiUser=wikiUser
+            if orDataSource is not None:
+                orDataSource.eventManager.wikiFileManager=wikiFileManager
+                orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+      
+            orDataSource=lookup.getDataSource(lookupId)
+            if orDataSource is not None:
+                orDataSource.eventManager.wikiUser=wikiUser
+                orDataSource.eventSeriesManager.wikiUser=wikiUser
         
         pass
 
@@ -53,7 +57,7 @@ class CorpusLookup(object):
     '''
     search and lookup for different EventCorpora
     '''
-    lookupIds=["dblp","crossref","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
+    lookupIds=["confref","crossref","dblp","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
     
 
     def __init__(self,lookupIds:list=None,
@@ -70,6 +74,8 @@ class CorpusLookup(object):
         self.eventCorpus=EventCorpus()
         if lookupIds is None:
             lookupIds=CorpusLookup.lookupIds
+        if "confref" in lookupIds:
+            self.eventCorpus.addDataSource(ConfrefEventManager(),ConfrefEventSeriesManager(),lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tablePrefix="confref")
         if "crossref" in lookupIds:
             self.eventCorpus.addDataSource(CrossrefEventManager(),CrossrefEventSeriesManager(),lookupId="crossref",name="crossref.org",url="https://www.crossref.org/",title="CrossRef",tablePrefix="crossref")
         if "dblp" in lookupIds:
@@ -89,7 +95,7 @@ class CorpusLookup(object):
         
     def getDataSource(self,lookupId:str)->EventDataSource:
         '''
-        get the given data source
+        get the data source by the given lookupId
         
         Args:
             lookupId(str): the lookupId of the data source to get
@@ -102,6 +108,25 @@ class CorpusLookup(object):
         if lookupId in self.eventCorpus.eventDataSources:
             eventDataSource=self.eventCorpus.eventDataSources[lookupId]
         return eventDataSource
+    
+    def getDataSource4TableName(self,tableName:str)->EventDataSource:
+        '''
+        get the data source by the given tableName
+        
+        Args:
+            tableName(str): a tableName of the data source to get
+            
+        Return:
+            EventDataSource: the data source
+
+        '''
+        for eventDataSource in self.eventCorpus.eventDataSources.values():
+            if eventDataSource.eventManager.tableName==tableName:
+                return eventDataSource
+            if eventDataSource.eventSeriesManager.tableName==tableName:
+                return eventDataSource
+        return None
+    
         
     def load(self,forceUpdate:bool=False):
         '''
@@ -122,14 +147,19 @@ class CorpusLookup(object):
         uml=UML()
         now=datetime.now()
         nowYMD=now.strftime("%Y-%m-%d")
+        
         tableList=[]
         for table in storageTableList:
             tableName=table['name']
             if tableName.endswith(baseEntity):
                 if 'instances' in table:
                     instanceNote=""
+                    dataSource=self.getDataSource4TableName(tableName)
+                    if dataSource is not None:
+                        sourceConfig=dataSource.sourceConfig
+                        instanceNote=f"[[{sourceConfig.url} {sourceConfig.title}]]"
                     instanceCount=table['instances']
-                    instanceNote=f"\n{instanceCount} instances "
+                    instanceNote=f"{instanceNote}\n{instanceCount} instances "
                     table['notes']=instanceNote
                 tableList.append(table)
         title=f"""ConfIDent  {baseEntity}
@@ -141,9 +171,9 @@ see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
         return plantUml
         
         
-__version__ = "0.0.7"
+__version__ = "0.0.10"
 __date__ = '2020-06-22'
-__updated__ = '2021-08-02'    
+__updated__ = '2021-08-03'    
 
 DEBUG = 1
 
