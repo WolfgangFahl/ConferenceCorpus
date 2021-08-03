@@ -71,7 +71,8 @@ PREFIX wikibase: <http://wikiba.se/ontology#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT 
-  (?event as ?eventId)  
+  (?event as ?eventId)
+  (?event as ?url)
   ?acronym
   ?ordinal
   #?eventLabel
@@ -107,6 +108,10 @@ WHERE
       ?event wdt:P17 ?countryId . 
       ?countryId rdfs:label ?country filter (lang(?country)   = "en").
   }
+  OPTIONAL {
+      ?event wdt:P276 ?locationId.
+      ?locationId rdfs:label ?location filter (lang(?location)   = "en").
+  }
   OPTIONAL { 
     ?event wdt:P179 ?eventInSeriesId . 
     ?eventInSeriesId rdfs:label ?eventInSeries filter (lang(?eventInSeries)   = "en").
@@ -126,12 +131,13 @@ WHERE
   OPTIONAL { ?event wdt:P8926 ?dblpConferenceId . } 
   OPTIONAL { ?event wdt:P5124 ?wikiCfpId . }
   OPTIONAL { ?event wdt:P227 ?gndId. }
+  OPTIONAL { ?event wdt:P214 ?viafId. }
   # labels 
   # works only with WikiData Query Service / blazegraph
   # SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } # provide Label in EN        
   ?event rdfs:label ?title filter (lang(?title)   = "en").
   
-} 
+}
 """
         return query
     
