@@ -12,20 +12,49 @@ from datasources.openresearch import OREventManager,OREventSeriesManager
 from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager
 from datasources.crossref import CrossrefEventManager,CrossrefEventSeriesManager
 from lodstorage.uml import UML
+from wikibot.wikiuser import WikiUser
+from wikifile.wikiFileManager import WikiFileManager
 
 from datetime import datetime
 
 import os
+from os import path
 import sys
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
+
+class CorpusLookupConfigure:
+    @staticmethod
+    def configureCorpusLookup(lookup,debug=False):
+        '''
+        callback to configure the corpus lookup
+        '''
+        print("configureCorpusLookup callback called")
+        
+        for lookupId in ["or","orclone"]:
+            wikiId=lookupId
+            wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
+            home = path.expanduser("~")
+            wikiTextPath = f"{home}/.or/wikibackup/{wikiUser.wikiId}"
+            wikiFileManager = WikiFileManager(wikiId, wikiTextPath, login=False, debug=debug)
+     
+            orDataSource=lookup.getDataSource(lookupId)
+            orDataSource.eventManager.wikiFileManager=wikiFileManager
+            orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
+           
+            orDataSource.eventManager.wikiUser=wikiUser
+            orDataSource.eventSeriesManager.wikiUser=wikiUser
+        
+        pass
 
 class CorpusLookup(object):
     '''
     search and lookup for different EventCorpora
     '''
     lookupIds=["dblp","crossref","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
+    
 
     def __init__(self,lookupIds:list=None,
                  configure:callable=None,debug=False):
@@ -162,7 +191,7 @@ USAGE
         args = parser.parse_args()   
         Wikidata.endpoint=args.endpoint
         lookupIds=args.datasources.split(",")
-        lookup=CorpusLookup(debug=args.debug,lookupIds=lookupIds)
+        lookup=CorpusLookup(debug=args.debug,lookupIds=lookupIds,configure=CorpusLookupConfigure.configureCorpusLookup)
         lookup.load(forceUpdate=args.forceUpdate)
         if args.uml:
             for baseEntity in ["Event","EventSeries"]:
