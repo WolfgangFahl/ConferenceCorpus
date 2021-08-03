@@ -101,7 +101,8 @@ class OREventManager(EventManager):
             { 'prop':'Start date',          'name': 'startDate',       'templateParam': "Start date"},
             { 'prop':'Title',               'name': 'title',           'templateParam': "Title"},
             { 'prop':'Accepted papers',     'name': 'acceptedPapers',  'templateParam': "Accepted papers"},
-            { 'prop':'Submitted papers',    'name': 'submittedPapers', 'templateParam': "Submitted papers"}
+            { 'prop':'Submitted papers',    'name': 'submittedPapers', 'templateParam': "Submitted papers"},
+            { 'prop':'presence',            'name': 'presence',         'templateParam': "presence"}
     ]
 
     '''
