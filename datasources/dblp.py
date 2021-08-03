@@ -28,12 +28,21 @@ class DblpEvent(Event):
         '''
         if 'url' in rawEvent:
             rawEvent["url"]=f"https://dblp.org/{rawEvent['url']}" 
-        if "year" in rawEvent and "booktitle" in rawEvent:
-            booktitle=rawEvent['booktitle']
-            year=rawEvent['year']
-            if booktitle is not None and year is not None:
-                acronym=f"{booktitle} {year}"
-                rawEvent["acronym"]=acronym 
+        if "year" in rawEvent:
+            # set year to integer value
+            yearStr=rawEvent['year']
+            year = None
+            try:
+                year=int(yearStr)
+            except Exception as _ne:
+                pass
+            rawEvent['year']=year
+            # if there is a booktitle create acronym
+            if "booktitle" in rawEvent:
+                booktitle=rawEvent['booktitle']
+                if booktitle is not None and year is not None:
+                    acronym=f"{booktitle} {year}"
+                    rawEvent["acronym"]=acronym 
         doiprefix="https://doi.org/"
         if 'ee' in rawEvent:
             ees=rawEvent['ee']

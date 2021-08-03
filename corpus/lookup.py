@@ -1,5 +1,5 @@
 '''
-Created on 2021-07-39
+Created on 2021-07-30
 
 @author: wf
 '''
@@ -196,7 +196,7 @@ USAGE
         if args.uml:
             for baseEntity in ["Event","EventSeries"]:
                 plantUml=lookup.asPlantUml(baseEntity)
-            print(plantUml)
+                print(plantUml)
         
         
     except KeyboardInterrupt:

@@ -167,7 +167,7 @@ class OREventManager(EventManager):
         '''
         self.smwHandler.fromWikiFileManager(wikiFileManager)
         
-    def fixRawEvents(self,listOfDicts:list):
+    def fixRawEvents(self,listOfDicts:list,wikiUser:WikiUser=None):
         '''
         fix the given list of Dicts with raw Events
         
@@ -175,7 +175,7 @@ class OREventManager(EventManager):
             listOfDicts(list): the list of raw Events to fix
         '''
         for rawEvent in listOfDicts:
-            OREvent.fixRawEvent(rawEvent)
+            OREvent.fixRawEvent(rawEvent,wikiUser)
 
     def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False):
         '''
@@ -189,7 +189,8 @@ class OREventManager(EventManager):
             wikiuser=self.wikiUser
         lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
         self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
-        self.fixRawEvents(lod)
+        
+        self.fixRawEvents(lod,wikiUser=wikiuser)
         return lod
 
     def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
@@ -201,7 +202,7 @@ class OREventManager(EventManager):
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         # TODO set source more specific
         self.setAllAttr(lod,"source","or")
-        self.fixRawEvents(lod)
+        self.fixRawEvents(lod,wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser)
         return lod
 
 
@@ -336,13 +337,19 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
         return samplesWikiSon
     
     @staticmethod
-    def fixRawEvent(rawEvent:dict):
+    def fixRawEvent(rawEvent:dict,wikiUser=None):
         '''
         fix the given raw Event
         
         Args:
             rawEvent(dict): the raw event record to fix
         '''
+        if wikiUser is not None:
+            baseUrl=wikiUser.getWikiUrl()
+            if 'pageTitle' in rawEvent:
+                pageTitle=rawEvent["pageTitle"]
+                url=f"{baseUrl}index.php?title={pageTitle}"
+                rawEvent['url']=url
         rawEvent['eventId']=rawEvent['pageTitle']
         if 'year' in rawEvent:
             yearStr=rawEvent['year']
