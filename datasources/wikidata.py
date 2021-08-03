@@ -26,6 +26,20 @@ class WikidataEvent(Event):
     event derived from Wikidata
     '''
     
+    @staticmethod
+    def fixRawEvent(rawEvent:dict):
+        '''
+        fix the given raw Event
+        
+        Args:
+            rawEvent(dict): the raw event record to fix
+        '''
+        if 'startDate' in rawEvent:
+            startDate=rawEvent['startDate']
+            if startDate:
+                rawEvent['year']=startDate.year
+                pass
+    
 class WikidataEventManager(EventManager):
     '''
     manage wikidata derived scientific events
@@ -129,6 +143,8 @@ WHERE
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
         self.setAllAttr(listOfDicts,"source","dblp")
+        for rawEvent in listOfDicts:
+            WikidataEvent.fixRawEvent(rawEvent)
         return listOfDicts
     
 class WikidataEventSeriesManager(EventSeriesManager):

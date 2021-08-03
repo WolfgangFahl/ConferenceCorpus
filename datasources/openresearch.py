@@ -166,6 +166,16 @@ class OREventManager(EventManager):
             wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
         '''
         self.smwHandler.fromWikiFileManager(wikiFileManager)
+        
+    def fixRawEvents(self,listOfDicts:list):
+        '''
+        fix the given list of Dicts with raw Events
+        
+        Args: 
+            listOfDicts(list): the list of raw Events to fix
+        '''
+        for rawEvent in listOfDicts:
+            OREvent.fixRawEvent(rawEvent)
 
     def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False):
         '''
@@ -179,6 +189,7 @@ class OREventManager(EventManager):
             wikiuser=self.wikiUser
         lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
         self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
+        self.fixRawEvents(lod)
         return lod
 
     def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
@@ -190,6 +201,7 @@ class OREventManager(EventManager):
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         # TODO set source more specific
         self.setAllAttr(lod,"source","or")
+        self.fixRawEvents(lod)
         return lod
 
 
@@ -268,7 +280,8 @@ class OREvent(Event):
                 'title': "The 8th International Conference on Interaction Design and Children",
                 'pageTitle': 'IDC 2009',
                 'ordinal': 8,
-                year:2009
+                'year':2009,
+                'yearStr':'2009'
             }
 
         ]
@@ -321,6 +334,25 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
             samplesWikiSon = "..."
 
         return samplesWikiSon
+    
+    @staticmethod
+    def fixRawEvent(rawEvent:dict):
+        '''
+        fix the given raw Event
+        
+        Args:
+            rawEvent(dict): the raw event record to fix
+        '''
+        rawEvent['eventId']=rawEvent['pageTitle']
+        if 'year' in rawEvent:
+            yearStr=rawEvent['year']
+            rawEvent['yearStr']=yearStr
+            year = None
+            try:
+                year=int(yearStr)
+            except Exception as _ne:
+                pass
+            rawEvent['year']=year
 
 
 class OREventSeriesManager(EventSeriesManager):

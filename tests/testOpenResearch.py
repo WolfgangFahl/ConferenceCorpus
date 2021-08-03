@@ -37,7 +37,7 @@ class TestOpenResearch(DataSourceTest):
         tests the getting conferences form wiki markup files
         '''
         lookup=CorpusLookup(lookupIds=["or","or-backup","orclone","orclone-backup"],configure=self.configureCorpusLookup)
-        lookup.load()
+        lookup.load(forceUpdate=False)
         orDataSource=lookup.getDataSource("or-backup")
         self.checkDataSource(orDataSource,1000,8000)
         orDataSource=lookup.getDataSource("orclone-backup")

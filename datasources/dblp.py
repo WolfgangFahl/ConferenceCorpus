@@ -17,6 +17,31 @@ class DblpEvent(Event):
         '''constructor '''
         super().__init__()
         pass
+    
+    @staticmethod
+    def fixRawEvent(rawEvent:dict):
+        '''
+        fix the given raw Event
+        
+        Args:
+            rawEvent(dict): the raw event record to fix
+        '''
+        if 'url' in rawEvent:
+            rawEvent["url"]=f"https://dblp.org/{rawEvent['url']}" 
+        if "year" in rawEvent and "booktitle" in rawEvent:
+            booktitle=rawEvent['booktitle']
+            year=rawEvent['year']
+            if booktitle is not None and year is not None:
+                acronym=f"{booktitle} {year}"
+                rawEvent["acronym"]=acronym 
+        doiprefix="https://doi.org/"
+        if 'ee' in rawEvent:
+            ees=rawEvent['ee']
+            if ees:
+                for ee in ees.split(","):
+                    if ee.startswith(doiprefix):
+                        doi=ee.replace(doiprefix,"")
+                        rawEvent["doi"]=doi 
 
 
 class DblpEventSeries(EventSeries):
@@ -71,6 +96,8 @@ class DblpEventManager(EventManager):
         order by series,year"""
         listOfDicts = self.sqlDb.query(query)
         self.setAllAttr(listOfDicts,"source","dblp")
+        for rawEvent in listOfDicts:
+            DblpEvent.fixRawEvent(rawEvent)
         return listOfDicts
 
 class DblpEventSeriesManager(EventSeriesManager):

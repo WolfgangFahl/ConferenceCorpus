@@ -61,7 +61,7 @@ class TestCorpusLookup(DataSourceTest):
         for baseEntity in ["Event","EventSeries"]:
             plantUml=lookup.asPlantUml(baseEntity)
             debug=self.debug
-            ##debug=True
+            debug=True
             if debug:
                 print(plantUml)
             self.assertTrue(f"{baseEntity} <|-- dblp_{baseEntity}" in plantUml)
