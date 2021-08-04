@@ -4,9 +4,6 @@ Created on 2021-04-16
 @author: wf
 '''
 from corpus.event import EventManager, EventSeriesManager
-from lodstorage.entity import EntityManager
-from lodstorage.sql import SQLDB
-from lodstorage.storageconfig import StoreMode
 
 class EventDataSourceConfig(object):
     '''

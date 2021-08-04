@@ -39,24 +39,65 @@ class EventStorage:
             config.cacheFile=f"{cachedir}/EventCorpus.db"
         return config
     
-    @staticmethod
-    def getTableList()->list:
+    @classmethod
+    def getSqlDB(cls):
+        '''
+        get the SQL Database
+        '''
+        config=EventStorage.getStorageConfig()
+        sqlDB=SQLDB(config.cacheFile)
+        return sqlDB
+    
+    @classmethod
+    def getTableList(cls,withInstanceCount:bool=True)->list:
         '''
         get the list of SQL Tables involved
         
         Return:
             list: the map of SQL tables used for caching
+            withInstanceCount(bool): if TRUE add the count of instances to the table Map 
         '''
-        config=EventStorage.getStorageConfig()
-        
-        sqlDB=SQLDB(config.cacheFile)
+        sqlDB=EventStorage.getSqlDB()
         tableList=sqlDB.getTableList()
         for table in tableList:
             tableName=table["name"]
-            countQuery="SELECT count(*) as count from %s" % tableName
-            countResult=sqlDB.query(countQuery)
-            table['instances']=countResult[0]['count']
+            if withInstanceCount:
+                countQuery="SELECT count(*) as count from %s" % tableName
+                countResult=sqlDB.query(countQuery)
+                table['instances']=countResult[0]['count']
         return tableList
+    
+    @classmethod
+    def getCommonViewDDL(cls):
+        '''
+        get the SQL DDL for a common view 
+        
+        Return:
+            str: the SQL DDL CREATE VIEW command
+        '''
+        common="eventId,title,url,acronym,source,year"
+        viewDDL="""CREATE VIEW IF NOT EXISTS event AS\n"""
+        delim=""
+        sqlDB=EventStorage.getSqlDB()
+        tableList=sqlDB.getTableList()
+        for table in tableList:
+            tableName=table["name"]
+            if tableName.endswith("Event"):
+                viewDDL=f"{viewDDL}{delim}  SELECT {common} FROM {tableName}"
+                delim="\nUNION\n" 
+        return viewDDL
+    
+    @classmethod
+    def createView(cls):
+        ''' 
+          create the general Event view
+          
+        Args:
+            cacheFileName(string): the path to the database
+        '''
+        sqlDB=EventStorage.getSqlDB()
+        viewDDL=EventStorage.getCommonViewDDL()
+        sqlDB.c.execute(viewDDL)
     
 
 class Event(JSONAble):

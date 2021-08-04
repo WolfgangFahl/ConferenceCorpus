@@ -50,6 +50,15 @@ class TestCorpusLookup(DataSourceTest):
         lookup.load()
         self.assertEqual(9,len(lookup.eventCorpus.eventDataSources))
         
+    def testViewDDL(self):
+        '''
+        test the view DDL
+        '''
+        viewDDL=EventStorage.getCommonViewDDL()
+        if self.debug:
+            print(viewDDL)
+        self.assertTrue("CREATE VIEW" in viewDDL)
+        
     def testDataSource4Table(self):
         '''
         test getting datasources by table name

@@ -33,7 +33,7 @@ class CorpusLookupConfigure:
         callback to configure the corpus lookup
         '''
         print("configureCorpusLookup callback called")
-        
+        # TODO make wikiIds configurable for testing e.g. with pyMediaWikiDocker
         for lookupId in ["or","orclone"]:
             wikiId=lookupId
             wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
@@ -137,6 +137,7 @@ class CorpusLookup(object):
         if self.configure:
             self.configure(self)
         self.eventCorpus.loadAll(forceUpdate=forceUpdate)
+        EventStorage.createView()
         
     def asPlantUml(self,baseEntity='Event'):
         '''
