@@ -25,6 +25,7 @@ import sys
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
+from lodstorage.query import QueryManager
 
 class CorpusLookupConfigure:
     @staticmethod
@@ -75,23 +76,23 @@ class CorpusLookup(object):
         if lookupIds is None:
             lookupIds=CorpusLookup.lookupIds
         if "confref" in lookupIds:
-            self.eventCorpus.addDataSource(ConfrefEventManager(),ConfrefEventSeriesManager(),lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tablePrefix="confref")
+            self.eventCorpus.addDataSource(ConfrefEventManager(),ConfrefEventSeriesManager(),lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tableSuffix="confref")
         if "crossref" in lookupIds:
-            self.eventCorpus.addDataSource(CrossrefEventManager(),CrossrefEventSeriesManager(),lookupId="crossref",name="crossref.org",url="https://www.crossref.org/",title="CrossRef",tablePrefix="crossref")
+            self.eventCorpus.addDataSource(CrossrefEventManager(),CrossrefEventSeriesManager(),lookupId="crossref",name="crossref.org",url="https://www.crossref.org/",title="CrossRef",tableSuffix="crossref")
         if "dblp" in lookupIds:
-            self.eventCorpus.addDataSource(DblpEventManager(),DblpEventSeriesManager(),lookupId="dblp",name="dblp",url='https://dblp.org/',title='dblp computer science bibliography',tablePrefix="dblp")
+            self.eventCorpus.addDataSource(DblpEventManager(),DblpEventSeriesManager(),lookupId="dblp",name="dblp",url='https://dblp.org/',title='dblp computer science bibliography',tableSuffix="dblp")
         if "wikidata" in lookupIds: 
-            self.eventCorpus.addDataSource(WikidataEventManager(),WikidataEventSeriesManager(),lookupId="wikidata",name="Wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata',tablePrefix="wikidata")
+            self.eventCorpus.addDataSource(WikidataEventManager(),WikidataEventSeriesManager(),lookupId="wikidata",name="Wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata',tableSuffix="wikidata")
         if "wikicfp" in lookupIds:    
-            self.eventCorpus.addDataSource(WikiCfpEventManager(),WikiCfpEventSeriesManager(),lookupId="wikicfp",name="WikiCFP",url='http://www.wikicfp.com',title='WikiCFP',tablePrefix="wikicfp")
+            self.eventCorpus.addDataSource(WikiCfpEventManager(),WikiCfpEventSeriesManager(),lookupId="wikicfp",name="WikiCFP",url='http://www.wikicfp.com',title='WikiCFP',tableSuffix="wikicfp")
         if "or" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or",name="OR_Triples",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-api',tablePrefix="orapi")
+            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or",name="OR_Triples",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-api',tableSuffix="orapi")
         if "or-backup" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or-backup",name="OR_Markup",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-wiki',tablePrefix="orwiki")
+            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or-backup",name="OR_Markup",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-wiki',tableSuffix="orwiki")
         if "orclone" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone",name="OR_Clone_Triples",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-api',tablePrefix="orcapi")
+            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone",name="OR_Clone_Triples",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-api',tableSuffix="orcapi")
         if "orclone-backup" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone-backup",name="OR_Clone_Markup",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-wiki',tablePrefix="orcwiki")
+            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone-backup",name="OR_Clone_Markup",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-wiki',tableSuffix="orcwiki")
         
     def getDataSource(self,lookupId:str)->EventDataSource:
         '''
@@ -138,6 +139,36 @@ class CorpusLookup(object):
             self.configure(self)
         self.eventCorpus.loadAll(forceUpdate=forceUpdate)
         EventStorage.createView()
+        
+    def getQueryManager(self):
+        '''
+        get the query manager
+        '''
+        cachedir=EventStorage.getStorageConfig().getCachePath() 
+        for path in cachedir,os.path.dirname(__file__)+"/../resources":
+            qYamlFile=f"{path}/queries.yaml"
+            if os.path.isfile(qYamlFile):
+                qm=QueryManager(lang='sql',debug=self.debug,path=path)
+                return qm
+        return None
+    
+    def getLod4Query(self,query:str):
+        '''
+        Args:
+            query: the query to run
+        Return:
+            list: the list of dicts for the query
+        '''
+        sqlDB=EventStorage.getSqlDB()
+        listOfDicts=sqlDB.query(query)
+        return listOfDicts
+        
+    def performQuery(self,query:str):
+        '''
+        Args:
+            query: the query to run
+        '''
+        
         
     def asPlantUml(self,baseEntity='Event'):
         '''
@@ -212,6 +243,7 @@ USAGE
         datasourcesDefault=",".join(CorpusLookup.lookupIds)
         parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
         parser.add_argument("-d", "--debug", dest="debug", action="store_true", help="show debug info")
+        parser.add_argument("-q", "--query",help="run the given query")
         parser.add_argument('-e', '--endpoint', default=Wikidata.endpoint, help="SPARQL endpoint to use for wikidata queries")     
         parser.add_argument('-v', '--version', action='version', version=program_version_message)
         parser.add_argument("-u", "--uml", dest="uml", action="store_true", help="output plantuml diagram markup")
@@ -228,6 +260,8 @@ USAGE
             for baseEntity in ["Event","EventSeries"]:
                 plantUml=lookup.asPlantUml(baseEntity)
                 print(plantUml)
+        if args.query:
+            lookup.query(args.query)
         
         
     except KeyboardInterrupt:

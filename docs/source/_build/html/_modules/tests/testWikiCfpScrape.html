@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>tests.testWikiCfpScrape &mdash; ConferenceCorpus  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ConferenceCorpus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../corpus.html">corpus package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../datasources.html">datasources package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup.html">setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smw.html">smw package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">tests package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ConferenceCorpus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>tests.testWikiCfpScrape</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tests.testWikiCfpScrape</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 2020-08-20</span>
+
+<span class="sd">@author: wf</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">datasources.wikicfpscrape</span> <span class="kn">import</span> <span class="n">WikiCfpScrape</span><span class="p">,</span> <span class="n">WikiCfpEventFetcher</span><span class="p">,</span> <span class="n">CrawlType</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span> <span class="nn">jsonpickle</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<div class="viewcode-block" id="TestWikiCFP"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP">[docs]</a><span class="k">class</span> <span class="nc">TestWikiCFP</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    test events from WikiCFP</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="TestWikiCFP.setUp"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wikiCFPDown</span><span class="o">=</span><span class="kc">True</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="TestWikiCFP.tearDown"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="TestWikiCFP.printDelimiterCount"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.printDelimiterCount">[docs]</a>    <span class="k">def</span> <span class="nf">printDelimiterCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">names</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        print the count of the most common used delimiters in the given name list</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">ordC</span><span class="o">=</span><span class="n">Counter</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="n">code</span><span class="o">=</span><span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">code</span><span class="o">&lt;</span><span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">):</span>
+                        <span class="n">ordC</span><span class="p">[</span><span class="n">code</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">countT</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ordC</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">10</span><span class="p">)):</span>
+            <span class="n">code</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="n">countT</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">: </span><span class="si">%d</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> -&gt; </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">code</span><span class="p">,</span><span class="nb">chr</span><span class="p">(</span><span class="n">code</span><span class="p">),</span><span class="n">count</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestWikiCFP.testCrawledJsonFiles"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testCrawledJsonFiles">[docs]</a>    <span class="k">def</span> <span class="nf">testCrawledJsonFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the crawl files</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">wikiCfpScrape</span><span class="o">=</span><span class="n">WikiCfpScrape</span><span class="p">()</span>
+        <span class="n">crawlFiles</span><span class="o">=</span><span class="n">wikiCfpScrape</span><span class="o">.</span><span class="n">jsonFiles</span><span class="p">()</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;found </span><span class="si">%d</span><span class="s2"> wikiCFP crawl files&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">crawlFiles</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">crawlFiles</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">70</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="TestWikiCFP.testJsonPickleDateTime"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testJsonPickleDateTime">[docs]</a>    <span class="k">def</span> <span class="nf">testJsonPickleDateTime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        test the JsonPickle datetime encoding mystery</span>
+<span class="sd">        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">d</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="s2">&quot;2021-07-31&quot;</span><span class="p">)</span>
+        <span class="n">dp</span><span class="o">=</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">dp</span><span class="p">)</span>
+        <span class="n">d2</span><span class="o">=</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">dp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">d2</span><span class="p">)</span></div>
+        
+
+<div class="viewcode-block" id="TestWikiCFP.testWikiCFP"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testWikiCFP">[docs]</a>    <span class="k">def</span> <span class="nf">testWikiCFP</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        test event handling from WikiCFP</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">wikiCFP</span><span class="o">=</span><span class="n">WikiCfpScrape</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wikiCFP</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">isCached</span><span class="p">():</span>
+            <span class="n">wikiCFP</span><span class="o">.</span><span class="n">cacheEvents</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wikiCFP</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">fromStore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">wikiCFP</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">isCached</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wikiCFP</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">events</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">80000</span><span class="p">)</span>
+        <span class="n">names</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">wikiCFP</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">locality</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDelimiterCount</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="TestWikiCFP.testInvalidUrl"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testInvalidUrl">[docs]</a>    <span class="k">def</span> <span class="nf">testInvalidUrl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        make sure only valid urls are accepted</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">eventFetcher</span><span class="o">=</span><span class="n">WikiCfpEventFetcher</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">eventFetcher</span><span class="o">.</span><span class="n">fromUrl</span><span class="p">(</span><span class="s2">&quot;http://google.com&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;invalid url should raise an exception&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="TestWikiCFP.testEventScraping"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testEventScraping">[docs]</a>    <span class="k">def</span> <span class="nf">testEventScraping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        test scraping the given event</span>
+
+<span class="sd">         test &quot;This item has been deleted&quot; WikiCFP items</span>
+<span class="sd">        e.g.</span>
+<span class="sd">        http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid=3</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">eventIds</span><span class="o">=</span><span class="p">[</span><span class="mi">3862</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">isDeleted</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">]</span>
+        <span class="n">event</span><span class="o">=</span><span class="n">WikiCfpEventFetcher</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">eventId</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">eventIds</span><span class="p">):</span>
+                <span class="n">rawEvent</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">fromEventId</span><span class="p">(</span><span class="n">eventId</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                    <span class="nb">print</span> <span class="p">(</span><span class="n">rawEvent</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">isDeleted</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">==</span><span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;deleted&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handleError</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>    </div>
+            
+<div class="viewcode-block" id="TestWikiCFP.testGettingEventSeriesForEvent"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testGettingEventSeriesForEvent">[docs]</a>    <span class="k">def</span> <span class="nf">testGettingEventSeriesForEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        test extracting the event series id from th event page</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+        <span class="n">expectedSeriesId</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1769&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span>
+        <span class="n">eventIds</span><span class="o">=</span><span class="p">[</span><span class="mi">1974</span><span class="p">,</span><span class="mi">139964</span><span class="p">]</span>
+        <span class="n">event</span><span class="o">=</span><span class="n">WikiCfpEventFetcher</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mf">3.5</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">eventId</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">eventIds</span><span class="p">):</span>
+                <span class="n">rawEvent</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">fromEventId</span><span class="p">(</span><span class="n">eventId</span><span class="p">)</span>
+                <span class="n">expected</span><span class="o">=</span><span class="n">expectedSeriesId</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">expected</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span><span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;seriesId&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s1">&#39;seriesId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                    <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">rawEvent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handleError</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span></div>
+            
+<div class="viewcode-block" id="TestWikiCFP.testGettingLatestEvent"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testGettingLatestEvent">[docs]</a>    <span class="k">def</span> <span class="nf">testGettingLatestEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the latest event Id with a binary search</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1">#latestEvent=WikiCFPEventFetcher.getLatestEvent(showProgress=True)</span>
+        <span class="k">pass</span></div>
+    
+<div class="viewcode-block" id="TestWikiCFP.testCrawlType"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testCrawlType">[docs]</a>    <span class="k">def</span> <span class="nf">testCrawlType</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        test CrawlType enumeration</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">crawlType</span> <span class="ow">in</span> <span class="n">CrawlType</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">crawlType</span><span class="o">.</span><span class="n">urlPrefix</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">crawlType</span><span class="o">.</span><span class="n">urlPrefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="TestWikiCFP.handleError"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.handleError">[docs]</a>    <span class="k">def</span> <span class="nf">handleError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ex</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wikiCFPDown</span> <span class="ow">and</span> <span class="s2">&quot;timed out&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WikiCFP is down and we can&#39;t do anything about it&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestWikiCFP.testCrawlEvents"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfpScrape.TestWikiCFP.testCrawlEvents">[docs]</a>    <span class="k">def</span> <span class="nf">testCrawlEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        test crawling a few events and storing the result to a json file</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span> 
+            <span class="n">wikiCfpScrape</span><span class="o">=</span><span class="n">WikiCfpScrape</span><span class="p">()</span>
+            <span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
+            <span class="k">for</span> <span class="n">crawlType</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CrawlType</span><span class="o">.</span><span class="n">SERIES</span><span class="p">]:</span>
+                <span class="n">jsonFilePath</span><span class="o">=</span><span class="n">wikiCfpScrape</span><span class="o">.</span><span class="n">crawl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span><span class="n">crawlType</span><span class="p">)</span>
+                <span class="n">size</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">jsonFilePath</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;JSON file for </span><span class="si">{</span><span class="n">crawlType</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> has size </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">size</span><span class="o">&gt;</span><span class="mi">5000</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">crawlType</span> <span class="ow">is</span> <span class="n">crawlType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">:</span>
+                    <span class="n">batchEm</span><span class="o">=</span><span class="n">wikiCfpScrape</span><span class="o">.</span><span class="n">getEventManager</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span>
+                    <span class="n">batchEm</span><span class="o">.</span><span class="n">fromStore</span><span class="p">(</span><span class="n">cacheFile</span><span class="o">=</span><span class="n">jsonFilePath</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batchEm</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span><span class="n">limit</span><span class="p">)</span>
+                <span class="n">inspect</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># if setting to True make sure tmp is on same filesystem</span>
+                <span class="c1"># see https://stackoverflow.com/questions/42392600/oserror-errno-18-invalid-cross-device-link</span>
+                <span class="k">if</span> <span class="n">inspect</span><span class="p">:</span>
+                    <span class="n">tmpPath</span><span class="o">=</span><span class="s2">&quot;/tmp/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">jsonFilePath</span><span class="p">)</span>
+                    <span class="n">Path</span><span class="p">(</span><span class="n">jsonFilePath</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmpPath</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handleError</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span></div></div>
+            
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1">#import sys;sys.argv = [&#39;&#39;, &#39;Test.testName&#39;]</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Wolfgang Fahl.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -9,7 +9,7 @@ class EventDataSourceConfig(object):
     '''
     holds configuration parameters for an EventDataSource
     '''
-    def __init__(self,lookupId:str,name:str,title:str,url:str,tablePrefix:str):
+    def __init__(self,lookupId:str,name:str,title:str,url:str,tableSuffix:str):
         '''
         constructor 
         
@@ -18,13 +18,13 @@ class EventDataSourceConfig(object):
           name(str): the name of the data source
           title(str): the title of the data source
           url(str): the link to the data source homepage
-          tablePrefix(str): the tablePrefix to use
+          tableSuffix(str): the tableSuffix to use
         '''  
         self.lookupId=lookupId
         self.name=name
         self.title=title
         self.url=url
-        self.tablePrefix=tablePrefix
+        self.tableSuffix=tableSuffix
 
 class EventDataSource(object):
     '''
@@ -43,9 +43,9 @@ class EventDataSource(object):
         self.sourceConfig=sourceConfig
         self.name=self.sourceConfig.name
         self.eventManager=eventManager
-        self.eventManager.tableName=f"{self.sourceConfig.tablePrefix}_Event"
+        self.eventManager.tableName=f"event_{self.sourceConfig.tableSuffix}"
         self.eventSeriesManager=eventSeriesManager
-        self.eventSeriesManager.tableName=f"{self.sourceConfig.tablePrefix}_EventSeries"
+        self.eventSeriesManager.tableName=f"eventseries_{self.sourceConfig.tableSuffix}"
         pass
         
     def load(self,forceUpdate=False):
@@ -77,7 +77,7 @@ class EventCorpus(object):
         self.verbose=verbose
         self.eventDataSources={}
 
-    def addDataSource(self, eventManager:EventManager, eventSeriesManager:EventSeriesManager, lookupId:str,name:str, title:str, url:str,tablePrefix:str):
+    def addDataSource(self, eventManager:EventManager, eventSeriesManager:EventSeriesManager, lookupId:str,name:str, title:str, url:str,tableSuffix:str):
         '''
         adds the given set as a eventDataSource to the data sources of this EventCorpus
         
@@ -88,9 +88,9 @@ class EventCorpus(object):
             name(str): the name of the data source
             title(str): the title of the data source
             url(str): the link to the data source homepage
-            tablePrefix(str): the tablePrefix to use
+            tableSuffix(str): the tableSuffix to use
         '''
-        eventDataSourceConfig=EventDataSourceConfig(lookupId,name,title,url,tablePrefix)
+        eventDataSourceConfig=EventDataSourceConfig(lookupId,name,title,url,tableSuffix)
         eventDataSource=EventDataSource(eventManager,eventSeriesManager,eventDataSourceConfig)
         self.eventDataSources[lookupId]=eventDataSource
         pass

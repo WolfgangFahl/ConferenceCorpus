@@ -1,0 +1,713 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>datasources.wikicfpscrape &mdash; ConferenceCorpus  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ConferenceCorpus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../corpus.html">corpus package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../datasources.html">datasources package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup.html">setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smw.html">smw package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">tests package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ConferenceCorpus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>datasources.wikicfpscrape</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for datasources.wikicfpscrape</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 2020-08-20</span>
+
+
+<span class="sd">  script to read event metadata from http://wikicfp.com</span>
+<span class="sd">  </span>
+<span class="sd">  use: python3 wikicfp.py [startId] [stopId] [threads]</span>
+<span class="sd">  @param startId</span>
+<span class="sd">  @param stopId</span>
+<span class="sd">  @param threads - number of threads the script should create to improve performance</span>
+<span class="sd">  </span>
+<span class="sd">  example: python3 wikicfp.py --startId 2000 --stopId 2999 10</span>
+
+<span class="sd">  @author:     svantje, wf</span>
+<span class="sd">  @copyright:  2020-2021 TIB Hannover, Wolfgang Fahl. All rights reserved.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">datasources.wikicfp</span> 
+<span class="kn">from</span> <span class="nn">datasources.webscrape</span> <span class="kn">import</span> <span class="n">WebScrape</span>
+<span class="kn">from</span> <span class="nn">corpus.event</span> <span class="kn">import</span> <span class="n">EventStorage</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span>
+<span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">RawDescriptionHelpFormatter</span>
+<span class="kn">from</span> <span class="nn">lodstorage.jsonpicklemixin</span> <span class="kn">import</span> <span class="n">JsonPickleMixin</span>
+<span class="kn">import</span> <span class="nn">jsonpickle</span>
+
+<div class="viewcode-block" id="CrawlType"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.CrawlType">[docs]</a><span class="k">class</span> <span class="nc">CrawlType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    possible supported storage modes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">EVENT</span> <span class="o">=</span> <span class="s2">&quot;Event&quot;</span>      
+    <span class="n">SERIES</span> <span class="o">=</span> <span class="s2">&quot;Series&quot;</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">urlPrefix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">baseUrl</span><span class="o">=</span><span class="s2">&quot;http://www.wikicfp.com/cfp&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">==</span><span class="n">CrawlType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">:</span>
+            <span class="n">url</span><span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">baseUrl</span><span class="si">}</span><span class="s2">/servlet/event.showcfp?eventid=&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">==</span><span class="n">CrawlType</span><span class="o">.</span><span class="n">SERIES</span><span class="p">:</span>
+            <span class="n">url</span><span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">baseUrl</span><span class="si">}</span><span class="s2">/program?id=&quot;</span>
+        <span class="k">return</span> <span class="n">url</span></div>
+     
+<div class="viewcode-block" id="WikiCfpScrape"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape">[docs]</a><span class="k">class</span> <span class="nc">WikiCfpScrape</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    support events from http://www.wikicfp.com/cfp/</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">debug</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">200000</span><span class="p">,</span><span class="n">batchSize</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">showProgress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            config(StorageConfig): the storage configuration to use</span>
+<span class="sd">            debug(bool): if True debug for crawling is on</span>
+<span class="sd">            limit(int): maximum number of entries to be crawled</span>
+<span class="sd">            batchSize(int): default size of batches</span>
+<span class="sd">            showProgress(bool): if True show Progress</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batchSize</span><span class="o">=</span><span class="n">batchSize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showProgress</span><span class="o">=</span><span class="n">showProgress</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">em</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getEventManager</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">profile</span>
+        <span class="n">cachePath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getCachePath</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cachePath</span><span class="si">}</span><span class="s2">/wikicfp&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="WikiCfpScrape.getEventManager"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape.getEventManager">[docs]</a>    <span class="k">def</span> <span class="nf">getEventManager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sql&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get an EventManager</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            config(StorageConfig): the storage configuration to use</span>
+<span class="sd">            mode(string): the storage mode to use e.g. &quot;json&quot; - will select a config based on mode if config is None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getStorageConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="n">em</span><span class="o">=</span><span class="n">datasources</span><span class="o">.</span><span class="n">wikicfp</span><span class="o">.</span><span class="n">WikiCfpEventManager</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">em</span></div>
+    
+<div class="viewcode-block" id="WikiCfpScrape.cacheEvents"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape.cacheEvents">[docs]</a>    <span class="k">def</span> <span class="nf">cacheEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        cache my events to my eventmanager</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">jsonEm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getEventManager</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">jsonEm</span><span class="o">.</span><span class="n">isCached</span><span class="p">():</span>
+            <span class="n">jsonEm</span><span class="o">.</span><span class="n">fromStore</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">crawlFilesToJson</span><span class="p">(</span><span class="n">jsonEm</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">jsonEm</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span> <span class="n">batchSize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batchSize</span><span class="p">)</span>    </div>
+        
+<div class="viewcode-block" id="WikiCfpScrape.crawlFilesToJson"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape.crawlFilesToJson">[docs]</a>    <span class="k">def</span> <span class="nf">crawlFilesToJson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">jsonEm</span><span class="p">):</span>    
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        convert the crawlFiles to Json</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            jsonEm(EventManager): the JSON - storage based Eventmanager to use to collect the results</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># crawling is not done on startup but need to be done</span>
+        <span class="c1"># in command line mode ... we just collect the json crawl result files here</span>
+        <span class="c1">#self.crawl(startId=startId,stopId=stopId)</span>
+        <span class="n">startTime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">jsonFiles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jsonFiles</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">jsonFiles</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No wikiCFP crawl json backups available&quot;</span><span class="p">)</span>
+                
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">jsonFilePath</span> <span class="ow">in</span> <span class="n">jsonFiles</span><span class="p">:</span>
+                <span class="c1">#batchEm=self.getEventManager(mode=&#39;jsonpickle&#39;)</span>
+                <span class="c1"># legacy mode -file were created before ORM Mode</span>
+                <span class="c1"># was available - TODO: make new files available in ORM mode with jsonable</span>
+                <span class="n">jsonPickleEm</span><span class="o">=</span><span class="n">JsonPickleMixin</span><span class="o">.</span><span class="n">readJsonPickle</span><span class="p">(</span><span class="n">jsonFileName</span><span class="o">=</span><span class="n">jsonFilePath</span><span class="p">,</span><span class="n">extension</span><span class="o">=</span><span class="s1">&#39;.json&#39;</span><span class="p">)</span>
+                <span class="n">jsonPickleEvents</span><span class="o">=</span><span class="n">jsonPickleEm</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showProgress</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%4d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jsonPickleEvents</span><span class="p">),</span><span class="n">jsonFilePath</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">rawEvent</span> <span class="ow">in</span> <span class="n">jsonPickleEvents</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                    <span class="n">event</span><span class="o">=</span><span class="n">datasources</span><span class="o">.</span><span class="n">wikicfp</span><span class="o">.</span><span class="n">WikiCfpEvent</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="s1">&#39;title&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span> <span class="ow">and</span> <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+                            <span class="n">value</span><span class="o">=</span><span class="n">rawEvent</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+                            <span class="c1"># workaround:</span>
+                            <span class="c1"># check jsonpickle __reduce__ values</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+                                <span class="c1"># we need something like</span>
+                                <span class="c1"># {&quot;py/object&quot;: &quot;datetime.datetime&quot;, &quot;__reduce__&quot;: [{&quot;py/type&quot;: &quot;datetime.datetime&quot;}, [&quot;B+UHHwAAAAAAAA==&quot;]]}</span>
+                                <span class="n">jsonValue</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+                                <span class="n">dvalue</span><span class="o">=</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">jsonValue</span><span class="p">)</span>
+                                <span class="n">value</span><span class="o">=</span><span class="n">dvalue</span>
+                            <span class="c1"># make sure we ignore field like &quot;py/object&quot;</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;py/&quot;</span> <span class="ow">in</span> <span class="n">field</span><span class="p">:</span>
+                                <span class="nb">setattr</span><span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">field</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
+                        <span class="n">event</span><span class="o">.</span><span class="n">source</span><span class="o">=</span><span class="s2">&quot;wikicfp&quot;</span>
+                        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;startDate&#39;</span><span class="p">,</span><span class="s1">&#39;endDate&#39;</span><span class="p">,</span><span class="s1">&#39;locality&#39;</span><span class="p">,</span><span class="s1">&#39;Submission_Deadline&#39;</span><span class="p">,</span><span class="s1">&#39;Notification_Due&#39;</span><span class="p">,</span><span class="s1">&#39;year&#39;</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+                                <span class="nb">setattr</span><span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">field</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">startDate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">event</span><span class="o">.</span><span class="n">year</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">startDate</span><span class="o">.</span><span class="n">year</span>
+                        <span class="n">event</span><span class="o">.</span><span class="n">url</span><span class="o">=</span><span class="n">WikiCfpEventFetcher</span><span class="o">.</span><span class="n">getUrl</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">wikiCFPId</span><span class="p">)</span>
+                        <span class="n">jsonEm</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;read </span><span class="si">%d</span><span class="s2"> events in </span><span class="si">%5.1f</span><span class="s2"> s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jsonEm</span><span class="o">.</span><span class="n">events</span><span class="p">),</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">startTime</span><span class="p">))</span>
+            <span class="n">jsonEm</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span><span class="n">batchSize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batchSize</span><span class="p">)</span></div>
+     
+<div class="viewcode-block" id="WikiCfpScrape.initEventManager"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape.initEventManager">[docs]</a>    <span class="k">def</span> <span class="nf">initEventManager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; initialize my event manager &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">isCached</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cacheEvents</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">fromStore</span><span class="p">()</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">em</span><span class="o">.</span><span class="n">extractCheckedAcronyms</span><span class="p">()</span> </div>
+        
+<div class="viewcode-block" id="WikiCfpScrape.jsonFiles"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape.jsonFiles">[docs]</a>    <span class="k">def</span> <span class="nf">jsonFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the list of the json files that have my data</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">jsonFiles</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="si">}</span><span class="s2">/wikicfp_*.json&quot;</span><span class="p">),</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">path</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span><span class="n">path</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">jsonFiles</span>    </div>
+        
+<div class="viewcode-block" id="WikiCfpScrape.getJsonFileName"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape.getJsonFileName">[docs]</a>    <span class="k">def</span> <span class="nf">getJsonFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">startId</span><span class="p">,</span><span class="n">stopId</span><span class="p">,</span><span class="n">crawlType</span><span class="p">:</span><span class="n">CrawlType</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the JsonFileName for the given startId to stopId</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">jsonFilePath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="o">+</span><span class="s2">&quot;wikicfp_</span><span class="si">%s%06d</span><span class="s2">-</span><span class="si">%06d</span><span class="s2">.json&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">crawlType</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">startId</span><span class="p">,</span><span class="n">stopId</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jsonFilePath</span></div>
+        
+<div class="viewcode-block" id="WikiCfpScrape.crawl"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape.crawl">[docs]</a>    <span class="k">def</span> <span class="nf">crawl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">threadIndex</span><span class="p">,</span><span class="n">startId</span><span class="p">,</span><span class="n">stopId</span><span class="p">,</span><span class="n">crawlType</span><span class="p">:</span><span class="n">CrawlType</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        see https://github.com/TIBHannover/confIDent-dataScraping/blob/master/wikicfp.py</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">startId</span> <span class="o">&lt;=</span> <span class="n">stopId</span><span class="p">:</span> <span class="n">step</span> <span class="o">=</span> <span class="o">+</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;crawling (</span><span class="si">{</span><span class="n">threadIndex</span><span class="si">}</span><span class="s1">) WikiCFP </span><span class="si">{</span><span class="n">crawlType</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">startId</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">stopId</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">jsonFilepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getJsonFileName</span><span class="p">(</span><span class="n">startId</span><span class="p">,</span><span class="n">stopId</span><span class="p">,</span><span class="n">crawlType</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">crawlType</span><span class="o">==</span><span class="n">CrawlType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">:</span>
+            <span class="n">batchEm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getEventManager</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">crawlType</span><span class="o">==</span><span class="n">CrawlType</span><span class="o">.</span><span class="n">SERIES</span><span class="p">:</span>
+            <span class="n">batchEm</span><span class="o">=</span><span class="n">datasources</span><span class="o">.</span><span class="n">wikicfp</span><span class="o">.</span><span class="n">WikiCfpEventSeriesManager</span><span class="p">()</span>
+ 
+        <span class="c1"># get all ids</span>
+        <span class="k">for</span> <span class="n">eventId</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">startId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">stopId</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">step</span><span class="p">):</span>
+            <span class="n">wEvent</span><span class="o">=</span><span class="n">WikiCfpEventFetcher</span><span class="p">(</span><span class="n">crawlType</span><span class="o">=</span><span class="n">crawlType</span><span class="p">)</span>
+            <span class="n">rawEvent</span><span class="o">=</span><span class="n">wEvent</span><span class="o">.</span><span class="n">fromEventId</span><span class="p">(</span><span class="n">eventId</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">crawlType</span> <span class="o">==</span> <span class="n">CrawlType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">:</span>
+                <span class="n">event</span><span class="o">=</span><span class="n">datasources</span><span class="o">.</span><span class="n">wikicfp</span><span class="o">.</span><span class="n">WikiCfpEvent</span><span class="p">()</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">fromDict</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">)</span>
+                <span class="n">batchEm</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;? deleted: </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span><span class="n">event</span><span class="o">.</span><span class="n">deleted</span> <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;title&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span> <span class="k">else</span> <span class="n">event</span><span class="o">.</span><span class="n">title</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%06d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">eventId</span><span class="p">,</span><span class="n">title</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">crawlType</span> <span class="o">==</span> <span class="n">CrawlType</span><span class="o">.</span><span class="n">SERIES</span><span class="p">:</span>
+                <span class="n">eventSeries</span><span class="o">=</span><span class="n">datasources</span><span class="o">.</span><span class="n">wikicfp</span><span class="o">.</span><span class="n">WikiCfpEventSeries</span><span class="p">()</span>
+                <span class="k">pass</span>
+           
+        <span class="k">if</span> <span class="n">crawlType</span> <span class="o">==</span> <span class="n">CrawlType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">:</span>    
+            <span class="n">batchEm</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">cacheFile</span><span class="o">=</span><span class="n">jsonFilepath</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jsonFilepath</span></div>
+            
+<div class="viewcode-block" id="WikiCfpScrape.threadedCrawl"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpScrape.threadedCrawl">[docs]</a>    <span class="k">def</span> <span class="nf">threadedCrawl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">threads</span><span class="p">,</span><span class="n">startId</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span><span class="n">stopId</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span><span class="n">crawlType</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        crawl with the given number of threads, startId and stopId</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">           threads(int): number of threads to use</span>
+<span class="sd">           startId(int): id of the event to start crawling with</span>
+<span class="sd">           stopId(int): id of the event to stop crawling</span>
+<span class="sd">           crawlType(str): the type of crawling (Event or Series)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">crawlType</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">,</span><span class="s2">&quot;Series&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid crawl type </span><span class="si">{</span><span class="n">crawlType</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># determine the eventId range for each threaded job</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">stopId</span><span class="o">-</span><span class="n">startId</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">batchSize</span> <span class="o">=</span> <span class="n">total</span> <span class="o">/</span> <span class="n">threads</span>
+        <span class="n">startTime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        
+        <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Crawling WikiCFP from </span><span class="si">{</span><span class="n">startId</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">stopId</span><span class="si">}</span><span class="s1"> with </span><span class="si">{</span><span class="n">threads</span><span class="si">}</span><span class="s1"> threads with batches of </span><span class="si">{</span><span class="n">batchSize</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">crawlType</span><span class="si">}</span><span class="s1"> IDs each&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># this list will contain all threads -&gt; we can wait for all to finish at the end</span>
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># now start each thread with its id range and own filename</span>
+        <span class="k">for</span> <span class="n">threadIndex</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">threads</span><span class="p">):</span>
+
+            <span class="n">s</span> <span class="o">=</span> <span class="n">startId</span> <span class="o">+</span> <span class="n">threadIndex</span> <span class="o">*</span> <span class="n">batchSize</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">batchSize</span><span class="o">-</span><span class="mi">1</span>
+        
+            <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crawl</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">threadIndex</span><span class="p">,</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span><span class="n">crawlType</span><span class="p">))</span>
+            <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+            
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>   
+
+        <span class="c1"># wait till all threads have finished before print the last output</span>
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;crawling done after </span><span class="si">%5.1f</span><span class="s1"> s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">startTime</span><span class="p">))</span></div></div>
+               
+      
+<div class="viewcode-block" id="WikiCfpEventFetcher"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpEventFetcher">[docs]</a><span class="k">class</span> <span class="nc">WikiCfpEventFetcher</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    a single WikiCfpEentFetcher to fetch and event or series</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">crawlType</span><span class="o">=</span><span class="n">CrawlType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">showProgress</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        construct me</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            showProgress(bool): if True show progress</span>
+<span class="sd">            timeout(float): the default timeout</span>
+<span class="sd">        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crawlType</span><span class="o">=</span><span class="n">crawlType</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showProgress</span><span class="o">=</span><span class="n">showProgress</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progressCount</span><span class="o">=</span><span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
+            
+<div class="viewcode-block" id="WikiCfpEventFetcher.fromTriples"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpEventFetcher.fromTriples">[docs]</a>    <span class="k">def</span> <span class="nf">fromTriples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rawEvent</span><span class="p">,</span><span class="n">triples</span><span class="p">):</span> 
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the rawEvent dict from the given triple e.g.:</span>
+<span class="sd">        </span>
+<span class="sd">        v:Event(v:summary)=IDC 2009</span>
+<span class="sd">        v:Event(v:eventType)=Conference</span>
+<span class="sd">        v:Event(v:startDate)=2009-06-03T00:00:00</span>
+<span class="sd">        v:Event(v:endDate)=2009-06-05T23:59:59</span>
+<span class="sd">        v:Event(v:locality)=Milano, Como, Italy</span>
+<span class="sd">        v:Event(v:description)= IDC  2009 : The 8th International Conference on Interaction Design and Children</span>
+<span class="sd">        v:Address(v:locality)=Milano, Como, Italy</span>
+<span class="sd">        v:Event(v:summary)=Submission Deadline</span>
+<span class="sd">        v:Event(v:startDate)=2009-01-19T00:00:00</span>
+<span class="sd">        v:Event(v:summary)=Notification Due</span>
+<span class="sd">        v:Event(v:startDate)=2009-02-20T00:00:00</span>
+<span class="sd">        v:Event(v:summary)=Final Version Due</span>
+<span class="sd">        v:Event(v:startDate)=2009-03-16T00:00:00</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">recentSummary</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">triples</span><span class="p">:</span>
+            <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;v:&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;v:&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(</span><span class="si">%s</span><span class="s2">)=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">o</span><span class="p">))</span> 
+            <span class="k">if</span> <span class="n">recentSummary</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Submission Deadline&#39;</span><span class="p">,</span><span class="s1">&#39;Notification Due&#39;</span><span class="p">,</span><span class="s1">&#39;Final Version Due&#39;</span><span class="p">]:</span>             
+                <span class="n">key</span><span class="o">=</span><span class="n">recentSummary</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">p</span> 
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;Date&#39;</span><span class="p">):</span>
+                <span class="n">dateStr</span><span class="o">=</span><span class="n">o</span>
+                <span class="k">if</span> <span class="n">dateStr</span><span class="o">==</span><span class="s2">&quot;TBD&quot;</span><span class="p">:</span>
+                    <span class="n">o</span><span class="o">=</span><span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>    
+                    <span class="n">o</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                        <span class="n">dateStr</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span> 
+                <span class="n">rawEvent</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">o</span>    
+            <span class="k">if</span> <span class="n">p</span><span class="o">==</span><span class="s2">&quot;summary&quot;</span><span class="p">:</span> 
+                <span class="n">recentSummary</span><span class="o">=</span><span class="n">o</span> 
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="n">recentSummary</span><span class="o">=</span><span class="kc">None</span></div>
+                
+<div class="viewcode-block" id="WikiCfpEventFetcher.getUrl"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpEventFetcher.getUrl">[docs]</a>    <span class="nd">@staticmethod</span>       
+    <span class="k">def</span> <span class="nf">getUrl</span><span class="p">(</span><span class="n">cfpid</span><span class="p">,</span><span class="n">crawlType</span><span class="p">:</span><span class="n">CrawlType</span><span class="o">=</span><span class="n">CrawlType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            cfpid(int): the WikiCFP id of the event or series</span>
+<span class="sd">            crawlType(CrawlType): Event or Series</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            the WikiCfP url</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">crawlType</span><span class="o">.</span><span class="n">urlPrefix</span><span class="si">}{</span><span class="n">cfpid</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">url</span>   </div>
+    
+<div class="viewcode-block" id="WikiCfpEventFetcher.getLatestEvent"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpEventFetcher.getLatestEvent">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getLatestEvent</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">showProgress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the latest Event doing a binary search</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">wikicfp</span><span class="o">=</span><span class="n">WikiCfpEventFetcher</span><span class="p">(</span><span class="n">debug</span><span class="p">,</span><span class="n">showProgress</span><span class="o">=</span><span class="n">showProgress</span><span class="p">)</span>
+        <span class="n">wikicfp</span><span class="o">.</span><span class="n">progressCount</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">wikicfp</span><span class="o">.</span><span class="n">getLatesEvetFromPair</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="WikiCfpEventFetcher.getHighestNonDeletedIdInRange"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpEventFetcher.getHighestNonDeletedIdInRange">[docs]</a>    <span class="k">def</span> <span class="nf">getHighestNonDeletedIdInRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fromId</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span><span class="n">toId</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the event with the highest id int the range fromId to toId that is not deleted</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            fromId(int): minimum id to search from</span>
+<span class="sd">            toId(int): maximum id to search to</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            int: maxium id of an event that is not deleted or None if there is none in this range</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">maxId</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">for</span> <span class="n">eventId</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">fromId</span><span class="p">,</span><span class="n">toId</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showProgress</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">progressCount</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">progressCount</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">rawEvent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fromEventId</span><span class="p">(</span><span class="n">eventId</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;deleted&#39;</span><span class="p">]:</span>
+                <span class="n">maxId</span><span class="o">=</span><span class="n">eventId</span>
+        <span class="k">return</span> <span class="n">maxId</span></div>
+    
+<div class="viewcode-block" id="WikiCfpEventFetcher.getLatesEvetFromPair"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpEventFetcher.getLatesEvetFromPair">[docs]</a>    <span class="k">def</span> <span class="nf">getLatesEvetFromPair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">low</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span><span class="n">high</span><span class="o">=</span><span class="mi">300000</span><span class="p">,</span><span class="n">margin</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the latest Event doing a binary search</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            low(int): lower index to search from</span>
+<span class="sd">            hight(int): upper index boundary</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">high</span><span class="o">-</span><span class="n">low</span><span class="o">&gt;</span><span class="n">margin</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">mid</span><span class="o">=</span><span class="p">(</span><span class="n">high</span><span class="o">+</span><span class="n">low</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
+            <span class="n">midId</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getHighestNonDeletedIdInRange</span><span class="p">(</span><span class="n">mid</span><span class="o">-</span><span class="n">margin</span><span class="p">,</span> <span class="n">mid</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">midId</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLatesEvetFromPair</span><span class="p">(</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">high</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLatesEvetFromPair</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">mid</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mid</span>
+        <span class="k">pass</span></div>
+                           
+<div class="viewcode-block" id="WikiCfpEventFetcher.fromEventId"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpEventFetcher.fromEventId">[docs]</a>    <span class="k">def</span> <span class="nf">fromEventId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cfpid</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        see e.g. https://github.com/andreeaiana/graph_confrec/blob/master/src/data/WikiCFPCrawler.py</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            cfpid(int): the wikicfp id to use</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">WikiCfpEventFetcher</span><span class="o">.</span><span class="n">getUrl</span><span class="p">(</span><span class="n">cfpid</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">crawlType</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fromUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="WikiCfpEventFetcher.fromUrl"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.WikiCfpEventFetcher.fromUrl">[docs]</a>    <span class="k">def</span> <span class="nf">fromUrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">url</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the event form the given url</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            url(str): the url to get the event from</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: a raw event dict or None if an error occured</span>
+<span class="sd">        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">regexp</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">crawlType</span><span class="o">.</span><span class="n">urlPrefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">,</span><span class="s2">&quot;\?&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;(\d+)$&quot;</span>
+        <span class="n">m</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">regexp</span><span class="p">,</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid URL </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cfpId</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">rawEvent</span><span class="o">=</span><span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">crawlType</span><span class="o">==</span><span class="n">CrawlType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">:</span>
+            <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;eventId&#39;</span><span class="p">]</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cfpId</span><span class="si">}</span><span class="s2">&quot;</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;seriesId&#39;</span><span class="p">]</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cfpId</span><span class="si">}</span><span class="s2">&quot;</span> 
+        <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;wikiCfpId&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">cfpId</span>
+        <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;deleted&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
+    
+        <span class="n">scrape</span><span class="o">=</span><span class="n">WebScrape</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="n">triples</span><span class="o">=</span><span class="n">scrape</span><span class="o">.</span><span class="n">parseRDFa</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scrape</span><span class="o">.</span><span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fromUrl </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> failed </span><span class="si">{</span><span class="n">scrape</span><span class="o">.</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">triples</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1">#scrape.printPrettyHtml(scrape.soup)</span>
+            <span class="n">firstH3</span><span class="o">=</span><span class="n">scrape</span><span class="o">.</span><span class="n">fromTag</span><span class="p">(</span><span class="n">scrape</span><span class="o">.</span><span class="n">soup</span><span class="p">,</span> <span class="s1">&#39;h3&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;This item has been deleted&quot;</span> <span class="ow">in</span> <span class="n">firstH3</span><span class="p">:</span>
+                <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;deleted&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>        
+            <span class="bp">self</span><span class="o">.</span><span class="n">fromTriples</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">,</span><span class="n">triples</span><span class="p">)</span>
+            <span class="c1"># add series information</span>
+            <span class="n">seriesRegexp</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;/cfp/program\?id=([0-9]+).*&#39;</span>
+            <span class="n">seriesLink</span><span class="o">=</span><span class="n">scrape</span><span class="o">.</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">href</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">seriesRegexp</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">seriesLink</span><span class="p">:</span>
+                <span class="c1"># Tag: &lt;a href=&quot;/cfp/program?id=1769&amp;amp;s=ISWC&amp;amp;f=International Semantic Web Conference&quot;&gt;International Semantic Web Conference&lt;/a&gt;</span>
+                <span class="n">href</span><span class="o">=</span><span class="n">seriesLink</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span>
+                <span class="n">m</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">seriesRegexp</span><span class="p">,</span><span class="n">href</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;seriesId&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;series&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">seriesLink</span><span class="o">.</span><span class="n">text</span>
+                <span class="k">pass</span>
+                
+            <span class="k">if</span> <span class="s1">&#39;summary&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+                <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;acronym&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rawEvent</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;description&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+                <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rawEvent</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+           
+        <span class="k">return</span> <span class="n">rawEvent</span></div></div>
+    
+<span class="n">__version__</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">__date__</span> <span class="o">=</span> <span class="s1">&#39;2020-06-22&#39;</span>
+<span class="n">__updated__</span> <span class="o">=</span> <span class="s1">&#39;2021-07-31&#39;</span>    
+
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="mi">1</span>
+
+    
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../datasources.html#datasources.wikicfpscrape.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># IGNORE:C0111</span>
+    <span class="sd">&#39;&#39;&#39;main program.&#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>    
+        
+    <span class="n">program_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">program_version</span> <span class="o">=</span> <span class="s2">&quot;v</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">__version__</span>
+    <span class="n">program_build_date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">__updated__</span><span class="p">)</span>
+    <span class="n">program_version_message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%%</span><span class="s1">(prog)s </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">program_version</span><span class="p">,</span> <span class="n">program_build_date</span><span class="p">)</span>
+    <span class="n">program_shortdesc</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="s1">&#39;__main__&#39;</span><span class="p">)</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">user_name</span><span class="o">=</span><span class="s2">&quot;Wolfgang Fahl&quot;</span>
+    <span class="n">program_license</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s1"></span>
+
+<span class="s1">  Created by </span><span class="si">%s</span><span class="s1"> on </span><span class="si">%s</span><span class="s1">.</span>
+<span class="s1">  Copyright 2020-2021 TIB Hannover, Wolfgang Fahl. All rights reserved.</span>
+
+<span class="s1">  Licensed under the Apache License 2.0</span>
+<span class="s1">  http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="s1">  Distributed on an &quot;AS IS&quot; basis without warranties</span>
+<span class="s1">  or conditions of any kind, either express or implied.</span>
+
+<span class="s1">USAGE</span>
+<span class="s1">&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">program_shortdesc</span><span class="p">,</span><span class="n">user_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">__date__</span><span class="p">))</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Setup argument parser</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">program_license</span><span class="p">,</span> <span class="n">formatter_class</span><span class="o">=</span><span class="n">RawDescriptionHelpFormatter</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="s2">&quot;--debug&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;set debug level [default: </span><span class="si">%(default)s</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-V&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">program_version_message</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--startId&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;eventId to start crawling from&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--stopId&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;eventId to stop crawling at&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--crawlType&#39;</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;Event&quot;</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;The crawlType - Event or Series&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-t&#39;</span><span class="p">,</span><span class="s1">&#39;--threads&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of threads to start&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Process arguments</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+        <span class="n">wikiCfpScrape</span><span class="o">=</span><span class="n">WikiCfpScrape</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+        <span class="n">wikiCfpScrape</span><span class="o">.</span><span class="n">threadedCrawl</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">threads</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">startId</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">stopId</span><span class="p">,</span><span class="n">args</span><span class="o">.</span><span class="n">crawlType</span><span class="p">)</span>
+        
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="c1">### handle keyboard interrupt ###</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+            <span class="k">raise</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">program_name</span><span class="p">)</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">program_name</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">indent</span> <span class="o">+</span> <span class="s2">&quot;  for help use --help&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">2</span>     </div>
+    
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-d&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Wolfgang Fahl.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

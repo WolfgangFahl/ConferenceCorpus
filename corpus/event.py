@@ -82,7 +82,7 @@ class EventStorage:
         tableList=sqlDB.getTableList()
         for table in tableList:
             tableName=table["name"]
-            if tableName.endswith("Event"):
+            if tableName.startswith("event_"):
                 viewDDL=f"{viewDDL}{delim}  SELECT {common} FROM {tableName}"
                 delim="\nUNION\n" 
         return viewDDL
