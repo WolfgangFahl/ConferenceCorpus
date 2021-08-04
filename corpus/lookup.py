@@ -38,14 +38,14 @@ class CorpusLookupConfigure:
             home = path.expanduser("~")
             wikiTextPath = f"{home}/.or/wikibackup/{wikiUser.wikiId}"
             wikiFileManager = WikiFileManager(wikiId, wikiTextPath, login=False, debug=debug)
-     
-            orDataSource=lookup.getDataSource(lookupId)
-            orDataSource.eventManager.wikiFileManager=wikiFileManager
-            orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+            orDataSource = lookup.getDataSource(lookupId)
+            if orDataSource:
+                orDataSource.eventManager.wikiUser=wikiUser
+                orDataSource.eventSeriesManager.wikiUser=wikiUser
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
-           
-            orDataSource.eventManager.wikiUser=wikiUser
-            orDataSource.eventSeriesManager.wikiUser=wikiUser
+            if orDataSource:
+                orDataSource.eventManager.wikiFileManager = wikiFileManager
+                orDataSource.eventSeriesManager.wikiFileManager = wikiFileManager
         
         pass
 

@@ -3,6 +3,9 @@ Created on 2021-07-26
 
 @author: wf
 '''
+from typing import Callable
+
+from lodstorage.csv import CSV
 from lodstorage.entity import EntityManager
 from lodstorage.jsonable import JSONAble
 from lodstorage.lod import LOD
@@ -67,6 +70,7 @@ class Event(JSONAble):
         '''
         Constructor
         '''
+        super().__init__()
 
     def __str__(self):
         '''
@@ -90,7 +94,8 @@ class EventSeries(JSONAble):
         '''
         Constructor
         '''
-        pass
+        super().__init__()
+
 
 class EventBaseManager(EntityManager):
     '''
@@ -128,6 +133,26 @@ class EventBaseManager(EntityManager):
         '''
         for record in listOfDicts:
             record[attr]=value
+
+    def asCsv(self, separator:str=',', selectorCallback:Callable=None):
+        """
+        Converts the events to csv format
+        Args:
+            separator(str): character separating the row values
+            selectorCallback: callback functions returning events to be converted to csv. If None all events are converted.
+
+        Returns:
+            csv string of events
+        """
+        events=self.getList()
+        if selectorCallback is not None and callable(selectorCallback):
+            events=selectorCallback()
+        fields=None
+        # limit csv fields to the fields defined in the samples
+        if hasattr(self, 'getSamples') and callable(getattr(self, 'getSamples')):
+            fields=LOD.getFields(self.getSamples())
+        csvString=CSV.toCSV(events, includeFields=fields)
+        return csvString
     
 class EventSeriesManager(EventBaseManager):
     '''
@@ -168,7 +193,7 @@ class EventManager(EventBaseManager):
         for seriesAcronym in self.seriesLookup.keys():
             if seriesAcronym in self.seriesAcronymLookup:
                 seriesEvents = self.seriesLookup[seriesAcronym]
-                if self.verbose:
+                if hasattr(self, 'verbose') and self.verbose:
                     print(f"{seriesAcronym}:{len(seriesEvents):4d}")
             else:
                 if self.debug:
@@ -190,3 +215,4 @@ class EventManager(EventBaseManager):
                 print(f"Event Series Acronym {seriesAcronym} lookup failed")
             return None
         return seriesEvents
+

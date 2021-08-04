@@ -4,6 +4,8 @@ Created on 27.07.2021
 @author: wf
 '''
 import unittest
+from functools import partial
+
 from tests.testSMW import TestSMW
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
@@ -16,7 +18,10 @@ class TestOpenResearch(DataSourceTest):
 
     def setUp(self):
         DataSourceTest.setUp(self)
-        pass
+        # by convention the lookupId "or" is for the OpenResearch via API / WikiUser access
+        # the lookupId "orclone" is for for the access via API on the OpenResearch clone
+        self.lookup = CorpusLookup(lookupIds=["or", "or-backup", "orclone", "orclone-backup"],configure=self.configureCorpusLookup)
+        self.lookup.load(forceUpdate=False)   # forceUpdate=True to test the filling of the cache
 
     def configureCorpusLookup(self,lookup:CorpusLookup):
         '''
@@ -24,23 +29,23 @@ class TestOpenResearch(DataSourceTest):
         '''        
         for lookupId in ["or","orclone"]:
             orDataSource=lookup.getDataSource(lookupId)
-            wikiFileManager=TestSMW.getWikiFileManager(wikiId=lookupId)
-            orDataSource.eventManager.wikiFileManager=wikiFileManager
-            orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+            if orDataSource:
+                wikiUser=TestSMW.getSMW_WikiUser(lookupId)
+                orDataSource.eventManager.wikiUser=wikiUser
+                orDataSource.eventSeriesManager.wikiUser=wikiUser
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
-            wikiUser=TestSMW.getSMW_WikiUser(lookupId)
-            orDataSource.eventManager.wikiUser=wikiUser
-            orDataSource.eventSeriesManager.wikiUser=wikiUser
+            if orDataSource:
+                wikiFileManager = TestSMW.getWikiFileManager(wikiId=lookupId)
+                orDataSource.eventManager.wikiFileManager = wikiFileManager
+                orDataSource.eventSeriesManager.wikiFileManager = wikiFileManager
 
     def testORDataSourceFromWikiFileManager(self):
         '''
         tests the getting conferences form wiki markup files
         '''
-        lookup=CorpusLookup(lookupIds=["or","or-backup","orclone","orclone-backup"],configure=self.configureCorpusLookup)
-        lookup.load(forceUpdate=False)
-        orDataSource=lookup.getDataSource("or-backup")
+        orDataSource=self.lookup.getDataSource("or-backup")
         self.checkDataSource(orDataSource,1000,8000)
-        orDataSource=lookup.getDataSource("orclone-backup")
+        orDataSource=self.lookup.getDataSource("orclone-backup")
         self.checkDataSource(orDataSource,1000,8000)
 
 
@@ -48,14 +53,21 @@ class TestOpenResearch(DataSourceTest):
         '''
         tests initializing the OREventCorpus from wiki
         '''
-        # by convention the lookupId "or" is for the OpenResearch via API / WikiUser access
-        # the lookupId "orclone" is for for the access via API on the OpenResearch clone
-        lookup=CorpusLookup(lookupIds=["or","or-backup","orclone","orclone-backup"],configure=self.configureCorpusLookup)
-        lookup.load(forceUpdate=True)
-        orDataSource=lookup.getDataSource("or")
+
+        orDataSource=self.lookup.getDataSource("or")
         self.checkDataSource(orDataSource,1000,8000)
-        orDataSource=lookup.getDataSource("orclone")
+        orDataSource=self.lookup.getDataSource("orclone")
         self.checkDataSource(orDataSource,1000,8000)
+
+    def testAsCsv(self):
+        '''
+        test csv export of events
+        '''
+        return
+        orDataSource =self.lookup.getDataSource("orclone-backup")
+        eventManager=orDataSource.eventManager
+        csvString=eventManager.asCsv(selectorCallback=partial(eventManager.getEventsInSeries, "3DUI"))
+        print(csvString)
 
 
 
