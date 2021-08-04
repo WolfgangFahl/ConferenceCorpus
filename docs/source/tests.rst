@@ -12,10 +12,26 @@ tests.datasourcetoolbox module
    :undoc-members:
    :show-inheritance:
 
+tests.testConfref module
+------------------------
+
+.. automodule:: tests.testConfref
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tests.testCorpusLookup module
 -----------------------------
 
 .. automodule:: tests.testCorpusLookup
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.testCrossRef module
+-------------------------
+
+.. automodule:: tests.testCrossRef
    :members:
    :undoc-members:
    :show-inheritance:
@@ -56,6 +72,30 @@ tests.testStatistics module
 ---------------------------
 
 .. automodule:: tests.testStatistics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.testWebScrape module
+--------------------------
+
+.. automodule:: tests.testWebScrape
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.testWikiCfp module
+------------------------
+
+.. automodule:: tests.testWikiCfp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.testWikiCfpScrape module
+------------------------------
+
+.. automodule:: tests.testWikiCfpScrape
    :members:
    :undoc-members:
    :show-inheritance:

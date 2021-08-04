@@ -178,14 +178,24 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock</span><span class="o">=</span><span class="n">TestDblp</span><span class="o">.</span><span class="n">mock</span>
         <span class="n">DataSourceTest</span><span class="o">.</span><span class="n">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">TestDblp</span><span class="o">.</span><span class="n">getDblp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">pass</span></div>
+    
+<div class="viewcode-block" id="TestDblpEvents.configureCorpusLookup"><a class="viewcode-back" href="../../tests.html#tests.testDblpEvents.TestDblpEvents.configureCorpusLookup">[docs]</a>    <span class="k">def</span> <span class="nf">configureCorpusLookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lookup</span><span class="p">:</span><span class="n">CorpusLookup</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        callback to configure the corpus lookup</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">dblpDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
+        <span class="n">dblp</span><span class="o">=</span><span class="n">TestDblp</span><span class="o">.</span><span class="n">getMockedDblp</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+        <span class="n">dblpDataSource</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">dblp</span>
+        <span class="n">dblpDataSource</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">dblp</span></div>
+        
     
 <div class="viewcode-block" id="TestDblpEvents.testDblp"><a class="viewcode-back" href="../../tests.html#tests.testDblpEvents.TestDblpEvents.testDblp">[docs]</a>    <span class="k">def</span> <span class="nf">testDblp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        test getting the conference series and events from dblp xml dump</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">lookup</span><span class="o">=</span><span class="n">CorpusLookup</span><span class="p">()</span>
+        <span class="n">lookup</span><span class="o">=</span><span class="n">CorpusLookup</span><span class="p">(</span><span class="n">lookupIds</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dblp&quot;</span><span class="p">],</span><span class="n">configure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">configureCorpusLookup</span><span class="p">)</span>
+        <span class="n">lookup</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">forceUpdate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">dblpDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
         <span class="n">dblp</span><span class="o">=</span><span class="n">TestDblp</span><span class="o">.</span><span class="n">getMockedDblp</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
         <span class="n">dblpDataSource</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">dblp</span>

@@ -211,7 +211,7 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        get events with series by knitting / linking the entities together</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wikiFileManager</span><span class="o">=</span><span class="n">wikiFileManager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wikiFileManager</span><span class="o">=</span><span class="n">wikiFileManager</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eventManager</span><span class="o">=</span><span class="n">OREventManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">fromWikiFileManager</span><span class="p">(</span><span class="n">wikiFileManager</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">=</span><span class="n">OREventSeriesManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
@@ -235,7 +235,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">fromCache</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">getLoDfromWikiUser</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eventSeriesManager</span> <span class="o">=</span> <span class="n">OREventSeriesManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">wikiUser</span> <span class="o">=</span> <span class="n">wikiUser</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">fromCache</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">getLoDfromWikiUser</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">fromCache</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">getLoDfromWikiUser</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">linkSeriesAndEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="p">,</span> <span class="s2">&quot;inEventSeries&quot;</span><span class="p">)</span></div></div>
 
 
@@ -261,7 +261,8 @@
             <span class="p">{</span> <span class="s1">&#39;prop&#39;</span><span class="p">:</span><span class="s1">&#39;Start date&#39;</span><span class="p">,</span>          <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;startDate&#39;</span><span class="p">,</span>       <span class="s1">&#39;templateParam&#39;</span><span class="p">:</span> <span class="s2">&quot;Start date&quot;</span><span class="p">},</span>
             <span class="p">{</span> <span class="s1">&#39;prop&#39;</span><span class="p">:</span><span class="s1">&#39;Title&#39;</span><span class="p">,</span>               <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span>           <span class="s1">&#39;templateParam&#39;</span><span class="p">:</span> <span class="s2">&quot;Title&quot;</span><span class="p">},</span>
             <span class="p">{</span> <span class="s1">&#39;prop&#39;</span><span class="p">:</span><span class="s1">&#39;Accepted papers&#39;</span><span class="p">,</span>     <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;acceptedPapers&#39;</span><span class="p">,</span>  <span class="s1">&#39;templateParam&#39;</span><span class="p">:</span> <span class="s2">&quot;Accepted papers&quot;</span><span class="p">},</span>
-            <span class="p">{</span> <span class="s1">&#39;prop&#39;</span><span class="p">:</span><span class="s1">&#39;Submitted papers&#39;</span><span class="p">,</span>    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;submittedPapers&#39;</span><span class="p">,</span> <span class="s1">&#39;templateParam&#39;</span><span class="p">:</span> <span class="s2">&quot;Submitted papers&quot;</span><span class="p">}</span>
+            <span class="p">{</span> <span class="s1">&#39;prop&#39;</span><span class="p">:</span><span class="s1">&#39;Submitted papers&#39;</span><span class="p">,</span>    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;submittedPapers&#39;</span><span class="p">,</span> <span class="s1">&#39;templateParam&#39;</span><span class="p">:</span> <span class="s2">&quot;Submitted papers&quot;</span><span class="p">},</span>
+            <span class="p">{</span> <span class="s1">&#39;prop&#39;</span><span class="p">:</span><span class="s1">&#39;presence&#39;</span><span class="p">,</span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;presence&#39;</span><span class="p">,</span>         <span class="s1">&#39;templateParam&#39;</span><span class="p">:</span> <span class="s2">&quot;presence&quot;</span><span class="p">}</span>
     <span class="p">]</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
@@ -289,7 +290,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;getListOfDicts&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;wikiFileManager&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromWikiFileManager</span>  
+                <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromWikiFileManager</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;wikiUser&#39;</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromWikiUser</span> </div>
 
@@ -326,6 +327,16 @@
 <span class="sd">            wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">smwHandler</span><span class="o">.</span><span class="n">fromWikiFileManager</span><span class="p">(</span><span class="n">wikiFileManager</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="OREventManager.fixRawEvents"><a class="viewcode-back" href="../../datasources.html#datasources.openresearch.OREventManager.fixRawEvents">[docs]</a>    <span class="k">def</span> <span class="nf">fixRawEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">listOfDicts</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span><span class="n">wikiUser</span><span class="p">:</span><span class="n">WikiUser</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        fix the given list of Dicts with raw Events</span>
+<span class="sd">        </span>
+<span class="sd">        Args: </span>
+<span class="sd">            listOfDicts(list): the list of raw Events to fix</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">rawEvent</span> <span class="ow">in</span> <span class="n">listOfDicts</span><span class="p">:</span>
+            <span class="n">OREvent</span><span class="o">.</span><span class="n">fixRawEvent</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">,</span><span class="n">wikiUser</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OREventManager.getLoDfromWikiUser"><a class="viewcode-back" href="../../datasources.html#datasources.openresearch.OREventManager.getLoDfromWikiUser">[docs]</a>    <span class="k">def</span> <span class="nf">getLoDfromWikiUser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wikiuser</span><span class="p">:</span><span class="n">WikiUser</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">askExtra</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -339,6 +350,8 @@
             <span class="n">wikiuser</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wikiUser</span>
         <span class="n">lod</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">smwHandler</span><span class="o">.</span><span class="n">getLoDfromWiki</span><span class="p">(</span><span class="n">wikiuser</span><span class="p">,</span><span class="n">askExtra</span><span class="p">,</span><span class="n">profile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setAllAttr</span><span class="p">(</span><span class="n">lod</span><span class="p">,</span><span class="s2">&quot;source&quot;</span><span class="p">,</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">wikiuser</span><span class="o">.</span><span class="n">wikiId</span><span class="si">}</span><span class="s2">-api&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixRawEvents</span><span class="p">(</span><span class="n">lod</span><span class="p">,</span><span class="n">wikiUser</span><span class="o">=</span><span class="n">wikiuser</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lod</span></div>
 
 <div class="viewcode-block" id="OREventManager.getLoDfromWikiFileManager"><a class="viewcode-back" href="../../datasources.html#datasources.openresearch.OREventManager.getLoDfromWikiFileManager">[docs]</a>    <span class="k">def</span> <span class="nf">getLoDfromWikiFileManager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wikiFileManager</span><span class="p">:</span><span class="n">WikiFileManager</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -350,6 +363,7 @@
         <span class="n">lod</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">smwHandler</span><span class="o">.</span><span class="n">getLoDfromWikiFileManager</span><span class="p">(</span><span class="n">wikiFileManager</span><span class="p">)</span>
         <span class="c1"># TODO set source more specific</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setAllAttr</span><span class="p">(</span><span class="n">lod</span><span class="p">,</span><span class="s2">&quot;source&quot;</span><span class="p">,</span><span class="s2">&quot;or&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixRawEvents</span><span class="p">(</span><span class="n">lod</span><span class="p">,</span><span class="n">wikiUser</span><span class="o">=</span><span class="n">wikiFileManager</span><span class="o">.</span><span class="n">wikiPush</span><span class="o">.</span><span class="n">fromWiki</span><span class="o">.</span><span class="n">wikiUser</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lod</span></div></div>
 
 
@@ -403,7 +417,8 @@
                 <span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="s2">&quot;US-MA&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;city&quot;</span><span class="p">:</span> <span class="s2">&quot;Boston&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;acceptedPapers&quot;</span><span class="p">:</span> <span class="mi">41</span><span class="p">,</span>
-                <span class="s2">&quot;submittedPapers&quot;</span><span class="p">:</span> <span class="mi">120</span>
+                <span class="s2">&quot;submittedPapers&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
+                <span class="s2">&quot;presence&quot;</span><span class="p">:</span> <span class="s2">&quot;online&quot;</span>
             <span class="p">},</span>
             <span class="p">{</span>
                 <span class="s2">&quot;acronym&quot;</span><span class="p">:</span> <span class="s2">&quot;5GU 2017&quot;</span><span class="p">,</span>
@@ -420,13 +435,15 @@
                 <span class="s2">&quot;pageTitle&quot;</span><span class="p">:</span> <span class="s2">&quot;5GU 2017&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;lastEditor&quot;</span><span class="p">:</span> <span class="s2">&quot;Wolfgang Fahl&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;creationDate&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="s2">&quot;2016-09-25T07:36:02&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;modificationDate&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="s2">&quot;2020-11-05T12:33:23&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;modificationDate&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="s2">&quot;2020-11-05T12:33:23&quot;</span><span class="p">)</span>
             <span class="p">},</span>
             <span class="p">{</span>
                 <span class="s1">&#39;acronym&#39;</span><span class="p">:</span> <span class="s2">&quot;IDC 2009&quot;</span><span class="p">,</span>
                 <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s2">&quot;The 8th International Conference on Interaction Design and Children&quot;</span><span class="p">,</span>
                 <span class="s1">&#39;pageTitle&#39;</span><span class="p">:</span> <span class="s1">&#39;IDC 2009&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;ordinal&#39;</span><span class="p">:</span> <span class="mi">8</span>
+                <span class="s1">&#39;ordinal&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="s1">&#39;year&#39;</span><span class="p">:</span><span class="mi">2009</span><span class="p">,</span>
+                <span class="s1">&#39;yearStr&#39;</span><span class="p">:</span><span class="s1">&#39;2009&#39;</span>
             <span class="p">}</span>
 
         <span class="p">]</span>
@@ -478,8 +495,32 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">samplesWikiSon</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>
 
-        <span class="k">return</span> <span class="n">samplesWikiSon</span></div></div>
-
+        <span class="k">return</span> <span class="n">samplesWikiSon</span></div>
+    
+<div class="viewcode-block" id="OREvent.fixRawEvent"><a class="viewcode-back" href="../../datasources.html#datasources.openresearch.OREvent.fixRawEvent">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">fixRawEvent</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span><span class="n">wikiUser</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        fix the given raw Event</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            rawEvent(dict): the raw event record to fix</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">wikiUser</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">baseUrl</span><span class="o">=</span><span class="n">wikiUser</span><span class="o">.</span><span class="n">getWikiUrl</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;pageTitle&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+                <span class="n">pageTitle</span><span class="o">=</span><span class="n">rawEvent</span><span class="p">[</span><span class="s2">&quot;pageTitle&quot;</span><span class="p">]</span>
+                <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">baseUrl</span><span class="si">}</span><span class="s2">index.php?title=</span><span class="si">{</span><span class="n">pageTitle</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">url</span>
+        <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;eventId&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;pageTitle&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;year&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+            <span class="n">yearStr</span><span class="o">=</span><span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span>
+            <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;yearStr&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">yearStr</span>
+            <span class="n">year</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">year</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">yearStr</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_ne</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">year</span></div></div>
 
 <div class="viewcode-block" id="OREventSeriesManager"><a class="viewcode-back" href="../../datasources.html#datasources.openresearch.OREventSeriesManager">[docs]</a><span class="k">class</span> <span class="nc">OREventSeriesManager</span><span class="p">(</span><span class="n">EventSeriesManager</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

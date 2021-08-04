@@ -176,7 +176,41 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;constructor &#39;&#39;&#39;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="k">pass</span></div>
+        <span class="k">pass</span>
+    
+<div class="viewcode-block" id="DblpEvent.fixRawEvent"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEvent.fixRawEvent">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">fixRawEvent</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">:</span><span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        fix the given raw Event</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            rawEvent(dict): the raw event record to fix</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+            <span class="n">rawEvent</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;https://dblp.org/</span><span class="si">{</span><span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> 
+        <span class="k">if</span> <span class="s2">&quot;year&quot;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+            <span class="c1"># set year to integer value</span>
+            <span class="n">yearStr</span><span class="o">=</span><span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span>
+            <span class="n">year</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">year</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">yearStr</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_ne</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">year</span>
+            <span class="c1"># if there is a booktitle create acronym</span>
+            <span class="k">if</span> <span class="s2">&quot;booktitle&quot;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+                <span class="n">booktitle</span><span class="o">=</span><span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;booktitle&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">booktitle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">acronym</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">booktitle</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">rawEvent</span><span class="p">[</span><span class="s2">&quot;acronym&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">acronym</span> 
+        <span class="n">doiprefix</span><span class="o">=</span><span class="s2">&quot;https://doi.org/&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;ee&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+            <span class="n">ees</span><span class="o">=</span><span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;ee&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ees</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ee</span> <span class="ow">in</span> <span class="n">ees</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">ee</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">doiprefix</span><span class="p">):</span>
+                        <span class="n">doi</span><span class="o">=</span><span class="n">ee</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">doiprefix</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                        <span class="n">rawEvent</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">doi</span> </div></div>
 
 
 <div class="viewcode-block" id="DblpEventSeries"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventSeries">[docs]</a><span class="k">class</span> <span class="nc">DblpEventSeries</span><span class="p">(</span><span class="n">EventSeries</span><span class="p">):</span>
@@ -209,10 +243,12 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        configure me</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">withProgress</span><span class="o">=</span><span class="kc">False</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dblp&quot;</span><span class="p">):</span> 
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning - using full dblp.xml dataset!&quot;</span><span class="p">)</span>   
             <span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">Dblp</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">.</span><span class="n">getXmlSqlDB</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">.</span><span class="n">warnFullSize</span><span class="p">()</span>
+            <span class="n">withProgress</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">.</span><span class="n">getXmlSqlDB</span><span class="p">(</span><span class="n">showProgress</span><span class="o">=</span><span class="n">withProgress</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;getListOfDicts&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromDblp</span></div>
 
@@ -224,11 +260,13 @@
 <span class="sd">            list: the list of dict with my series data</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;select conf as series,title,year,url,series as publicationSeries</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;select conf as series,title,year,url,booktitle,series as publicationSeries,ee,isbn,mdate,key as eventId</span>
 <span class="s2">        from proceedings </span>
 <span class="s2">        order by series,year&quot;&quot;&quot;</span>
         <span class="n">listOfDicts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setAllAttr</span><span class="p">(</span><span class="n">listOfDicts</span><span class="p">,</span><span class="s2">&quot;source&quot;</span><span class="p">,</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">rawEvent</span> <span class="ow">in</span> <span class="n">listOfDicts</span><span class="p">:</span>
+            <span class="n">DblpEvent</span><span class="o">.</span><span class="n">fixRawEvent</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">listOfDicts</span></div></div>
 
 <div class="viewcode-block" id="DblpEventSeriesManager"><a class="viewcode-back" href="../../datasources.html#datasources.dblp.DblpEventSeriesManager">[docs]</a><span class="k">class</span> <span class="nc">DblpEventSeriesManager</span><span class="p">(</span><span class="n">EventSeriesManager</span><span class="p">):</span>
@@ -250,10 +288,12 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        configure me</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">withProgress</span><span class="o">=</span><span class="kc">False</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dblp&quot;</span><span class="p">):</span> 
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning - using full dblp.xml dataset!&quot;</span><span class="p">)</span>   
             <span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">Dblp</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">.</span><span class="n">getXmlSqlDB</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">.</span><span class="n">warnFullSize</span><span class="p">()</span>
+            <span class="n">withProgress</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqlDb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dblp</span><span class="o">.</span><span class="n">getXmlSqlDB</span><span class="p">(</span><span class="n">showProgress</span><span class="o">=</span><span class="n">withProgress</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;getListOfDicts&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getListOfDicts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getLoDfromDblp</span></div>
 

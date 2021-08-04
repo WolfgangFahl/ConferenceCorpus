@@ -174,37 +174,90 @@
 <span class="sd">    common storage aspects of the EventManager and EventSeriesManager</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="EventStorage.getStorageConfig"><a class="viewcode-back" href="../../corpus.html#corpus.event.EventStorage.getStorageConfig">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">getStorageConfig</span><span class="p">(</span><span class="n">debug</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">StorageConfig</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">getStorageConfig</span><span class="p">(</span><span class="n">debug</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sql&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">StorageConfig</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        get the storageConfiguration</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            debug(bool): if True show debug information</span>
+<span class="sd">            mode(str): sql or json</span>
 <span class="sd">        </span>
 <span class="sd">        Return:</span>
 <span class="sd">            StorageConfig: the storage configuration to be used</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">config</span><span class="o">=</span><span class="n">StorageConfig</span><span class="o">.</span><span class="n">getSQL</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;sql&#39;</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">StorageConfig</span><span class="o">.</span><span class="n">getSQL</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;json&#39;</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">StorageConfig</span><span class="o">.</span><span class="n">getJSON</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;jsonpickle&#39;</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">StorageConfig</span><span class="o">.</span><span class="n">getJsonPickle</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid mode </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">config</span><span class="o">.</span><span class="n">cacheDirName</span><span class="o">=</span><span class="s2">&quot;conferencecorpus&quot;</span>
         <span class="n">cachedir</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">getCachePath</span><span class="p">()</span> 
-        <span class="n">config</span><span class="o">.</span><span class="n">cacheFile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cachedir</span><span class="si">}</span><span class="s2">/EventCorpus.db&quot;</span>
+        <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;sql&#39;</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">cacheFile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cachedir</span><span class="si">}</span><span class="s2">/EventCorpus.db&quot;</span>
         <span class="k">return</span> <span class="n">config</span></div>
     
-<div class="viewcode-block" id="EventStorage.getTableList"><a class="viewcode-back" href="../../corpus.html#corpus.event.EventStorage.getTableList">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">getTableList</span><span class="p">()</span><span class="o">-&gt;</span><span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="EventStorage.getSqlDB"><a class="viewcode-back" href="../../corpus.html#corpus.event.EventStorage.getSqlDB">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getSqlDB</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the SQL Database</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">config</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getStorageConfig</span><span class="p">()</span>
+        <span class="n">sqlDB</span><span class="o">=</span><span class="n">SQLDB</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">cacheFile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sqlDB</span></div>
+    
+<div class="viewcode-block" id="EventStorage.getTableList"><a class="viewcode-back" href="../../corpus.html#corpus.event.EventStorage.getTableList">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getTableList</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">withInstanceCount</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">list</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        get the list of SQL Tables involved</span>
 <span class="sd">        </span>
 <span class="sd">        Return:</span>
 <span class="sd">            list: the map of SQL tables used for caching</span>
+<span class="sd">            withInstanceCount(bool): if TRUE add the count of instances to the table Map </span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">config</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getStorageConfig</span><span class="p">()</span>
-        
-        <span class="n">sqlDB</span><span class="o">=</span><span class="n">SQLDB</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">cacheFile</span><span class="p">)</span>
+        <span class="n">sqlDB</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getSqlDB</span><span class="p">()</span>
         <span class="n">tableList</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">getTableList</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tableList</span><span class="p">:</span>
             <span class="n">tableName</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-            <span class="n">countQuery</span><span class="o">=</span><span class="s2">&quot;SELECT count(*) as count from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tableName</span>
-            <span class="n">countResult</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">countQuery</span><span class="p">)</span>
-            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;instances&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">countResult</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">tableList</span></div></div>
+            <span class="k">if</span> <span class="n">withInstanceCount</span><span class="p">:</span>
+                <span class="n">countQuery</span><span class="o">=</span><span class="s2">&quot;SELECT count(*) as count from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tableName</span>
+                <span class="n">countResult</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">countQuery</span><span class="p">)</span>
+                <span class="n">table</span><span class="p">[</span><span class="s1">&#39;instances&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">countResult</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">tableList</span></div>
+    
+<div class="viewcode-block" id="EventStorage.getCommonViewDDL"><a class="viewcode-back" href="../../corpus.html#corpus.event.EventStorage.getCommonViewDDL">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getCommonViewDDL</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the SQL DDL for a common view </span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            str: the SQL DDL CREATE VIEW command</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">common</span><span class="o">=</span><span class="s2">&quot;eventId,title,url,acronym,source,year&quot;</span>
+        <span class="n">viewDDL</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;CREATE VIEW IF NOT EXISTS event AS</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">sqlDB</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getSqlDB</span><span class="p">()</span>
+        <span class="n">tableList</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">getTableList</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tableList</span><span class="p">:</span>
+            <span class="n">tableName</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">tableName</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;Event&quot;</span><span class="p">):</span>
+                <span class="n">viewDDL</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">viewDDL</span><span class="si">}{</span><span class="n">delim</span><span class="si">}</span><span class="s2">  SELECT </span><span class="si">{</span><span class="n">common</span><span class="si">}</span><span class="s2"> FROM </span><span class="si">{</span><span class="n">tableName</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">UNION</span><span class="se">\n</span><span class="s2">&quot;</span> 
+        <span class="k">return</span> <span class="n">viewDDL</span></div>
+    
+<div class="viewcode-block" id="EventStorage.createView"><a class="viewcode-back" href="../../corpus.html#corpus.event.EventStorage.createView">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">createView</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">          create the general Event view</span>
+<span class="sd">          </span>
+<span class="sd">        Args:</span>
+<span class="sd">            cacheFileName(string): the path to the database</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sqlDB</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getSqlDB</span><span class="p">()</span>
+        <span class="n">viewDDL</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getCommonViewDDL</span><span class="p">()</span>
+        <span class="n">sqlDB</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">viewDDL</span><span class="p">)</span></div></div>
     
 
 <div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../corpus.html#corpus.event.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">JSONAble</span><span class="p">):</span>
@@ -215,7 +268,6 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Constructor</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -246,7 +298,7 @@
 <span class="sd">    common entity Manager for ConferenceCorpus</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">entityName</span><span class="p">,</span><span class="n">entityPluralName</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span><span class="n">listName</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">clazz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">tableName</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">primaryKey</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">handleInvalidListTypes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">filterInvalidListTypes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">entityName</span><span class="p">,</span><span class="n">entityPluralName</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span><span class="n">listName</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">clazz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">tableName</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">primaryKey</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">handleInvalidListTypes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">filterInvalidListTypes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">profile</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Constructor</span>
 <span class="sd">        </span>
@@ -258,7 +310,9 @@
 <span class="sd">            handleInvalidListTypes(bool): True if invalidListTypes should be converted or filtered</span>
 <span class="sd">            filterInvalidListTypes(bool): True if invalidListTypes should be deleted</span>
 <span class="sd">            debug(boolean): override debug setting when default of config is used via config=None</span>
+<span class="sd">            profile(boolean): True if profiling/timing information should be shown for long-running operations</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">=</span><span class="n">profile</span>
         <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">config</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getStorageConfig</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">entityName</span><span class="p">,</span> <span class="n">entityPluralName</span><span class="p">,</span> <span class="n">listName</span><span class="p">,</span> <span class="n">clazz</span><span class="p">,</span> <span class="n">tableName</span><span class="p">,</span> <span class="n">primaryKey</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">handleInvalidListTypes</span><span class="p">,</span> <span class="n">filterInvalidListTypes</span><span class="p">,</span> <span class="n">debug</span><span class="p">)</span>
