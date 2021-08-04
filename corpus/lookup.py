@@ -6,11 +6,14 @@ Created on 2021-07-30
 from corpus.event import EventStorage
 from corpus.eventcorpus import EventCorpus, EventDataSource
 
+from datasources.confref import ConfrefEventManager,ConfrefEventSeriesManager
+from datasources.crossref import CrossrefEventManager,CrossrefEventSeriesManager
 from datasources.dblp import DblpEventManager,DblpEventSeriesManager
 from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
 from datasources.openresearch import OREventManager,OREventSeriesManager
 from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager
-from datasources.crossref import CrossrefEventManager,CrossrefEventSeriesManager
+from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
+
 from lodstorage.uml import UML
 from wikibot.wikiuser import WikiUser
 from wikifile.wikiFileManager import WikiFileManager
@@ -23,6 +26,7 @@ import sys
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
+from lodstorage.query import QueryManager
 
 class CorpusLookupConfigure:
     @staticmethod
@@ -31,21 +35,23 @@ class CorpusLookupConfigure:
         callback to configure the corpus lookup
         '''
         print("configureCorpusLookup callback called")
-        
+        # TODO make wikiIds configurable for testing e.g. with pyMediaWikiDocker
         for lookupId in ["or","orclone"]:
             wikiId=lookupId
             wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
             home = path.expanduser("~")
             wikiTextPath = f"{home}/.or/wikibackup/{wikiUser.wikiId}"
             wikiFileManager = WikiFileManager(wikiId, wikiTextPath, login=False, debug=debug)
-            orDataSource = lookup.getDataSource(lookupId)
-            if orDataSource:
+     
+            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
+            if orDataSource is not None:
+                orDataSource.eventManager.wikiFileManager=wikiFileManager
+                orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+
+            orDataSource=lookup.getDataSource(lookupId)
+            if orDataSource is not None:
                 orDataSource.eventManager.wikiUser=wikiUser
                 orDataSource.eventSeriesManager.wikiUser=wikiUser
-            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
-            if orDataSource:
-                orDataSource.eventManager.wikiFileManager = wikiFileManager
-                orDataSource.eventSeriesManager.wikiFileManager = wikiFileManager
         
         pass
 
@@ -53,7 +59,7 @@ class CorpusLookup(object):
     '''
     search and lookup for different EventCorpora
     '''
-    lookupIds=["dblp","crossref","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
+    lookupIds=["confref","crossref","dblp","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
     
 
     def __init__(self,lookupIds:list=None,
@@ -70,26 +76,28 @@ class CorpusLookup(object):
         self.eventCorpus=EventCorpus()
         if lookupIds is None:
             lookupIds=CorpusLookup.lookupIds
+        if "confref" in lookupIds:
+            self.eventCorpus.addDataSource(ConfrefEventManager(),ConfrefEventSeriesManager(),lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tableSuffix="confref")
         if "crossref" in lookupIds:
-            self.eventCorpus.addDataSource(CrossrefEventManager(),CrossrefEventSeriesManager(),lookupId="crossref",name="crossref.org",url="https://www.crossref.org/",title="CrossRef",tablePrefix="crossref")
+            self.eventCorpus.addDataSource(CrossrefEventManager(),CrossrefEventSeriesManager(),lookupId="crossref",name="crossref.org",url="https://www.crossref.org/",title="CrossRef",tableSuffix="crossref")
         if "dblp" in lookupIds:
-            self.eventCorpus.addDataSource(DblpEventManager(),DblpEventSeriesManager(),lookupId="dblp",name="dblp",url='https://dblp.org/',title='dblp computer science bibliography',tablePrefix="dblp")
+            self.eventCorpus.addDataSource(DblpEventManager(),DblpEventSeriesManager(),lookupId="dblp",name="dblp",url='https://dblp.org/',title='dblp computer science bibliography',tableSuffix="dblp")
         if "wikidata" in lookupIds: 
-            self.eventCorpus.addDataSource(WikidataEventManager(),WikidataEventSeriesManager(),lookupId="wikidata",name="Wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata',tablePrefix="wikidata")
+            self.eventCorpus.addDataSource(WikidataEventManager(),WikidataEventSeriesManager(),lookupId="wikidata",name="Wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata',tableSuffix="wikidata")
         if "wikicfp" in lookupIds:    
-            self.eventCorpus.addDataSource(WikiCfpEventManager(),WikiCfpEventSeriesManager(),lookupId="wikicfp",name="WikiCFP",url='http://www.wikicfp.com',title='WikiCFP',tablePrefix="wikicfp")
+            self.eventCorpus.addDataSource(WikiCfpEventManager(),WikiCfpEventSeriesManager(),lookupId="wikicfp",name="WikiCFP",url='http://www.wikicfp.com',title='WikiCFP',tableSuffix="wikicfp")
         if "or" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or",name="OR_Triples",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-api',tablePrefix="orapi")
+            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or",name="OR_Triples",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-api',tableSuffix="orapi")
         if "or-backup" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or-backup",name="OR_Markup",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-wiki',tablePrefix="orwiki")
+            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or-backup",name="OR_Markup",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-wiki',tableSuffix="orwiki")
         if "orclone" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone",name="OR_Clone_Triples",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-api',tablePrefix="orcapi")
+            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone",name="OR_Clone_Triples",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-api',tableSuffix="orcapi")
         if "orclone-backup" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone-backup",name="OR_Clone_Markup",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-wiki',tablePrefix="orcwiki")
+            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone-backup",name="OR_Clone_Markup",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-wiki',tableSuffix="orcwiki")
         
     def getDataSource(self,lookupId:str)->EventDataSource:
         '''
-        get the given data source
+        get the data source by the given lookupId
         
         Args:
             lookupId(str): the lookupId of the data source to get
@@ -102,7 +110,26 @@ class CorpusLookup(object):
         if lookupId in self.eventCorpus.eventDataSources:
             eventDataSource=self.eventCorpus.eventDataSources[lookupId]
         return eventDataSource
-        
+
+    def getDataSource4TableName(self,tableName:str)->EventDataSource:
+        '''
+        get the data source by the given tableName
+
+        Args:
+            tableName(str): a tableName of the data source to get
+
+        Return:
+            EventDataSource: the data source
+
+        '''
+        for eventDataSource in self.eventCorpus.eventDataSources.values():
+            if eventDataSource.eventManager.tableName==tableName:
+                return eventDataSource
+            if eventDataSource.eventSeriesManager.tableName==tableName:
+                return eventDataSource
+        return None
+
+
     def load(self,forceUpdate:bool=False):
         '''
         load the event corpora
@@ -112,7 +139,38 @@ class CorpusLookup(object):
         if self.configure:
             self.configure(self)
         self.eventCorpus.loadAll(forceUpdate=forceUpdate)
-        
+        EventStorage.createView()
+
+    def getQueryManager(self):
+        '''
+        get the query manager
+        '''
+        cachedir=EventStorage.getStorageConfig().getCachePath()
+        for path in cachedir,os.path.dirname(__file__)+"/../resources":
+            qYamlFile=f"{path}/queries.yaml"
+            if os.path.isfile(qYamlFile):
+                qm=QueryManager(lang='sql',debug=self.debug,path=path)
+                return qm
+        return None
+
+    def getLod4Query(self,query:str):
+        '''
+        Args:
+            query: the query to run
+        Return:
+            list: the list of dicts for the query
+        '''
+        sqlDB=EventStorage.getSqlDB()
+        listOfDicts=sqlDB.query(query)
+        return listOfDicts
+
+    def performQuery(self,query:str):
+        '''
+        Args:
+            query: the query to run
+        '''
+
+
     def asPlantUml(self,baseEntity='Event'):
         '''
         return me as a plantUml Diagram markup
@@ -122,14 +180,19 @@ class CorpusLookup(object):
         uml=UML()
         now=datetime.now()
         nowYMD=now.strftime("%Y-%m-%d")
+
         tableList=[]
         for table in storageTableList:
             tableName=table['name']
             if tableName.endswith(baseEntity):
                 if 'instances' in table:
                     instanceNote=""
+                    dataSource=self.getDataSource4TableName(tableName)
+                    if dataSource is not None:
+                        sourceConfig=dataSource.sourceConfig
+                        instanceNote=f"[[{sourceConfig.url} {sourceConfig.title}]]"
                     instanceCount=table['instances']
-                    instanceNote=f"\n{instanceCount} instances "
+                    instanceNote=f"{instanceNote}\n{instanceCount} instances "
                     table['notes']=instanceNote
                 tableList.append(table)
         title=f"""ConfIDent  {baseEntity}
@@ -141,9 +204,9 @@ see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
         return plantUml
         
         
-__version__ = "0.0.7"
+__version__ = "0.0.10"
 __date__ = '2020-06-22'
-__updated__ = '2021-08-02'    
+__updated__ = '2021-08-03'
 
 DEBUG = 1
 
@@ -160,7 +223,7 @@ def main(argv=None): # IGNORE:C0111
     program_version = "v%s" % __version__
     program_build_date = str(__updated__)
     program_version_message = '%%(prog)s %s (%s)' % (program_version, program_build_date)
-    program_shortdesc = __import__('__main__').__doc__.split("\n")[1]
+    program_shortdesc = "Scientific Event Corpus and Lookup"
     user_name="Wolfgang Fahl"
     program_license = '''%s
 
@@ -181,7 +244,8 @@ USAGE
         datasourcesDefault=",".join(CorpusLookup.lookupIds)
         parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
         parser.add_argument("-d", "--debug", dest="debug", action="store_true", help="show debug info")
-        parser.add_argument('-e', '--endpoint', default=Wikidata.endpoint, help="SPARQL endpoint to use for wikidata queries")     
+        parser.add_argument("-q", "--query",help="run the given query")
+        parser.add_argument('-e', '--endpoint', default=Wikidata.endpoint, help="SPARQL endpoint to use for wikidata queries")
         parser.add_argument('-v', '--version', action='version', version=program_version_message)
         parser.add_argument("-u", "--uml", dest="uml", action="store_true", help="output plantuml diagram markup")
         parser.add_argument("-f", "--force",dest="forceUpdate",action="store_true",help="force Update - may take quite a time")
@@ -197,7 +261,9 @@ USAGE
             for baseEntity in ["Event","EventSeries"]:
                 plantUml=lookup.asPlantUml(baseEntity)
                 print(plantUml)
-        
+        if args.query:
+            lookup.query(args.query)
+
         
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###

@@ -95,12 +95,17 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests.datasourcetoolbox">tests.datasourcetoolbox module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testConfref">tests.testConfref module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests.testCorpusLookup">tests.testCorpusLookup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testCrossRef">tests.testCrossRef module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests.testDblpEvents">tests.testDblpEvents module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests.testDblpXml">tests.testDblpXml module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests.testOpenResearch">tests.testOpenResearch module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests.testSMW">tests.testSMW module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests.testStatistics">tests.testStatistics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testWebScrape">tests.testWebScrape module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testWikiCfp">tests.testWikiCfp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tests.testWikiCfpScrape">tests.testWikiCfpScrape module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests.testWikidata">tests.testWikidata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-tests">Module contents</a></li>
 </ul>
@@ -215,6 +220,34 @@ not have a method with the specified name.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-tests.testConfref">
+<span id="tests-testconfref-module"></span><h2>tests.testConfref module<a class="headerlink" href="#module-tests.testConfref" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-08-02</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testConfref.TestConfRef">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testConfref.</span></span><span class="sig-name descname"><span class="pre">TestConfRef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testConfref.html#TestConfRef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testConfref.TestConfRef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tests.datasourcetoolbox.DataSourceTest" title="tests.datasourcetoolbox.DataSourceTest"><code class="xref py py-class docutils literal notranslate"><span class="pre">tests.datasourcetoolbox.DataSourceTest</span></code></a></p>
+<p>test getting events from Confref <a class="reference external" href="http://portal.confref.org">http://portal.confref.org</a>
+as a data source</p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testConfref.TestConfRef.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testConfref.html#TestConfRef.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testConfref.TestConfRef.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>setUp test environment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testConfref.TestConfRef.testConfRef">
+<span class="sig-name descname"><span class="pre">testConfRef</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testConfref.html#TestConfRef.testConfRef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testConfref.TestConfRef.testConfRef" title="Permalink to this definition">¶</a></dt>
+<dd><p>test CrossRef as an event data source</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-tests.testCorpusLookup">
 <span id="tests-testcorpuslookup-module"></span><h2>tests.testCorpusLookup module<a class="headerlink" href="#module-tests.testCorpusLookup" title="Permalink to this headline">¶</a></h2>
 <p>Created on 2021-07-26</p>
@@ -222,7 +255,7 @@ not have a method with the specified name.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testCorpusLookup.</span></span><span class="sig-name descname"><span class="pre">TestCorpusLookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#tests.datasourcetoolbox.DataSourceTest" title="tests.datasourcetoolbox.DataSourceTest"><code class="xref py py-class docutils literal notranslate"><span class="pre">tests.datasourcetoolbox.DataSourceTest</span></code></a></p>
 <p>test the event corpus</p>
 <p>Create an instance of the class that will use the named test
 method when executed. Raises a ValueError if the instance does
@@ -236,13 +269,13 @@ not have a method with the specified name.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.setUp">
 <span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.setUp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+<dd><p>setUp test environment</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.tearDown">
-<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.tearDown" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.testDataSource4Table">
+<span class="sig-name descname"><span class="pre">testDataSource4Table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.testDataSource4Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.testDataSource4Table" title="Permalink to this definition">¶</a></dt>
+<dd><p>test getting datasources by table name</p>
 </dd></dl>
 
 <dl class="py method">
@@ -255,6 +288,53 @@ not have a method with the specified name.</p>
 <dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.testLookup">
 <span class="sig-name descname"><span class="pre">testLookup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.testLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.testLookup" title="Permalink to this definition">¶</a></dt>
 <dd><p>test the lookup</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCorpusLookup.TestCorpusLookup.testViewDDL">
+<span class="sig-name descname"><span class="pre">testViewDDL</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCorpusLookup.html#TestCorpusLookup.testViewDDL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCorpusLookup.TestCorpusLookup.testViewDDL" title="Permalink to this definition">¶</a></dt>
+<dd><p>test the view DDL</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testCrossRef">
+<span id="tests-testcrossref-module"></span><h2>tests.testCrossRef module<a class="headerlink" href="#module-tests.testCrossRef" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-08-02</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testCrossRef.TestCrossRef">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testCrossRef.</span></span><span class="sig-name descname"><span class="pre">TestCrossRef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCrossRef.html#TestCrossRef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCrossRef.TestCrossRef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tests.datasourcetoolbox.DataSourceTest" title="tests.datasourcetoolbox.DataSourceTest"><code class="xref py py-class docutils literal notranslate"><span class="pre">tests.datasourcetoolbox.DataSourceTest</span></code></a></p>
+<p>test getting events from CrossRef <a class="reference external" href="https://www.crossref.org/">https://www.crossref.org/</a>
+as a data source</p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCrossRef.TestCrossRef.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCrossRef.html#TestCrossRef.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCrossRef.TestCrossRef.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>setUp test environment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCrossRef.TestCrossRef.testCrossRef">
+<span class="sig-name descname"><span class="pre">testCrossRef</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCrossRef.html#TestCrossRef.testCrossRef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCrossRef.TestCrossRef.testCrossRef" title="Permalink to this definition">¶</a></dt>
+<dd><p>test CrossRef as an event data source</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCrossRef.TestCrossRef.testCrossref_DOI_Lookup">
+<span class="sig-name descname"><span class="pre">testCrossref_DOI_Lookup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCrossRef.html#TestCrossRef.testCrossref_DOI_Lookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCrossRef.TestCrossRef.testCrossref_DOI_Lookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>test crossref API access
+see <a class="reference external" href="https://github.com/WolfgangFahl/ProceedingsTitleParser/issues/28">https://github.com/WolfgangFahl/ProceedingsTitleParser/issues/28</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testCrossRef.TestCrossRef.testFixUmlauts">
+<span class="sig-name descname"><span class="pre">testFixUmlauts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testCrossRef.html#TestCrossRef.testFixUmlauts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testCrossRef.TestCrossRef.testFixUmlauts" title="Permalink to this definition">¶</a></dt>
+<dd><p>workaround Umlaut issue see <a class="reference external" href="https://stackoverflow.com/questions/63486767/how-can-i-get-the-fuseki-api-via-sparqlwrapper-to-properly-report-a-detailed-err">https://stackoverflow.com/questions/63486767/how-can-i-get-the-fuseki-api-via-sparqlwrapper-to-properly-report-a-detailed-err</a></p>
 </dd></dl>
 
 </dd></dl>
@@ -272,6 +352,12 @@ not have a method with the specified name.</p>
 <p>Create an instance of the class that will use the named test
 method when executed. Raises a ValueError if the instance does
 not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpEvents.TestDblpEvents.configureCorpusLookup">
+<span class="sig-name descname"><span class="pre">configureCorpusLookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lookup</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="corpus.html#corpus.lookup.CorpusLookup" title="corpus.lookup.CorpusLookup"><span class="pre">corpus.lookup.CorpusLookup</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpEvents.html#TestDblpEvents.configureCorpusLookup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpEvents.TestDblpEvents.configureCorpusLookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback to configure the corpus lookup</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.testDblpEvents.TestDblpEvents.setUp">
 <span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpEvents.html#TestDblpEvents.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpEvents.TestDblpEvents.setUp" title="Permalink to this definition">¶</a></dt>
@@ -301,7 +387,8 @@ not have a method with the specified name.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.checkConfColumn">
 <span class="sig-name descname"><span class="pre">checkConfColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sqlDB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.checkConfColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.checkConfColumn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>check teh conference columns</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.getDblp">
@@ -318,6 +405,12 @@ not have a method with the specified name.</p>
 <dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.getSqlDB">
 <span class="sig-name descname"><span class="pre">getSqlDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recreate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.getSqlDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.getSqlDB" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the Sql Database</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.inCI">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">inCI</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.inCI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.inCI" title="Permalink to this definition">¶</a></dt>
+<dd><p>are we running in a Continuous Integration Environment?</p>
 </dd></dl>
 
 <dl class="py method">
@@ -361,8 +454,15 @@ not have a method with the specified name.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testParameterizedQuery">
-<span class="sig-name descname"><span class="pre">testParameterizedQuery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testParameterizedQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testParameterizedQuery" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testIssue5">
+<span class="sig-name descname"><span class="pre">testIssue5</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testIssue5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testIssue5" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://github.com/WolfgangFahl/ConferenceCorpus/issues/5">https://github.com/WolfgangFahl/ConferenceCorpus/issues/5</a></p>
+<p>dblp xml parser skips some proceedings titles</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testDblpXml.TestDblp.testQueries">
+<span class="sig-name descname"><span class="pre">testQueries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testDblpXml.html#TestDblp.testQueries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testDblpXml.TestDblp.testQueries" title="Permalink to this definition">¶</a></dt>
 <dd><p>test the parameterized query</p>
 </dd></dl>
 
@@ -485,6 +585,163 @@ not have a method with the specified name.</p>
 <dt class="sig sig-object py" id="tests.testStatistics.TestStatistics.testStatistics">
 <span class="sig-name descname"><span class="pre">testStatistics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testStatistics.html#TestStatistics.testStatistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testStatistics.TestStatistics.testStatistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>test statistics</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testWebScrape">
+<span id="tests-testwebscrape-module"></span><h2>tests.testWebScrape module<a class="headerlink" href="#module-tests.testWebScrape" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-07-31</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testWebScrape.TestWebScrape">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testWebScrape.</span></span><span class="sig-name descname"><span class="pre">TestWebScrape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWebScrape.html#TestWebScrape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWebScrape.TestWebScrape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>test getting rdfA based triples from Webpages</p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWebScrape.TestWebScrape.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWebScrape.html#TestWebScrape.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWebScrape.TestWebScrape.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWebScrape.TestWebScrape.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWebScrape.html#TestWebScrape.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWebScrape.TestWebScrape.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWebScrape.TestWebScrape.testWebScrape">
+<span class="sig-name descname"><span class="pre">testWebScrape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWebScrape.html#TestWebScrape.testWebScrape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWebScrape.TestWebScrape.testWebScrape" title="Permalink to this definition">¶</a></dt>
+<dd><p>test getting rdfA encoded info from a webpage</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testWikiCfp">
+<span id="tests-testwikicfp-module"></span><h2>tests.testWikiCfp module<a class="headerlink" href="#module-tests.testWikiCfp" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-07-31</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testWikiCfp.TestWikiCFP">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testWikiCfp.</span></span><span class="sig-name descname"><span class="pre">TestWikiCFP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfp.html#TestWikiCFP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfp.TestWikiCFP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tests.datasourcetoolbox.DataSourceTest" title="tests.datasourcetoolbox.DataSourceTest"><code class="xref py py-class docutils literal notranslate"><span class="pre">tests.datasourcetoolbox.DataSourceTest</span></code></a></p>
+<p>test WikiCFP data source</p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfp.TestWikiCFP.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfp.html#TestWikiCFP.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfp.TestWikiCFP.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>setUp test environment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfp.TestWikiCFP.testWikiCFP">
+<span class="sig-name descname"><span class="pre">testWikiCFP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfp.html#TestWikiCFP.testWikiCFP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfp.TestWikiCFP.testWikiCFP" title="Permalink to this definition">¶</a></dt>
+<dd><p>test the WikiCFP lookup</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tests.testWikiCfpScrape">
+<span id="tests-testwikicfpscrape-module"></span><h2>tests.testWikiCfpScrape module<a class="headerlink" href="#module-tests.testWikiCfpScrape" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2020-08-20</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.testWikiCfpScrape.</span></span><span class="sig-name descname"><span class="pre">TestWikiCFP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>test events from WikiCFP</p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.handleError">
+<span class="sig-name descname"><span class="pre">handleError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.handleError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.handleError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.printDelimiterCount">
+<span class="sig-name descname"><span class="pre">printDelimiterCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.printDelimiterCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.printDelimiterCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>print the count of the most common used delimiters in the given name list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testCrawlEvents">
+<span class="sig-name descname"><span class="pre">testCrawlEvents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testCrawlEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testCrawlEvents" title="Permalink to this definition">¶</a></dt>
+<dd><p>test crawling a few events and storing the result to a json file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testCrawlType">
+<span class="sig-name descname"><span class="pre">testCrawlType</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testCrawlType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testCrawlType" title="Permalink to this definition">¶</a></dt>
+<dd><p>test CrawlType enumeration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testCrawledJsonFiles">
+<span class="sig-name descname"><span class="pre">testCrawledJsonFiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testCrawledJsonFiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testCrawledJsonFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the crawl files</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testEventScraping">
+<span class="sig-name descname"><span class="pre">testEventScraping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testEventScraping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testEventScraping" title="Permalink to this definition">¶</a></dt>
+<dd><p>test scraping the given event</p>
+<blockquote>
+<div><p>test “This item has been deleted” WikiCFP items</p>
+</div></blockquote>
+<p>e.g.
+<a class="reference external" href="http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid=3">http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid=3</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testGettingEventSeriesForEvent">
+<span class="sig-name descname"><span class="pre">testGettingEventSeriesForEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testGettingEventSeriesForEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testGettingEventSeriesForEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>test extracting the event series id from th event page</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testGettingLatestEvent">
+<span class="sig-name descname"><span class="pre">testGettingLatestEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testGettingLatestEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testGettingLatestEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the latest event Id with a binary search</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testInvalidUrl">
+<span class="sig-name descname"><span class="pre">testInvalidUrl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testInvalidUrl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testInvalidUrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>make sure only valid urls are accepted</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testJsonPickleDateTime">
+<span class="sig-name descname"><span class="pre">testJsonPickleDateTime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testJsonPickleDateTime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testJsonPickleDateTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>test the JsonPickle datetime encoding mystery</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.testWikiCfpScrape.TestWikiCFP.testWikiCFP">
+<span class="sig-name descname"><span class="pre">testWikiCFP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/testWikiCfpScrape.html#TestWikiCFP.testWikiCFP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.testWikiCfpScrape.TestWikiCFP.testWikiCFP" title="Permalink to this definition">¶</a></dt>
+<dd><p>test event handling from WikiCFP</p>
 </dd></dl>
 
 </dd></dl>

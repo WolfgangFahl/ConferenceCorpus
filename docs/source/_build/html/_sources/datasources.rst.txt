@@ -4,6 +4,22 @@ datasources package
 Submodules
 ----------
 
+datasources.confref module
+--------------------------
+
+.. automodule:: datasources.confref
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datasources.crossref module
+---------------------------
+
+.. automodule:: datasources.crossref
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 datasources.dblp module
 -----------------------
 
@@ -24,6 +40,30 @@ datasources.openresearch module
 -------------------------------
 
 .. automodule:: datasources.openresearch
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datasources.webscrape module
+----------------------------
+
+.. automodule:: datasources.webscrape
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datasources.wikicfp module
+--------------------------
+
+.. automodule:: datasources.wikicfp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datasources.wikicfpscrape module
+--------------------------------
+
+.. automodule:: datasources.wikicfpscrape
    :members:
    :undoc-members:
    :show-inheritance:

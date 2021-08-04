@@ -165,6 +165,7 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
 <span class="kn">from</span> <span class="nn">corpus.eventcorpus</span> <span class="kn">import</span> <span class="n">EventDataSource</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <div class="viewcode-block" id="DataSourceTest"><a class="viewcode-back" href="../../tests.html#tests.datasourcetoolbox.DataSourceTest">[docs]</a><span class="k">class</span> <span class="nc">DataSourceTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -176,8 +177,12 @@
 <span class="sd">        setUp test environment</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">TestCase</span><span class="o">.</span><span class="n">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">forceUpdate</span><span class="o">=</span><span class="kc">False</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;starting test </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="si">}</span><span class="s2"> ... with debug=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">forceUpdate</span><span class="o">=</span><span class="kc">False</span>
+        <span class="c1"># make sure unclosed socket warnings are not shown </span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;unclosed&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">ResourceWarning</span><span class="p">)</span></div>
         <span class="c1">#self.longMessage=True</span>
         
 <div class="viewcode-block" id="DataSourceTest.tearDown"><a class="viewcode-back" href="../../tests.html#tests.datasourcetoolbox.DataSourceTest.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

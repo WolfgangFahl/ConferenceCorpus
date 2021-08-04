@@ -92,9 +92,14 @@
 <li class="toctree-l1"><a class="reference internal" href="corpus.html">corpus package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">datasources package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.confref">datasources.confref module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.crossref">datasources.crossref module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-datasources.dblp">datasources.dblp module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-datasources.dblpxml">datasources.dblpxml module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-datasources.openresearch">datasources.openresearch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.webscrape">datasources.webscrape module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.wikicfp">datasources.wikicfp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-datasources.wikicfpscrape">datasources.wikicfpscrape module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-datasources.wikidata">datasources.wikidata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-datasources">Module contents</a></li>
 </ul>
@@ -174,6 +179,236 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-datasources.confref">
+<span id="datasources-confref-module"></span><h2>datasources.confref module<a class="headerlink" href="#module-datasources.confref" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2020-07-11</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEvent">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.confref.</span></span><span class="sig-name descname"><span class="pre">ConfrefEvent</span></span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
+<p>a scientific event derived from Confref</p>
+<p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEvent.fixRawEvent">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">fixRawEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawEvent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEvent.fixRawEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEvent.fixRawEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>fix the given raw Event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rawEvent</strong> (<em>dict</em>) – the raw event record to fix</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEventManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.confref.</span></span><span class="sig-name descname"><span class="pre">ConfrefEventManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEventManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEventManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventManager" title="corpus.event.EventManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventManager</span></code></a></p>
+<p>Crossref event manager</p>
+<p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEventManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEventManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEventManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEventManager.getListOfDicts">
+<span class="sig-name descname"><span class="pre">getListOfDicts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEventManager.getListOfDicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEventManager.getListOfDicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my content from the json file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEventSeries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.confref.</span></span><span class="sig-name descname"><span class="pre">ConfrefEventSeries</span></span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEventSeries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEventSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
+<p>a scientific event series derived from Confref</p>
+<p>Constructor</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEventSeriesManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.confref.</span></span><span class="sig-name descname"><span class="pre">ConfrefEventSeriesManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEventSeriesManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEventSeriesManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeriesManager" title="corpus.event.EventSeriesManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeriesManager</span></code></a></p>
+<p>Confref event series handling</p>
+<p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEventSeriesManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEventSeriesManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEventSeriesManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.confref.ConfrefEventSeriesManager.getListOfDicts">
+<span class="sig-name descname"><span class="pre">getListOfDicts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/confref.html#ConfrefEventSeriesManager.getListOfDicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.confref.ConfrefEventSeriesManager.getListOfDicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my data</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-datasources.crossref">
+<span id="datasources-crossref-module"></span><h2>datasources.crossref module<a class="headerlink" href="#module-datasources.crossref" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2020-07-05</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.crossref.Crossref">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.crossref.</span></span><span class="sig-name descname"><span class="pre">Crossref</span></span><a class="reference internal" href="_modules/datasources/crossref.html#Crossref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.Crossref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Access to Crossref’s search api see <a class="reference external" href="https://github.com/CrossRef/rest-api-doc">https://github.com/CrossRef/rest-api-doc</a></p>
+<p>constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.Crossref.doiMetaData">
+<span class="sig-name descname"><span class="pre">doiMetaData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#Crossref.doiMetaData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.Crossref.doiMetaData" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the meta data for the given doi</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.Crossref.fixEncodings">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">fixEncodings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eventInfo</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#Crossref.fixEncodings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.Crossref.fixEncodings" title="Permalink to this definition">¶</a></dt>
+<dd><p>fix the encoding of the dict entries of the given eventInfo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eventInfo</strong> (<em>dict</em>) – the record to fix</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – show debug information if True</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEvent">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.crossref.</span></span><span class="sig-name descname"><span class="pre">CrossrefEvent</span></span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
+<p>a scientific event derived from Crossref</p>
+<p>Constructor</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.crossref.</span></span><span class="sig-name descname"><span class="pre">CrossrefEventManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventManager" title="corpus.event.EventManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventManager</span></code></a></p>
+<p>Crossref event manager</p>
+<p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventManager.fixDateParts">
+<span class="sig-name descname"><span class="pre">fixDateParts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawEvent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventManager.fixDateParts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventManager.fixDateParts" title="Permalink to this definition">¶</a></dt>
+<dd><p>fix date-parts from the json dict created by crossref e.g.
+“date-parts”: [</p>
+<blockquote>
+<div><blockquote>
+<div><dl class="simple">
+<dt>[</dt><dd><p>1999,
+9,
+5</p>
+</dd>
+</dl>
+<p>]</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rawEvent</strong> (<em>dict</em>) – the dictionary as parsed by json</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – “start” or “end”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventManager.fromJsonFile">
+<span class="sig-name descname"><span class="pre">fromJsonFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsonFilePath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventManager.fromJsonFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventManager.fromJsonFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a single batch of events from the given jsonFilePath</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventManager.getListOfDicts">
+<span class="sig-name descname"><span class="pre">getListOfDicts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventManager.getListOfDicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventManager.getListOfDicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>cache my json files to my eventmanager</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventManager.jsonFiles">
+<span class="sig-name descname"><span class="pre">jsonFiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventManager.jsonFiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventManager.jsonFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the list of the json files that have my data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a list of json file names</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventManager.postProcess">
+<span class="sig-name descname"><span class="pre">postProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eventInfo</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventManager.postProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventManager.postProcess" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><dl class="simple">
+<dt>postProcess the given eventInfo e.g.</dt><dd><p>{</p>
+</dd>
+<dt>“event”: {</dt><dd><p>“name”: “Adriatico Research Conference and Workshop”,
+“location”: “ICTP, Trieste, Italy”</p>
+</dd>
+</dl>
+<p>},
+“title”: [</p>
+<blockquote>
+<div><p>“Towards the Theoretical Understanding of High Tc Superconductors”</p>
+</div></blockquote>
+<p>],
+“DOI”: “10.1142/0638”</p>
+</div></blockquote>
+<p>},</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventSeries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.crossref.</span></span><span class="sig-name descname"><span class="pre">CrossrefEventSeries</span></span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventSeries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
+<p>a scientific event series derived from Crossref</p>
+<p>Constructor</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventSeriesManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.crossref.</span></span><span class="sig-name descname"><span class="pre">CrossrefEventSeriesManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventSeriesManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventSeriesManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeriesManager" title="corpus.event.EventSeriesManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeriesManager</span></code></a></p>
+<p>CrossRef event series handling</p>
+<p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventSeriesManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventSeriesManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventSeriesManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.crossref.CrossrefEventSeriesManager.getListOfDicts">
+<span class="sig-name descname"><span class="pre">getListOfDicts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/crossref.html#CrossrefEventSeriesManager.getListOfDicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.crossref.CrossrefEventSeriesManager.getListOfDicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my data</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-datasources.dblp">
 <span id="datasources-dblp-module"></span><h2>datasources.dblp module<a class="headerlink" href="#module-datasources.dblp" title="Permalink to this headline">¶</a></h2>
 <p>Created on 2021-07-28</p>
@@ -185,6 +420,17 @@
 <p>a Dblp Event</p>
 <p>Example event: <a class="reference external" href="https://dblp.org/db/conf/aaai/aaai2020.html">https://dblp.org/db/conf/aaai/aaai2020.html</a></p>
 <p>constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblp.DblpEvent.fixRawEvent">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">fixRawEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawEvent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblp.html#DblpEvent.fixRawEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblp.DblpEvent.fixRawEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>fix the given raw Event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rawEvent</strong> (<em>dict</em>) – the raw event record to fix</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -281,7 +527,7 @@ see <a class="reference external" href="https://github.com/IsaacChanghau/DBLPPar
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="datasources.dblpxml.Dblp.asDictOfLod">
-<span class="sig-name descname"><span class="pre">asDictOfLod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.asDictOfLod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.asDictOfLod" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">asDictOfLod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expectedTotal</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.asDictOfLod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.asDictOfLod" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the dblp data as a dict of list of dicts - effectively separating the content
 into table structures</p>
 <dl class="field-list simple">
@@ -290,6 +536,22 @@ into table structures</p>
 <li><p><strong>limit</strong> (<em>int</em>) – maximum amount of records to process</p></li>
 <li><p><strong>delim</strong> (<em>str</em>) – the delimiter to use for splitting attributes with multiple values (e.g. author)</p></li>
 <li><p><strong>progress</strong> (<em>int</em>) – if set the interval at which to print a progress dot</p></li>
+<li><p><strong>expectedTotal</strong> (<em>int</em>) – the expected Total number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.checkRow">
+<span class="sig-name descname"><span class="pre">checkRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.checkRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.checkRow" title="Permalink to this definition">¶</a></dt>
+<dd><p>check the row content</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kind</strong> (<em>str</em>) – e.g. proceedings/article</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – the index of the row</p></li>
+<li><p><strong>row</strong> (<em>dict</em>) – the row to process</p></li>
 </ul>
 </dd>
 </dl>
@@ -319,20 +581,34 @@ into table structures</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.getExpectedTotal">
+<span class="sig-name descname"><span class="pre">getExpectedTotal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getExpectedTotal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getExpectedTotal" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the expected Total of records</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="datasources.dblpxml.Dblp.getSize">
-<span class="sig-name descname"><span class="pre">getSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getSize" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getSize" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the size of my xmlFile</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the size</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datasources.dblpxml.Dblp.getSqlDB">
-<span class="sig-name descname"><span class="pre">getSqlDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createSample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recreate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postProcess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_same_thread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getSqlDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getSqlDB" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getSqlDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createSample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recreate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postProcess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_same_thread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showProgress</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getSqlDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getSqlDB" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the SQL database or create it from the XML content</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>limit</strong> (<em>int</em>) – maximum number of records</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -354,8 +630,9 @@ into table structures</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datasources.dblpxml.Dblp.getXmlSqlDB">
-<span class="sig-name descname"><span class="pre">getXmlSqlDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getXmlSqlDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getXmlSqlDB" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">getXmlSqlDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showProgress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.getXmlSqlDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.getXmlSqlDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the SqlDB derived from the XML download</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datasources.dblpxml.Dblp.isDownloaded">
@@ -380,19 +657,57 @@ into table structures</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datasources.dblpxml.Dblp.postProcess">
-<span class="sig-name descname"><span class="pre">postProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.postProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.postProcess" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">postProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_kind</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.postProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.postProcess" title="Permalink to this definition">¶</a></dt>
 <dd><p>postProcess the given row</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_kind</strong> (<em>str</em>) – e.g. proceedings/article</p></li>
+<li><p><strong>_index</strong> (<em>int</em>) – the index of the row</p></li>
+<li><p><strong>row</strong> (<em>dict</em>) – the row to process</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datasources.dblpxml.Dblp.prettyXml">
 <span class="sig-name descname"><span class="pre">prettyXml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span>&#160; <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.prettyXml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.prettyXml" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>get a pretty XML representation of the given etree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.printProgressBar">
+<span class="sig-name descname"><span class="pre">printProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">72</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'█'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printEnd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.printProgressBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.printProgressBar" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Call in a loop to create terminal progress bar</p>
+<p>see <a class="reference external" href="https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console">https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console</a></p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>iteration   - Required  : current iteration (Int)
+total       - Required  : total iterations (Int)
+prefix      - Optional  : prefix string (Str)
+suffix      - Optional  : suffix string (Str)
+decimals    - Optional  : positive number of decimals in percent complete (Int)
+length      - Optional  : character length of bar (Int)
+fill        - Optional  : bar fill character (Str)
+printEnd    - Optional  : end character (e.g. “</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>“, ”
+“) (Str)</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datasources.dblpxml.Dblp.reinit">
 <span class="sig-name descname"><span class="pre">reinit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.reinit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.reinit" title="Permalink to this definition">¶</a></dt>
 <dd><p>reinitialize my file names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.dblpxml.Dblp.warnFullSize">
+<span class="sig-name descname"><span class="pre">warnFullSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/dblpxml.html#Dblp.warnFullSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.dblpxml.Dblp.warnFullSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>warn if we are using the full dataset</p>
 </dd></dl>
 
 </dd></dl>
@@ -411,6 +726,17 @@ into table structures</p>
 <dt class="sig sig-object py" id="datasources.openresearch.OREvent.entityName">
 <span class="sig-name descname"><span class="pre">entityName</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Event'</span></em><a class="headerlink" href="#datasources.openresearch.OREvent.entityName" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREvent.fixRawEvent">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">fixRawEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawEvent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wikiUser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREvent.fixRawEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREvent.fixRawEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>fix the given raw Event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rawEvent</strong> (<em>dict</em>) – the raw event record to fix</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datasources.openresearch.OREvent.getSampleWikiTextList">
@@ -479,6 +805,17 @@ into table structures</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="datasources.openresearch.OREventManager.fixRawEvents">
+<span class="sig-name descname"><span class="pre">fixRawEvents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listOfDicts</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wikiUser</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">wikibot.wikiuser.WikiUser</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager.fixRawEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager.fixRawEvents" title="Permalink to this definition">¶</a></dt>
+<dd><p>fix the given list of Dicts with raw Events</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>listOfDicts</strong> (<em>list</em>) – the list of raw Events to fix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="datasources.openresearch.OREventManager.fromWikiFileManager">
 <span class="sig-name descname"><span class="pre">fromWikiFileManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wikiFileManager</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">wikifile.wikiFileManager.WikiFileManager</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/openresearch.html#OREventManager.fromWikiFileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.openresearch.OREventManager.fromWikiFileManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>read me from wiki markup files using the given WikiFileManager</p>
@@ -540,7 +877,7 @@ into table structures</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="datasources.openresearch.OREventManager.propertyLookupList">
-<span class="sig-name descname"><span class="pre">propertyLookupList</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[{'prop':</span> <span class="pre">'Acronym',</span> <span class="pre">'name':</span> <span class="pre">'acronym',</span> <span class="pre">'templateParam':</span> <span class="pre">'Acronym'},</span> <span class="pre">{'prop':</span> <span class="pre">'End</span> <span class="pre">date',</span> <span class="pre">'name':</span> <span class="pre">'endDate',</span> <span class="pre">'templateParam':</span> <span class="pre">'End</span> <span class="pre">date'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">in</span> <span class="pre">series',</span> <span class="pre">'name':</span> <span class="pre">'inEventSeries',</span> <span class="pre">'templateParam':</span> <span class="pre">'Series'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">presence',</span> <span class="pre">'name':</span> <span class="pre">'presence',</span> <span class="pre">'templateParam':</span> <span class="pre">'presence'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">type',</span> <span class="pre">'name':</span> <span class="pre">'eventType',</span> <span class="pre">'templateParam':</span> <span class="pre">'Type'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_country',</span> <span class="pre">'name':</span> <span class="pre">'country',</span> <span class="pre">'templateParam':</span> <span class="pre">'Country'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_state',</span> <span class="pre">'name':</span> <span class="pre">'region',</span> <span class="pre">'templateParam':</span> <span class="pre">'State'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_city',</span> <span class="pre">'name':</span> <span class="pre">'city',</span> <span class="pre">'templateParam':</span> <span class="pre">'City'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has</span> <span class="pre">year',</span> <span class="pre">'name':</span> <span class="pre">'year',</span> <span class="pre">'templateParam':</span> <span class="pre">'Year'},</span> <span class="pre">{'prop':</span> <span class="pre">'Homepage',</span> <span class="pre">'name':</span> <span class="pre">'homepage',</span> <span class="pre">'templateParam':</span> <span class="pre">'Homepage'},</span> <span class="pre">{'prop':</span> <span class="pre">'Ordinal',</span> <span class="pre">'name':</span> <span class="pre">'ordinal',</span> <span class="pre">'templateParam':</span> <span class="pre">'Ordinal'},</span> <span class="pre">{'prop':</span> <span class="pre">'Start</span> <span class="pre">date',</span> <span class="pre">'name':</span> <span class="pre">'startDate',</span> <span class="pre">'templateParam':</span> <span class="pre">'Start</span> <span class="pre">date'},</span> <span class="pre">{'prop':</span> <span class="pre">'Title',</span> <span class="pre">'name':</span> <span class="pre">'title',</span> <span class="pre">'templateParam':</span> <span class="pre">'Title'},</span> <span class="pre">{'prop':</span> <span class="pre">'Accepted</span> <span class="pre">papers',</span> <span class="pre">'name':</span> <span class="pre">'acceptedPapers',</span> <span class="pre">'templateParam':</span> <span class="pre">'Accepted</span> <span class="pre">papers'},</span> <span class="pre">{'prop':</span> <span class="pre">'Submitted</span> <span class="pre">papers',</span> <span class="pre">'name':</span> <span class="pre">'submittedPapers',</span> <span class="pre">'templateParam':</span> <span class="pre">'Submitted</span> <span class="pre">papers'}]</span></em><a class="headerlink" href="#datasources.openresearch.OREventManager.propertyLookupList" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">propertyLookupList</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[{'prop':</span> <span class="pre">'Acronym',</span> <span class="pre">'name':</span> <span class="pre">'acronym',</span> <span class="pre">'templateParam':</span> <span class="pre">'Acronym'},</span> <span class="pre">{'prop':</span> <span class="pre">'End</span> <span class="pre">date',</span> <span class="pre">'name':</span> <span class="pre">'endDate',</span> <span class="pre">'templateParam':</span> <span class="pre">'End</span> <span class="pre">date'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">in</span> <span class="pre">series',</span> <span class="pre">'name':</span> <span class="pre">'inEventSeries',</span> <span class="pre">'templateParam':</span> <span class="pre">'Series'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">presence',</span> <span class="pre">'name':</span> <span class="pre">'presence',</span> <span class="pre">'templateParam':</span> <span class="pre">'presence'},</span> <span class="pre">{'prop':</span> <span class="pre">'Event</span> <span class="pre">type',</span> <span class="pre">'name':</span> <span class="pre">'eventType',</span> <span class="pre">'templateParam':</span> <span class="pre">'Type'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_country',</span> <span class="pre">'name':</span> <span class="pre">'country',</span> <span class="pre">'templateParam':</span> <span class="pre">'Country'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_state',</span> <span class="pre">'name':</span> <span class="pre">'region',</span> <span class="pre">'templateParam':</span> <span class="pre">'State'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has_location_city',</span> <span class="pre">'name':</span> <span class="pre">'city',</span> <span class="pre">'templateParam':</span> <span class="pre">'City'},</span> <span class="pre">{'prop':</span> <span class="pre">'Has</span> <span class="pre">year',</span> <span class="pre">'name':</span> <span class="pre">'year',</span> <span class="pre">'templateParam':</span> <span class="pre">'Year'},</span> <span class="pre">{'prop':</span> <span class="pre">'Homepage',</span> <span class="pre">'name':</span> <span class="pre">'homepage',</span> <span class="pre">'templateParam':</span> <span class="pre">'Homepage'},</span> <span class="pre">{'prop':</span> <span class="pre">'Ordinal',</span> <span class="pre">'name':</span> <span class="pre">'ordinal',</span> <span class="pre">'templateParam':</span> <span class="pre">'Ordinal'},</span> <span class="pre">{'prop':</span> <span class="pre">'Start</span> <span class="pre">date',</span> <span class="pre">'name':</span> <span class="pre">'startDate',</span> <span class="pre">'templateParam':</span> <span class="pre">'Start</span> <span class="pre">date'},</span> <span class="pre">{'prop':</span> <span class="pre">'Title',</span> <span class="pre">'name':</span> <span class="pre">'title',</span> <span class="pre">'templateParam':</span> <span class="pre">'Title'},</span> <span class="pre">{'prop':</span> <span class="pre">'Accepted</span> <span class="pre">papers',</span> <span class="pre">'name':</span> <span class="pre">'acceptedPapers',</span> <span class="pre">'templateParam':</span> <span class="pre">'Accepted</span> <span class="pre">papers'},</span> <span class="pre">{'prop':</span> <span class="pre">'Submitted</span> <span class="pre">papers',</span> <span class="pre">'name':</span> <span class="pre">'submittedPapers',</span> <span class="pre">'templateParam':</span> <span class="pre">'Submitted</span> <span class="pre">papers'},</span> <span class="pre">{'prop':</span> <span class="pre">'presence',</span> <span class="pre">'name':</span> <span class="pre">'presence',</span> <span class="pre">'templateParam':</span> <span class="pre">'presence'}]</span></em><a class="headerlink" href="#datasources.openresearch.OREventManager.propertyLookupList" title="Permalink to this definition">¶</a></dt>
 <dd><p>i represent a list of Events</p>
 </dd></dl>
 
@@ -663,6 +1000,417 @@ into table structures</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-datasources.webscrape">
+<span id="datasources-webscrape-module"></span><h2>datasources.webscrape module<a class="headerlink" href="#module-datasources.webscrape" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2020-08-20</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.webscrape.WebScrape">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.webscrape.</span></span><span class="sig-name descname"><span class="pre">WebScrape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showHtml</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/webscrape.html#WebScrape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.webscrape.WebScrape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>WebScraper
+with a rudimentary Parser for <a class="reference external" href="https://en.wikipedia.org/wiki/RDFa">https://en.wikipedia.org/wiki/RDFa</a>
+extended for CEUR-WS and WikiCFP specific scraping</p>
+<p><a class="reference external" href="https://stackoverflow.com/questions/21876602/what-does-the-html-typeof-attribute-do">https://stackoverflow.com/questions/21876602/what-does-the-html-typeof-attribute-do</a>
+<a class="reference external" href="https://de.wikipedia.org/wiki/RDFa">https://de.wikipedia.org/wiki/RDFa</a>
+<a class="reference external" href="https://stackoverflow.com/questions/20767903/parsing-rdfa-in-html-xhtml">https://stackoverflow.com/questions/20767903/parsing-rdfa-in-html-xhtml</a>
+<a class="reference external" href="https://www.w3.org/MarkUp/2009/rdfa-for-html-authors">https://www.w3.org/MarkUp/2009/rdfa-for-html-authors</a></p>
+<p>Constructor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>debug</strong> (<em>bool</em>) – if True show debugging information</p></li>
+<li><p><strong>showHtml</strong> (<em>bool</em>) – if True show the HTML retrieved</p></li>
+<li><p><strong>timeout</strong> (<em>float</em>) – the default timeout</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.webscrape.WebScrape.fromTag">
+<span class="sig-name descname"><span class="pre">fromTag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">soup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/webscrape.html#WebScrape.fromTag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.webscrape.WebScrape.fromTag" title="Permalink to this definition">¶</a></dt>
+<dd><p>get metadata from a given tag, attribute and value
+e.g. &lt;span class=”CEURVOLACRONYM”&gt;DL4KG2020&lt;/span&gt;</p>
+<p>tag=span, attr=class, value=CEURVOLACRONYM</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>soup</strong> (<em>BeautifulSoup</em>) – the parser to work with</p></li>
+<li><p><strong>tag</strong> (<em>string</em>) – the tag to search</p></li>
+<li><p><strong>attr</strong> (<em>string</em>) – the attribute to expect</p></li>
+<li><p><strong>value</strong> (<em>string</em>) – the value to expect</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.webscrape.WebScrape.getSoup">
+<span class="sig-name descname"><span class="pre">getSoup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showHtml</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bs4.BeautifulSoup</span></span></span><a class="reference internal" href="_modules/datasources/webscrape.html#WebScrape.getSoup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.webscrape.WebScrape.getSoup" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the beautiful Soup parser</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – the url to open</p></li>
+<li><p><strong>showHtml</strong> (<em>boolean</em>) – True if the html code should be pretty printed and shown</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the html parser</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>BeautifulSoup</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.webscrape.WebScrape.parseRDFa">
+<span class="sig-name descname"><span class="pre">parseRDFa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/webscrape.html#WebScrape.parseRDFa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.webscrape.WebScrape.parseRDFa" title="Permalink to this definition">¶</a></dt>
+<dd><p>rudimentary RDFa parsing</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.webscrape.WebScrape.parseWithScrapeDescription">
+<span class="sig-name descname"><span class="pre">parseWithScrapeDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scrapeDescr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/webscrape.html#WebScrape.parseWithScrapeDescription"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.webscrape.WebScrape.parseWithScrapeDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>parse the given url with the given encoding</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dict with the results</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.webscrape.WebScrape.printPrettyHtml">
+<span class="sig-name descname"><span class="pre">printPrettyHtml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">soup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/webscrape.html#WebScrape.printPrettyHtml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.webscrape.WebScrape.printPrettyHtml" title="Permalink to this definition">¶</a></dt>
+<dd><p>print the prettified html for the given soup</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>soup</strong> (<em>BeuatifulSoup</em>) – the parsed html to print</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-datasources.wikicfp">
+<span id="datasources-wikicfp-module"></span><h2>datasources.wikicfp module<a class="headerlink" href="#module-datasources.wikicfp" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2021-07-31</p>
+<p>&#64;author: wf</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEvent">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikicfp.</span></span><span class="sig-name descname"><span class="pre">WikiCfpEvent</span></span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
+<p>event derived from WikiCFP</p>
+<p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEvent.getSamples">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getSamples</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEvent.getSamples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEvent.getSamples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEventManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikicfp.</span></span><span class="sig-name descname"><span class="pre">WikiCfpEventManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEventManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEventManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventManager" title="corpus.event.EventManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventManager</span></code></a></p>
+<p>manage WikiCFP derived scientific events</p>
+<p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEventManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEventManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEventManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEventManager.getListOfDicts">
+<span class="sig-name descname"><span class="pre">getListOfDicts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEventManager.getListOfDicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEventManager.getListOfDicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my list of dicts</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEventSeries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikicfp.</span></span><span class="sig-name descname"><span class="pre">WikiCfpEventSeries</span></span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEventSeries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEventSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeries" title="corpus.event.EventSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeries</span></code></a></p>
+<p>event series derived from WikiCFP</p>
+<p>Constructor</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEventSeriesManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikicfp.</span></span><span class="sig-name descname"><span class="pre">WikiCfpEventSeriesManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">lodstorage.storageconfig.StorageConfig</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEventSeriesManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEventSeriesManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.EventSeriesManager" title="corpus.event.EventSeriesManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.EventSeriesManager</span></code></a></p>
+<p>mange WikiCFP derived scientific conference series</p>
+<p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEventSeriesManager.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEventSeriesManager.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEventSeriesManager.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>configure me</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfp.WikiCfpEventSeriesManager.getListOfDicts">
+<span class="sig-name descname"><span class="pre">getListOfDicts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfp.html#WikiCfpEventSeriesManager.getListOfDicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfp.WikiCfpEventSeriesManager.getListOfDicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get my list of dicts</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-datasources.wikicfpscrape">
+<span id="datasources-wikicfpscrape-module"></span><h2>datasources.wikicfpscrape module<a class="headerlink" href="#module-datasources.wikicfpscrape" title="Permalink to this headline">¶</a></h2>
+<p>Created on 2020-08-20</p>
+<blockquote>
+<div><p>script to read event metadata from <a class="reference external" href="http://wikicfp.com">http://wikicfp.com</a></p>
+<p>use: python3 wikicfp.py [startId] [stopId] [threads]
+&#64;param startId
+&#64;param stopId
+&#64;param threads - number of threads the script should create to improve performance</p>
+<p>example: python3 wikicfp.py –startId 2000 –stopId 2999 10</p>
+<p>&#64;author:     svantje, wf
+&#64;copyright:  2020-2021 TIB Hannover, Wolfgang Fahl. All rights reserved.</p>
+</div></blockquote>
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.CrawlType">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikicfpscrape.</span></span><span class="sig-name descname"><span class="pre">CrawlType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#CrawlType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.CrawlType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>possible supported storage modes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.CrawlType.EVENT">
+<span class="sig-name descname"><span class="pre">EVENT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Event'</span></em><a class="headerlink" href="#datasources.wikicfpscrape.CrawlType.EVENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.CrawlType.SERIES">
+<span class="sig-name descname"><span class="pre">SERIES</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Series'</span></em><a class="headerlink" href="#datasources.wikicfpscrape.CrawlType.SERIES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.CrawlType.urlPrefix">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">urlPrefix</span></span><a class="headerlink" href="#datasources.wikicfpscrape.CrawlType.urlPrefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpEventFetcher">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikicfpscrape.</span></span><span class="sig-name descname"><span class="pre">WikiCfpEventFetcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crawlType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">CrawlType.EVENT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showProgress</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpEventFetcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpEventFetcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>a single WikiCfpEentFetcher to fetch and event or series</p>
+<p>construct me</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>showProgress</strong> (<em>bool</em>) – if True show progress</p></li>
+<li><p><strong>timeout</strong> (<em>float</em>) – the default timeout</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpEventFetcher.fromEventId">
+<span class="sig-name descname"><span class="pre">fromEventId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfpid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpEventFetcher.fromEventId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpEventFetcher.fromEventId" title="Permalink to this definition">¶</a></dt>
+<dd><p>see e.g. <a class="reference external" href="https://github.com/andreeaiana/graph_confrec/blob/master/src/data/WikiCFPCrawler.py">https://github.com/andreeaiana/graph_confrec/blob/master/src/data/WikiCFPCrawler.py</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cfpid</strong> (<em>int</em>) – the wikicfp id to use</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpEventFetcher.fromTriples">
+<span class="sig-name descname"><span class="pre">fromTriples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawEvent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpEventFetcher.fromTriples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpEventFetcher.fromTriples" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the rawEvent dict from the given triple e.g.:</p>
+<p>v:Event(v:summary)=IDC 2009
+v:Event(v:eventType)=Conference
+v:Event(v:startDate)=2009-06-03T00:00:00
+v:Event(v:endDate)=2009-06-05T23:59:59
+v:Event(v:locality)=Milano, Como, Italy
+v:Event(v:description)= IDC  2009 : The 8th International Conference on Interaction Design and Children
+v:Address(v:locality)=Milano, Como, Italy
+v:Event(v:summary)=Submission Deadline
+v:Event(v:startDate)=2009-01-19T00:00:00
+v:Event(v:summary)=Notification Due
+v:Event(v:startDate)=2009-02-20T00:00:00
+v:Event(v:summary)=Final Version Due
+v:Event(v:startDate)=2009-03-16T00:00:00</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpEventFetcher.fromUrl">
+<span class="sig-name descname"><span class="pre">fromUrl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpEventFetcher.fromUrl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpEventFetcher.fromUrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the event form the given url</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>url</strong> (<em>str</em>) – the url to get the event from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a raw event dict or None if an error occured</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpEventFetcher.getHighestNonDeletedIdInRange">
+<span class="sig-name descname"><span class="pre">getHighestNonDeletedIdInRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toId</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpEventFetcher.getHighestNonDeletedIdInRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpEventFetcher.getHighestNonDeletedIdInRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the event with the highest id int the range fromId to toId that is not deleted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fromId</strong> (<em>int</em>) – minimum id to search from</p></li>
+<li><p><strong>toId</strong> (<em>int</em>) – maximum id to search to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>maxium id of an event that is not deleted or None if there is none in this range</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpEventFetcher.getLatesEvetFromPair">
+<span class="sig-name descname"><span class="pre">getLatesEvetFromPair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpEventFetcher.getLatesEvetFromPair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpEventFetcher.getLatesEvetFromPair" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the latest Event doing a binary search</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>low</strong> (<em>int</em>) – lower index to search from</p></li>
+<li><p><strong>hight</strong> (<em>int</em>) – upper index boundary</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpEventFetcher.getLatestEvent">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">getLatestEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showProgress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpEventFetcher.getLatestEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpEventFetcher.getLatestEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the latest Event doing a binary search</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpEventFetcher.getUrl">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">getUrl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crawlType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#datasources.wikicfpscrape.CrawlType" title="datasources.wikicfpscrape.CrawlType"><span class="pre">datasources.wikicfpscrape.CrawlType</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">CrawlType.EVENT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpEventFetcher.getUrl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpEventFetcher.getUrl" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfpid</strong> (<em>int</em>) – the WikiCFP id of the event or series</p></li>
+<li><p><strong>crawlType</strong> (<a class="reference internal" href="#datasources.wikicfpscrape.CrawlType" title="datasources.wikicfpscrape.CrawlType"><em>CrawlType</em></a>) – Event or Series</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the WikiCfP url</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">datasources.wikicfpscrape.</span></span><span class="sig-name descname"><span class="pre">WikiCfpScrape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showProgress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>support events from <a class="reference external" href="http://www.wikicfp.com/cfp/">http://www.wikicfp.com/cfp/</a></p>
+<p>Constructor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>StorageConfig</em>) – the storage configuration to use</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – if True debug for crawling is on</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – maximum number of entries to be crawled</p></li>
+<li><p><strong>batchSize</strong> (<em>int</em>) – default size of batches</p></li>
+<li><p><strong>showProgress</strong> (<em>bool</em>) – if True show Progress</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape.cacheEvents">
+<span class="sig-name descname"><span class="pre">cacheEvents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape.cacheEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape.cacheEvents" title="Permalink to this definition">¶</a></dt>
+<dd><p>cache my events to my eventmanager</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape.crawl">
+<span class="sig-name descname"><span class="pre">crawl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threadIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crawlType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#datasources.wikicfpscrape.CrawlType" title="datasources.wikicfpscrape.CrawlType"><span class="pre">datasources.wikicfpscrape.CrawlType</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape.crawl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape.crawl" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference external" href="https://github.com/TIBHannover/confIDent-dataScraping/blob/master/wikicfp.py">https://github.com/TIBHannover/confIDent-dataScraping/blob/master/wikicfp.py</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape.crawlFilesToJson">
+<span class="sig-name descname"><span class="pre">crawlFilesToJson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsonEm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape.crawlFilesToJson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape.crawlFilesToJson" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert the crawlFiles to Json</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>jsonEm</strong> (<a class="reference internal" href="corpus.html#corpus.event.EventManager" title="corpus.event.EventManager"><em>EventManager</em></a>) – the JSON - storage based Eventmanager to use to collect the results</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape.getEventManager">
+<span class="sig-name descname"><span class="pre">getEventManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sql'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape.getEventManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape.getEventManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>get an EventManager</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>StorageConfig</em>) – the storage configuration to use</p></li>
+<li><p><strong>mode</strong> (<em>string</em>) – the storage mode to use e.g. “json” - will select a config based on mode if config is None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape.getJsonFileName">
+<span class="sig-name descname"><span class="pre">getJsonFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crawlType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#datasources.wikicfpscrape.CrawlType" title="datasources.wikicfpscrape.CrawlType"><span class="pre">datasources.wikicfpscrape.CrawlType</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape.getJsonFileName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape.getJsonFileName" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the JsonFileName for the given startId to stopId</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape.initEventManager">
+<span class="sig-name descname"><span class="pre">initEventManager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape.initEventManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape.initEventManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialize my event manager</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape.jsonFiles">
+<span class="sig-name descname"><span class="pre">jsonFiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape.jsonFiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape.jsonFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the list of the json files that have my data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.WikiCfpScrape.threadedCrawl">
+<span class="sig-name descname"><span class="pre">threadedCrawl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startId</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopId</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crawlType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#WikiCfpScrape.threadedCrawl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.WikiCfpScrape.threadedCrawl" title="Permalink to this definition">¶</a></dt>
+<dd><p>crawl with the given number of threads, startId and stopId</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threads</strong> (<em>int</em>) – number of threads to use</p></li>
+<li><p><strong>startId</strong> (<em>int</em>) – id of the event to start crawling with</p></li>
+<li><p><strong>stopId</strong> (<em>int</em>) – id of the event to stop crawling</p></li>
+<li><p><strong>crawlType</strong> (<em>str</em>) – the type of crawling (Event or Series)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datasources.wikicfpscrape.main">
+<span class="sig-prename descclassname"><span class="pre">datasources.wikicfpscrape.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikicfpscrape.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikicfpscrape.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>main program.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-datasources.wikidata">
 <span id="datasources-wikidata-module"></span><h2>datasources.wikidata module<a class="headerlink" href="#module-datasources.wikidata" title="Permalink to this headline">¶</a></h2>
 <p>Created on 2021-07-21</p>
@@ -687,6 +1435,17 @@ our own copy of Wikidata which might run on Virtuoso or Jena instead of blazegra
 <dd><p>Bases: <a class="reference internal" href="corpus.html#corpus.event.Event" title="corpus.event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">corpus.event.Event</span></code></a></p>
 <p>event derived from Wikidata</p>
 <p>Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datasources.wikidata.WikidataEvent.fixRawEvent">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">fixRawEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawEvent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datasources/wikidata.html#WikidataEvent.fixRawEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datasources.wikidata.WikidataEvent.fixRawEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>fix the given raw Event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rawEvent</strong> (<em>dict</em>) – the raw event record to fix</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">

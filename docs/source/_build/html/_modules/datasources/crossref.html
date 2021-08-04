@@ -1,0 +1,468 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>datasources.crossref &mdash; ConferenceCorpus  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ConferenceCorpus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../corpus.html">corpus package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../datasources.html">datasources package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup.html">setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smw.html">smw package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">tests package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ConferenceCorpus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>datasources.crossref</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for datasources.crossref</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 2020-07-05</span>
+
+<span class="sd">@author: wf</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">habanero</span>
+<span class="kn">from</span> <span class="nn">corpus.event</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span><span class="n">EventSeries</span><span class="p">,</span><span class="n">EventManager</span><span class="p">,</span><span class="n">EventSeriesManager</span>
+<span class="kn">from</span> <span class="nn">lodstorage.storageconfig</span> <span class="kn">import</span> <span class="n">StorageConfig</span>
+<span class="kn">from</span> <span class="nn">lodstorage.lod</span> <span class="kn">import</span> <span class="n">LOD</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+
+<div class="viewcode-block" id="Crossref"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.Crossref">[docs]</a><span class="k">class</span> <span class="nc">Crossref</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Access to Crossref&#39;s search api see https://github.com/CrossRef/rest-api-doc</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cr</span><span class="o">=</span><span class="n">habanero</span><span class="o">.</span><span class="n">Crossref</span><span class="p">()</span>   
+     
+<div class="viewcode-block" id="Crossref.doiMetaData"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.Crossref.doiMetaData">[docs]</a>    <span class="k">def</span> <span class="nf">doiMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">doi</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; get the meta data for the given doi &#39;&#39;&#39;</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cr</span><span class="o">.</span><span class="n">works</span><span class="p">([</span><span class="n">doi</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;status&#39;</span> <span class="ow">in</span> <span class="n">response</span> <span class="ow">and</span> <span class="s1">&#39;message&#39;</span> <span class="ow">in</span> <span class="n">response</span> <span class="ow">and</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;ok&#39;</span><span class="p">:</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">metadata</span></div>
+    
+<div class="viewcode-block" id="Crossref.fixEncodings"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.Crossref.fixEncodings">[docs]</a>    <span class="nd">@staticmethod</span>    
+    <span class="k">def</span> <span class="nf">fixEncodings</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span><span class="n">debug</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>    
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        fix the encoding of the dict entries of the given eventInfo</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            eventInfo(dict): the record to fix</span>
+<span class="sd">            debug(bool): show debug information if True</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">keyValue</span> <span class="ow">in</span> <span class="n">eventInfo</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="n">keyValue</span>
+            <span class="n">oldvalue</span><span class="o">=</span><span class="n">value</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+                <span class="c1"># work around Umlaut encodings like &quot;M\\&quot;unster&quot;</span>
+                <span class="c1"># and \S encoded as \\S</span>
+                <span class="n">found</span><span class="o">=</span><span class="kc">False</span>
+                <span class="c1"># see also https://github.com/WolfgangFahl/ProceedingsTitleParser/issues/38</span>
+                <span class="c1"># remove encoded CR </span>
+                <span class="k">for</span> <span class="n">umlautTuple</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;a&#39;</span><span class="p">,</span><span class="s2">&quot;ä&quot;</span><span class="p">),(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;o&#39;</span><span class="p">,</span><span class="s2">&quot;ö&quot;</span><span class="p">),(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;u&#39;</span><span class="p">,</span><span class="s2">&quot;ü&quot;</span><span class="p">),(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">),(</span><span class="s1">&#39;&amp;#x0D;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)]:</span>
+                    <span class="n">uc</span><span class="p">,</span><span class="n">u</span><span class="o">=</span><span class="n">umlautTuple</span>
+                    <span class="k">if</span> <span class="n">uc</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">uc</span><span class="p">,</span><span class="n">u</span><span class="p">)</span>
+                        <span class="n">found</span><span class="o">=</span><span class="kc">True</span>  
+                <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: fixing &#39;</span><span class="si">%s</span><span class="s2">&#39; to &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">oldvalue</span><span class="p">,</span><span class="n">value</span><span class="p">))</span>
+                    <span class="n">eventInfo</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">value</span>   </div></div>
+    
+<div class="viewcode-block" id="CrossrefEvent"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEvent">[docs]</a><span class="k">class</span> <span class="nc">CrossrefEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    a scientific event derived from Crossref</span>
+<span class="sd">    &#39;&#39;&#39;</span></div>
+    
+<div class="viewcode-block" id="CrossrefEventSeries"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventSeries">[docs]</a><span class="k">class</span> <span class="nc">CrossrefEventSeries</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    a scientific event series derived from Crossref</span>
+<span class="sd">    &#39;&#39;&#39;</span></div>
+      
+
+<div class="viewcode-block" id="CrossrefEventManager"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventManager">[docs]</a><span class="k">class</span> <span class="nc">CrossrefEventManager</span><span class="p">(</span><span class="n">EventManager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Crossref event manager</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+        
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">StorageConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CrossrefEvents&quot;</span><span class="p">,</span> <span class="n">clazz</span><span class="o">=</span><span class="n">CrossrefEvent</span><span class="p">,</span>
+                                                         <span class="n">tableName</span><span class="o">=</span><span class="s2">&quot;crossref_event&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="CrossrefEventManager.configure"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventManager.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        configure me</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+        <span class="c1"># nothing to do - there is a get ListOfDicts below    </span>
+
+        
+<div class="viewcode-block" id="CrossrefEventManager.getListOfDicts"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventManager.getListOfDicts">[docs]</a>    <span class="k">def</span> <span class="nf">getListOfDicts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        cache my json files to my eventmanager</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">startTime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">jsonFiles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jsonFiles</span><span class="p">()</span>
+        <span class="n">lod</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">jsonFiles</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">50</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;not enough crossref json files - did getsamples fail due to crossref API issues?&quot;</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;need to download cached version of json files as a work-around instead&quot;</span><span class="p">)</span><span class="c1">#</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">jsonFiles</span><span class="p">)</span><span class="si">}</span><span class="s2"> crossref json files available - there should be at least 47&quot;</span><span class="p">)</span>
+            <span class="c1">#url=&quot;http://wiki.bitplan.com/images/confident/Event_crossref.db&quot;</span>
+            <span class="c1">#filename=self.em.getCacheFile(mode=StoreMode.SQL)</span>
+            <span class="c1">#urllib.request.urlretrieve(url, filename)</span>
+        <span class="k">for</span> <span class="n">jsonFilePath</span> <span class="ow">in</span> <span class="n">jsonFiles</span><span class="p">:</span>
+            <span class="n">eventBatch</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fromJsonFile</span><span class="p">(</span><span class="n">jsonFilePath</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%4d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">eventBatch</span><span class="p">),</span><span class="n">jsonFilePath</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">eventInfo</span> <span class="ow">in</span> <span class="n">eventBatch</span><span class="p">:</span>
+                <span class="n">rawEvent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">postProcess</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">)</span>
+                <span class="n">lod</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">)</span>
+                    
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">:</span>
+            <span class="n">elapsed</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">startTime</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;read </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lod</span><span class="p">)</span><span class="si">}</span><span class="s2"> events in </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="s2"> s&quot;</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">lod</span></div>
+            
+        
+<div class="viewcode-block" id="CrossrefEventManager.postProcess"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventManager.postProcess">[docs]</a>    <span class="k">def</span> <span class="nf">postProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">eventInfo</span><span class="p">:</span><span class="nb">dict</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        postProcess the given eventInfo e.g.</span>
+<span class="sd">         {</span>
+<span class="sd">        &quot;event&quot;: {</span>
+<span class="sd">          &quot;name&quot;: &quot;Adriatico Research Conference and Workshop&quot;,</span>
+<span class="sd">          &quot;location&quot;: &quot;ICTP, Trieste, Italy&quot;</span>
+<span class="sd">        },</span>
+<span class="sd">        &quot;title&quot;: [</span>
+<span class="sd">          &quot;Towards the Theoretical Understanding of High Tc Superconductors&quot;</span>
+<span class="sd">        ],</span>
+<span class="sd">        &quot;DOI&quot;: &quot;10.1142/0638&quot;</span>
+<span class="sd">      },</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">rawEvent</span><span class="o">=</span><span class="n">eventInfo</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span>
+        <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;crossref&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;title&#39;</span> <span class="ow">in</span> <span class="n">eventInfo</span><span class="p">:</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">eventInfo</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">title</span>
+        <span class="k">if</span> <span class="s1">&#39;sponsor&#39;</span> <span class="ow">in</span> <span class="n">eventInfo</span><span class="p">:</span>
+            <span class="n">sponsor</span><span class="o">=</span><span class="n">eventInfo</span><span class="p">[</span><span class="s1">&#39;sponsor&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;sponsor&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">sponsor</span>    
+        <span class="n">Crossref</span><span class="o">.</span><span class="n">fixEncodings</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+                            
+        <span class="n">doi</span><span class="o">=</span><span class="n">eventInfo</span><span class="p">[</span><span class="s2">&quot;DOI&quot;</span><span class="p">]</span>
+        <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;eventId&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">doi</span>
+        <span class="n">rawEvent</span><span class="p">[</span><span class="s1">&#39;doi&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">doi</span>
+        <span class="k">if</span> <span class="s1">&#39;start&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixDateParts</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">,</span><span class="s1">&#39;start&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;end&#39;</span>   <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixDateParts</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">,</span><span class="s1">&#39;end&#39;</span><span class="p">)</span>
+        <span class="n">LOD</span><span class="o">.</span><span class="n">setNone</span><span class="p">(</span><span class="n">rawEvent</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;lookupAcronym&#39;</span><span class="p">,</span><span class="s1">&#39;location&#39;</span><span class="p">,</span><span class="s1">&#39;number&#39;</span><span class="p">,</span><span class="s1">&#39;sponsor&#39;</span><span class="p">,</span><span class="s1">&#39;month&#39;</span><span class="p">,</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="s1">&#39;startDate&#39;</span><span class="p">,</span><span class="s1">&#39;endDate&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;year&#39;</span> <span class="ow">in</span> <span class="n">eventInfo</span><span class="p">:</span>
+            <span class="n">year</span><span class="o">=</span><span class="n">eventInfo</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+                <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">:</span>
+                    <span class="n">rawEvent</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+        <span class="n">rawEvent</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;https://api.crossref.org/v1/works/</span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">&quot;</span> 
+        <span class="k">return</span> <span class="n">rawEvent</span></div>
+        
+<div class="viewcode-block" id="CrossrefEventManager.fixDateParts"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventManager.fixDateParts">[docs]</a>    <span class="k">def</span> <span class="nf">fixDateParts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rawEvent</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span><span class="n">key</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        fix date-parts from the json dict created by crossref e.g.</span>
+<span class="sd">        &quot;date-parts&quot;: [</span>
+<span class="sd">              [</span>
+<span class="sd">                1999,</span>
+<span class="sd">                9,</span>
+<span class="sd">                5</span>
+<span class="sd">              ]</span>
+<span class="sd">            ]</span>
+<span class="sd">            </span>
+<span class="sd">        Args:</span>
+<span class="sd">            rawEvent(dict): the dictionary as parsed by json</span>
+<span class="sd">            key(str): &quot;start&quot; or &quot;end&quot;</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;date-parts&#39;</span> <span class="ow">in</span> <span class="n">rawEvent</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+            <span class="c1"># get the date-parts to be converted</span>
+            <span class="n">dateparts</span><span class="o">=</span><span class="n">rawEvent</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;date-parts&#39;</span><span class="p">]</span>
+            <span class="c1"># remove the original dict</span>
+            <span class="n">rawEvent</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> 
+            <span class="c1"># get the tuple of values</span>
+            <span class="n">datetuple</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">dateparts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="c1"># set the year and month default</span>
+            <span class="n">year</span><span class="o">=</span><span class="kc">None</span>
+            <span class="n">month</span><span class="o">=</span><span class="kc">None</span>
+            <span class="c1"># depending on the date tuples length we get more or less information</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datetuple</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+                <span class="c1"># a fully specified date</span>
+                <span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="p">,</span><span class="n">day</span><span class="o">=</span><span class="n">datetuple</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="o">=</span><span class="n">month</span><span class="p">,</span><span class="n">day</span><span class="o">=</span><span class="n">day</span><span class="p">)</span>
+                <span class="n">date</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+                <span class="n">rawEvent</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">Date&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">date</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">datetuple</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># year and month only</span>
+                <span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="o">=</span><span class="n">datetuple</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">datetuple</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># year only</span>
+                <span class="n">year</span><span class="o">=</span><span class="n">datetuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;warning invalid date-tuple </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">datetuple</span><span class="p">)</span><span class="si">}</span><span class="s2"> found&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">==</span><span class="s2">&quot;start&quot;</span><span class="p">:</span>       
+                <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="n">rawEvent</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">year</span>
+                <span class="k">if</span> <span class="n">month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="n">rawEvent</span><span class="p">[</span><span class="s2">&quot;month&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">month</span></div>
+                       
+    
+<div class="viewcode-block" id="CrossrefEventManager.jsonFiles"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventManager.jsonFiles">[docs]</a>    <span class="k">def</span> <span class="nf">jsonFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">list</span><span class="p">:</span>  
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the list of the json files that have my data</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            list: a list of json file names</span>
+<span class="sd">        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">cachePath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getCachePath</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cachePath</span><span class="si">}</span><span class="s2">/crossref&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="p">)</span>
+        <span class="n">jsonFiles</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">jsondir</span><span class="si">}</span><span class="s2">/crossref-*.json&quot;</span><span class="p">),</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">path</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span><span class="n">path</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">jsonFiles</span></div>
+    
+<div class="viewcode-block" id="CrossrefEventManager.fromJsonFile"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventManager.fromJsonFile">[docs]</a>    <span class="k">def</span> <span class="nf">fromJsonFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">jsonFilePath</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get a single batch of events from the given jsonFilePath</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">eventBatch</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jsonFilePath</span><span class="p">)</span> <span class="k">as</span> <span class="n">jsonFile</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">jsonFile</span><span class="p">)</span>  
+            <span class="k">if</span> <span class="s1">&#39;status&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;ok&#39;</span><span class="p">:</span>
+                    <span class="n">eventBatch</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;items&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">eventBatch</span></div></div>
+    
+<div class="viewcode-block" id="CrossrefEventSeriesManager"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventSeriesManager">[docs]</a><span class="k">class</span> <span class="nc">CrossrefEventSeriesManager</span><span class="p">(</span><span class="n">EventSeriesManager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    CrossRef event series handling</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="p">:</span><span class="n">StorageConfig</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CrossrefEventSeries&quot;</span><span class="p">,</span> <span class="n">clazz</span><span class="o">=</span><span class="n">CrossrefEventSeries</span><span class="p">,</span> <span class="n">tableName</span><span class="o">=</span><span class="s2">&quot;crossref_eventseries&quot;</span><span class="p">,</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CrossrefEventSeriesManager.configure"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventSeriesManager.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        configure me</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+        <span class="c1"># nothing to do getListOfDicts is defined</span>
+        
+<div class="viewcode-block" id="CrossrefEventSeriesManager.getListOfDicts"><a class="viewcode-back" href="../../datasources.html#datasources.crossref.CrossrefEventSeriesManager.getListOfDicts">[docs]</a>    <span class="k">def</span> <span class="nf">getListOfDicts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get my data</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># TODO Replace this stub</span>
+        <span class="n">lod</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span><span class="s1">&#39;crossref&#39;</span><span class="p">,</span><span class="s1">&#39;eventSeriesId&#39;</span><span class="p">:</span><span class="s1">&#39;dummy&#39;</span><span class="p">}]</span>
+        <span class="k">return</span> <span class="n">lod</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Wolfgang Fahl.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

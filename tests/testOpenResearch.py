@@ -5,7 +5,6 @@ Created on 27.07.2021
 '''
 import unittest
 from functools import partial
-
 from tests.testSMW import TestSMW
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
@@ -53,7 +52,6 @@ class TestOpenResearch(DataSourceTest):
         '''
         tests initializing the OREventCorpus from wiki
         '''
-
         orDataSource=self.lookup.getDataSource("or")
         self.checkDataSource(orDataSource,1000,8000)
         orDataSource=self.lookup.getDataSource("orclone")

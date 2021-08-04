@@ -168,10 +168,12 @@
 <span class="kn">from</span> <span class="nn">datasources.dblpxml</span> <span class="kn">import</span> <span class="n">Dblp</span>
 <span class="kn">from</span> <span class="nn">lodstorage.schema</span> <span class="kn">import</span> <span class="n">SchemaManager</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="c1">#import logging</span>
 <span class="kn">from</span> <span class="nn">lodstorage.sql</span> <span class="kn">import</span> <span class="n">SQLDB</span>
 <span class="kn">from</span> <span class="nn">lodstorage.uml</span> <span class="kn">import</span> <span class="n">UML</span>
+<span class="kn">import</span> <span class="nn">getpass</span>
 
 <div class="viewcode-block" id="TestDblp"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp">[docs]</a><span class="k">class</span> <span class="nc">TestDblp</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -180,7 +182,7 @@
     <span class="n">mock</span><span class="o">=</span><span class="kc">True</span>
     
 <div class="viewcode-block" id="TestDblp.setUp"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock</span><span class="o">=</span><span class="n">TestDblp</span><span class="o">.</span><span class="n">mock</span>
 <span class="c1">#        if self.debug:</span>
@@ -193,6 +195,15 @@
 <div class="viewcode-block" id="TestDblp.tearDown"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
     
+<div class="viewcode-block" id="TestDblp.inCI"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.inCI">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">inCI</span><span class="p">():</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        are we running in a Continuous Integration Environment?</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">publicCI</span><span class="o">=</span><span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;travis&quot;</span><span class="p">,</span> <span class="s2">&quot;runner&quot;</span><span class="p">]</span> 
+        <span class="n">jenkins</span><span class="o">=</span> <span class="s2">&quot;JENKINS_HOME&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">publicCI</span> <span class="ow">or</span> <span class="n">jenkins</span></div>
+    
 <div class="viewcode-block" id="TestDblp.log"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
@@ -203,7 +214,7 @@
         <span class="n">dblp</span><span class="o">=</span><span class="n">Dblp</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mock</span><span class="p">:</span>
             <span class="n">dblp</span><span class="o">.</span><span class="n">xmlpath</span><span class="o">=</span><span class="s2">&quot;/tmp/dblp&quot;</span>
-            <span class="n">dblp</span><span class="o">.</span><span class="n">gzurl</span><span class="o">=</span><span class="s2">&quot;http://wiki.bitplan.com/images/confident/dblp.xml.gz&quot;</span>
+            <span class="n">dblp</span><span class="o">.</span><span class="n">gzurl</span><span class="o">=</span><span class="s2">&quot;https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/dblpsample.xml.gz&quot;</span>
             <span class="n">dblp</span><span class="o">.</span><span class="n">reinit</span><span class="p">()</span>
         <span class="n">xmlfile</span><span class="o">=</span><span class="n">dblp</span><span class="o">.</span><span class="n">getXmlFile</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
@@ -223,9 +234,9 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">dblp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getDblp</span><span class="p">()</span>
         <span class="n">limit</span><span class="o">=</span><span class="mi">10000</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock</span> <span class="k">else</span> <span class="mi">10000000</span>
-        <span class="n">progress</span><span class="o">=</span><span class="mi">1000</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock</span> <span class="k">else</span> <span class="mi">100000</span>
+        <span class="n">showProgress</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock</span>  <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inCI</span><span class="p">()</span>
         <span class="n">sample</span><span class="o">=</span><span class="mi">5</span>
-        <span class="n">sqlDB</span><span class="o">=</span><span class="n">dblp</span><span class="o">.</span><span class="n">getSqlDB</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span><span class="n">recreate</span><span class="o">=</span><span class="n">recreate</span><span class="p">,</span><span class="n">postProcess</span><span class="o">=</span><span class="n">dblp</span><span class="o">.</span><span class="n">postProcess</span><span class="p">)</span>
+        <span class="n">sqlDB</span><span class="o">=</span><span class="n">dblp</span><span class="o">.</span><span class="n">getSqlDB</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span><span class="n">recreate</span><span class="o">=</span><span class="n">recreate</span><span class="p">,</span><span class="n">postProcess</span><span class="o">=</span><span class="n">dblp</span><span class="o">.</span><span class="n">postProcess</span><span class="p">,</span><span class="n">showProgress</span><span class="o">=</span><span class="n">showProgress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sqlDB</span></div>
     
 <div class="viewcode-block" id="TestDblp.testDblpDownload"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.testDblpDownload">[docs]</a>    <span class="k">def</span> <span class="nf">testDblpDownload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -273,6 +284,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">index</span><span class="o">&gt;</span><span class="n">expectedIndex</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="TestDblp.checkConfColumn"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.checkConfColumn">[docs]</a>    <span class="k">def</span> <span class="nf">checkConfColumn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sqlDB</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        check teh conference columns</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">tableDict</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">getTableDict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s2">&quot;proceedings in tableDict&quot;</span><span class="p">)</span>
         <span class="n">proceedingsTable</span><span class="o">=</span><span class="n">tableDict</span><span class="p">[</span><span class="s2">&quot;proceedings&quot;</span><span class="p">]</span>
@@ -290,7 +304,62 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">checkConfColumn</span><span class="p">(</span><span class="n">sqlDB</span><span class="p">)</span>
         <span class="n">sqlDB</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
         
-<div class="viewcode-block" id="TestDblp.testParameterizedQuery"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.testParameterizedQuery">[docs]</a>    <span class="k">def</span> <span class="nf">testParameterizedQuery</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestDblp.testIssue5"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.testIssue5">[docs]</a>    <span class="k">def</span> <span class="nf">testIssue5</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        https://github.com/WolfgangFahl/ConferenceCorpus/issues/5</span>
+<span class="sd">        </span>
+<span class="sd">        dblp xml parser skips some proceedings titles</span>
+<span class="sd">        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">xml</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+<span class="s2">&lt;!DOCTYPE dblp SYSTEM &quot;dblp.dtd&quot;&gt;</span>
+<span class="s2">&lt;dblp&gt;&lt;proceedings mdate=&quot;2019-05-14&quot; key=&quot;conf/pfe/2001&quot;&gt;</span>
+<span class="s2">&lt;editor&gt;Frank van der Linden 0001&lt;/editor&gt;</span>
+<span class="s2">&lt;title&gt;Software Product-Family Engineering, 4th International Workshop, PFE 2001, Bilbao, Spain, October 3-5, 2001, Revised Papers&lt;/title&gt;</span>
+<span class="s2">&lt;booktitle&gt;PFE&lt;/booktitle&gt;</span>
+<span class="s2">&lt;series href=&quot;db/series/lncs/index.html&quot;&gt;Lecture Notes in Computer Science&lt;/series&gt;</span>
+<span class="s2">&lt;volume&gt;2290&lt;/volume&gt;</span>
+<span class="s2">&lt;publisher&gt;Springer&lt;/publisher&gt;</span>
+<span class="s2">&lt;year&gt;2002&lt;/year&gt;</span>
+<span class="s2">&lt;isbn&gt;3-540-43659-6&lt;/isbn&gt;</span>
+<span class="s2">&lt;ee&gt;https://doi.org/10.1007/3-540-47833-7&lt;/ee&gt;</span>
+<span class="s2">&lt;url&gt;db/conf/pfe/pfe2001.html&lt;/url&gt;</span>
+<span class="s2">&lt;/proceedings&gt;</span>
+<span class="s2">&lt;proceedings mdate=&quot;2019-01-26&quot; key=&quot;conf/hpcasia/2019&quot;&gt;</span>
+<span class="s2">&lt;title&gt;Proceedings of the International Conference on High Performance Computing in Asia-Pacific Region, HPC Asia 2019, Guangzhou, China, January 14-16, 2019&lt;/title&gt;</span>
+<span class="s2">&lt;publisher&gt;ACM&lt;/publisher&gt;</span>
+<span class="s2">&lt;booktitle&gt;HPC Asia&lt;/booktitle&gt;</span>
+<span class="s2">&lt;year&gt;2019&lt;/year&gt;</span>
+<span class="s2">&lt;isbn&gt;978-1-4503-6632-8&lt;/isbn&gt;</span>
+<span class="s2">&lt;ee&gt;https://dl.acm.org/citation.cfm?id=3293320&lt;/ee&gt;</span>
+<span class="s2">&lt;url&gt;db/conf/hpcasia/hpcasia2019.html&lt;/url&gt;</span>
+<span class="s2">&lt;/proceedings&gt;</span>
+<span class="s2">&lt;proceedings mdate=&quot;2020-03-27&quot; key=&quot;journals/corr/OrchardY16a&quot;&gt;</span>
+<span class="s2">&lt;editor orcid=&quot;0000-0002-7058-7842&quot;&gt;Dominic A. Orchard&lt;/editor&gt;</span>
+<span class="s2">&lt;editor orcid=&quot;0000-0002-3925-8557&quot;&gt;Nobuko Yoshida&lt;/editor&gt;</span>
+<span class="s2">&lt;title&gt;Proceedings of the Ninth workshop on Programming Language Approaches to Concurrency- and Communication-cEntric Software, PLACES 2016, Eindhoven, The Netherlands, 8th April 2016.&lt;/title&gt;</span>
+<span class="s2">&lt;booktitle&gt;PLACES&lt;/booktitle&gt;</span>
+<span class="s2">&lt;year&gt;2016&lt;/year&gt;</span>
+<span class="s2">&lt;series href=&quot;db/series/eptcs/index.html&quot;&gt;EPTCS&lt;/series&gt;</span>
+<span class="s2">&lt;volume&gt;211&lt;/volume&gt;</span>
+<span class="s2">&lt;url&gt;db/series/eptcs/eptcs211.html&lt;/url&gt;</span>
+<span class="s2">&lt;ee type=&quot;oa&quot;&gt;https://doi.org/10.4204/EPTCS.211&lt;/ee&gt;</span>
+<span class="s2">&lt;ee type=&quot;oa&quot;&gt;http://arxiv.org/abs/1606.05403&lt;/ee&gt;</span>
+<span class="s2">&lt;/proceedings&gt;</span>
+<span class="s2">&lt;/dblp&gt;&quot;&quot;&quot;</span>
+        <span class="n">xmlname</span><span class="o">=</span><span class="s2">&quot;dblptitleempty.xml&quot;</span>
+        <span class="n">xmlpath</span><span class="o">=</span><span class="s2">&quot;/tmp&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">xmlpath</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">xmlname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">xmlfile</span><span class="p">:</span>
+            <span class="n">xmlfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span>
+        <span class="n">dblp</span><span class="o">=</span><span class="n">Dblp</span><span class="p">(</span><span class="n">xmlname</span><span class="o">=</span><span class="n">xmlname</span><span class="p">,</span><span class="n">xmlpath</span><span class="o">=</span><span class="n">xmlpath</span><span class="p">)</span>
+        <span class="n">dictOfLod</span><span class="o">=</span><span class="n">dblp</span><span class="o">.</span><span class="n">asDictOfLod</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s2">&quot;proceedings&quot;</span> <span class="ow">in</span> <span class="n">dictOfLod</span><span class="p">)</span>
+        <span class="n">procs</span><span class="o">=</span><span class="n">dictOfLod</span><span class="p">[</span><span class="s2">&quot;proceedings&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">procs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">procs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Software Product-Family Engineering&quot;</span><span class="p">))</span></div>
+        
+        
+<div class="viewcode-block" id="TestDblp.testQueries"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.testQueries">[docs]</a>    <span class="k">def</span> <span class="nf">testQueries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        test the parameterized query</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -298,10 +367,20 @@
         <span class="n">dblp</span><span class="o">.</span><span class="n">getXmlFile</span><span class="p">(</span><span class="n">reload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">sqlDB</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getSqlDB</span><span class="p">(</span><span class="n">recreate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mock</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checkConfColumn</span><span class="p">(</span><span class="n">sqlDB</span><span class="p">)</span>
+        
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select * from proceedings where conf=?&quot;</span>
         <span class="n">records</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">,(</span><span class="s1">&#39;iccv&#39;</span><span class="p">,))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;found </span><span class="si">%d</span><span class="s2"> iccv records&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">19</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">19</span><span class="p">)</span>
+        
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select key,conf,booktitle,title from proceedings where title is null&quot;</span>
+        <span class="n">records</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning https://github.com/WolfgangFahl/ConferenceCorpus/issues/5 dblp xml parser skips some proceedings titles#5 is not fixed yet!&quot;</span><span class="p">)</span></div>
+        <span class="c1">#self.assertEqual(0,len(records))</span>
             
 <div class="viewcode-block" id="TestDblp.testUml"><a class="viewcode-back" href="../../tests.html#tests.testDblpXml.TestDblp.testUml">[docs]</a>    <span class="k">def</span> <span class="nf">testUml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>

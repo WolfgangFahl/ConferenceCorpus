@@ -198,7 +198,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
         <span class="k">if</span> <span class="n">xmlpath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">home</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">())</span>
-            <span class="n">xmlpath</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/.dblp&quot;</span> <span class="o">%</span> <span class="n">home</span>
+            <span class="n">xmlpath</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">home</span><span class="si">}</span><span class="s2">/.dblp&quot;</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">gzurl</span><span class="o">=</span><span class="n">gzurl</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xmlname</span><span class="o">=</span><span class="n">xmlname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xmlpath</span><span class="o">=</span><span class="n">xmlpath</span>
@@ -212,16 +212,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlpath</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlname</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtdfile</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlpath</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.xml&quot;</span><span class="p">,</span><span class="s2">&quot;.dtd&quot;</span><span class="p">))</span></div>
      
-<div class="viewcode-block" id="Dblp.getSize"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.getSize">[docs]</a>    <span class="k">def</span> <span class="nf">getSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Dblp.getSize"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.getSize">[docs]</a>    <span class="k">def</span> <span class="nf">getSize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        get the size of my xmlFile</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            the size </span>
+<span class="sd">            int: the size </span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">stats</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="p">)</span>
         <span class="n">size</span><span class="o">=</span><span class="n">stats</span><span class="o">.</span><span class="n">st_size</span>
         <span class="k">return</span> <span class="n">size</span></div>
+    
+<div class="viewcode-block" id="Dblp.getExpectedTotal"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.getExpectedTotal">[docs]</a>    <span class="k">def</span> <span class="nf">getExpectedTotal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the expected Total of records</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getSize</span><span class="p">()</span><span class="o">//</span><span class="mi">380</span></div>
+    
+<div class="viewcode-block" id="Dblp.warnFullSize"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.warnFullSize">[docs]</a>    <span class="k">def</span> <span class="nf">warnFullSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        warn if we are using the full dataset</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning - using full </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="si">}</span><span class="s2"> dataset ~</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">getExpectedTotal</span><span class="p">()</span><span class="o">/</span><span class="mi">1000000</span><span class="si">:</span><span class="s2">3.1f</span><span class="si">}</span><span class="s2">m records!&quot;</span><span class="p">)</span>  </div>
+        
            
 <div class="viewcode-block" id="Dblp.isDownloaded"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.isDownloaded">[docs]</a>    <span class="k">def</span> <span class="nf">isDownloaded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">minsize</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">3000000000</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -236,6 +249,9 @@
         <span class="k">return</span> <span class="n">result</span></div>
     
 <div class="viewcode-block" id="Dblp.prettyXml"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.prettyXml">[docs]</a>    <span class="k">def</span> <span class="nf">prettyXml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tree</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="s1">&#39;  &#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get a pretty XML representation of the given etree</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">xmlstr</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()))</span><span class="o">.</span><span class="n">toprettyxml</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">xmlstr</span></div>
     
@@ -301,13 +317,14 @@
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            reload(bool): if True force download</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            str: the xmlfile</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="p">)</span> <span class="ow">or</span> <span class="n">reload</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlpath</span><span class="p">,</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;downloading </span><span class="si">%s</span><span class="s2"> from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gzurl</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;downloading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gzurl</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">urlreq</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gzurl</span><span class="p">)</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">GzipFile</span><span class="p">(</span><span class="n">fileobj</span><span class="o">=</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">urlreq</span><span class="o">.</span><span class="n">read</span><span class="p">()),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
@@ -328,8 +345,10 @@
             <span class="k">raise</span> <span class="p">(</span><span class="s2">&quot;dblp xml file </span><span class="si">%s</span><span class="s2"> not downloaded yet - please call getXmlFile first&quot;</span><span class="p">)</span>
         <span class="c1"># with dtd validation</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;starting parser for </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">iterparse</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span> <span class="p">),</span> <span class="n">dtd_validation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtd_validation</span><span class="p">,</span> <span class="n">load_dtd</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  </div>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;starting parser for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="p">)</span>
+        <span class="c1"># https://lxml.de/api/lxml.etree.iterparse-class.html</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">=</span><span class="n">etree</span><span class="o">.</span><span class="n">iterparse</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span> <span class="p">),</span> <span class="n">dtd_validation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtd_validation</span><span class="p">,</span> <span class="n">load_dtd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">huge_tree</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> </div>
     
 <div class="viewcode-block" id="Dblp.clear_element"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.clear_element">[docs]</a>    <span class="k">def</span> <span class="nf">clear_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">element</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -340,11 +359,64 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">element</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">while</span> <span class="n">element</span><span class="o">.</span><span class="n">getprevious</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">element</span><span class="o">.</span><span class="n">getparent</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+            <span class="k">del</span> <span class="n">element</span><span class="o">.</span><span class="n">getparent</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>           </div>
+
+<div class="viewcode-block" id="Dblp.printProgressBar"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.printProgressBar">[docs]</a>    <span class="k">def</span> <span class="nf">printProgressBar</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iteration</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">decimals</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">72</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="s1">&#39;█&#39;</span><span class="p">,</span> <span class="n">printEnd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">startTime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call in a loop to create terminal progress bar</span>
+<span class="sd">        </span>
+<span class="sd">        see https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            iteration   - Required  : current iteration (Int)</span>
+<span class="sd">            total       - Required  : total iterations (Int)</span>
+<span class="sd">            prefix      - Optional  : prefix string (Str)</span>
+<span class="sd">            suffix      - Optional  : suffix string (Str)</span>
+<span class="sd">            decimals    - Optional  : positive number of decimals in percent complete (Int)</span>
+<span class="sd">            length      - Optional  : character length of bar (Int)</span>
+<span class="sd">            fill        - Optional  : bar fill character (Str)</span>
+<span class="sd">            printEnd    - Optional  : end character (e.g. &quot;\r&quot;, &quot;\r\n&quot;) (Str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">percent</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;{0:.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">decimals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;f}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">iteration</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)))</span>
+        <span class="n">filledLength</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">iteration</span> <span class="o">//</span> <span class="n">total</span><span class="p">)</span>
+        <span class="n">bar</span> <span class="o">=</span> <span class="n">fill</span> <span class="o">*</span> <span class="n">filledLength</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="n">filledLength</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">startTime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\r</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1"> |</span><span class="si">{</span><span class="n">bar</span><span class="si">}</span><span class="s1">| </span><span class="si">{</span><span class="n">percent</span><span class="si">}</span><span class="s1">% </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">printEnd</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">elapsed</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">startTime</span>
+            <span class="n">totalTime</span><span class="o">=</span><span class="n">elapsed</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)</span><span class="o">/</span><span class="n">iteration</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\r</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1"> |</span><span class="si">{</span><span class="n">bar</span><span class="si">}</span><span class="s1">| </span><span class="si">{</span><span class="n">percent</span><span class="si">}</span><span class="s1">% </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s1">3.0f</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">totalTime</span><span class="si">:</span><span class="s1">3.0f</span><span class="si">}</span><span class="s1">s </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">printEnd</span><span class="p">)</span>
             
-<div class="viewcode-block" id="Dblp.postProcess"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.postProcess">[docs]</a>    <span class="k">def</span> <span class="nf">postProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">index</span><span class="p">,</span><span class="n">row</span><span class="p">):</span>
+            
+        <span class="c1"># Print New Line on Complete</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="n">total</span><span class="p">:</span> 
+            <span class="nb">print</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="Dblp.checkRow"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.checkRow">[docs]</a>    <span class="k">def</span> <span class="nf">checkRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kind</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span><span class="n">index</span><span class="p">,</span><span class="n">row</span><span class="p">:</span><span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        check the row content</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            kind(str): e.g. proceedings/article</span>
+<span class="sd">            index(int): the index of the row</span>
+<span class="sd">            row(dict): the row to process</span>
+<span class="sd">        &#39;&#39;&#39;</span>        
+        <span class="k">if</span> <span class="n">kind</span><span class="o">==</span><span class="s1">&#39;proceedings&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;title&#39;</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+                <span class="n">title</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;empty title for </span><span class="si">{</span><span class="n">index</span><span class="si">}{</span><span class="n">row</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;missing title for </span><span class="si">{</span><span class="n">index</span><span class="si">}{</span><span class="n">row</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+              
+<div class="viewcode-block" id="Dblp.postProcess"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.postProcess">[docs]</a>    <span class="k">def</span> <span class="nf">postProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">_kind</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span><span class="n">_index</span><span class="p">,</span><span class="n">row</span><span class="p">:</span><span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        postProcess the given row</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            _kind(str): e.g. proceedings/article</span>
+<span class="sd">            _index(int): the index of the row</span>
+<span class="sd">            row(dict): the row to process</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="s1">&#39;key&#39;</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
             <span class="n">key</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span>
@@ -353,16 +425,29 @@
                 <span class="n">row</span><span class="p">[</span><span class="s1">&#39;conf&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">conf</span>
         <span class="k">pass</span></div>
     
-<div class="viewcode-block" id="Dblp.getXmlSqlDB"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.getXmlSqlDB">[docs]</a>    <span class="k">def</span> <span class="nf">getXmlSqlDB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">reload</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Dblp.getXmlSqlDB"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.getXmlSqlDB">[docs]</a>    <span class="k">def</span> <span class="nf">getXmlSqlDB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">reload</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">showProgress</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the SqlDB derived from the XML download </span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">getXmlFile</span><span class="p">(</span><span class="n">reload</span><span class="o">=</span><span class="n">reload</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getSqlDB</span><span class="p">(</span><span class="n">postProcess</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">postProcess</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getSqlDB</span><span class="p">(</span><span class="n">postProcess</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">postProcess</span><span class="p">,</span><span class="n">showProgress</span><span class="o">=</span><span class="n">showProgress</span><span class="p">)</span></div>
         
             
-<div class="viewcode-block" id="Dblp.getSqlDB"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.getSqlDB">[docs]</a>    <span class="k">def</span> <span class="nf">getSqlDB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">1000000000</span><span class="p">,</span><span class="n">progress</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span><span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">createSample</span><span class="o">=</span><span class="mi">10000000</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">recreate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">postProcess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">check_same_thread</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Dblp.getSqlDB"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.getSqlDB">[docs]</a>    <span class="k">def</span> <span class="nf">getSqlDB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">1000000000</span><span class="p">,</span><span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">createSample</span><span class="o">=</span><span class="mi">10000000</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">recreate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">postProcess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">check_same_thread</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">showProgress</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        get the SQL database or create it from the XML content</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            limit(int): maximum number of records</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">dbname</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlpath</span><span class="p">,</span><span class="s2">&quot;dblp.sqlite&quot;</span><span class="p">)</span>
+        <span class="n">dbname</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xmlpath</span><span class="si">}</span><span class="s2">/dblp.sqlite&quot;</span>
+        <span class="c1"># estimate size</span>
+        <span class="k">if</span> <span class="n">showProgress</span><span class="p">:</span>
+            <span class="n">expectedTotal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getExpectedTotal</span><span class="p">()</span>
+            <span class="n">progress</span><span class="o">=</span><span class="n">expectedTotal</span><span class="o">//</span><span class="mi">86</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">expectedTotal</span><span class="o">=</span><span class="kc">None</span>
+            <span class="n">progress</span><span class="o">=</span><span class="kc">None</span>
         <span class="k">if</span> <span class="n">sample</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sample</span><span class="o">=</span><span class="mi">5</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">dbname</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">recreate</span><span class="p">:</span>
@@ -372,15 +457,20 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dbname</span><span class="p">)</span>
             <span class="n">sqlDB</span><span class="o">=</span><span class="n">SQLDB</span><span class="p">(</span><span class="n">dbname</span><span class="o">=</span><span class="n">dbname</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span><span class="n">errorDebug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_same_thread</span><span class="o">=</span><span class="n">check_same_thread</span><span class="p">)</span>
             <span class="n">starttime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="n">dictOfLod</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">asDictOfLod</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span><span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+            <span class="n">dictOfLod</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">asDictOfLod</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span><span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">,</span><span class="n">expectedTotal</span><span class="o">=</span><span class="n">expectedTotal</span><span class="p">)</span>
             <span class="n">elapsed</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">starttime</span>
             <span class="n">executeMany</span><span class="o">=</span><span class="kc">True</span><span class="p">;</span>
+            <span class="k">if</span> <span class="n">showProgress</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parsing done after </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="s2"> s ... storing ...&quot;</span><span class="p">)</span>
+            <span class="n">starttime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>    
             <span class="n">fixNone</span><span class="o">=</span><span class="kc">True</span>    
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">lod</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dictOfLod</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
                 <span class="k">if</span> <span class="n">postProcess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lod</span><span class="p">):</span>
                         <span class="n">postProcess</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">rows</span><span class="o">=</span><span class="mi">0</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">lod</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dictOfLod</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="n">rows</span><span class="o">+=</span><span class="nb">len</span><span class="p">(</span><span class="n">lod</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
                     <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;#</span><span class="si">%4d</span><span class="s2"> </span><span class="si">%5d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">lod</span><span class="p">),</span><span class="n">kind</span><span class="p">))</span>
                 <span class="n">entityInfo</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="n">lod</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="s1">&#39;key&#39;</span><span class="p">,</span><span class="n">sampleRecordCount</span><span class="o">=</span><span class="n">createSample</span><span class="p">,</span><span class="n">failIfTooFew</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -390,8 +480,9 @@
                         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;  </span><span class="si">%4d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">row</span><span class="p">))</span> 
                     <span class="k">if</span> <span class="n">j</span><span class="o">&gt;</span><span class="n">sample</span><span class="p">:</span>
                         <span class="k">break</span>
-            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-                <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%5.1f</span><span class="s2"> s </span><span class="si">%5d</span><span class="s2"> rows/s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">elapsed</span><span class="p">,</span><span class="n">limit</span><span class="o">/</span><span class="n">elapsed</span><span class="p">))</span>
+            <span class="n">elapsed</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">starttime</span>        
+            <span class="k">if</span> <span class="n">showProgress</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stored </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2"> rows in </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="s2"> s </span><span class="si">{</span><span class="n">rows</span><span class="o">/</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">5.0f</span><span class="si">}</span><span class="s2"> rows/s&quot;</span> <span class="p">)</span>
             <span class="n">tableList</span><span class="o">=</span><span class="n">sqlDB</span><span class="o">.</span><span class="n">getTableList</span><span class="p">()</span>     
             <span class="n">viewDDL</span><span class="o">=</span><span class="n">Schema</span><span class="o">.</span><span class="n">getGeneralViewDDL</span><span class="p">(</span><span class="n">tableList</span><span class="p">,</span> <span class="s2">&quot;record&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
@@ -399,7 +490,7 @@
             <span class="n">sqlDB</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">viewDDL</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sqlDB</span></div>
             
-<div class="viewcode-block" id="Dblp.asDictOfLod"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.asDictOfLod">[docs]</a>    <span class="k">def</span> <span class="nf">asDictOfLod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">limit</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">delim</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span><span class="n">progress</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Dblp.asDictOfLod"><a class="viewcode-back" href="../../datasources.html#datasources.dblpxml.Dblp.asDictOfLod">[docs]</a>    <span class="k">def</span> <span class="nf">asDictOfLod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">limit</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">delim</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span><span class="n">progress</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">expectedTotal</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        get the dblp data as a dict of list of dicts - effectively separating the content</span>
 <span class="sd">        into table structures</span>
@@ -408,42 +499,67 @@
 <span class="sd">            limit(int): maximum amount of records to process</span>
 <span class="sd">            delim(str): the delimiter to use for splitting attributes with multiple values (e.g. author)</span>
 <span class="sd">            progress(int): if set the interval at which to print a progress dot </span>
+<span class="sd">            expectedTotal(int): the expected Total number </span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">index</span><span class="o">=</span><span class="mi">0</span>
         <span class="n">count</span><span class="o">=</span><span class="mi">0</span>
         <span class="n">level</span><span class="o">=</span><span class="mi">0</span>
         <span class="n">dictOfLod</span><span class="o">=</span><span class="p">{}</span>
         <span class="n">current</span><span class="o">=</span><span class="p">{}</span>
+        <span class="n">startTime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">levelCount</span><span class="o">=</span><span class="n">Counter</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">event</span><span class="p">,</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterParser</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s1">&#39;start&#39;</span><span class="p">:</span> 
                 <span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+                <span class="n">levelCount</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
                 <span class="k">if</span> <span class="n">level</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
                     <span class="n">kind</span><span class="o">=</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">dictOfLod</span><span class="p">:</span>
                         <span class="n">dictOfLod</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span><span class="o">=</span><span class="p">[]</span>
                     <span class="n">lod</span><span class="o">=</span><span class="n">dictOfLod</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+                    <span class="c1"># copy the attributes (if any)</span>
                     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="s2">&quot;attrib&quot;</span><span class="p">):</span>
                         <span class="n">current</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">current</span><span class="p">,</span> <span class="o">**</span><span class="n">elem</span><span class="o">.</span><span class="n">attrib</span><span class="p">}</span>
                 <span class="k">elif</span> <span class="n">level</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">tag</span> <span class="ow">in</span> <span class="n">current</span><span class="p">:</span>
-                        <span class="n">current</span><span class="p">[</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span><span class="p">],</span><span class="n">delim</span><span class="p">,</span><span class="n">elem</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">current</span><span class="p">[</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span><span class="o">=</span><span class="n">elem</span><span class="o">.</span><span class="n">text</span>    
+                    <span class="n">name</span><span class="o">=</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span>
+                    <span class="n">newvalue</span><span class="o">=</span><span class="n">elem</span><span class="o">.</span><span class="n">text</span>
+                    <span class="c1"># is there already an entry for the given name</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">current</span><span class="p">:</span>
+                        <span class="n">oldvalue</span><span class="o">=</span><span class="n">current</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                        <span class="n">newvalue</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">oldvalue</span><span class="si">}{</span><span class="n">delim</span><span class="si">}{</span><span class="n">newvalue</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="c1"># set the name/value pair</span>
+                    <span class="n">current</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">=</span><span class="n">newvalue</span>    
+                    <span class="k">if</span> <span class="p">(</span><span class="n">kind</span><span class="o">==</span><span class="s2">&quot;proceedings&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">name</span><span class="o">==</span><span class="s2">&quot;title&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="n">sourceline</span><span class="si">:</span><span class="s2">6</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2"> - None text&quot;</span><span class="p">)</span>
+                        <span class="k">pass</span>
+                <span class="k">elif</span> <span class="n">level</span><span class="o">&gt;=</span><span class="mi">4</span><span class="p">:</span>
+                    <span class="c1"># interesting things happen here ...</span>
+                    <span class="c1"># sub/sup i and so on see dblp xml faq</span>
+                    <span class="c1">#if elem.sourceline:</span>
+                    <span class="c1">#    print(f&quot;{elem.sourceline:6}:{elem.tag}&quot;)</span>
+                    <span class="k">pass</span>
             <span class="k">elif</span> <span class="n">event</span> <span class="o">==</span> <span class="s1">&#39;end&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">level</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
                     <span class="n">lod</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
                     <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="n">kind</span><span class="o">=</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">checkRow</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span><span class="n">count</span><span class="p">,</span><span class="n">current</span><span class="p">)</span>
                     <span class="n">current</span><span class="o">=</span><span class="p">{}</span> 
                     <span class="k">if</span> <span class="n">progress</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">count</span><span class="o">%</span><span class="n">progress</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">count</span><span class="o">%</span><span class="p">(</span><span class="n">progress</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">printProgressBar</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">expectedTotal</span><span class="p">,</span><span class="n">startTime</span><span class="o">=</span><span class="n">startTime</span><span class="p">)</span>        
+                        <span class="c1">#if count%progress==0:</span>
+                        <span class="c1">#    print(&quot;.&quot;,flush=True,end=&#39;&#39;)</span>
+                        <span class="c1">#if count%(progress*80)==0:</span>
+                        <span class="c1">#    print(&quot;\n&quot;,flush=True)</span>
                     <span class="k">if</span> <span class="n">count</span><span class="o">&gt;=</span><span class="n">limit</span><span class="p">:</span>
                         <span class="k">break</span>
                 <span class="n">level</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
-            <span class="n">index</span><span class="o">+=</span><span class="mi">1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">clear_element</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clear_element</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+                <span class="n">index</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">progress</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printProgressBar</span><span class="p">(</span><span class="n">expectedTotal</span><span class="p">,</span> <span class="n">expectedTotal</span><span class="p">,</span><span class="n">startTime</span><span class="o">=</span><span class="n">startTime</span><span class="p">)</span>     
         <span class="k">return</span> <span class="n">dictOfLod</span></div></div>
             
     

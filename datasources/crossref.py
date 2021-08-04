@@ -68,7 +68,7 @@ class CrossrefEvent(Event):
     
 class CrossrefEventSeries(Event):
     '''
-    a scientific event series derived fro Crossref
+    a scientific event series derived from Crossref
     '''
       
 
@@ -235,8 +235,6 @@ class CrossrefEventManager(EventManager):
                     eventBatch=response['message']['items']
         return eventBatch
     
-   
-    
 class CrossrefEventSeriesManager(EventSeriesManager):
     '''
     CrossRef event series handling
@@ -246,13 +244,14 @@ class CrossrefEventSeriesManager(EventSeriesManager):
         '''
         Constructor
         '''
-        super().__init__(name="CrossrefEventSeries", clazz=CrossrefEventSeries, tableName="crossef_eventseries",config=config)
+        super().__init__(name="CrossrefEventSeries", clazz=CrossrefEventSeries, tableName="crossref_eventseries",config=config)
 
 
     def configure(self):
         '''
         configure me
         '''
+        # nothing to do getListOfDicts is defined
         
     def getListOfDicts(self):
         '''

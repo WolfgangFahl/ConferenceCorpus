@@ -362,7 +362,6 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
                 pass
             rawEvent['year']=year
 
-
 class OREventSeriesManager(EventSeriesManager):
     '''
     i represent a list of EventSeries

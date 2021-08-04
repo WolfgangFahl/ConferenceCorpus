@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>tests.testDblpEvents &mdash; ConferenceCorpus  documentation</title>
+  <title>tests.testConfref &mdash; ConferenceCorpus  documentation</title>
   
 
   
@@ -142,7 +142,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>tests.testDblpEvents</li>
+      <li>tests.testConfref</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -157,51 +157,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for tests.testDblpEvents</h1><div class="highlight"><pre>
+  <h1>Source code for tests.testConfref</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Created on 28.07.2021</span>
+<span class="sd">Created on 2021-08-02</span>
 
 <span class="sd">@author: wf</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
-<span class="kn">from</span> <span class="nn">tests.testDblpXml</span> <span class="kn">import</span> <span class="n">TestDblp</span>
 <span class="kn">from</span> <span class="nn">tests.datasourcetoolbox</span> <span class="kn">import</span> <span class="n">DataSourceTest</span>
 <span class="kn">from</span> <span class="nn">corpus.lookup</span> <span class="kn">import</span> <span class="n">CorpusLookup</span>
 
-<div class="viewcode-block" id="TestDblpEvents"><a class="viewcode-back" href="../../tests.html#tests.testDblpEvents.TestDblpEvents">[docs]</a><span class="k">class</span> <span class="nc">TestDblpEvents</span><span class="p">(</span><span class="n">DataSourceTest</span><span class="p">):</span>
+<div class="viewcode-block" id="TestConfRef"><a class="viewcode-back" href="../../tests.html#tests.testConfref.TestConfRef">[docs]</a><span class="k">class</span> <span class="nc">TestConfRef</span><span class="p">(</span><span class="n">DataSourceTest</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    test the dblp data source</span>
+<span class="sd">    test getting events from Confref http://portal.confref.org</span>
+<span class="sd">    as a data source</span>
 <span class="sd">    &#39;&#39;&#39;</span>
- 
-<div class="viewcode-block" id="TestDblpEvents.setUp"><a class="viewcode-back" href="../../tests.html#tests.testDblpEvents.TestDblpEvents.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mock</span><span class="o">=</span><span class="n">TestDblp</span><span class="o">.</span><span class="n">mock</span>
+
+<div class="viewcode-block" id="TestConfRef.setUp"><a class="viewcode-back" href="../../tests.html#tests.testConfref.TestConfRef.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">DataSourceTest</span><span class="o">.</span><span class="n">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">pass</span></div>
-    
-<div class="viewcode-block" id="TestDblpEvents.configureCorpusLookup"><a class="viewcode-back" href="../../tests.html#tests.testDblpEvents.TestDblpEvents.configureCorpusLookup">[docs]</a>    <span class="k">def</span> <span class="nf">configureCorpusLookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lookup</span><span class="p">:</span><span class="n">CorpusLookup</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        callback to configure the corpus lookup</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">dblpDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
-        <span class="n">dblp</span><span class="o">=</span><span class="n">TestDblp</span><span class="o">.</span><span class="n">getMockedDblp</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
-        <span class="n">dblpDataSource</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">dblp</span>
-        <span class="n">dblpDataSource</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">dblp</span></div>
-        
-    
-<div class="viewcode-block" id="TestDblpEvents.testDblp"><a class="viewcode-back" href="../../tests.html#tests.testDblpEvents.TestDblpEvents.testDblp">[docs]</a>    <span class="k">def</span> <span class="nf">testDblp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        test getting the conference series and events from dblp xml dump</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">lookup</span><span class="o">=</span><span class="n">CorpusLookup</span><span class="p">(</span><span class="n">lookupIds</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dblp&quot;</span><span class="p">],</span><span class="n">configure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">configureCorpusLookup</span><span class="p">)</span>
-        <span class="n">lookup</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">forceUpdate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">dblpDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
-        <span class="n">dblp</span><span class="o">=</span><span class="n">TestDblp</span><span class="o">.</span><span class="n">getMockedDblp</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
-        <span class="n">dblpDataSource</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">dblp</span>
-        <span class="n">dblpDataSource</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">dblp</span><span class="o">=</span><span class="n">dblp</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checkDataSource</span><span class="p">(</span><span class="n">dblpDataSource</span><span class="p">,</span> <span class="mi">138</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock</span> <span class="k">else</span> <span class="mi">5200</span><span class="p">,</span><span class="mi">1000</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock</span> <span class="k">else</span> <span class="mi">40000</span><span class="p">)</span>    </div></div>
 
+
+<div class="viewcode-block" id="TestConfRef.testConfRef"><a class="viewcode-back" href="../../tests.html#tests.testConfref.TestConfRef.testConfRef">[docs]</a>    <span class="k">def</span> <span class="nf">testConfRef</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        test CrossRef as an event data source</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">lookup</span><span class="o">=</span><span class="n">CorpusLookup</span><span class="p">(</span><span class="n">lookupIds</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;confref&quot;</span><span class="p">])</span>
+        <span class="n">lookup</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">forceUpdate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">crossRefDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="s2">&quot;confref&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkDataSource</span><span class="p">(</span><span class="n">crossRefDataSource</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">37900</span><span class="p">)</span>
+        <span class="k">pass</span></div></div>
+    
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="c1">#import sys;sys.argv = [&#39;&#39;, &#39;Test.testName&#39;]</span>

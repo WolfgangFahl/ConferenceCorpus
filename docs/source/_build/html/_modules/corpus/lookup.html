@@ -159,41 +159,103 @@
             
   <h1>Source code for corpus.lookup</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Created on 2021-07-39</span>
+<span class="sd">Created on 2021-07-30</span>
 
 <span class="sd">@author: wf</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">corpus.eventcorpus</span> <span class="kn">import</span> <span class="n">EventCorpus</span><span class="p">,</span> <span class="n">EventDataSource</span>
 <span class="kn">from</span> <span class="nn">corpus.event</span> <span class="kn">import</span> <span class="n">EventStorage</span>
+<span class="kn">from</span> <span class="nn">corpus.eventcorpus</span> <span class="kn">import</span> <span class="n">EventCorpus</span><span class="p">,</span> <span class="n">EventDataSource</span>
+
+<span class="kn">from</span> <span class="nn">datasources.confref</span> <span class="kn">import</span> <span class="n">ConfrefEventManager</span><span class="p">,</span><span class="n">ConfrefEventSeriesManager</span>
+<span class="kn">from</span> <span class="nn">datasources.crossref</span> <span class="kn">import</span> <span class="n">CrossrefEventManager</span><span class="p">,</span><span class="n">CrossrefEventSeriesManager</span>
 <span class="kn">from</span> <span class="nn">datasources.dblp</span> <span class="kn">import</span> <span class="n">DblpEventManager</span><span class="p">,</span><span class="n">DblpEventSeriesManager</span>
-<span class="kn">from</span> <span class="nn">datasources.wikidata</span> <span class="kn">import</span> <span class="n">WikidataEventManager</span><span class="p">,</span><span class="n">WikidataEventSeriesManager</span>
 <span class="kn">from</span> <span class="nn">datasources.openresearch</span> <span class="kn">import</span> <span class="n">OREventManager</span><span class="p">,</span><span class="n">OREventSeriesManager</span>
+<span class="kn">from</span> <span class="nn">datasources.wikicfp</span> <span class="kn">import</span> <span class="n">WikiCfpEventManager</span><span class="p">,</span><span class="n">WikiCfpEventSeriesManager</span>
+<span class="kn">from</span> <span class="nn">datasources.wikidata</span> <span class="kn">import</span> <span class="n">Wikidata</span><span class="p">,</span><span class="n">WikidataEventManager</span><span class="p">,</span><span class="n">WikidataEventSeriesManager</span>
+
+<span class="kn">from</span> <span class="nn">lodstorage.uml</span> <span class="kn">import</span> <span class="n">UML</span>
+<span class="kn">from</span> <span class="nn">wikibot.wikiuser</span> <span class="kn">import</span> <span class="n">WikiUser</span>
+<span class="kn">from</span> <span class="nn">wikifile.wikiFileManager</span> <span class="kn">import</span> <span class="n">WikiFileManager</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span>
+<span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">RawDescriptionHelpFormatter</span>
+
+<div class="viewcode-block" id="CorpusLookupConfigure"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.CorpusLookupConfigure">[docs]</a><span class="k">class</span> <span class="nc">CorpusLookupConfigure</span><span class="p">:</span>
+<div class="viewcode-block" id="CorpusLookupConfigure.configureCorpusLookup"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.CorpusLookupConfigure.configureCorpusLookup">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">configureCorpusLookup</span><span class="p">(</span><span class="n">lookup</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        callback to configure the corpus lookup</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;configureCorpusLookup callback called&quot;</span><span class="p">)</span>
+        <span class="c1"># TODO make wikiIds configurable for testing e.g. with pyMediaWikiDocker</span>
+        <span class="k">for</span> <span class="n">lookupId</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;or&quot;</span><span class="p">,</span><span class="s2">&quot;orclone&quot;</span><span class="p">]:</span>
+            <span class="n">wikiId</span><span class="o">=</span><span class="n">lookupId</span>
+            <span class="n">wikiUser</span><span class="o">=</span><span class="n">WikiUser</span><span class="o">.</span><span class="n">ofWikiId</span><span class="p">(</span><span class="n">wikiId</span><span class="p">,</span> <span class="n">lenient</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">home</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
+            <span class="n">wikiTextPath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">home</span><span class="si">}</span><span class="s2">/.or/wikibackup/</span><span class="si">{</span><span class="n">wikiUser</span><span class="o">.</span><span class="n">wikiId</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">wikiFileManager</span> <span class="o">=</span> <span class="n">WikiFileManager</span><span class="p">(</span><span class="n">wikiId</span><span class="p">,</span> <span class="n">wikiTextPath</span><span class="p">,</span> <span class="n">login</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+     
+            <span class="n">orDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lookupId</span><span class="si">}</span><span class="s1">-backup&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">orDataSource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">orDataSource</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">wikiFileManager</span><span class="o">=</span><span class="n">wikiFileManager</span>
+                <span class="n">orDataSource</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">wikiFileManager</span><span class="o">=</span><span class="n">wikiFileManager</span>
+      
+            <span class="n">orDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="n">lookupId</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">orDataSource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">orDataSource</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">wikiUser</span><span class="o">=</span><span class="n">wikiUser</span>
+                <span class="n">orDataSource</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">wikiUser</span><span class="o">=</span><span class="n">wikiUser</span>
+        
+        <span class="k">pass</span></div></div>
 
 <div class="viewcode-block" id="CorpusLookup"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.CorpusLookup">[docs]</a><span class="k">class</span> <span class="nc">CorpusLookup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    search and lookup for different EventCorpora</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">lookupIds</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;confref&quot;</span><span class="p">,</span><span class="s2">&quot;crossref&quot;</span><span class="p">,</span><span class="s2">&quot;dblp&quot;</span><span class="p">,</span><span class="s2">&quot;wikidata&quot;</span><span class="p">,</span><span class="s2">&quot;wikicfp&quot;</span><span class="p">,</span><span class="s2">&quot;or&quot;</span><span class="p">,</span><span class="s2">&quot;or-backup&quot;</span><span class="p">,</span><span class="s2">&quot;orclone&quot;</span><span class="p">,</span><span class="s2">&quot;orclone-backup&quot;</span><span class="p">]</span>
+    
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">configure</span><span class="p">:</span><span class="n">callable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lookupIds</span><span class="p">:</span><span class="nb">list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">configure</span><span class="p">:</span><span class="n">callable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Constructor</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
+<span class="sd">            lookupIds(list): the list of lookupIds to addDataSources for</span>
 <span class="sd">            configure(callable): Callback to configure the corpus lookup</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configure</span><span class="o">=</span><span class="n">configure</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">=</span><span class="n">EventCorpus</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">DblpEventManager</span><span class="p">(),</span><span class="n">DblpEventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;dblp&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dblp&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://dblp.org/&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;dblp computer science bibliography&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">WikidataEventManager</span><span class="p">(),</span><span class="n">WikidataEventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;wikidata&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Wikidata&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://www.wikidata.org/wiki/Wikidata:Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Wikidata&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;wikidata&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">OREventManager</span><span class="p">(),</span><span class="n">OREventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;or&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OR_Triples&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://www.openresearch.org/wiki/Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OPENRESEARCH-api&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;orapi&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">OREventManager</span><span class="p">(),</span><span class="n">OREventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;or-backup&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OR_Markup&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://www.openresearch.org/wiki/Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OPENRESEARCH-wiki&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;orwiki&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">OREventManager</span><span class="p">(),</span><span class="n">OREventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;orclone&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OR_Clone_Triples&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OPENRESEARCH-clone-api&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;orcapi&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">OREventManager</span><span class="p">(),</span><span class="n">OREventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;orclone-backup&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OR_Clone_Markup&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OPENRESEARCH-clone-wiki&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;orcwiki&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lookupIds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lookupIds</span><span class="o">=</span><span class="n">CorpusLookup</span><span class="o">.</span><span class="n">lookupIds</span>
+        <span class="k">if</span> <span class="s2">&quot;confref&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">ConfrefEventManager</span><span class="p">(),</span><span class="n">ConfrefEventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;confref&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;confref.org&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://portal.confref.org&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;ConfRef&quot;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;confref&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;crossref&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">CrossrefEventManager</span><span class="p">(),</span><span class="n">CrossrefEventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;crossref&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;crossref.org&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://www.crossref.org/&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;CrossRef&quot;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;crossref&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;dblp&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">DblpEventManager</span><span class="p">(),</span><span class="n">DblpEventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;dblp&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dblp&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://dblp.org/&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;dblp computer science bibliography&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;dblp&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;wikidata&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">WikidataEventManager</span><span class="p">(),</span><span class="n">WikidataEventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;wikidata&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Wikidata&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://www.wikidata.org/wiki/Wikidata:Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Wikidata&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;wikidata&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;wikicfp&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">WikiCfpEventManager</span><span class="p">(),</span><span class="n">WikiCfpEventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;wikicfp&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;WikiCFP&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;http://www.wikicfp.com&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;WikiCFP&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;wikicfp&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;or&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">OREventManager</span><span class="p">(),</span><span class="n">OREventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;or&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OR_Triples&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://www.openresearch.org/wiki/Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OPENRESEARCH-api&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;orapi&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;or-backup&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">OREventManager</span><span class="p">(),</span><span class="n">OREventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;or-backup&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OR_Markup&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://www.openresearch.org/wiki/Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OPENRESEARCH-wiki&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;orwiki&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;orclone&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">OREventManager</span><span class="p">(),</span><span class="n">OREventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;orclone&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OR_Clone_Triples&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OPENRESEARCH-clone-api&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;orcapi&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;orclone-backup&quot;</span> <span class="ow">in</span> <span class="n">lookupIds</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">addDataSource</span><span class="p">(</span><span class="n">OREventManager</span><span class="p">(),</span><span class="n">OREventSeriesManager</span><span class="p">(),</span><span class="n">lookupId</span><span class="o">=</span><span class="s2">&quot;orclone-backup&quot;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;OR_Clone_Markup&quot;</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OPENRESEARCH-clone-wiki&#39;</span><span class="p">,</span><span class="n">tablePrefix</span><span class="o">=</span><span class="s2">&quot;orcwiki&quot;</span><span class="p">)</span>
         
 <div class="viewcode-block" id="CorpusLookup.getDataSource"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.CorpusLookup.getDataSource">[docs]</a>    <span class="k">def</span> <span class="nf">getDataSource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lookupId</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">EventDataSource</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        get the given data source</span>
+<span class="sd">        get the data source by the given lookupId</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            lookupId(str): the lookupId of the data source to get</span>
@@ -206,14 +268,143 @@
         <span class="k">if</span> <span class="n">lookupId</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">eventDataSources</span><span class="p">:</span>
             <span class="n">eventDataSource</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">eventDataSources</span><span class="p">[</span><span class="n">lookupId</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">eventDataSource</span></div>
+    
+<div class="viewcode-block" id="CorpusLookup.getDataSource4TableName"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.CorpusLookup.getDataSource4TableName">[docs]</a>    <span class="k">def</span> <span class="nf">getDataSource4TableName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tableName</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">EventDataSource</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        get the data source by the given tableName</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            tableName(str): a tableName of the data source to get</span>
+<span class="sd">            </span>
+<span class="sd">        Return:</span>
+<span class="sd">            EventDataSource: the data source</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">eventDataSource</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">eventDataSources</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">eventDataSource</span><span class="o">.</span><span class="n">eventManager</span><span class="o">.</span><span class="n">tableName</span><span class="o">==</span><span class="n">tableName</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">eventDataSource</span>
+            <span class="k">if</span> <span class="n">eventDataSource</span><span class="o">.</span><span class="n">eventSeriesManager</span><span class="o">.</span><span class="n">tableName</span><span class="o">==</span><span class="n">tableName</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">eventDataSource</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+    
         
-<div class="viewcode-block" id="CorpusLookup.load"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.CorpusLookup.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CorpusLookup.load"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.CorpusLookup.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">forceUpdate</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        load the event corpora</span>
+<span class="sd">        Args:</span>
+<span class="sd">            forceUpdate(bool): True if the data should be fetched from the source instead of the cache</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">configure</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">loadAll</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eventCorpus</span><span class="o">.</span><span class="n">loadAll</span><span class="p">(</span><span class="n">forceUpdate</span><span class="o">=</span><span class="n">forceUpdate</span><span class="p">)</span>
+        <span class="n">EventStorage</span><span class="o">.</span><span class="n">createView</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="CorpusLookup.asPlantUml"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.CorpusLookup.asPlantUml">[docs]</a>    <span class="k">def</span> <span class="nf">asPlantUml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">baseEntity</span><span class="o">=</span><span class="s1">&#39;Event&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        return me as a plantUml Diagram markup</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">storageTableList</span><span class="o">=</span><span class="n">EventStorage</span><span class="o">.</span><span class="n">getTableList</span><span class="p">()</span>
+        <span class="n">schemaManager</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">uml</span><span class="o">=</span><span class="n">UML</span><span class="p">()</span>
+        <span class="n">now</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">nowYMD</span><span class="o">=</span><span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">tableList</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">storageTableList</span><span class="p">:</span>
+            <span class="n">tableName</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">tableName</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">baseEntity</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;instances&#39;</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+                    <span class="n">instanceNote</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+                    <span class="n">dataSource</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getDataSource4TableName</span><span class="p">(</span><span class="n">tableName</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">dataSource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">sourceConfig</span><span class="o">=</span><span class="n">dataSource</span><span class="o">.</span><span class="n">sourceConfig</span>
+                        <span class="n">instanceNote</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;[[</span><span class="si">{</span><span class="n">sourceConfig</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">sourceConfig</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">]]&quot;</span>
+                    <span class="n">instanceCount</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;instances&#39;</span><span class="p">]</span>
+                    <span class="n">instanceNote</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">instanceNote</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">instanceCount</span><span class="si">}</span><span class="s2"> instances &quot;</span>
+                    <span class="n">table</span><span class="p">[</span><span class="s1">&#39;notes&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">instanceNote</span>
+                <span class="n">tableList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;ConfIDent  </span><span class="si">{</span><span class="n">baseEntity</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">nowYMD</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">[[https://projects.tib.eu/en/confident/ © 2019-2021 ConfIDent project]]</span>
+<span class="s2">see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="n">plantUml</span><span class="o">=</span><span class="n">uml</span><span class="o">.</span><span class="n">mergeSchema</span><span class="p">(</span><span class="n">schemaManager</span><span class="p">,</span><span class="n">tableList</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span><span class="n">packageName</span><span class="o">=</span><span class="s1">&#39;DataSources&#39;</span><span class="p">,</span><span class="n">generalizeTo</span><span class="o">=</span><span class="n">baseEntity</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plantUml</span></div></div>
+        
+        
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.10&quot;</span>
+<span class="n">__date__</span> <span class="o">=</span> <span class="s1">&#39;2020-06-22&#39;</span>
+<span class="n">__updated__</span> <span class="o">=</span> <span class="s1">&#39;2021-08-03&#39;</span>    
+
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="mi">1</span>
+
+    
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../corpus.html#corpus.lookup.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># IGNORE:C0111</span>
+    <span class="sd">&#39;&#39;&#39;main program.&#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>    
+        
+    <span class="n">program_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">program_version</span> <span class="o">=</span> <span class="s2">&quot;v</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">__version__</span>
+    <span class="n">program_build_date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">__updated__</span><span class="p">)</span>
+    <span class="n">program_version_message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%%</span><span class="s1">(prog)s </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">program_version</span><span class="p">,</span> <span class="n">program_build_date</span><span class="p">)</span>
+    <span class="n">program_shortdesc</span> <span class="o">=</span> <span class="s2">&quot;Scientific Event Corpus and Lookup&quot;</span>
+    <span class="n">user_name</span><span class="o">=</span><span class="s2">&quot;Wolfgang Fahl&quot;</span>
+    <span class="n">program_license</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s1"></span>
+
+<span class="s1">  Created by </span><span class="si">%s</span><span class="s1"> on </span><span class="si">%s</span><span class="s1">.</span>
+<span class="s1">  Copyright 2020-2021 Wolfgang Fahl. All rights reserved.</span>
+
+<span class="s1">  Licensed under the Apache License 2.0</span>
+<span class="s1">  http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="s1">  Distributed on an &quot;AS IS&quot; basis without warranties</span>
+<span class="s1">  or conditions of any kind, either express or implied.</span>
+
+<span class="s1">USAGE</span>
+<span class="s1">&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">program_shortdesc</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">__date__</span><span class="p">))</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Setup argument parser</span>
+        <span class="n">datasourcesDefault</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CorpusLookup</span><span class="o">.</span><span class="n">lookupIds</span><span class="p">)</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">program_license</span><span class="p">,</span> <span class="n">formatter_class</span><span class="o">=</span><span class="n">RawDescriptionHelpFormatter</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="s2">&quot;--debug&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;show debug info&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-e&#39;</span><span class="p">,</span> <span class="s1">&#39;--endpoint&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">Wikidata</span><span class="o">.</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;SPARQL endpoint to use for wikidata queries&quot;</span><span class="p">)</span>     
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-v&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">program_version_message</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-u&quot;</span><span class="p">,</span> <span class="s2">&quot;--uml&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;uml&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;output plantuml diagram markup&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--force&quot;</span><span class="p">,</span><span class="n">dest</span><span class="o">=</span><span class="s2">&quot;forceUpdate&quot;</span><span class="p">,</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;force Update - may take quite a time&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--datasources&quot;</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;, delimited list of datasource lookup ids&quot;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="n">datasourcesDefault</span><span class="p">)</span>
+        
+        <span class="c1"># Process arguments</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>   
+        <span class="n">Wikidata</span><span class="o">.</span><span class="n">endpoint</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">endpoint</span>
+        <span class="n">lookupIds</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">datasources</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="n">lookup</span><span class="o">=</span><span class="n">CorpusLookup</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span><span class="n">lookupIds</span><span class="o">=</span><span class="n">lookupIds</span><span class="p">,</span><span class="n">configure</span><span class="o">=</span><span class="n">CorpusLookupConfigure</span><span class="o">.</span><span class="n">configureCorpusLookup</span><span class="p">)</span>
+        <span class="n">lookup</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">forceUpdate</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">forceUpdate</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">uml</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">baseEntity</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">,</span><span class="s2">&quot;EventSeries&quot;</span><span class="p">]:</span>
+                <span class="n">plantUml</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">asPlantUml</span><span class="p">(</span><span class="n">baseEntity</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">plantUml</span><span class="p">)</span>
+        
+        
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="c1">### handle keyboard interrupt ###</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+            <span class="k">raise</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">program_name</span><span class="p">)</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">program_name</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">indent</span> <span class="o">+</span> <span class="s2">&quot;  for help use --help&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">2</span>         </div>
+        
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-d&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
 
            </div>

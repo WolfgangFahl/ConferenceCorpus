@@ -1,4 +1,4 @@
-name: Upload Conference Corpus Python Package
+name: Upload Python Package
 
 on:
   release:

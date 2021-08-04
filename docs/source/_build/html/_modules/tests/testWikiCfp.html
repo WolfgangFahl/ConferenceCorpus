@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>tests.testWikidata &mdash; ConferenceCorpus  documentation</title>
+  <title>tests.testWikiCfp &mdash; ConferenceCorpus  documentation</title>
   
 
   
@@ -142,7 +142,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>tests.testWikidata</li>
+      <li>tests.testWikiCfp</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -157,33 +157,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for tests.testWikidata</h1><div class="highlight"><pre>
+  <h1>Source code for tests.testWikiCfp</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Created on 27.07.2021</span>
+<span class="sd">Created on 2021-07-31</span>
 
 <span class="sd">@author: wf</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
-<span class="kn">from</span> <span class="nn">tests.datasourcetoolbox</span> <span class="kn">import</span> <span class="n">DataSourceTest</span>
 <span class="kn">from</span> <span class="nn">corpus.lookup</span> <span class="kn">import</span> <span class="n">CorpusLookup</span>
+<span class="kn">from</span> <span class="nn">tests.datasourcetoolbox</span> <span class="kn">import</span> <span class="n">DataSourceTest</span>
 
-<div class="viewcode-block" id="TestWikiData"><a class="viewcode-back" href="../../tests.html#tests.testWikidata.TestWikiData">[docs]</a><span class="k">class</span> <span class="nc">TestWikiData</span><span class="p">(</span><span class="n">DataSourceTest</span><span class="p">):</span>
+<div class="viewcode-block" id="TestWikiCFP"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfp.TestWikiCFP">[docs]</a><span class="k">class</span> <span class="nc">TestWikiCFP</span><span class="p">(</span><span class="n">DataSourceTest</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    test wiki data access</span>
+<span class="sd">    test WikiCFP data source</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="TestWikiData.setUp"><a class="viewcode-back" href="../../tests.html#tests.testWikidata.TestWikiData.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestWikiCFP.setUp"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfp.TestWikiCFP.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">DataSourceTest</span><span class="o">.</span><span class="n">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="TestWikiData.testWikidata"><a class="viewcode-back" href="../../tests.html#tests.testWikidata.TestWikiData.testWikidata">[docs]</a>    <span class="k">def</span> <span class="nf">testWikidata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestWikiCFP.testWikiCFP"><a class="viewcode-back" href="../../tests.html#tests.testWikiCfp.TestWikiCFP.testWikiCFP">[docs]</a>    <span class="k">def</span> <span class="nf">testWikiCFP</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        test getting the wikiData Event Series</span>
+<span class="sd">        test the WikiCFP lookup</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">lookup</span><span class="o">=</span><span class="n">CorpusLookup</span><span class="p">(</span><span class="n">lookupIds</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;wikidata&quot;</span><span class="p">])</span>
-        <span class="n">lookup</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">forceUpdate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">wikidataDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="s2">&quot;wikidata&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checkDataSource</span><span class="p">(</span><span class="n">wikidataDataSource</span><span class="p">,</span><span class="mi">4200</span><span class="p">,</span><span class="mi">7400</span><span class="p">)</span></div></div>
+        <span class="n">lookup</span><span class="o">=</span><span class="n">CorpusLookup</span><span class="p">(</span><span class="n">lookupIds</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;wikicfp&quot;</span><span class="p">])</span>
+        <span class="n">lookup</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="n">wikiCfpDataSource</span><span class="o">=</span><span class="n">lookup</span><span class="o">.</span><span class="n">getDataSource</span><span class="p">(</span><span class="s2">&quot;wikicfp&quot;</span><span class="p">)</span>
+        <span class="c1"># TODO implement</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkDataSource</span><span class="p">(</span><span class="n">wikiCfpDataSource</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">86000</span><span class="p">)</span>
+        <span class="k">pass</span></div></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

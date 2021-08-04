@@ -24,7 +24,7 @@ class TestCrossRef(DataSourceTest):
         test CrossRef as an event data source
         '''
         lookup=CorpusLookup(lookupIds=["crossref"])
-        lookup.load()
+        lookup.load(forceUpdate=False)
         crossRefDataSource=lookup.getDataSource("crossref")
         self.checkDataSource(crossRefDataSource,0,40000)
         pass
