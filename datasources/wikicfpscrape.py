@@ -234,7 +234,7 @@ class WikiCfpScrape(object):
             batchEm.store(cacheFile=jsonFilepath)
         return jsonFilepath
             
-    def threadedCrawl(self,threads,startId:int,stopId:int,crawlType:str):
+    def threadedCrawl(self,threads,startId:int,stopId:int,crawlType:CrawlType):
         '''
         crawl with the given number of threads, startId and stopId
         
@@ -242,10 +242,8 @@ class WikiCfpScrape(object):
            threads(int): number of threads to use
            startId(int): id of the event to start crawling with
            stopId(int): id of the event to stop crawling
-           crawlType(str): the type of crawling (Event or Series)
+           crawlType(CrawlType): the type of crawling (Event or Series)
         '''
-        if not crawlType in ["Event","Series"]:
-            raise Exception(f"Invalid crawl type {crawlType}")
         # determine the eventId range for each threaded job
         total = stopId-startId+1
         batchSize = total / threads
