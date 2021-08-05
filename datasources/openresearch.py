@@ -345,7 +345,7 @@ class OREventSeriesManager(EventSeriesManager):
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
 
-    def __init__(self,sourceConfig=EventDataSourceConfig,config:StorageConfig=None, verbose:bool=False, debug=False):
+    def __init__(self,sourceConfig:EventDataSourceConfig=None,config:StorageConfig=None, verbose:bool=False, debug=False):
         '''
         construct me
         '''
