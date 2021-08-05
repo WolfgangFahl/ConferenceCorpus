@@ -29,6 +29,7 @@ import time
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from lodstorage.jsonpicklemixin import JsonPickleMixin
+from lodstorage.storageconfig import StorageConfig
 import jsonpickle
 
 class CrawlType(Enum):
@@ -80,7 +81,7 @@ class WikiCfpScrape(object):
     '''
     
 
-    def __init__(self,config=None,debug:bool=False,limit=200000,batchSize=1000,showProgress=True):
+    def __init__(self,config=None,debug:bool=False,jsondir:str=None,limit=200000,batchSize=1000,showProgress=True):
         '''
         Constructor
         
@@ -97,10 +98,13 @@ class WikiCfpScrape(object):
         self.showProgress=showProgress
         self.em=self.getEventManager(config)
         self.profile=self.em.config.profile
-        cachePath=self.em.config.getCachePath()
-        self.jsondir=f"{cachePath}/wikicfp"
-        if not os.path.exists(self.jsondir):
-                os.makedirs(self.jsondir)
+        if jsondir is not None:
+            self.jsondir=jsondir
+        else:
+            cachePath=self.em.config.getCachePath()
+            self.jsondir=f"{cachePath}/wikicfp/"
+            if not os.path.exists(self.jsondir):
+                    os.makedirs(self.jsondir)
         
     def getEventManager(self,config=None,mode='sql'):
         '''
@@ -180,14 +184,6 @@ class WikiCfpScrape(object):
             if self.profile:
                 print ("read %d events in %5.1f s" % (len(jsonEm.events),time.time()-startTime))
             jsonEm.store(limit=self.limit,batchSize=self.batchSize)
-     
-    def initEventManager(self):
-        ''' initialize my event manager '''
-        if not self.em.isCached():
-            self.cacheEvents()
-        else:
-            self.em.fromStore()    
-        self.em.extractCheckedAcronyms() 
         
     def jsonFiles(self):  
         '''
@@ -203,7 +199,7 @@ class WikiCfpScrape(object):
         jsonFilePath=self.jsondir+"wikicfp_%s%06d-%06d.json" % (crawlType.value,startId,stopId)
         return jsonFilePath
         
-    def crawl(self,threadIndex,startId,stopId,crawlType:CrawlType):
+    def crawl(self,threadIndex,startId:int,stopId:int,crawlType:CrawlType):
         '''
         see https://github.com/TIBHannover/confIDent-dataScraping/blob/master/wikicfp.py
         '''
@@ -211,10 +207,12 @@ class WikiCfpScrape(object):
         else: step = -1
         print(f'crawling ({threadIndex}) WikiCFP {crawlType.value} from {startId} to {stopId}')
         jsonFilepath=self.getJsonFileName(startId,stopId,crawlType)
+        config=EventStorage.getStorageConfig(debug=self.debug, mode="json")
+        config.cacheFile=jsonFilepath
         if crawlType==CrawlType.EVENT:
-            batchEm=self.getEventManager(mode='json')
+            batchEm=datasources.wikicfp.WikiCfpEventManager(config=config)
         elif crawlType==CrawlType.SERIES:
-            batchEm=datasources.wikicfp.WikiCfpEventSeriesManager()
+            batchEm=datasources.wikicfp.WikiCfpEventSeriesManager(config=config)
  
         # get all ids
         for eventId in range(int(startId), int(stopId+1), step):
@@ -223,15 +221,17 @@ class WikiCfpScrape(object):
             if crawlType == CrawlType.EVENT:
                 event=datasources.wikicfp.WikiCfpEvent()
                 event.fromDict(rawEvent)
-                batchEm.add(event)
                 title="? deleted: %r" %event.deleted if not 'title' in rawEvent else event.title
-                print("%06d: %s" % (eventId,title))
+                print(f"{eventId:06d}: {title}")
+                entity=event
             elif crawlType == CrawlType.SERIES:
                 eventSeries=datasources.wikicfp.WikiCfpEventSeries()
-                pass
+                eventSeries.fromDict(rawEvent)
+                print(f"{eventId:06d}")
+                entity=eventSeries
+            batchEm.getList().append(entity)
            
-        if crawlType == CrawlType.EVENT:    
-            batchEm.store(cacheFile=jsonFilepath)
+        batchEm.store()
         return jsonFilepath
             
     def threadedCrawl(self,threads,startId:int,stopId:int,crawlType:CrawlType):
@@ -410,6 +410,52 @@ class WikiCfpEventFetcher(object):
         url=WikiCfpEventFetcher.getUrl(cfpid,self.crawlType)
         return self.fromUrl(url)
     
+    def rawEventFromWebScrape(self,rawEvent:dict,triples:list,scrape:WebScrape):
+        '''
+        fill the given rawEvent with the data derived from the scrape 
+        
+        Args:
+            rawEvent(dict): the event dictionary
+            triples(list): the triples found
+            scrape(WebScrape): the webscrape object to be used for parsing
+        '''
+        if len(triples)==0:
+            #scrape.printPrettyHtml(scrape.soup)
+            firstH3=scrape.fromTag(scrape.soup, 'h3')
+            if "This item has been deleted" in firstH3:
+                rawEvent['deleted']=True
+        else:        
+            self.fromTriples(rawEvent,triples)
+            # add series information
+            # Tag: <a href="/cfp/program?id=1769&amp;s=ISWC&amp;f=International Semantic Web Conference">International Semantic Web Conference</a>
+            m,seriesText=scrape.findLinkForRegexp(r'/cfp/program\?id=([0-9]+).*')
+            if m:
+                seriesId=m.group(1)
+                rawEvent['seriesId']=seriesId
+                rawEvent['series']=seriesText
+                pass
+                
+            if 'summary' in rawEvent:
+                rawEvent['acronym']=rawEvent.pop('summary').strip()
+            if 'description' in rawEvent:
+                rawEvent['title']=rawEvent.pop('description').strip()
+                
+    def rawEventSeriesFromWebScrape(self,rawEvent:dict,scrape:WebScrape):
+        '''
+        fill the given rawEventSeries with the data derived from the scrape 
+        
+        Args:
+            rawEvent(dict): the event dictionary
+            scrape(WebScrape): the webscrape object to be used for parsing
+        '''
+        dblpM,_text=scrape.findLinkForRegexp(r'http://dblp.uni-trier.de/db/(conf/[a-z0-9]+)/index.html')
+        if dblpM:
+            dblpSeriesId=dblpM.group(1)
+            rawEvent['dblpSeriesId']=dblpSeriesId
+         
+        pass
+ 
+    
     def fromUrl(self,url:str)->dict:
         '''
         get the event form the given url
@@ -434,35 +480,14 @@ class WikiCfpEventFetcher(object):
             rawEvent['seriesId']=f"{cfpId}" 
         rawEvent['wikiCfpId']=cfpId
         rawEvent['deleted']=False
-    
         scrape=WebScrape(debug=self.debug,timeout=self.timeout)
         triples=scrape.parseRDFa(url)
         if scrape.err:
             raise Exception(f"fromUrl {url} failed {scrape.err}")
-        if len(triples)==0:
-            #scrape.printPrettyHtml(scrape.soup)
-            firstH3=scrape.fromTag(scrape.soup, 'h3')
-            if "This item has been deleted" in firstH3:
-                rawEvent['deleted']=True
-        else:        
-            self.fromTriples(rawEvent,triples)
-            # add series information
-            seriesRegexp=r'/cfp/program\?id=([0-9]+).*'
-            seriesLink=scrape.soup.find('a',href=re.compile(seriesRegexp))
-            if seriesLink:
-                # Tag: <a href="/cfp/program?id=1769&amp;s=ISWC&amp;f=International Semantic Web Conference">International Semantic Web Conference</a>
-                href=seriesLink['href']
-                m=re.match(seriesRegexp,href)
-                if m:
-                    rawEvent['seriesId']=m.group(1)
-                    rawEvent['series']=seriesLink.text
-                pass
-                
-            if 'summary' in rawEvent:
-                rawEvent['acronym']=rawEvent.pop('summary').strip()
-            if 'description' in rawEvent:
-                rawEvent['title']=rawEvent.pop('description').strip()
-           
+        if self.crawlType==CrawlType.EVENT:
+            self.rawEventFromWebScrape(rawEvent, triples, scrape)
+        else:
+            self.rawEventSeriesFromWebScrape(rawEvent,scrape)
         return rawEvent
     
 __version__ = 0.3

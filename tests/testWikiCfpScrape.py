@@ -158,14 +158,17 @@ class TestWikiCFP(unittest.TestCase):
         '''
         test crawling a few events and storing the result to a json file
         '''
+        jsondir=f"/tmp/wikicfp-crawl/"
+        if not os.path.exists(jsondir):
+                    os.makedirs(jsondir)
         try: 
-            wikiCfpScrape=WikiCfpScrape()
+            wikiCfpScrape=WikiCfpScrape(jsondir=jsondir)
             limit=10
-            for crawlType in [CrawlType.SERIES]:
+            for crawlType in [CrawlType.SERIES,CrawlType.EVENT]:
                 jsonFilePath=wikiCfpScrape.crawl(0, 1, limit,crawlType)
                 size=os.stat(jsonFilePath).st_size
                 print (f"JSON file for {crawlType.value} has size {size}")
-                self.assertTrue(size>5000)
+                self.assertTrue(size>1400)
                 if crawlType is crawlType.EVENT:
                     batchEm=wikiCfpScrape.getEventManager(mode='json')
                     batchEm.fromStore(cacheFile=jsonFilePath)

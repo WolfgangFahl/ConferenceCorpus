@@ -5,6 +5,7 @@ Created on 2020-08-20
 '''
 import urllib.request
 from bs4 import BeautifulSoup
+import re
 
 class WebScrape(object):
     '''
@@ -32,6 +33,26 @@ class WebScrape(object):
         self.debug=debug
         self.showHtml=showHtml
         self.timeout=timeout
+        
+    def findLinkForRegexp(self,regex:str):
+        '''
+        find a link for the given regular expression
+        
+        Args:
+            regex(str): the regular expression to find a link for
+        
+        Return:
+            m(object),text(str): the match/text tuple or None,None
+        '''
+        m=None
+        text=None
+        link=self.soup.find('a',href=re.compile(regex))
+        if link:
+            href=link['href']
+            m=re.match(regex,href)    
+            if hasattr(link, "text"):
+                text=link.text 
+        return m,text
         
     def fromTag(self,soup,tag,attr=None,value=None):
         '''
