@@ -5,6 +5,7 @@ Created on 2021-07-31
 '''
 import unittest
 from datasources.webscrape import WebScrape
+from datasources.wikicfpscrape import CrawlType
 
 class TestWebScrape(unittest.TestCase):
     '''
@@ -19,6 +20,12 @@ class TestWebScrape(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def testCrawlType(self):
+        '''
+        test CrawlType isValid
+        '''
+        self.assertTrue(CrawlType.isValid("Event"))
+        self.assertFalse(CrawlType.isValid("Homepage"))
 
     def testWebScrape(self):
         '''

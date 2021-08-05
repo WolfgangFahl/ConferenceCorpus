@@ -46,6 +46,31 @@ class CrawlType(Enum):
         elif self==CrawlType.SERIES:
             url= f"{baseUrl}/program?id="
         return url
+    
+    @classmethod
+    def valueList(cls)->list:
+        '''
+        get my list of values
+        
+        Return:
+            list: the list of values
+        '''
+        valueList=list(map(lambda c: c.value, cls))
+        return valueList
+ 
+    @classmethod
+    def isValid(cls,value:str)->bool:
+        '''
+        check whether the given value is valid
+        
+        Args:
+            value(str): the value to check
+        
+        Return:
+            bool: True if the value is a valid value of this enum
+        '''
+        valueList=cls.valueList()
+        return value in valueList
      
 class WikiCfpScrape(object):
     '''
@@ -488,7 +513,7 @@ USAGE
         # Process arguments
         args = parser.parse_args()
         wikiCfpScrape=WikiCfpScrape(debug=args.debug)
-        if not args.crawlType in CrawlType:
+        if not CrawlType.isValid(args.crawlType):
             raise Exception(f"Invalid crawlType {args.crawlType}")
         wikiCfpScrape.threadedCrawl(args.threads, args.startId, args.stopId,CrawlType[args.crawlType])
         
