@@ -48,15 +48,17 @@ class CrawlType(Enum):
         return url
     
     @classmethod
-    def valueList(cls)->list:
+    def valueMap(cls)->dict:
         '''
         get my list of values
         
         Return:
             list: the list of values
         '''
-        valueList=list(map(lambda c: c.value, cls))
-        return valueList
+        valueMap={}
+        for c in cls:
+            valueMap[c.value]=c
+        return valueMap
  
     @classmethod
     def isValid(cls,value:str)->bool:
@@ -69,8 +71,8 @@ class CrawlType(Enum):
         Return:
             bool: True if the value is a valid value of this enum
         '''
-        valueList=cls.valueList()
-        return value in valueList
+        valueMap=cls.valueMap()
+        return value in valueMap
      
 class WikiCfpScrape(object):
     '''
@@ -515,7 +517,7 @@ USAGE
         wikiCfpScrape=WikiCfpScrape(debug=args.debug)
         if not CrawlType.isValid(args.crawlType):
             raise Exception(f"Invalid crawlType {args.crawlType}")
-        wikiCfpScrape.threadedCrawl(args.threads, args.startId, args.stopId,CrawlType[args.crawlType])
+        wikiCfpScrape.threadedCrawl(args.threads, args.startId, args.stopId,CrawlType.valueMap()[args.crawlType])
         
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
