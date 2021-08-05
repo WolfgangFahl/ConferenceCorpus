@@ -32,7 +32,7 @@ class EventDataSourceConfig(object):
         Return:
             str: the tablename
         '''
-        tableName=f"{entityName}_{self.tableSuffix}"
+        tableName=f"{entityName.lower()}_{self.tableSuffix}"
         return tableName
    
         

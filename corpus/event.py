@@ -78,18 +78,24 @@ class EventStorage:
         Return:
             str: the SQL DDL CREATE VIEW command
         '''
-        common="eventId,title,url,acronym,source,year"
-        viewDDL="""CREATE VIEW IF NOT EXISTS event AS\n"""
-        delim=""
-        sqlDB=EventStorage.getSqlDB()
-        tableList=sqlDB.getTableList()
-        for table in tableList:
-            tableName=table["name"]
-            if tableName.startswith("event_"):
-                viewDDL=f"{viewDDL}{delim}  SELECT {common} FROM {tableName}"
-                delim="\nUNION\n" 
-        return viewDDL
-    
+        # TODO use generalize instead of fixed list
+        commonMap={
+            "event": "eventId,title,url,acronym,source,year",
+            "eventseries": "source"
+        }
+        for viewName in commonMap.keys():
+            viewDDL="""CREATE VIEW IF NOT EXISTS {viewName} AS\n"""
+            delim=""
+            common=commonMap[viewName]
+            sqlDB=EventStorage.getSqlDB()
+            tableList=sqlDB.getTableList()
+            for table in tableList:
+                tableName=table["name"]
+                if tableName.startswith(f"{viewName}_"):
+                    viewDDL=f"{viewDDL}{delim}  SELECT {common} FROM {tableName}"
+                    delim="\nUNION\n" 
+            return viewDDL
+        
     @classmethod
     def createView(cls):
         ''' 

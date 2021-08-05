@@ -431,6 +431,7 @@ class OREventSeriesManager(EventSeriesManager):
         if wikiFileManager is None and hasattr(self,'wikiFileManager'):
             wikiFileManager=self.wikiFileManager
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
+        self.setAllAttr(lod,"source",f"{wikiFileManager.wikiUser.wikiId}-backup")
         return lod
 
 class OREventSeries(EventSeries):
