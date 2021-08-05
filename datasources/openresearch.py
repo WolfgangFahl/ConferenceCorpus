@@ -26,8 +26,13 @@ class OR(EventDataSource):
         lookupId=f"{wikiId}" if via=="api" else f"{wikiId}-{via}"
         tableSuffix=f"{wikiId}" if via=="api" else f"{wikiId}{via}" 
         name=f"{wikiId}-{via}"
-        title=f"OPENRESEARCH ({wikiId}-{via})"    
-        wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
+        title=f"OPENRESEARCH ({wikiId}-{via})"   
+        wikiUser=None 
+        try:
+            wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
+        except FileNotFoundError as _fne:
+            # configuration file missing
+            pass
         if wikiUser is not None:
             url=wikiUser.getWikiUrl()
         else:
