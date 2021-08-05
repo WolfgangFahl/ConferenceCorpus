@@ -70,7 +70,7 @@ class OREventManager(EventManager):
     i represent a list of Events
     '''
 
-    def __init__(self,sourceConfig=EventDataSourceConfig,config:StorageConfig=None, verbose:bool=False, debug=False):
+    def __init__(self,sourceConfig:EventDataSourceConfig=None,config:StorageConfig=None, verbose:bool=False, debug=False):
         '''
         Constructor
         '''
