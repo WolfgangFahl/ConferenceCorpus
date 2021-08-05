@@ -6,13 +6,12 @@ Created on 2021-07-30
 from corpus.event import EventStorage
 from corpus.eventcorpus import EventCorpus, EventDataSource
 
-from datasources.confref import ConfrefEventManager,ConfrefEventSeriesManager
-from datasources.crossref import CrossrefEventManager,CrossrefEventSeriesManager
-from datasources.dblp import DblpEventManager,DblpEventSeriesManager
-from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
-from datasources.openresearch import OREventManager,OREventSeriesManager
-from datasources.wikicfp import WikiCfpEventManager,WikiCfpEventSeriesManager
-from datasources.wikidata import Wikidata,WikidataEventManager,WikidataEventSeriesManager
+from datasources.confref import Confref
+from datasources.crossref import Crossref
+from datasources.dblp import Dblp
+from datasources.wikidata import Wikidata
+from datasources.openresearch import OR
+from datasources.wikicfp import WikiCfp
 
 from lodstorage.uml import UML
 from wikibot.wikiuser import WikiUser
@@ -77,23 +76,23 @@ class CorpusLookup(object):
         if lookupIds is None:
             lookupIds=CorpusLookup.lookupIds
         if "confref" in lookupIds:
-            self.eventCorpus.addDataSource(ConfrefEventManager(),ConfrefEventSeriesManager(),lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tableSuffix="confref")
+            self.eventCorpus.addDataSource(Confref())
         if "crossref" in lookupIds:
-            self.eventCorpus.addDataSource(CrossrefEventManager(),CrossrefEventSeriesManager(),lookupId="crossref",name="crossref.org",url="https://www.crossref.org/",title="CrossRef",tableSuffix="crossref")
+            self.eventCorpus.addDataSource(Crossref())
         if "dblp" in lookupIds:
-            self.eventCorpus.addDataSource(DblpEventManager(),DblpEventSeriesManager(),lookupId="dblp",name="dblp",url='https://dblp.org/',title='dblp computer science bibliography',tableSuffix="dblp")
+            self.eventCorpus.addDataSource(Dblp())
         if "wikidata" in lookupIds: 
-            self.eventCorpus.addDataSource(WikidataEventManager(),WikidataEventSeriesManager(),lookupId="wikidata",name="Wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata',tableSuffix="wikidata")
+            self.eventCorpus.addDataSource(Wikidata())
         if "wikicfp" in lookupIds:    
-            self.eventCorpus.addDataSource(WikiCfpEventManager(),WikiCfpEventSeriesManager(),lookupId="wikicfp",name="WikiCFP",url='http://www.wikicfp.com',title='WikiCFP',tableSuffix="wikicfp")
+            self.eventCorpus.addDataSource(WikiCfp())
         if "or" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or",name="OR_Triples",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-api',tableSuffix="orapi")
+            self.eventCorpus.addDataSource(OR(wikiId="or",via="api"))
         if "or-backup" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="or-backup",name="OR_Markup",url='https://www.openresearch.org/wiki/Main_Page',title='OPENRESEARCH-wiki',tableSuffix="orwiki")
+            self.eventCorpus.addDataSource(OR(wikiId="or",via="backup"))
         if "orclone" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone",name="OR_Clone_Triples",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-api',tableSuffix="orcapi")
+            self.eventCorpus.addDataSource(OR(wikiId="orclone",via="api"))
         if "orclone-backup" in lookupIds:    
-            self.eventCorpus.addDataSource(OREventManager(),OREventSeriesManager(),lookupId="orclone-backup",name="OR_Clone_Markup",url='https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page',title='OPENRESEARCH-clone-wiki',tableSuffix="orcwiki")
+            self.eventCorpus.addDataSource(OR(wikiId="orclone",via="backup"))
         
     def getDataSource(self,lookupId:str)->EventDataSource:
         '''

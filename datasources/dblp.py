@@ -3,16 +3,32 @@ Created on 2021-07-28
 
 @author: th
 '''
-from corpus.event import EventSeriesManager,EventSeries, Event, EventManager
+from corpus.event import EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
-from datasources.dblpxml import Dblp
+from datasources.dblpxml import DblpXml
+from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 
+
+class Dblp(EventDataSource):
+    '''
+    scientific events from https://dblp.org
+    '''
+    sourceConfig = EventDataSourceConfig(lookupId="dblp", name="dblp", url='https://dblp.org/', title='dblp computer science bibliography', tableSuffix="dblp")
+    
+    def __init__(self):
+        '''
+        constructor
+        '''
+        super().__init__(DblpEventManager(), DblpEventSeriesManager(), Dblp.sourceConfig)
+
+        
 class DblpEvent(Event):
     '''
     a Dblp Event
     
     Example event: https://dblp.org/db/conf/aaai/aaai2020.html
     '''
+
     def __init__(self):
         '''constructor '''
         super().__init__()
@@ -27,30 +43,30 @@ class DblpEvent(Event):
             rawEvent(dict): the raw event record to fix
         '''
         if 'url' in rawEvent:
-            rawEvent["url"]=f"https://dblp.org/{rawEvent['url']}" 
+            rawEvent["url"] = f"https://dblp.org/{rawEvent['url']}" 
         if "year" in rawEvent:
             # set year to integer value
-            yearStr=rawEvent['year']
+            yearStr = rawEvent['year']
             year = None
             try:
-                year=int(yearStr)
+                year = int(yearStr)
             except Exception as _ne:
                 pass
-            rawEvent['year']=year
+            rawEvent['year'] = year
             # if there is a booktitle create acronym
             if "booktitle" in rawEvent:
-                booktitle=rawEvent['booktitle']
+                booktitle = rawEvent['booktitle']
                 if booktitle is not None and year is not None:
-                    acronym=f"{booktitle} {year}"
-                    rawEvent["acronym"]=acronym 
-        doiprefix="https://doi.org/"
+                    acronym = f"{booktitle} {year}"
+                    rawEvent["acronym"] = acronym 
+        doiprefix = "https://doi.org/"
         if 'ee' in rawEvent:
-            ees=rawEvent['ee']
+            ees = rawEvent['ee']
             if ees:
                 for ee in ees.split(","):
                     if ee.startswith(doiprefix):
-                        doi=ee.replace(doiprefix,"")
-                        rawEvent["doi"]=doi 
+                        doi = ee.replace(doiprefix, "")
+                        rawEvent["doi"] = doi 
 
 
 class DblpEventSeries(EventSeries):
@@ -59,10 +75,12 @@ class DblpEventSeries(EventSeries):
     
     Example event series: https://dblp.org/db/conf/aaai/index.html
     '''
+
     def __init__(self):
         '''constructor '''
         super().__init__()
         pass
+
 
 class DblpEventManager(EventManager):
     '''
@@ -71,28 +89,29 @@ class DblpEventManager(EventManager):
     Example event: https://dblp.org/db/conf/aaai/aaai2020.html
     
     '''
-    def __init__(self, config: StorageConfig = None):
+
+    def __init__(self, config: StorageConfig=None):
         '''
         Constructor
         '''
-        super(DblpEventManager, self).__init__(name="DblpEvents", clazz=DblpEventSeries,
-                                                         tableName="dblp_eventseries", config=config)
+        super(DblpEventManager, self).__init__(name="DblpEvents", sourceConfig=Dblp.sourceConfig, clazz=DblpEventSeries, config=config)
+
     pass
 
     def configure(self):
         '''
         configure me
         '''
-        withProgress=False
-        if not hasattr(self, "dblp"): 
-            self.dblp=Dblp()
-            self.dblp.warnFullSize()
-            withProgress=True
-        self.sqlDb=self.dblp.getXmlSqlDB(showProgress=withProgress)
-        if not hasattr(self,"getListOfDicts"):
-            self.getListOfDicts=self.getLoDfromDblp
+        withProgress = False
+        if not hasattr(self, "dblpXml"): 
+            self.dblpXml = DblpXml()
+            self.dblpXml.warnFullSize()
+            withProgress = True
+        self.sqlDb = self.dblpXml.getXmlSqlDB(showProgress=withProgress)
+        if not hasattr(self, "getListOfDicts"):
+            self.getListOfDicts = self.getLoDfromDblp
 
-    def getLoDfromDblp(self)->list:
+    def getLoDfromDblp(self) -> list:
         '''
         get the LoD for the event series
             
@@ -104,10 +123,11 @@ class DblpEventManager(EventManager):
         from proceedings 
         order by series,year"""
         listOfDicts = self.sqlDb.query(query)
-        self.setAllAttr(listOfDicts,"source","dblp")
+        self.setAllAttr(listOfDicts, "source", "dblp")
         for rawEvent in listOfDicts:
             DblpEvent.fixRawEvent(rawEvent)
         return listOfDicts
+
 
 class DblpEventSeriesManager(EventSeriesManager):
     '''
@@ -117,27 +137,26 @@ class DblpEventSeriesManager(EventSeriesManager):
     dblp provides regular dblp xml dumps
     '''
 
-    def __init__(self, config: StorageConfig = None):
+    def __init__(self, config: StorageConfig=None):
         '''
         Constructor
         '''
-        super(DblpEventSeriesManager, self).__init__(name="DblpEventSeries", clazz=DblpEventSeries,
-                                                         tableName="dblp_eventseries", config=config)
+        super().__init__(name="DblpEventSeries", sourceConfig=Dblp.sourceConfig, clazz=DblpEventSeries, config=config)
         
     def configure(self):
         '''
         configure me
         '''
-        withProgress=False
-        if not hasattr(self, "dblp"): 
-            self.dblp=Dblp()
-            self.dblp.warnFullSize()
-            withProgress=True
-        self.sqlDb=self.dblp.getXmlSqlDB(showProgress=withProgress)
-        if not hasattr(self,"getListOfDicts"):
-            self.getListOfDicts=self.getLoDfromDblp
+        withProgress = False
+        if not hasattr(self, "dblpXml"): 
+            self.dblpXml = DblpXml()
+            self.dblpXml.warnFullSize()
+            withProgress = True
+        self.sqlDb = self.dblpXml.getXmlSqlDB(showProgress=withProgress)
+        if not hasattr(self, "getListOfDicts"):
+            self.getListOfDicts = self.getLoDfromDblp
 
-    def getLoDfromDblp(self)->list:
+    def getLoDfromDblp(self) -> list:
         '''
 
         get the list of dicts for the event data
@@ -152,5 +171,5 @@ class DblpEventSeriesManager(EventSeriesManager):
         group by acronym
         order by 2 desc"""
         listOfDicts = self.sqlDb.query(query)
-        self.setAllAttr(listOfDicts,"source","dblp")
+        self.setAllAttr(listOfDicts, "source", "dblp")
         return listOfDicts

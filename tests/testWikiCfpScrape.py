@@ -6,7 +6,6 @@ Created on 2020-08-20
 import unittest
 from datasources.wikicfpscrape import WikiCfpScrape, WikiCfpEventFetcher, CrawlType
 import os
-from pathlib import Path
 from collections import Counter
 import jsonpickle
 from datetime import datetime

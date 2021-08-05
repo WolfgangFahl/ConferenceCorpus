@@ -7,77 +7,33 @@ from wikifile.wikiFile import WikiFile
 from wikifile.wikiFileManager import WikiFileManager
 
 from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
-from corpus.eventcorpus import EventCorpus
+from corpus.eventcorpus import EventCorpus,EventDataSource,EventDataSourceConfig
 from smw.topic import SMWEntity, SMWEntityList
 
-
-class OREventCorpus(EventCorpus):
+class OR(EventDataSource):
     '''
-    EventCorpus containing the events and eventSeries of openresearch
+    scientific events from http://www.openresearch.org
     '''
-
-    def __init__(self,config:StorageConfig=None,debug:bool=False):
+    
+    def __init__(self,wikiId='or',via='api'):
         '''
-        Constructor
-        '''
-        super().__init__(debug=debug)
-        if config is None:
-            config = StorageConfig.getSQL()
-        self.config=config
-        self._wikiFileManager = None
-        self.wikiUser = None
-
-    @property
-    def wikiFileManager(self):
-        '''
-        access to wikiFileManager
-        '''
-        if self._wikiFileManager is not None:
-            return self._wikiFileManager
-        else:
-            if self.wikiUser is None:
-                return None
-            else:
-                if self.debug:
-                    print(f"Creating WikiFileManager for {self.wikiUser.wikiId}")
-                self._wikiFileManager = WikiFileManager(sourceWikiId=self.wikiUser.wikiId, debug=self.debug)
-                return self._wikiFileManager
-
-    @wikiFileManager.setter
-    def wikiFileManager(self, value):
-        self._wikiFileManager = value
-
-    def fromWikiFileManager(self,wikiFileManager):
-        '''
-        get events with series by knitting / linking the entities together
-        '''
-        self.wikiFileManager=wikiFileManager
-        self.eventManager=OREventManager(self.config,debug=self.debug)
-        self.eventManager.fromWikiFileManager(wikiFileManager)
-        self.eventSeriesManager=OREventSeriesManager(self.config,debug=self.debug)
-        self.eventSeriesManager.fromWikiFileManager(wikiFileManager)
-        self.eventManager.linkSeriesAndEvent(self.eventSeriesManager)
-
-    def fromWikiUser(self, wikiUser, force=False):
-        '''
-        get events with series by knitting / linking the entities together
-        '''
-        self.wikiUser = wikiUser
-        self.eventManager = OREventManager(self.config,debug=self.debug)
-        self.eventManager.fromWikiUser(wikiUser)
-        self.eventSeriesManager = OREventSeriesManager(self.config,debug=self.debug)
-        self.eventSeriesManager.fromWikiUser(wikiUser)
+        constructor
         
-
-    def fromCache(self, wikiUser:WikiUser,force=False):
-        self.eventManager = OREventManager(self.config, debug=self.debug)
-        self.eventManager.wikiUser=wikiUser
-        self.eventManager.fromCache(force=force, getListOfDicts=self.eventManager.getLoDfromWikiUser)
-        self.eventSeriesManager = OREventSeriesManager(self.config, debug=self.debug)
-        self.eventSeriesManager.wikiUser = wikiUser
-        self.eventSeriesManager.fromCache(force=force, getListOfDicts=self.eventSeriesManager.getLoDfromWikiUser)
-        self.eventManager.linkSeriesAndEvent(self.eventSeriesManager, "inEventSeries")
-
+        Args:
+            wikiId(str): the wikiId to get the SMW data from 
+            via(str): the access style api or backup
+        '''
+        lookupId=f"{wikiId}" if via=="api" else f"{wikiId}-{via}"
+        tableSuffix=f"{wikiId}" if via=="api" else f"{wikiId}{via}" 
+        name=f"{wikiId}-{via}"
+        title=f"OPENRESEARCH ({wikiId}-{via})"    
+        wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
+        if wikiUser is not None:
+            url=wikiUser.getWikiUrl()
+        else:
+            url='https://www.openresearch.org/wiki/Main_Page' if wikiId=="or" else "https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page"
+        sourceConfig=EventDataSourceConfig(lookupId=lookupId,name=name,url=url,title=title,tableSuffix=tableSuffix)
+        super().__init__(OREventManager(sourceConfig=sourceConfig),OREventSeriesManager(sourceConfig=sourceConfig),sourceConfig)
 
 class OREventManager(EventManager):
     '''
@@ -109,12 +65,12 @@ class OREventManager(EventManager):
     i represent a list of Events
     '''
 
-    def __init__(self,config:StorageConfig=None, verbose:bool=False, debug=False):
+    def __init__(self,sourceConfig=EventDataSourceConfig,config:StorageConfig=None, verbose:bool=False, debug=False):
         '''
         Constructor
         '''
         self.events=[]
-        super(OREventManager, self).__init__(name="OREvents",
+        super().__init__(name="OREvents",sourceConfig=sourceConfig,
                                              clazz=OREvent,
                                              primaryKey="pageTitle",
                                              config=config)
@@ -384,12 +340,13 @@ class OREventSeriesManager(EventSeriesManager):
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
 
-    def __init__(self,config:StorageConfig=None, verbose:bool=False, debug=False):
+    def __init__(self,sourceConfig=EventDataSourceConfig,config:StorageConfig=None, verbose:bool=False, debug=False):
         '''
         construct me
         '''
         self.eventSeries = []
         super(OREventSeriesManager, self).__init__(name="OREventSeries",
+                                                   sourceConfig=sourceConfig,
                                                    clazz=OREventSeries,
                                                    primaryKey="pageTitle",
                                                    config=config)

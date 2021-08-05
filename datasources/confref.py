@@ -8,6 +8,19 @@ from lodstorage.storageconfig import StorageConfig
 import html
 import os
 import json
+from corpus.eventcorpus import EventDataSourceConfig,EventDataSource
+
+class Confref(EventDataSource):
+    sourceConfig=EventDataSourceConfig(lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tableSuffix="confref")
+    
+    '''
+    ConfRef platform
+    '''
+    def __init__(self):
+        '''
+        construct me 
+        '''
+        super().__init__(ConfrefEventManager(),ConfrefEventSeriesManager(),Confref.sourceConfig)
 
 class ConfrefEvent(Event):
     '''
@@ -50,8 +63,7 @@ class ConfrefEventManager(EventManager):
         '''
         Constructor
         '''
-        super().__init__(name="ConfrefEvents", clazz=ConfrefEvent,
-                                                         tableName="confref_event", config=config)
+        super().__init__(name="ConfrefEvents", sourceConfig=Confref.sourceConfig, clazz=ConfrefEvent, config=config)
         
     def configure(self):
         '''
@@ -85,7 +97,7 @@ class ConfrefEventSeriesManager(EventSeriesManager):
         '''
         Constructor
         '''
-        super().__init__(name="ConfrefEventSeries", clazz=ConfrefEventSeries, tableName="confref_eventseries",config=config)
+        super().__init__(name="ConfrefEventSeries", sourceConfig=Confref.sourceConfig,clazz=ConfrefEventSeries,config=config)
 
 
     def configure(self):

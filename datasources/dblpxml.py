@@ -16,7 +16,7 @@ import os
 import re
 import time
 
-class Dblp(object):
+class DblpXml(object):
     '''
     handler for https://dblp.uni-trier.de/xml/ dumps
     see https://github.com/IsaacChanghau/DBLPParser/blob/master/src/dblp_parser.py

@@ -4,27 +4,7 @@ Created on 2021-04-16
 @author: wf
 '''
 from corpus.event import EventManager, EventSeriesManager
-
-class EventDataSourceConfig(object):
-    '''
-    holds configuration parameters for an EventDataSource
-    '''
-    def __init__(self,lookupId:str,name:str,title:str,url:str,tableSuffix:str):
-        '''
-        constructor 
-        
-        Args:
-          lookupId(str): the id of the data source
-          name(str): the name of the data source
-          title(str): the title of the data source
-          url(str): the link to the data source homepage
-          tableSuffix(str): the tableSuffix to use
-        '''  
-        self.lookupId=lookupId
-        self.name=name
-        self.title=title
-        self.url=url
-        self.tableSuffix=tableSuffix
+from corpus.config import EventDataSourceConfig            
 
 class EventDataSource(object):
     '''
@@ -43,9 +23,7 @@ class EventDataSource(object):
         self.sourceConfig=sourceConfig
         self.name=self.sourceConfig.name
         self.eventManager=eventManager
-        self.eventManager.tableName=f"event_{self.sourceConfig.tableSuffix}"
         self.eventSeriesManager=eventSeriesManager
-        self.eventSeriesManager.tableName=f"eventseries_{self.sourceConfig.tableSuffix}"
         pass
         
     def load(self,forceUpdate=False):
@@ -77,22 +55,14 @@ class EventCorpus(object):
         self.verbose=verbose
         self.eventDataSources={}
 
-    def addDataSource(self, eventManager:EventManager, eventSeriesManager:EventSeriesManager, lookupId:str,name:str, title:str, url:str,tableSuffix:str):
+    def addDataSource(self, eventDataSource:EventDataSource):
         '''
-        adds the given set as a eventDataSource to the data sources of this EventCorpus
+        adds the given eventDataSource
         
         Args:
-            eventManager(EventManager): manager for the events
-            eventSeriesManager(EventSeriesManager): manager for the eventSeries
-            lookupId(str): the id of the data source
-            name(str): the name of the data source
-            title(str): the title of the data source
-            url(str): the link to the data source homepage
-            tableSuffix(str): the tableSuffix to use
+            eventDataSource: EventDataSource
         '''
-        eventDataSourceConfig=EventDataSourceConfig(lookupId,name,title,url,tableSuffix)
-        eventDataSource=EventDataSource(eventManager,eventSeriesManager,eventDataSourceConfig)
-        self.eventDataSources[lookupId]=eventDataSource
+        self.eventDataSources[eventDataSource.sourceConfig.lookupId]=eventDataSource
         pass
     
     def loadAll(self,forceUpdate:bool=False):

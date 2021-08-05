@@ -25,9 +25,9 @@ class TestCorpusLookup(DataSourceTest):
         '''
         print("configureCorpusLookup callback called")
         dblpDataSource=lookup.getDataSource("dblp")
-        dblp=TestDblp.getMockedDblp(debug=self.debug)
-        dblpDataSource.eventManager.dblp=dblp
-        dblpDataSource.eventSeriesManager.dblp=dblp
+        dblpXml=TestDblp.getMockedDblp(debug=self.debug)
+        dblpDataSource.eventManager.dblpXml=dblpXml
+        dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         
         for lookupId in ["or","orclone"]:
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
@@ -64,7 +64,7 @@ class TestCorpusLookup(DataSourceTest):
         test getting datasources by table name
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
-        dataSource=lookup.getDataSource4TableName("confref_Event")
+        dataSource=lookup.getDataSource4TableName("event_confref")
         if self.debug:
             print (f"{dataSource.name}")
         self.assertEqual("confref.org",dataSource.name)

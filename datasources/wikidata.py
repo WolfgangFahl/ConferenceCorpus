@@ -6,8 +6,9 @@ Created on 2021-07-21
 from corpus.event import EventSeriesManager,EventSeries, Event, EventManager
 from lodstorage.sparql import SPARQL
 from lodstorage.storageconfig import StorageConfig
+from corpus.eventcorpus import EventDataSource,EventDataSourceConfig
 
-class Wikidata:
+class Wikidata(EventDataSource):
     '''
     Wikidata access via SPARQL endpoint
     
@@ -15,7 +16,14 @@ class Wikidata:
     our own copy of Wikidata which might run on Virtuoso or Jena instead of blazegraph
     '''
     endpoint="https://query.wikidata.org/sparql"
+    sourceConfig=EventDataSourceConfig(lookupId="wikidata",name="Wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata',tableSuffix="wikidata")
     
+    def __init__(self):
+        '''
+        construct me
+        '''
+        super().__init__(WikidataEventManager(),WikidataEventSeriesManager(),Wikidata.sourceConfig)
+        
 class WikidataEventSeries(EventSeries):
     '''
     event series derived from Wikidata
@@ -48,7 +56,7 @@ class WikidataEventManager(EventManager):
         '''
         Constructor
         '''
-        super(WikidataEventManager,self).__init__(name="WikidataEvents", clazz=WikidataEvent, tableName="wikidata_event",config=config)
+        super(WikidataEventManager,self).__init__(name="WikidataEvents", sourceConfig=Wikidata.sourceConfig,clazz=WikidataEvent,config=config)
         
     def configure(self):
         '''
@@ -162,7 +170,7 @@ class WikidataEventSeriesManager(EventSeriesManager):
         '''
         Constructor
         '''
-        super(WikidataEventSeriesManager,self).__init__(name="WikidataEventSeries", clazz=WikidataEventSeries, tableName="wikidata_eventseries",config=config)
+        super(WikidataEventSeriesManager,self).__init__(name="WikidataEventSeries", sourceConfig=Wikidata.sourceConfig,clazz=WikidataEventSeries,config=config)
         
     def configure(self):
         '''

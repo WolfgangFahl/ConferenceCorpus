@@ -12,7 +12,7 @@ except:
     long_description = open('../../README.md').read()
 
 setup(name='ConferenceCorpus',
-      version='0.0.10',
+      version='0.0.11',
       description='python api providing access to academic events and event series from different sources',
       long_description=long_description,
       long_description_content_type='text/markdown',

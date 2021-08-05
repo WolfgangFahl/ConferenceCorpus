@@ -25,9 +25,9 @@ class TestDblpEvents(DataSourceTest):
         callback to configure the corpus lookup
         '''
         dblpDataSource=lookup.getDataSource("dblp")
-        dblp=TestDblp.getMockedDblp(debug=self.debug)
-        dblpDataSource.eventManager.dblp=dblp
-        dblpDataSource.eventSeriesManager.dblp=dblp
+        dblpXml=TestDblp.getMockedDblp(debug=self.debug)
+        dblpDataSource.eventManager.dblpXml=dblpXml
+        dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         
     
     def testDblp(self):
@@ -37,9 +37,9 @@ class TestDblpEvents(DataSourceTest):
         lookup=CorpusLookup(lookupIds=["dblp"],configure=self.configureCorpusLookup)
         lookup.load(forceUpdate=False)
         dblpDataSource=lookup.getDataSource("dblp")
-        dblp=TestDblp.getMockedDblp(debug=self.debug)
-        dblpDataSource.eventManager.dblp=dblp
-        dblpDataSource.eventSeriesManager.dblp=dblp
+        dblpXml=TestDblp.getMockedDblp(debug=self.debug)
+        dblpDataSource.eventManager.dblpXml=dblpXml
+        dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         self.checkDataSource(dblpDataSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
 
 

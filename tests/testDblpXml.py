@@ -5,7 +5,7 @@ Created on 2021-01-25
 '''
 import unittest
 
-from datasources.dblpxml import Dblp
+from datasources.dblpxml import DblpXml
 from lodstorage.schema import SchemaManager
 from datetime import datetime
 import os
@@ -51,32 +51,32 @@ class TestDblp(unittest.TestCase):
     
     @staticmethod
     def getMockedDblp(mock=True,debug=False):
-        dblp=Dblp(debug=debug)
+        dblpXml=DblpXml(debug=debug)
         if mock:
-            dblp.xmlpath="/tmp/dblp"
-            dblp.gzurl="https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/dblpsample.xml.gz"
-            dblp.reinit()
-        xmlfile=dblp.getXmlFile()
+            dblpXml.xmlpath="/tmp/dblp"
+            dblpXml.gzurl="https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/dblpsample.xml.gz"
+            dblpXml.reinit()
+        xmlfile=dblpXml.getXmlFile()
         if debug:
-            print("dblp xml file is  %s with size %5.1f MB" % (xmlfile,dblp.getSize()/1024/1024))
-        return dblp
+            print("dblp xml file is  %s with size %5.1f MB" % (xmlfile,dblpXml.getSize()/1024/1024))
+        return dblpXml
         
     def getDblp(self):
         '''
         get the dblp 
         '''
-        dblp=TestDblp.getMockedDblp(TestDblp.mock,debug=self.debug)
-        return dblp
+        dblpXml=TestDblp.getMockedDblp(TestDblp.mock,debug=self.debug)
+        return dblpXml
     
     def getSqlDB(self,recreate=False):
         '''
         get the Sql Database
         '''
-        dblp=self.getDblp()
+        dblpXml=self.getDblp()
         limit=10000 if self.mock else 10000000
         showProgress=not self.mock  and not self.inCI()
         sample=5
-        sqlDB=dblp.getSqlDB(limit, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblp.postProcess,showProgress=showProgress)
+        sqlDB=dblpXml.getSqlDB(limit, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblpXml.postProcess,showProgress=showProgress)
         return sqlDB
     
     def testDblpDownload(self):
@@ -93,8 +93,8 @@ class TestDblp(unittest.TestCase):
         test creating a sample file
         '''
         #self.mock=False
-        dblp=self.getDblp()
-        sampletree=dblp.createSample()
+        dblpXml=self.getDblp()
+        sampletree=dblpXml.createSample()
         records=len(sampletree.getroot().getchildren())
         self.log("sample has %d records" % records)
         samplefile="/tmp/dblpsample.xml"
@@ -105,8 +105,8 @@ class TestDblp(unittest.TestCase):
         '''
         test parsing the xml file
         '''
-        dblp=self.getDblp()
-        xmlfile=dblp.getXmlFile()
+        dblpXml=self.getDblp()
+        xmlfile=dblpXml.getXmlFile()
         self.assertTrue(xmlfile is not None)
         index=0
         starttime=time.time()
@@ -114,12 +114,12 @@ class TestDblp(unittest.TestCase):
             showProgressAt=500000
         else:
             showProgressAt=5000000
-        for _, elem in dblp.iterParser():
+        for _, elem in dblpXml.iterParser():
             index+=1
             if index%showProgressAt==0:
                 elapsed=time.time()-starttime
                 print ("%8d: %5.1f s %5.0f/s %s" % (index,elapsed,index/elapsed,elem))
-            dblp.clear_element(elem)    
+            dblpXml.clear_element(elem)    
         expectedIndex=35000 if self.mock else 70000000
         self.assertTrue(index>expectedIndex)
         
@@ -191,8 +191,8 @@ class TestDblp(unittest.TestCase):
         xmlpath="/tmp"
         with open(f"{xmlpath}/{xmlname}", 'w') as xmlfile:
             xmlfile.write(xml)
-        dblp=Dblp(xmlname=xmlname,xmlpath=xmlpath)
-        dictOfLod=dblp.asDictOfLod()
+        dblpXml=DblpXml(xmlname=xmlname,xmlpath=xmlpath)
+        dictOfLod=dblpXml.asDictOfLod()
         self.assertTrue("proceedings" in dictOfLod)
         procs=dictOfLod["proceedings"]
         self.assertEqual(3,len(procs))
@@ -203,8 +203,8 @@ class TestDblp(unittest.TestCase):
         '''
         test the parameterized query
         '''
-        dblp=self.getDblp()
-        dblp.getXmlFile(reload=True)
+        dblpXml=self.getDblp()
+        dblpXml.getXmlFile(reload=True)
         sqlDB=self.getSqlDB(recreate=self.mock)
         self.checkConfColumn(sqlDB)
         
@@ -227,8 +227,8 @@ class TestDblp(unittest.TestCase):
         test generating the uml diagram for the entities
         '''
         #self.mock=False
-        dblp=self.getDblp()
-        dbname="%s/%s" % (dblp.xmlpath,"dblp.sqlite")
+        dblpXml=self.getDblp()
+        dbname="%s/%s" % (dblpXml.xmlpath,"dblp.sqlite")
         sqlDB=SQLDB(dbname)
         uml=UML()
         now=datetime.now()

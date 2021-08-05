@@ -4,7 +4,7 @@ Created on 2021-07-26
 @author: wf
 '''
 from typing import Callable
-
+from corpus.config import EventDataSourceConfig
 from lodstorage.csv import CSV
 from lodstorage.entity import EntityManager
 from lodstorage.jsonable import JSONAble
@@ -143,7 +143,7 @@ class EventBaseManager(EntityManager):
     common entity Manager for ConferenceCorpus
     '''
     
-    def __init__(self,name,entityName,entityPluralName:str,listName:str=None,clazz=None,tableName:str=None,primaryKey:str=None,config=None,handleInvalidListTypes=False,filterInvalidListTypes=False,debug=False,profile=True):
+    def __init__(self,name,entityName,entityPluralName:str,listName:str=None,clazz=None,sourceConfig=EventDataSourceConfig,primaryKey:str=None,config=None,handleInvalidListTypes=False,filterInvalidListTypes=False,debug=False,profile=True):
         '''
         Constructor
         
@@ -160,6 +160,7 @@ class EventBaseManager(EntityManager):
         self.profile=profile
         if config is None:
             config=EventStorage.getStorageConfig(debug=debug)
+        tableName=sourceConfig.getTableName(entityName)
         super().__init__(name, entityName, entityPluralName, listName, clazz, tableName, primaryKey, config, handleInvalidListTypes, filterInvalidListTypes, debug)
         
     def configure(self):
@@ -199,11 +200,11 @@ class EventSeriesManager(EventBaseManager):
     '''
     Event series list
     '''
-    def __init__(self,name:str,clazz=None,tableName:str=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
+    def __init__(self,name:str,sourceConfig:EventDataSourceConfig,clazz=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
         '''
         constructor 
         '''
-        super().__init__(name=name,entityName="EventSeries",entityPluralName="EventSeries",primaryKey=primaryKey,listName="series",clazz=clazz,tableName=tableName,handleInvalidListTypes=True,config=config,debug=debug)
+        super().__init__(name=name,entityName="EventSeries",entityPluralName="EventSeries",primaryKey=primaryKey,listName="series",clazz=clazz,sourceConfig=sourceConfig,handleInvalidListTypes=True,config=config,debug=debug)
         
             
 class EventManager(EventBaseManager):
@@ -211,11 +212,11 @@ class EventManager(EventBaseManager):
     Event entity list
     '''
     
-    def __init__(self,name:str,clazz=None,tableName:str=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
+    def __init__(self,name:str,sourceConfig:EventDataSourceConfig,clazz=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
         '''
         constructor 
         '''
-        super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,tableName=tableName,config=config,handleInvalidListTypes=True,debug=debug)
+        super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,sourceConfig=sourceConfig,config=config,handleInvalidListTypes=True,debug=debug)
         
  
     def linkSeriesAndEvent(self, eventSeriesManager:EventSeriesManager, seriesKey:str="series"):
