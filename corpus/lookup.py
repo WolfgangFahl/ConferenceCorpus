@@ -138,7 +138,7 @@ class CorpusLookup(object):
         if self.configure:
             self.configure(self)
         self.eventCorpus.loadAll(forceUpdate=forceUpdate)
-        EventStorage.createView()
+        EventStorage.createViews()
 
     def getQueryManager(self):
         '''
@@ -183,7 +183,8 @@ class CorpusLookup(object):
         tableList=[]
         for table in storageTableList:
             tableName=table['name']
-            if tableName.endswith(baseEntity):
+            prefix=f"{baseEntity.lower()}_"
+            if tableName.startswith(prefix):
                 if 'instances' in table:
                     instanceNote=""
                     dataSource=self.getDataSource4TableName(tableName)

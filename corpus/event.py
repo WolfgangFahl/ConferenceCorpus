@@ -71,7 +71,7 @@ class EventStorage:
         return tableList
     
     @classmethod
-    def getCommonViewDDL(cls):
+    def getCommonViewDDLs(cls):
         '''
         get the SQL DDL for a common view 
         
@@ -83,8 +83,9 @@ class EventStorage:
             "event": "eventId,title,url,acronym,source,year",
             "eventseries": "source"
         }
+        viewDDLs=[]
         for viewName in commonMap.keys():
-            viewDDL="""CREATE VIEW IF NOT EXISTS {viewName} AS\n"""
+            createViewDDL=f"""CREATE VIEW IF NOT EXISTS {viewName} AS\n"""
             delim=""
             common=commonMap[viewName]
             sqlDB=EventStorage.getSqlDB()
@@ -92,12 +93,13 @@ class EventStorage:
             for table in tableList:
                 tableName=table["name"]
                 if tableName.startswith(f"{viewName}_"):
-                    viewDDL=f"{viewDDL}{delim}  SELECT {common} FROM {tableName}"
+                    createViewDDL=f"{createViewDDL}{delim}  SELECT {common} FROM {tableName}"
                     delim="\nUNION\n" 
-            return viewDDL
+            viewDDLs.append(createViewDDL)
+        return viewDDLs
         
     @classmethod
-    def createView(cls):
+    def createViews(cls):
         ''' 
           create the general Event view
           
@@ -105,8 +107,9 @@ class EventStorage:
             cacheFileName(string): the path to the database
         '''
         sqlDB=EventStorage.getSqlDB()
-        viewDDL=EventStorage.getCommonViewDDL()
-        sqlDB.c.execute(viewDDL)
+        viewDDLs=EventStorage.getCommonViewDDLs()
+        for viewDDL in viewDDLs:
+            sqlDB.c.execute(viewDDL)
     
 
 class Event(JSONAble):

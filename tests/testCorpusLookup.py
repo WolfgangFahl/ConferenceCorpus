@@ -54,10 +54,15 @@ class TestCorpusLookup(DataSourceTest):
         '''
         test the view DDL
         '''
-        viewDDL=EventStorage.getCommonViewDDL()
-        if self.debug:
-            print(viewDDL)
-        self.assertTrue("CREATE VIEW" in viewDDL)
+        viewDDLs=EventStorage.getCommonViewDDLs()
+        debug=self.debug
+        #debug=True
+        
+        if debug:
+            print(viewDDLs)
+        self.assertEqual(2,len(viewDDLs))
+        for viewDDL in viewDDLs:
+            self.assertTrue("CREATE VIEW" in viewDDL)
         
     def testDataSource4Table(self):
         '''
@@ -80,10 +85,10 @@ class TestCorpusLookup(DataSourceTest):
         for baseEntity in ["Event","EventSeries"]:
             plantUml=lookup.asPlantUml(baseEntity)
             debug=self.debug
-            debug=True
+            #debug=True
             if debug:
                 print(plantUml)
-            self.assertTrue(f"{baseEntity} <|-- dblp_{baseEntity}" in plantUml)
+            self.assertTrue(f"{baseEntity} <|-- {baseEntity.lower()}_dblp" in plantUml)
             self.assertTrue(f"class {baseEntity} " in plantUml)
 
 
