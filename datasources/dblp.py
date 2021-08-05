@@ -165,7 +165,7 @@ class DblpEventSeriesManager(EventSeriesManager):
             list: the list of dict with my event data
 
         '''
-        query = """select conf as acronym,count(*) as count,min(year) as minYear,max(year) as maxYear
+        query = """select conf as acronym,conf as eventSeriesId,count(*) as count,min(year) as minYear,max(year) as maxYear
         from proceedings 
         where acronym is not null
         group by acronym

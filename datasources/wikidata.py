@@ -190,7 +190,7 @@ class WikidataEventSeriesManager(EventSeriesManager):
         PREFIX wd: <http://www.wikidata.org/entity/>
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?confSeries ?acronym ?confSeriesLabel ?official_website ?DBLP_pid ?WikiCFP_pid ?FreeBase_pid ?Microsoft_Academic_pid ?Publons_pid ?ACM_pid ?GND_pid
+        SELECT (?confSeries as ?eventSeriesId) ?acronym ?confSeriesLabel ?official_website ?DBLP_pid ?WikiCFP_pid ?FreeBase_pid ?Microsoft_Academic_pid ?Publons_pid ?ACM_pid ?GND_pid
         WHERE 
         {
           #  scientific conference series (Q47258130) 
