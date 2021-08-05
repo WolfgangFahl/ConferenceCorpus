@@ -230,7 +230,7 @@ class WikiCfpScrape(object):
             elif crawlType == CrawlType.SERIES:
                 eventSeries=datasources.wikicfp.WikiCfpEventSeries()
                 eventSeries.fromDict(rawEvent)
-                title="?" if not 'title' in rawEvent else event.title
+                title="?" if not 'title' in rawEvent else eventSeries.title
                 batchEm.getList().append(eventSeries)
                 
             print(f"{eventId:06d}: {title}")
