@@ -37,7 +37,7 @@
         pragma table_info('event_crossref');
 'Event_or Schema':
     sql: |
-        pragma table_info('event_orcapi');
+        pragma table_info('event_orclone');
 'Event_wikicfp Schema':
     sql: |
         pragma table_info('event_wikicfp');        
@@ -76,7 +76,7 @@
 'OPENRESEARCH year distribution':
     sql: |
         select year,count(*) as count
-        from event_orcapi
+        from event_orclone
         group by year
         order by year     
 
