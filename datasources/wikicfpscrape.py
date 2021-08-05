@@ -176,34 +176,34 @@ class WikiCfpScrape(object):
         jsonFilePath=self.jsondir+"wikicfp_%s%06d-%06d.json" % (crawlType.value,startId,stopId)
         return jsonFilePath
         
-    def crawl(self,threadIndex,startId,stopId,crawlType:str):
+    def crawl(self,threadIndex,startId,stopId,crawlType:CrawlType):
         '''
         see https://github.com/TIBHannover/confIDent-dataScraping/blob/master/wikicfp.py
         '''
         if startId <= stopId: step = +1
         else: step = -1
-        print(f'crawling ({threadIndex}) WikiCFP {crawlType} from {startId} to {stopId}')
+        print(f'crawling ({threadIndex}) WikiCFP {crawlType.value} from {startId} to {stopId}')
         jsonFilepath=self.getJsonFileName(startId,stopId,crawlType)
-        if crawlType==CrawlType.EVENT.value:
+        if crawlType==CrawlType.EVENT:
             batchEm=self.getEventManager(mode='json')
-        elif crawlType==CrawlType.SERIES.value:
+        elif crawlType==CrawlType.SERIES:
             batchEm=datasources.wikicfp.WikiCfpEventSeriesManager()
  
         # get all ids
         for eventId in range(int(startId), int(stopId+1), step):
             wEvent=WikiCfpEventFetcher(crawlType=crawlType)
             rawEvent=wEvent.fromEventId(eventId)
-            if crawlType == CrawlType.EVENT.value:
+            if crawlType == CrawlType.EVENT:
                 event=datasources.wikicfp.WikiCfpEvent()
                 event.fromDict(rawEvent)
                 batchEm.add(event)
                 title="? deleted: %r" %event.deleted if not 'title' in rawEvent else event.title
                 print("%06d: %s" % (eventId,title))
-            elif crawlType == CrawlType.SERIES.value:
+            elif crawlType == CrawlType.SERIES:
                 eventSeries=datasources.wikicfp.WikiCfpEventSeries()
                 pass
            
-        if crawlType == CrawlType.EVENT.value:    
+        if crawlType == CrawlType.EVENT:    
             batchEm.store(cacheFile=jsonFilepath)
         return jsonFilepath
             
@@ -488,7 +488,9 @@ USAGE
         # Process arguments
         args = parser.parse_args()
         wikiCfpScrape=WikiCfpScrape(debug=args.debug)
-        wikiCfpScrape.threadedCrawl(args.threads, args.startId, args.stopId,args.crawlType)
+        if not args.crawlType in CrawlType:
+            raise Exception(f"Invalid crawlType {args.crawlType}")
+        wikiCfpScrape.threadedCrawl(args.threads, args.startId, args.stopId,CrawlType[args.crawlType])
         
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
