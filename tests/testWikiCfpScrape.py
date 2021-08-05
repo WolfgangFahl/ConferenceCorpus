@@ -165,19 +165,13 @@ class TestWikiCFP(unittest.TestCase):
             wikiCfpScrape=WikiCfpScrape(jsondir=jsondir)
             limit=10
             for crawlType in [CrawlType.SERIES,CrawlType.EVENT]:
-                jsonFilePath=wikiCfpScrape.crawl(0, 1, limit,crawlType)
+                batchEm=wikiCfpScrape.crawl(0, 1, limit,crawlType)
+                jsonFilePath=batchEm.getCacheFile()
                 size=os.stat(jsonFilePath).st_size
-                print (f"JSON file for {crawlType.value} has size {size}")
+                if self.debug:
+                    print (f"JSON file for {crawlType.value} has size {size}")
                 self.assertTrue(size>1400)
-                if crawlType is crawlType.EVENT:
-                    batchEm=wikiCfpScrape.getEventManager(mode='json')
-                    batchEm.fromStore(cacheFile=jsonFilePath)
-                    self.assertEqual(len(batchEm.events.values()),limit)
-                inspect=False # if setting to True make sure tmp is on same filesystem
-                # see https://stackoverflow.com/questions/42392600/oserror-errno-18-invalid-cross-device-link
-                if inspect:
-                    tmpPath="/tmp/%s" % os.path.basename(jsonFilePath)
-                    Path(jsonFilePath).rename(tmpPath)
+                print (f"scraped {len(batchEm.getList())} {crawlType} records")
         except Exception as ex:
             self.handleError(ex)
             

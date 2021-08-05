@@ -198,6 +198,16 @@ class WikiCfpScrape(object):
         '''
         jsonFilePath=self.jsondir+"wikicfp_%s%06d-%06d.json" % (crawlType.value,startId,stopId)
         return jsonFilePath
+    
+    def getBatchEntityManager(self,startId:int,stopId:int,crawlType:CrawlType):
+        jsonFilepath=self.getJsonFileName(startId,stopId,crawlType)
+        config=EventStorage.getStorageConfig(debug=self.debug, mode="json")
+        config.cacheFile=jsonFilepath
+        if crawlType==CrawlType.EVENT:
+            batchEm=datasources.wikicfp.WikiCfpEventManager(config=config)
+        elif crawlType==CrawlType.SERIES:
+            batchEm=datasources.wikicfp.WikiCfpEventSeriesManager(config=config)
+        return batchEm
         
     def crawl(self,threadIndex,startId:int,stopId:int,crawlType:CrawlType):
         '''
@@ -206,13 +216,7 @@ class WikiCfpScrape(object):
         if startId <= stopId: step = +1
         else: step = -1
         print(f'crawling ({threadIndex}) WikiCFP {crawlType.value} from {startId} to {stopId}')
-        jsonFilepath=self.getJsonFileName(startId,stopId,crawlType)
-        config=EventStorage.getStorageConfig(debug=self.debug, mode="json")
-        config.cacheFile=jsonFilepath
-        if crawlType==CrawlType.EVENT:
-            batchEm=datasources.wikicfp.WikiCfpEventManager(config=config)
-        elif crawlType==CrawlType.SERIES:
-            batchEm=datasources.wikicfp.WikiCfpEventSeriesManager(config=config)
+        batchEm=self.getBatchEntityManager(startId, stopId, crawlType)
  
         # get all ids
         for eventId in range(int(startId), int(stopId+1), step):
@@ -222,17 +226,18 @@ class WikiCfpScrape(object):
                 event=datasources.wikicfp.WikiCfpEvent()
                 event.fromDict(rawEvent)
                 title="? deleted: %r" %event.deleted if not 'title' in rawEvent else event.title
-                print(f"{eventId:06d}: {title}")
-                entity=event
+                batchEm.getList().append(event)
             elif crawlType == CrawlType.SERIES:
                 eventSeries=datasources.wikicfp.WikiCfpEventSeries()
                 eventSeries.fromDict(rawEvent)
-                print(f"{eventId:06d}")
-                entity=eventSeries
-            batchEm.getList().append(entity)
+                title="?" if not 'title' in rawEvent else event.title
+                batchEm.getList().append(eventSeries)
+                
+            print(f"{eventId:06d}: {title}")
+           
            
         batchEm.store()
-        return jsonFilepath
+        return batchEm
             
     def threadedCrawl(self,threads,startId:int,stopId:int,crawlType:CrawlType):
         '''
@@ -448,10 +453,14 @@ class WikiCfpEventFetcher(object):
             rawEvent(dict): the event dictionary
             scrape(WebScrape): the webscrape object to be used for parsing
         '''
+        title=scrape.soup.find("title")
+        if title:
+            rawEvent["title"]=title.text.strip()
         dblpM,_text=scrape.findLinkForRegexp(r'http://dblp.uni-trier.de/db/(conf/[a-z0-9]+)/index.html')
         if dblpM:
             dblpSeriesId=dblpM.group(1)
             rawEvent['dblpSeriesId']=dblpSeriesId
+        
          
         pass
  
