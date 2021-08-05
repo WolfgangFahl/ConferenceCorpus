@@ -152,7 +152,7 @@ class EventBaseManager(EntityManager):
     common entity Manager for ConferenceCorpus
     '''
     
-    def __init__(self,name,entityName,entityPluralName:str,listName:str=None,clazz=None,sourceConfig=EventDataSourceConfig,primaryKey:str=None,config=None,handleInvalidListTypes=False,filterInvalidListTypes=False,debug=False,profile=True):
+    def __init__(self,name,entityName,entityPluralName:str,listName:str=None,clazz=None,sourceConfig:EventDataSourceConfig=None,primaryKey:str=None,config=None,handleInvalidListTypes=False,filterInvalidListTypes=False,debug=False,profile=True):
         '''
         Constructor
         
@@ -169,7 +169,10 @@ class EventBaseManager(EntityManager):
         self.profile=profile
         if config is None:
             config=EventStorage.getStorageConfig(debug=debug)
-        tableName=sourceConfig.getTableName(entityName)
+        if sourceConfig is not None:
+            tableName=sourceConfig.getTableName(entityName)
+        else:
+            tableName=entityName
         super().__init__(name, entityName, entityPluralName, listName, clazz, tableName, primaryKey, config, handleInvalidListTypes, filterInvalidListTypes, debug)
         
     def configure(self):
@@ -209,7 +212,7 @@ class EventSeriesManager(EventBaseManager):
     '''
     Event series list
     '''
-    def __init__(self,name:str,sourceConfig:EventDataSourceConfig,clazz=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
+    def __init__(self,name:str,sourceConfig:EventDataSourceConfig=None,clazz=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
         '''
         constructor 
         '''
@@ -221,7 +224,7 @@ class EventManager(EventBaseManager):
     Event entity list
     '''
     
-    def __init__(self,name:str,sourceConfig:EventDataSourceConfig,clazz=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
+    def __init__(self,name:str,sourceConfig:EventDataSourceConfig=None,clazz=None,primaryKey:str=None,config:StorageConfig=None,debug=False):
         '''
         constructor 
         '''
