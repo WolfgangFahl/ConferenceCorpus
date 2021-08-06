@@ -26,6 +26,7 @@ class TestStatistics(DataSourceTest):
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)
         showMarkup=False
+        showMarkup=True
         for name,query in qm.queriesByName.items():
             listOfDicts=lookup.getLod4Query(query.query)
             if showMarkup:

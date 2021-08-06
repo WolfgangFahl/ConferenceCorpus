@@ -79,5 +79,14 @@
         from event_orclone
         group by year
         order by year     
+'Crossref top 50 locations':
+    sql: |
+        select count(*),location 
+        from event_crossref 
+        where location is not null
+        group by location
+        order by  1 desc
+        limit 50
+
 
 
