@@ -4,7 +4,7 @@ Created on 2020-08-20
 @author: wf
 '''
 import unittest
-from datasources.wikicfpscrape import WikiCfpScrape, WikiCfpEventFetcher, CrawlType
+from datasources.wikicfpscrape import WikiCfpScrape, WikiCfpEventFetcher, CrawlType, CrawlBatch
 import os
 from collections import Counter
 import jsonpickle
@@ -148,29 +148,36 @@ class TestWikiCFP(unittest.TestCase):
             self.assertTrue(crawlType.urlPrefix.endswith("="))
     
     def handleError(self,ex):
+        '''
+        handle the given exception
+        
+        Args:
+            ex(Exception): the exception to handle
+        '''
         if self.wikiCFPDown and "timed out" in str(ex):
             print("WikiCFP is down and we can't do anything about it")
         else:
-            self.fail(f"{str(ex)}")
+            raise ex #self.fail(f"{str(ex)}")
 
     def testCrawlEvents(self):
         '''
         test crawling a few events and storing the result to a json file
         '''
-        jsondir=f"/tmp/wikicfp-crawl/"
+        jsondir=f"/tmp/wikicfp-crawl"
         if not os.path.exists(jsondir):
                     os.makedirs(jsondir)
         try: 
             wikiCfpScrape=WikiCfpScrape(jsondir=jsondir)
             limit=10
-            for crawlType in [CrawlType.SERIES,CrawlType.EVENT]:
-                batchEm=wikiCfpScrape.crawl(0, 1, limit,crawlType)
+            for crawlTypeValue in [CrawlType.SERIES.value,CrawlType.EVENT.value]:
+                batch=CrawlBatch(1, 1, limit,crawlTypeValue,None)
+                batchEm=wikiCfpScrape.crawl(batch)
                 jsonFilePath=batchEm.getCacheFile()
                 size=os.stat(jsonFilePath).st_size
                 if self.debug:
-                    print (f"JSON file for {crawlType.value} has size {size}")
+                    print (f"JSON file for {crawlTypeValue} has size {size}")
                 self.assertTrue(size>1400)
-                print (f"scraped {len(batchEm.getList())} {crawlType} records")
+                print (f"scraped {len(batchEm.getList())} {crawlTypeValue} records")
         except Exception as ex:
             self.handleError(ex)
             

@@ -1,0 +1,14 @@
+#!/bin/bash
+# WF 2020-08-21
+# Crawl WikiCFP and save to JSON
+python3 --version
+export PYTHONPATH="."
+target=$HOME/.conferencecorpus/wikicfp/crawl
+if [ ! -d $target ]
+then
+   mkdir -p $target
+fi
+for base in 0 1 2 3 4 5 6 7 8 9 10 11 12 13
+do
+  python3 datasources/wikicfpscrape.py --startId ${base}0000 --stopId ${base}9999 -t 10
+done

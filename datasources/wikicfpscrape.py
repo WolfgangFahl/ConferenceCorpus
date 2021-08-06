@@ -29,7 +29,6 @@ import time
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from lodstorage.jsonpicklemixin import JsonPickleMixin
-from lodstorage.storageconfig import StorageConfig
 import jsonpickle
 
 class CrawlType(Enum):
@@ -74,12 +73,64 @@ class CrawlType(Enum):
         '''
         valueMap=cls.valueMap()
         return value in valueMap
-     
+
+class CrawlBatch(object):
+    '''
+    describe a batch of pages to fetch metadata from
+    '''
+    
+    def __init__(self,threads:int,startId:int,stopId:int,crawlTypeValue:str,threadIndex=None,):
+        '''
+        construct me with the given number of threads, startId and stopId
+        
+        Args:
+           threads(int): number of threads to use
+           startId(int): id of the event to start crawling with
+           stopId(int): id of the event to stop crawling
+           crawlTypeValue(str): the type of crawling (Event or Series)
+           threadIndex(int): the index of this batch
+        '''
+        self.threads=threads
+        self.threadIndex=threadIndex
+        self.startId=startId
+        self.stopId=stopId     
+        if startId <= stopId: 
+            self.step = +1
+            self.total = stopId-startId+1
+        else: 
+            self.step = -1
+            self.total = startId-stopId+1
+        self.batchSize = self.total // threads
+        if not CrawlType.isValid(crawlTypeValue):
+            raise Exception(f"Invalid crawlType {crawlTypeValue}")
+        self.crawlType=CrawlType.valueMap()[crawlTypeValue]
+        
+    def split(self)->list:
+        '''
+        split me for my threads
+        '''
+        crawlBatches=[]
+        for threadIndex in range(self.threads):
+            s = self.startId + threadIndex * self.batchSize
+            e = s + self.batchSize-1
+            splitBatch=CrawlBatch(1,s, e,self.crawlType.value,threadIndex)
+            crawlBatches.append(splitBatch)
+        return crawlBatches
+      
+    
+    def __str__(self):
+        '''
+        get my string representation
+        Return
+            str: my string representation
+        '''
+        text=f"WikiCFP {self.crawlType.value} IDs {self.startId} - {self.stopId} ({self.threads} threads of {self.batchSize} IDs each)"
+        return text
+ 
 class WikiCfpScrape(object):
     '''
     support events from http://www.wikicfp.com/cfp/
     '''
-    
 
     def __init__(self,config=None,debug:bool=False,jsondir:str=None,limit=200000,batchSize=1000,showProgress=True):
         '''
@@ -102,7 +153,7 @@ class WikiCfpScrape(object):
             self.jsondir=jsondir
         else:
             cachePath=self.em.config.getCachePath()
-            self.jsondir=f"{cachePath}/wikicfp/"
+            self.jsondir=f"{cachePath}/wikicfp"
             if not os.path.exists(self.jsondir):
                     os.makedirs(self.jsondir)
         
@@ -192,34 +243,53 @@ class WikiCfpScrape(object):
         jsonFiles=sorted(glob.glob(f"{self.jsondir}/wikicfp_*.json"),key=lambda path:int(re.findall(r'\d+',path)[0]))
         return jsonFiles    
         
-    def getJsonFileName(self,startId,stopId,crawlType:CrawlType):
+    def getJsonFileName(self,crawlBatch):
         '''
-        get the JsonFileName for the given startId to stopId
+        get my the JsonFileName 
+        
+        Args:
+            crawlBatch(CrawlBatch): the batch to crawl):
+            
+        Return:
+            str: the json file name for this batch
         '''
-        jsonFilePath=self.jsondir+"wikicfp_%s%06d-%06d.json" % (crawlType.value,startId,stopId)
+        jsonFilePath=f"{self.jsondir}/wikicfp_{crawlBatch.crawlType.value}{crawlBatch.startId:06d}-{crawlBatch.stopId:06d}.json"
         return jsonFilePath
     
-    def getBatchEntityManager(self,startId:int,stopId:int,crawlType:CrawlType):
-        jsonFilepath=self.getJsonFileName(startId,stopId,crawlType)
+    def getBatchEntityManager(self,crawlBatch:CrawlBatch):
+        '''
+        get the batch Entity Manager for the given crawlBatch
+        
+        Args:
+            crawlBatch(CrawlBatch): the batch to crawl):
+            
+        Return:
+            EntityManager: either a Event or a Series Manager
+        '''
+        jsonFilepath=self.getJsonFileName(crawlBatch)
         config=EventStorage.getStorageConfig(debug=self.debug, mode="json")
         config.cacheFile=jsonFilepath
+        crawlType=crawlBatch.crawlType
         if crawlType==CrawlType.EVENT:
             batchEm=datasources.wikicfp.WikiCfpEventManager(config=config)
         elif crawlType==CrawlType.SERIES:
             batchEm=datasources.wikicfp.WikiCfpEventSeriesManager(config=config)
         return batchEm
         
-    def crawl(self,threadIndex,startId:int,stopId:int,crawlType:CrawlType):
+    def crawl(self,crawlBatch:CrawlBatch):
         '''
         see https://github.com/TIBHannover/confIDent-dataScraping/blob/master/wikicfp.py
+        
+        Args:
+            crawlBatch(CrawlBatch): the batch to crawl
         '''
-        if startId <= stopId: step = +1
-        else: step = -1
-        print(f'crawling ({threadIndex}) WikiCFP {crawlType.value} from {startId} to {stopId}')
-        batchEm=self.getBatchEntityManager(startId, stopId, crawlType)
+       
+        print(f'crawling {crawlBatch}')
+        batchEm=self.getBatchEntityManager(crawlBatch)
  
         # get all ids
-        for eventId in range(int(startId), int(stopId+1), step):
+        crawlType=crawlBatch.crawlType
+        for eventId in range(int(crawlBatch.startId), int(crawlBatch.stopId+1), crawlBatch.step):
             wEvent=WikiCfpEventFetcher(crawlType=crawlType)
             rawEvent=wEvent.fromEventId(eventId)
             if crawlType == CrawlType.EVENT:
@@ -239,34 +309,26 @@ class WikiCfpScrape(object):
         batchEm.store()
         return batchEm
             
-    def threadedCrawl(self,threads,startId:int,stopId:int,crawlType:CrawlType):
+    def threadedCrawl(self,crawlBatch:CrawlBatch):
         '''
         crawl with the given number of threads, startId and stopId
         
         Args:
-           threads(int): number of threads to use
-           startId(int): id of the event to start crawling with
-           stopId(int): id of the event to stop crawling
-           crawlType(CrawlType): the type of crawling (Event or Series)
+            crawlBatch(CrawlBatch): the batch to crawl
         '''
         # determine the eventId range for each threaded job
-        total = stopId-startId+1
-        batchSize = total / threads
         startTime=time.time()
         
-        msg=f'Crawling WikiCFP from {startId} - {stopId} with {threads} threads with batches of {batchSize} {crawlType} IDs each'
+        msg=f'Crawling {crawlBatch}'
         print(msg)
 
         # this list will contain all threads -> we can wait for all to finish at the end
         jobs = []
 
         # now start each thread with its id range and own filename
-        for threadIndex in range(threads):
-
-            s = startId + threadIndex * batchSize
-            e = s + batchSize-1
+        for crawlBatch in crawlBatch.split(): 
         
-            thread = threading.Thread(target = self.crawl, args=(threadIndex,s, e,crawlType))
+            thread = threading.Thread(target = self.crawl, args=(crawlBatch,))
             jobs.append(thread)
             
         for job in jobs:
@@ -277,7 +339,8 @@ class WikiCfpScrape(object):
             job.join()
 
         if self.debug:
-            print('crawling done after %5.1f s' % (time.time()-startTime))
+            elapsed=time.time()-startTime
+            print(f'crawling done after {elapsed:5.1f} s')
                
       
 class WikiCfpEventFetcher(object):
@@ -542,14 +605,14 @@ USAGE
         parser.add_argument('--startId', type=int, help='eventId to start crawling from', required=True)
         parser.add_argument('--stopId', type=int, help='eventId to stop crawling at', required=True)
         parser.add_argument('--crawlType',type=str,default="Event",help="The crawlType - Event or Series")
+        parser.add_argument('-p','--targetPath',type=str,help="targetPath (JSON directory) for crawl results")
         parser.add_argument('-t','--threads', type=int, help='number of threads to start', default=10)
 
         # Process arguments
         args = parser.parse_args()
-        wikiCfpScrape=WikiCfpScrape(debug=args.debug)
-        if not CrawlType.isValid(args.crawlType):
-            raise Exception(f"Invalid crawlType {args.crawlType}")
-        wikiCfpScrape.threadedCrawl(args.threads, args.startId, args.stopId,CrawlType.valueMap()[args.crawlType])
+        wikiCfpScrape=WikiCfpScrape(jsondir=args.targetPath,debug=args.debug)
+        crawlBatch=CrawlBatch(args.threads, args.startId, args.stopId,args.crawlType,None)
+        wikiCfpScrape.threadedCrawl(crawlBatch)
         
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
