@@ -219,7 +219,7 @@ class EventBaseManager(EntityManager):
         # limit csv fields to the fields defined in the samples
         if hasattr(self, 'getSamples') and callable(getattr(self, 'getSamples')):
             fields=LOD.getFields(self.getSamples())
-        csvString=CSV.toCSV(events, includeFields=fields, delim=separator)
+        csvString=CSV.toCSV(events, includeFields=fields, delimiter=separator)
         return csvString
     
     def fixRawEvents(self,listOfDicts:list,**kwArgs):
