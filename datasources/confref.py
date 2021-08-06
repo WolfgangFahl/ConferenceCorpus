@@ -49,6 +49,12 @@ class ConfrefEvent(Event):
         rawEvent["source"]="confref"
         pass
     
+    def fromDict(self,rawEvent:dict):
+        '''
+        get me from the given dict
+        '''
+        super().fromDict(rawEvent)
+    
 class ConfrefEventSeries(Event):
     '''
     a scientific event series derived from Confref

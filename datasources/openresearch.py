@@ -128,16 +128,6 @@ class OREventManager(EventManager):
             wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
         '''
         self.smwHandler.fromWikiFileManager(wikiFileManager)
-        
-    def fixRawEvents(self,listOfDicts:list,wikiUser:WikiUser=None):
-        '''
-        fix the given list of Dicts with raw Events
-        
-        Args: 
-            listOfDicts(list): the list of raw Events to fix
-        '''
-        for rawEvent in listOfDicts:
-            OREvent.fixRawEvent(rawEvent,wikiUser)
 
     def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False):
         '''
