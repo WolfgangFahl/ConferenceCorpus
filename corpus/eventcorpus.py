@@ -5,6 +5,7 @@ Created on 2021-04-16
 '''
 from corpus.event import EventManager, EventSeriesManager
 from corpus.config import EventDataSourceConfig            
+from quality.rating import RatingManager
 
 class EventDataSource(object):
     '''
@@ -36,6 +37,13 @@ class EventDataSource(object):
         self.eventManager.fromCache(force=forceUpdate)
         # TODO use same foreign key in all dataSources
         self.eventManager.linkSeriesAndEvent(self.eventSeriesManager,"inEventSeries")
+        
+    def rateAll(self,ratingManager:RatingManager):
+        '''
+        rate all events and series based on the given rating Manager
+        '''
+        self.eventManager.rateAll(ratingManager)
+        self.eventSeriesManager.rateAll(ratingManager)
         
 
 class EventCorpus(object):

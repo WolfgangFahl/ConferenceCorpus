@@ -1,30 +1,32 @@
 '''
-Created on 2021-07-31
+Created on 2021-08-07
 
 @author: wf
 '''
 import unittest
 from corpus.lookup import CorpusLookup
+from quality.rating import RatingManager
 from tests.datasourcetoolbox import DataSourceTest
 
-class TestWikiCFP(DataSourceTest):
+class TestRating(DataSourceTest):
     '''
-    test WikiCFP data source
+    test the rating handling
     '''
 
     def setUp(self):
         DataSourceTest.setUp(self)
         pass
 
-
-    def testWikiCFP(self):
+    def testRating(self):
         '''
-        test the WikiCFP lookup
+        test the rating
         '''
+        ratingManager=RatingManager()
         lookup=CorpusLookup(lookupIds=["wikicfp"])
         lookup.load()
         wikiCfpDataSource=lookup.getDataSource("wikicfp")
-        self.checkDataSource(wikiCfpDataSource,1,86000)
+        wikiCfpDataSource.rateAll(ratingManager)
+        ratingManager.store()
         pass
 
 

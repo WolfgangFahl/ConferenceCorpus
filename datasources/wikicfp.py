@@ -8,7 +8,7 @@ from corpus.event import EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 import datasources.wikicfpscrape
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
-
+from quality.rating import Rating, RatingType
 
 class WikiCfp(EventDataSource):
     '''
@@ -57,6 +57,12 @@ class WikiCfpEvent(Event):
             "year": 2008
         }]
         return samples
+    
+    def rate(self,rating:Rating):
+        '''
+        rate me
+        '''
+        rating.set(0, RatingType.ok, "")
     
     
 class WikiCfpEventManager(EventManager):

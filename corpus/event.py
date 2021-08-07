@@ -11,6 +11,8 @@ from lodstorage.jsonable import JSONAble
 from lodstorage.lod import LOD
 from lodstorage.sql import SQLDB
 from lodstorage.storageconfig import StorageConfig
+from quality.rating import RatingManager,Rating
+from corpus.eventrating import EventRating,EventSeriesRating
 
 class EventStorage:
     '''
@@ -201,6 +203,22 @@ class EventBaseManager(EntityManager):
         '''
         for record in listOfDicts:
             record[attr]=value
+            
+    def rateAll(self,ratingManager:RatingManager):
+        '''
+        rate all events and series based on the given rating Manager
+        '''
+        for entity in self.getList():
+            if hasattr(entity,"rate") and callable(entity.rate):
+                if isinstance(entity,Event):
+                    rating=EventRating(entity)
+                elif isinstance(entity,EventSeries):
+                    rating=EventSeriesRating(entity)
+                else:
+                    raise Exception(f"rateAll for unknown entity type {type(entity).__name__}")
+                entity.rate(rating)
+                ratingManager.ratings.append(rating)
+            
 
     def asCsv(self, separator:str=',', selectorCallback:Callable=None):
         """

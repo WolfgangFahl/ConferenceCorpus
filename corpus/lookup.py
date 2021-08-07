@@ -204,9 +204,9 @@ see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
         return plantUml
         
         
-__version__ = "0.0.10"
+__version__ = "0.0.17"
 __date__ = '2020-06-22'
-__updated__ = '2021-08-03'
+__updated__ = '2021-08-07'
 
 DEBUG = 1
 

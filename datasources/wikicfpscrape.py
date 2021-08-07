@@ -291,17 +291,35 @@ class WikiCfpScrape(object):
         crawlType=crawlBatch.crawlType
         for eventId in range(int(crawlBatch.startId), int(crawlBatch.stopId+1), crawlBatch.step):
             wEvent=WikiCfpEventFetcher(crawlType=crawlType)
-            rawEvent=wEvent.fromEventId(eventId)
-            if crawlType == CrawlType.EVENT:
-                event=datasources.wikicfp.WikiCfpEvent()
-                event.fromDict(rawEvent)
-                title="? deleted: %r" %event.deleted if not 'title' in rawEvent else event.title
-                batchEm.getList().append(event)
-            elif crawlType == CrawlType.SERIES:
-                eventSeries=datasources.wikicfp.WikiCfpEventSeries()
-                eventSeries.fromDict(rawEvent)
-                title="?" if not 'title' in rawEvent else eventSeries.title
-                batchEm.getList().append(eventSeries)
+            retry=1
+            maxRetries=3
+            retrievedResult=False
+            while not retrievedResult:
+                try:
+                    rawEvent=wEvent.fromEventId(eventId)
+                    if crawlType == CrawlType.EVENT:
+                        event=datasources.wikicfp.WikiCfpEvent()
+                        event.fromDict(rawEvent)
+                        title="? deleted: %r" %event.deleted if not 'title' in rawEvent else event.title
+                        batchEm.getList().append(event)
+                    elif crawlType == CrawlType.SERIES:
+                        eventSeries=datasources.wikicfp.WikiCfpEventSeries()
+                        eventSeries.fromDict(rawEvent)
+                        title="?" if not 'title' in rawEvent else eventSeries.title
+                        batchEm.getList().append(eventSeries)
+                    retrievedResult=True
+                except Exception as ex:
+                    if "HTTP Error 500" in str(ex):
+                        print(f"{eventId} inaccessible due to HTTP Error 500")
+                        retrievedResult=True
+                    elif "timed out" in str(ex):
+                        print(f"{eventId} access timed Out on retry attempt {retry}")
+                        retry+=1
+                        if retry>maxRetries:
+                            raise ex
+                    else:
+                        raise ex
+                    pass
                 
             print(f"{eventId:06d}: {title}")
            
