@@ -7,6 +7,7 @@ import unittest
 from corpus.lookup import CorpusLookup
 from quality.rating import RatingManager
 from tests.datasourcetoolbox import DataSourceTest
+import getpass
 
 class TestRating(DataSourceTest):
     '''
@@ -21,12 +22,15 @@ class TestRating(DataSourceTest):
         '''
         test the rating
         '''
+        # do not run this in CI
+        if getpass.getuser()!="wf":
+            return
         ratingManager=RatingManager()
         lookup=CorpusLookup(lookupIds=["wikicfp"])
         lookup.load()
         wikiCfpDataSource=lookup.getDataSource("wikicfp")
         wikiCfpDataSource.rateAll(ratingManager)
-        ratingManager.store()
+        #ratingManager.store()
         pass
 
 
