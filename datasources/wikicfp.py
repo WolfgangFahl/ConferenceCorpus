@@ -9,6 +9,7 @@ from lodstorage.storageconfig import StorageConfig
 import datasources.wikicfpscrape
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from quality.rating import Rating, RatingType
+from datetime import datetime
 
 class WikiCfp(EventDataSource):
     '''
@@ -38,19 +39,19 @@ class WikiCfpEvent(Event):
     def getSamples(cls):
         samples = [
         {
-            "Notification_Due": "2008-05-29",
-            "Submission_Deadline": "2008-04-15",
+            "Notification_Due": datetime.fromisoformat("2008-05-29"),
+            "Submission_Deadline": datetime.fromisoformat("2008-04-15"),
             "acronym": "SIGMAP 2008",
             "city": "Porto",
             "country": "Portugal",
             "deleted": False,
-            "endDate": "2008-07-29",
+            "endDate": datetime.fromisoformat("2008-07-29"),
             "eventType": "Conference",
             "homepage": "http://www.sigmap.org/SIGMAP2008/CallforPapers.html",
             "locality": "Poato, Portugal",
             "lookupAcronym": "SIGMAP 2008",
             "source": "wikicfp",
-            "startDate": "2008-07-26",
+            "startDate": datetime.fromisoformat("2008-07-26"),
             "title": "SIGMAP  2008 : International Conference on Signal Processing and Multimedia Applications",
             "url": "http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid=977",
             "wikiCFPId": 977,

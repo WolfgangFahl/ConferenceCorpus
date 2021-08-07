@@ -27,6 +27,7 @@ class TestStatistics(DataSourceTest):
         self.assertTrue(len(qm.queriesByName)>1)
         showMarkup=False
         #showMarkup=True
+        failCount=0
         for name,query in qm.queriesByName.items():
             try:
                 listOfDicts=lookup.getLod4Query(query.query)
@@ -39,6 +40,8 @@ class TestStatistics(DataSourceTest):
                     print(markup)
             except Exception as ex:
                 print (f"query: {query.query} failed:\n{ex}")
+                failCount+=1
+        self.assertEqual(0,failCount)
         pass
     
     
