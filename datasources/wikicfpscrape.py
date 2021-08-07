@@ -216,7 +216,7 @@ class WikiCfpScrape(object):
                 batchEm.fromStore(cacheFile=jsonFilePath)
                 for event in batchEm.getList():
                     event.source="wikicfp"
-                    if hasattr("event", "startDate"):
+                    if hasattr(event, "startDate"):
                         if event.startDate is not None:
                             event.year=event.startDate.year    
                     event.url=WikiCfpEventFetcher.getUrl(event.eventId)

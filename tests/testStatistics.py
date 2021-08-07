@@ -26,16 +26,19 @@ class TestStatistics(DataSourceTest):
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)
         showMarkup=False
-        showMarkup=True
+        #showMarkup=True
         for name,query in qm.queriesByName.items():
-            listOfDicts=lookup.getLod4Query(query.query)
-            if showMarkup:
-                markup=query.asWikiMarkup(listOfDicts)
-                print("== %s ==" % (name))
-                print("=== query ===")
-                print (query.asWikiSourceMarkup())
-                print("=== result ===")
-                print(markup)
+            try:
+                listOfDicts=lookup.getLod4Query(query.query)
+                if showMarkup:
+                    markup=query.asWikiMarkup(listOfDicts)
+                    print("== %s ==" % (name))
+                    print("=== query ===")
+                    print (query.asWikiSourceMarkup())
+                    print("=== result ===")
+                    print(markup)
+            except Exception as ex:
+                print (f"query: {query.query} failed:\n{ex}")
         pass
     
     
