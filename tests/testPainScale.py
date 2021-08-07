@@ -31,8 +31,14 @@ class TestPainScale(unittest.TestCase):
             url=PainScale.lookupPainImage(pain, size,asImageTag=False)
             imgTag=PainScale.lookupPainImage(pain, size,asImageTag=True)
             self.assertTrue(f"{size}px" in imgTag)
-            resource = urlopen(url)
-            content =  resource.read()
+            content=None
+            try:
+                resource = urlopen(url)
+                content =  resource.read()
+            except Exception as ex:
+                if self.debug:
+                    f"{url} - failed with {str(ex)}"
+            self.assertIsNotNone(content,f"{url}")
             imageSize=len(content)
             if self.debug:
                 print(f"pain {pain} image has size {imageSize}")

@@ -19,7 +19,7 @@ class PainScale(object):
         '''
         painImages = {
                       0: f"https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Pain_0_png_rendered.png/{size}px-Pain_0_png_rendered.png", 
-                      1: f"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Pain1_png_rendered.png/{size}px-Pain1_png_rendered.png",
+                      1: f"https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Pain_1_png_rendered.png/{size}px-Pain_1_png_rendered.png",
                       2: f"https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Pain_2_png_rendered.png/{size}px-Pain_2_png_rendered.png",
                       3: f"https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Pain_2_png_rendered.png/{size}px-Pain_2_png_rendered.png",
                       4: f"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Pain_3_png_rendered.png/{size}px-Pain_3_png_rendered.png",
