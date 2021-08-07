@@ -7,6 +7,7 @@ import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from datasources.crossref import Crossref,CrossrefEvent, CrossrefEventManager
+from lodstorage.lod import LOD
 
 class TestCrossRef(DataSourceTest):
     '''
@@ -26,7 +27,7 @@ class TestCrossRef(DataSourceTest):
         lookup=CorpusLookup(lookupIds=["crossref"])
         lookup.load(forceUpdate=False)
         crossRefDataSource=lookup.getDataSource("crossref")
-        self.checkDataSource(crossRefDataSource,0,40000)
+        _eventSeriesList,_eventList=self.checkDataSource(crossRefDataSource,0,40000,eventSample="SIGMIS CPR '06")
         pass
     
     def testFixUmlauts(self):

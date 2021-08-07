@@ -12,7 +12,8 @@ import re
 import glob
 import os
 import time
-import datetime
+from datetime import datetime
+
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 
 
@@ -70,6 +71,29 @@ class CrossrefEvent(Event):
     '''
     a scientific event derived from Crossref
     '''
+
+    @classmethod
+    def getSamples(cls):
+        samples = [
+            {
+                "acronym": "SIGMIS CPR '06",
+                "doi": "10.1145/1125170",
+                "endDate": datetime.fromisoformat("2006-04-15"),
+                "eventId": "10.1145/1125170",
+                "location": "Claremont, California, USA",
+                "month": 4,
+                "name": "the 2006 ACM SIGMIS CPR conference",
+                "number": "44",
+                "source": "crossref",
+                "sponsor": "SIGMIS, ACM Special Interest Group on Management Information Systems,ACM, Association for Computing Machinery",
+                "startDate": datetime.fromisoformat("2006-04-13"),
+                "theme": "Forty four years of computer personnel research: achievements, challenges & the future",
+                "title": "Proceedings of the 2006 ACM SIGMIS CPR conference on computer personnel research Forty four years of computer personnel research: achievements, challenges & the future - SIGMIS CPR '06",
+                "url": "https://api.crossref.org/v1/works/10.1145/1125170",
+                "year": 2006
+            }    
+        ]
+        return samples
 
     
 class CrossrefEventSeries(Event):

@@ -6,6 +6,7 @@ Created on 2021-07-29
 from unittest import TestCase
 from corpus.eventcorpus import EventDataSource
 import warnings
+from lodstorage.lod import LOD
 
 class DataSourceTest(TestCase):
     '''
@@ -29,7 +30,7 @@ class DataSourceTest(TestCase):
         pass    
         
         
-    def checkDataSource(self,eventDataSource:EventDataSource, expectedSeries:int,expectedEvents:int):
+    def checkDataSource(self,eventDataSource:EventDataSource, expectedSeries:int,expectedEvents:int,eventSample:str=None):
         '''
         check the given DataSource
         
@@ -58,3 +59,8 @@ class DataSourceTest(TestCase):
         self.assertTrue(len(esl)>=expectedSeries,msg)
         msg=f"found {len(el)} events"
         self.assertTrue(len(el)>=expectedEvents,msg)
+        eventsByAcronym,_dup=LOD.getLookup(el, "acronym")
+        if eventSample is not None:
+            event=eventsByAcronym[eventSample]
+            print (event.toJSON())
+        return esl,el
