@@ -89,7 +89,7 @@ class WikiCfpEventManager(EventManager):
         '''
         wikiCFP = datasources.wikicfpscrape.WikiCfpScrape()
         if not wikiCFP.em.isCached():
-            wikiCFP.cacheEvents()
+            wikiCFP.cacheEvents(clazz=WikiCfpEvent)
         else:
             wikiCFP.em.fromStore()
         lod = []

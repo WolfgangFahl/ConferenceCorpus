@@ -22,7 +22,7 @@ class TestWikiCFP(DataSourceTest):
         test the WikiCFP lookup
         '''
         lookup=CorpusLookup(lookupIds=["wikicfp"])
-        lookup.load()
+        lookup.load(forceUpdate=True)
         wikiCfpDataSource=lookup.getDataSource("wikicfp")
         self.checkDataSource(wikiCfpDataSource,1,86000)
         pass

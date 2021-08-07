@@ -17,7 +17,7 @@ Created on 2020-08-20
 """
 import datasources.wikicfp 
 from datasources.webscrape import WebScrape
-from corpus.event import EventStorage
+from corpus.event import EventStorage,EventManager
 import datetime
 from enum import Enum
 import glob
@@ -28,8 +28,9 @@ import threading
 import time
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
-from lodstorage.jsonpicklemixin import JsonPickleMixin
-import jsonpickle
+#from lodstorage.jsonpicklemixin import JsonPickleMixin
+from lodstorage.storageconfig import StorageConfig
+#import jsonpickle
 
 class CrawlType(Enum):
     '''
@@ -170,7 +171,7 @@ class WikiCfpScrape(object):
         em=datasources.wikicfp.WikiCfpEventManager(config=config)
         return em
     
-    def cacheEvents(self):
+    def cacheEvents(self,clazz):
         '''
         cache my events to my eventmanager
         '''
@@ -178,69 +179,66 @@ class WikiCfpScrape(object):
         if jsonEm.isCached():
             jsonEm.fromStore()
         else:    
-            self.crawlFilesToJson(jsonEm)
+            self.crawlFilesToJson(jsonEm,crawlType=CrawlType.EVENT,clazz=clazz)
         for event in jsonEm.events:
             self.em.events.append(event)
         self.em.store(limit=self.limit, batchSize=self.batchSize)    
         
-    def crawlFilesToJson(self,jsonEm):    
+    def crawlFilesToJson(self,jsonEm,crawlType:CrawlType,clazz,withStore=True):    
         '''
         convert the crawlFiles to Json
         
         Args:
-            jsonEm(EventManager): the JSON - storage based Eventmanager to use to collect the results
+            jsonEm(EventBaseManager): the JSON - storage based EventBaseManager to use to collect the results
+            crawlType(CrawlType): the CrawlType to work with
+            withStore(bool): True if the data should be stored after collecting
         '''
         # crawling is not done on startup but need to be done
         # in command line mode ... we just collect the json crawl result files here
         #self.crawl(startId=startId,stopId=stopId)
         startTime=time.time()
-        jsonFiles=self.jsonFiles()
+        jsonFiles=self.jsonFiles(crawlType)
         if len(jsonFiles)==0:
             if self.profile or self.debug:
                 print("No wikiCFP crawl json backups available")
                 
         else:
             for jsonFilePath in jsonFiles:
-                #batchEm=self.getEventManager(mode='jsonpickle')
+                config=StorageConfig.getJSON(debug=self.debug)
+                config.cacheFile=jsonFilePath
+                batchEm=EventManager(name=jsonFilePath,clazz=clazz,config=config)
                 # legacy mode -file were created before ORM Mode
                 # was available - TODO: make new files available in ORM mode with jsonable
-                jsonPickleEm=JsonPickleMixin.readJsonPickle(jsonFileName=jsonFilePath,extension='.json')
-                jsonPickleEvents=jsonPickleEm['events']
-                if self.showProgress:
-                    print("%4d: %s" % (len(jsonPickleEvents),jsonFilePath))
-                for rawEvent in jsonPickleEvents.values():
-                    event=datasources.wikicfp.WikiCfpEvent()
-                    if 'title' in rawEvent and rawEvent['title'] is not None:
-                        for field in rawEvent:
-                            value=rawEvent[field]
-                            # workaround:
-                            # check jsonpickle __reduce__ values
-                            if isinstance(value,dict):
-                                # we need something like
-                                # {"py/object": "datetime.datetime", "__reduce__": [{"py/type": "datetime.datetime"}, ["B+UHHwAAAAAAAA=="]]}
-                                jsonValue=str(value).replace("'", '"')
-                                dvalue=jsonpickle.decode(jsonValue)
-                                value=dvalue
-                            # make sure we ignore field like "py/object"
-                            if not "py/" in field:
-                                setattr(event,field,value)
-                        event.source="wikicfp"
-                        for field in ['startDate','endDate','locality','Submission_Deadline','Notification_Due','year']:
-                            if not field in rawEvent:
-                                setattr(event,field,None)
+                #jsonPickleEm=JsonPickleMixin.readJsonPickle(jsonFileName=jsonFilePath,extension='.json')
+                #jsonPickleEvents=jsonPickleEm['events']
+                #if self.showProgress:
+                #    print("%4d: %s" % (len(jsonPickleEvents),jsonFilePath))
+                batchEm.fromStore(cacheFile=jsonFilePath)
+                for event in batchEm.getList():
+                    event.source="wikicfp"
+                    if hasattr("event", "startDate"):
                         if event.startDate is not None:
-                            event.year=event.startDate.year
-                        event.url=WikiCfpEventFetcher.getUrl(event.wikiCFPId)
+                            event.year=event.startDate.year    
+                    event.url=WikiCfpEventFetcher.getUrl(event.eventId)
+                    if not event.deleted:
                         jsonEm.events.append(event)
             if self.profile:
-                print ("read %d events in %5.1f s" % (len(jsonEm.events),time.time()-startTime))
-            jsonEm.store(limit=self.limit,batchSize=self.batchSize)
+                elapsed=time.time()-startTime
+                print (f"read {len(jsonEm.events)} events in {elapsed:5.1f} s")
+            if withStore:
+                jsonEm.store(limit=self.limit,batchSize=self.batchSize)
         
-    def jsonFiles(self):  
+    def jsonFiles(self,crawlType:CrawlType)->list:  
         '''
         get the list of the json files that have my data
+        
+        Args:
+            crawlType(CrawlType): the tpe of the files
+            
+        Return:
+            list: a list of json file names
         '''
-        jsonFiles=sorted(glob.glob(f"{self.jsondir}/wikicfp_*.json"),key=lambda path:int(re.findall(r'\d+',path)[0]))
+        jsonFiles=sorted(glob.glob(f"{self.jsondir}/wikicfp_{crawlType.value}*.json"),key=lambda path:int(re.findall(r'\d+',path)[0]))
         return jsonFiles    
         
     def getJsonFileName(self,crawlBatch):

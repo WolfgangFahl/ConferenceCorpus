@@ -4,7 +4,8 @@ Created on 2020-08-20
 @author: wf
 '''
 import unittest
-from datasources.wikicfpscrape import WikiCfpScrape, WikiCfpEventFetcher, CrawlType, CrawlBatch
+from datasources.wikicfpscrape import WikiCfpScrape,WikiCfpEventFetcher, CrawlType, CrawlBatch
+from datasources.wikicfp import WikiCfpEvent
 import os
 from collections import Counter
 import jsonpickle
@@ -38,15 +39,30 @@ class TestWikiCFP(unittest.TestCase):
         for index,countT in enumerate(ordC.most_common(10)):
             code,count=countT
             print ("%d: %d %s -> %d" % (index,code,chr(code),count))
+            
+    def testCrawlFilesToJson(self):
+        '''
+        test getting the crawlFiles content
+        '''
+        wikiCfpScrape=WikiCfpScrape()
+        jsonEm=wikiCfpScrape.getEventManager(mode='json')
+        wikiCfpScrape.crawlFilesToJson(jsonEm,crawlType=CrawlType.EVENT,clazz=WikiCfpEvent,withStore=False)
+        entityList=jsonEm.getList()
+        self.assertTrue(len(entityList)>140000)
 
     def testCrawledJsonFiles(self):
         '''
         get the crawl files
         '''
         wikiCfpScrape=WikiCfpScrape()
-        crawlFiles=wikiCfpScrape.jsonFiles()
-        print ("found %d wikiCFP crawl files" % len(crawlFiles))
-        self.assertTrue(len(crawlFiles)>=70)
+        expected={
+            "Event": 140,
+            "Series": 2
+        }
+        for crawlType in CrawlType:
+            crawlFiles=wikiCfpScrape.jsonFiles(crawlType)
+            print (f"found %d wikiCFP {crawlType.value}crawl files" % len(crawlFiles))
+            self.assertTrue(len(crawlFiles)>=expected[crawlType.value])
         
     def testJsonPickleDateTime(self):
         '''

@@ -87,6 +87,13 @@
         group by location
         order by  1 desc
         limit 50
+'WikiCFP conference durations':
+    sql: |
+        select count(*),endDate-startdate+1 as duration from 
+        event_wikicfp
+        where endDate is not Null and startDate is not Null
+        group by duration
+        order by 2 
 
 
 

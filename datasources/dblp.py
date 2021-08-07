@@ -34,6 +34,28 @@ class DblpEvent(Event):
         super().__init__()
         pass
     
+    def asWikiMarkup(self)->str:
+        '''
+        Return:
+            my WikiMarkup
+        '''
+        markup=f"""{{{{Event
+|Acronym={self.acronym}
+|Title={self.title}
+|Series={self.series}
+}}}}"""
+#|Type=Symposium
+#|Start date=2020/03/22
+#|End date=2020/03/26
+#|Submission deadline=2019/09/03
+#|Homepage=http://ieeevr.org/2020/
+#|City=Atlanta
+#|Country=USA
+#}}
+        return markup
+       
+        
+    
     @staticmethod
     def fixRawEvent(rawEvent:dict):
         '''
@@ -80,7 +102,21 @@ class DblpEventSeries(EventSeries):
         '''constructor '''
         super().__init__()
         pass
-
+    
+    def asWikiMarkup(self):
+        '''
+        copy me to the given wiki
+        
+        see https://github.com/WolfgangFahl/ConferenceCorpus/issues/10
+        '''
+        markup=f"""{{{{Event series
+|Acronym=
+|Title=
+|DblpSeries={self.acronym}
+}}}}"""
+        #|WikiDataId=Q105456162
+        return markup
+        
 
 class DblpEventManager(EventManager):
     '''
@@ -94,7 +130,7 @@ class DblpEventManager(EventManager):
         '''
         Constructor
         '''
-        super(DblpEventManager, self).__init__(name="DblpEvents", sourceConfig=Dblp.sourceConfig, clazz=DblpEventSeries, config=config)
+        super(DblpEventManager, self).__init__(name="DblpEvents", sourceConfig=Dblp.sourceConfig, clazz=DblpEvent, config=config)
 
     pass
 
