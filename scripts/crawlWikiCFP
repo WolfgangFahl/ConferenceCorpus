@@ -8,25 +8,26 @@ if [ ! -d $target ]
 then
    mkdir -p $target
 fi
-#for base in {0..13..1}
-for base in {0..13..1}
+# loop over page batches of 1000
+for base in {0..140..1}
 do
-  baseDone="True"
-  for i in {0..9..1}
-  do
-    startId=$((base*10000+i*1000))
-    stopId=$((base*10000+i*1000+999))
-    jsonFile=$(printf "wikicfp_Event%06d-%06d.json" $startId $stopId)
-    if [ -f $target/$jsonFile ]
-    then
-      echo "$jsonFile ✅"
-    else
-      echo "$jsonFile ❌"
-      baseDone="False"
-    fi
-  done
-  if [ "$baseDone" = "False" ]
+  startId=$((base*1000))
+  stopId=$((base*1000+999))
+  jsonFileName=$(printf "wikicfp_Event%06d-%06d.json" $startId $stopId)
+  jsonFile="$target/$jsonFileName"
+  if [ -f "$jsonFile" ]
   then
-    python3 datasources/wikicfpscrape.py --startId ${base}0000 --stopId ${base}9999 -t 10 --targetPath $target
-  fi
+    echo "$jsonFileName ✅"
+    if [ $base -ge 140 ]
+    then
+      jq . $jsonFile
+    fi
+    else
+      echo "$jsonFileName ❌"
+      # immediately fetch the batch with one thread
+      python3 datasources/wikicfpscrape.py --startId ${startId} --stopId ${stopId} -t 1 --targetPath $target
+    fi
 done
+# fetch multithreaded
+# be polite and do not do this ...
+# python3 datasources/wikicfpscrape.py --startId ${base}0000 --stopId ${base}9999 -t 10 --targetPath $target
