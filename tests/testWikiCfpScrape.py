@@ -4,8 +4,8 @@ Created on 2020-08-20
 @author: wf
 '''
 import unittest
+from datasources.wikicfp import WikiCfp
 from datasources.wikicfpscrape import WikiCfpScrape,WikiCfpEventFetcher, CrawlType, CrawlBatch
-from datasources.wikicfp import WikiCfpEvent
 import os
 from collections import Counter
 import jsonpickle
@@ -44,11 +44,16 @@ class TestWikiCFP(unittest.TestCase):
         '''
         test getting the crawlFiles content
         '''
-        wikiCfpScrape=WikiCfpScrape()
-        jsonEm=wikiCfpScrape.getEventManager(mode='json')
-        wikiCfpScrape.crawlFilesToJson(jsonEm,crawlType=CrawlType.EVENT,clazz=WikiCfpEvent,withStore=False)
-        entityList=jsonEm.getList()
-        self.assertTrue(len(entityList)>88000)
+        wikiCfp=WikiCfp()
+        wikiCfpScrape=wikiCfp.wikiCfpScrape
+        expected={
+            "Event": 88000,
+            "Series": 1000
+        }
+        for crawlType in CrawlType:
+            jsonEm=wikiCfpScrape.crawlFilesToJson(crawlType=crawlType,withStore=False)
+            entityList=jsonEm.getList()
+            self.assertTrue(len(entityList)>expected[crawlType.value])
 
     def testCrawledJsonFiles(self):
         '''
@@ -81,15 +86,13 @@ class TestWikiCFP(unittest.TestCase):
         '''
         test event handling from WikiCFP
         '''
-        wikiCFP=WikiCfpScrape()
-        if not wikiCFP.em.isCached():
-            wikiCFP.cacheEvents()
-        else:
-            wikiCFP.em.fromStore()
-        self.assertTrue(wikiCFP.em.isCached())
-        self.assertTrue(len(wikiCFP.em.events)>80000)
+        wikiCfp=WikiCfp()
+        wikiCfpScrape=wikiCfp.wikiCfpScrape
+        jsonEm=wikiCfpScrape.cacheToJsonManager(CrawlType.EVENT)
+        self.assertTrue(jsonEm.isCached())
+        self.assertTrue(len(jsonEm.events)>80000)
         names=[]
-        for event in wikiCFP.em.events:
+        for event in jsonEm.events:
             names.append(event.locality)
         self.printDelimiterCount(names)
 

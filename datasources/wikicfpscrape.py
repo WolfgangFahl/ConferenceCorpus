@@ -15,9 +15,8 @@ Created on 2020-08-20
   @copyright:  2020-2021 TIB Hannover, Wolfgang Fahl. All rights reserved.
 
 """
-import datasources.wikicfp 
 from datasources.webscrape import WebScrape
-from corpus.event import EventStorage,EventManager
+from corpus.event import EventStorage,EventManager, EventSeriesManager
 import datetime
 from enum import Enum
 import glob
@@ -30,6 +29,7 @@ from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 #from lodstorage.jsonpicklemixin import JsonPickleMixin
 from lodstorage.storageconfig import StorageConfig
+import datasources
 #import jsonpickle
 
 class CrawlType(Enum):
@@ -133,7 +133,7 @@ class WikiCfpScrape(object):
     support events from http://www.wikicfp.com/cfp/
     '''
 
-    def __init__(self,config=None,debug:bool=False,jsondir:str=None,limit=200000,batchSize=1000,showProgress=True):
+    def __init__(self,jsonEventManager,jsonEventSeriesManager,profile:bool=True,debug:bool=False,jsondir:str=None,limit=200000,batchSize=1000,showProgress=True):
         '''
         Constructor
         
@@ -148,66 +148,79 @@ class WikiCfpScrape(object):
         self.limit=limit
         self.batchSize=batchSize
         self.showProgress=showProgress
-        self.em=self.getEventManager(config)
-        self.profile=self.em.config.profile
+        self.jsonEventManager=jsonEventManager
+        self.jsonEventSeriesManager=jsonEventSeriesManager
+        self.jsonManagers={
+            "Event": jsonEventManager,
+            "Series": jsonEventSeriesManager
+        }
+        self.profile=profile
         if jsondir is not None:
             self.jsondir=jsondir
         else:
-            cachePath=self.em.config.getCachePath()
+            cachePath=self.jsonEventManager.config.getCachePath()
             self.jsondir=f"{cachePath}/wikicfp"
             if not os.path.exists(self.jsondir):
                     os.makedirs(self.jsondir)
         
-    def getEventManager(self,config=None,mode='sql'):
+    def getManager(self,crawlType:CrawlType):
         '''
-        get an EventManager
+        get the manager for the given crawlType
         
         Args:
-            config(StorageConfig): the storage configuration to use
-            mode(string): the storage mode to use e.g. "json" - will select a config based on mode if config is None
+           crawlType(CrawlType) the manager for the given CrawlType
         '''
-        if config is None:
-            config=EventStorage.getStorageConfig(self.debug, mode)
-        em=datasources.wikicfp.WikiCfpEventManager(config=config)
-        return em
+        manager=self.jsonManagers[crawlType.value]
+        return manager
     
-    def cacheEvents(self,clazz):
+    def cacheToJsonManager(self,crawlType:CrawlType):
         '''
-        cache my events to my eventmanager
+        cache the crawlType entities to my json manager for that crawlType
+        
+        Args:
+            crawlType(CrawlType): the CrawlType to work with
+            
+        Return:
+            EntityBasemanager: the entityManager
+            
         '''
-        jsonEm=self.getEventManager(mode='json')
+        jsonEm=self.getManager(crawlType)
         if jsonEm.isCached():
             jsonEm.fromStore()
         else:    
-            self.crawlFilesToJson(jsonEm,crawlType=CrawlType.EVENT,clazz=clazz)
-        for event in jsonEm.events:
-            self.em.events.append(event)
-        self.em.store(limit=self.limit, batchSize=self.batchSize)    
+            self.crawlFilesToJson(jsonEm,crawlType=crawlType,clazz=jsonEm.clazz)
+        return jsonEm    
         
-    def crawlFilesToJson(self,jsonEm,crawlType:CrawlType,clazz,withStore=True):    
+    def crawlFilesToJson(self,crawlType:CrawlType,withStore=True):    
         '''
         convert the crawlFiles to Json
         
         Args:
-            jsonEm(EventBaseManager): the JSON - storage based EventBaseManager to use to collect the results
             crawlType(CrawlType): the CrawlType to work with
             withStore(bool): True if the data should be stored after collecting
+        
+        Return:
+            jsonEm(EventBaseManager): the JSON - storage based EventBaseManager to use to collect the results
         '''
         # crawling is not done on startup but need to be done
         # in command line mode ... we just collect the json crawl result files here
         #self.crawl(startId=startId,stopId=stopId)
+        jsonEm=self.getManager(crawlType)
+        entityList=jsonEm.getList()
         startTime=time.time()
         jsonFiles=self.jsonFiles(crawlType)
         if len(jsonFiles)==0:
             if self.profile or self.debug:
                 print(f"No wikiCFP crawl json backups for {crawlType.value} available")
-                
         else:
             # loop over all crawled files
             for jsonFilePath in jsonFiles:
                 config=StorageConfig.getJSON(debug=self.debug)
                 config.cacheFile=jsonFilePath
-                batchEm=EventManager(name=jsonFilePath,clazz=clazz,config=config)
+                if crawlType==crawlType.EVENT:
+                    batchEm=EventManager(name=jsonFilePath,clazz=jsonEm.clazz,config=config)
+                else:
+                    batchEm=EventSeriesManager(name=jsonFilePath,clazz=jsonEm.clazz,config=config)
                 # legacy mode -file were created before ORM Mode
                 # was available - TODO: make new files available in ORM mode with jsonable
                 #jsonPickleEm=JsonPickleMixin.readJsonPickle(jsonFileName=jsonFilePath,extension='.json')
@@ -215,19 +228,22 @@ class WikiCfpScrape(object):
                 #if self.showProgress:
                 #    print("%4d: %s" % (len(jsonPickleEvents),jsonFilePath))
                 batchEm.fromStore(cacheFile=jsonFilePath)
-                for event in batchEm.getList():
-                    event.source="wikicfp"
-                    if hasattr(event, "startDate"):
-                        if event.startDate is not None:
-                            event.year=event.startDate.year    
-                    event.url=WikiCfpEventFetcher.getUrl(event.eventId)
-                    if not event.deleted:
-                        jsonEm.events.append(event)
+                for entity in batchEm.getList():
+                    # TODO should this be done later in WikiCfpEvent?
+                    entity.source="wikicfp"
+                    if hasattr(entity, "startDate"):
+                        if entity.startDate is not None:
+                            entity.year=entity.startDate.year 
+                    if isinstance(entity,datasources.wikicfp.WikiCfpEvent):   
+                        entity.url=WikiCfpEventFetcher.getUrl(entity.eventId)
+                    if not entity.deleted:
+                        entityList.append(entity)
             if self.profile:
                 elapsed=time.time()-startTime
-                print (f"read {len(jsonEm.events)} events in {elapsed:5.1f} s")
+                print (f"read {len(entityList)} {crawlType.value} records in {elapsed:5.1f} s")
             if withStore:
                 jsonEm.store(limit=self.limit,batchSize=self.batchSize)
+        return jsonEm
         
     def jsonFiles(self,crawlType:CrawlType)->list:  
         '''
@@ -627,7 +643,10 @@ USAGE
 
         # Process arguments
         args = parser.parse_args()
-        wikiCfpScrape=WikiCfpScrape(jsondir=args.targetPath,debug=args.debug)
+        wikiCfp=datasources.wikicfp.WikiCfp()
+        wikiCfpScrape=wikiCfp.wikiCfpScrape
+        wikiCfpScrape.jsondir=args.targetPath
+        wikiCfpScrape.debug=args.debug
         crawlBatch=CrawlBatch(args.threads, args.startId, args.stopId,args.crawlType,None)
         wikiCfpScrape.threadedCrawl(crawlBatch)
         

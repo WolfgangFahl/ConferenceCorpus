@@ -4,7 +4,7 @@ Created on 2021-07-31
 @author: wf
 '''
 
-from corpus.event import EventSeriesManager, EventSeries, Event, EventManager
+from corpus.event import EventStorage,EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 import datasources.wikicfpscrape
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
@@ -17,17 +17,33 @@ class WikiCfp(EventDataSource):
     '''
     sourceConfig = EventDataSourceConfig(lookupId="wikicfp", name="WikiCFP", url='http://www.wikicfp.com', title='WikiCFP', tableSuffix="wikicfp")
     
-    def __init__(self):
+    def __init__(self,debug=False):
         '''
         constructor
         '''
         super().__init__(WikiCfpEventManager(), WikiCfpEventSeriesManager(), WikiCfp.sourceConfig)
-
+        self.debug=debug
+        config=EventStorage.getStorageConfig(mode='json')
+        jsonEventCache=WikiCfpEventManager(config=config)
+        jsonEventSeriesCache=WikiCfpEventSeriesManager(config=config)
+        self.wikiCfpScrape=datasources.wikicfpscrape.WikiCfpScrape(jsonEventCache,jsonEventSeriesCache)
         
 class WikiCfpEventSeries(EventSeries):
     '''
     event series derived from WikiCFP
     '''
+    
+    @classmethod
+    def getSamples(cls):
+        samples = [
+            {
+                "dblpSeriesId": "conf/aaai",
+                "seriesId": "3",
+                "title": "AAAI: National Conference on Artificial Intelligence 2022 2021 2020 ...",
+                "wikiCfpId": 3
+            }
+        ]
+        return samples
     
     
 class WikiCfpEvent(Event):
@@ -88,13 +104,9 @@ class WikiCfpEventManager(EventManager):
         '''
         get my list of dicts
         '''
-        wikiCFP = datasources.wikicfpscrape.WikiCfpScrape()
-        if not wikiCFP.em.isCached():
-            wikiCFP.cacheEvents(clazz=WikiCfpEvent)
-        else:
-            wikiCFP.em.fromStore()
+        jsonEm=self.wikicfpScrape.cacheToJsonManager(datasources.wikicfpscrape.CrawlType.EVENT)
         lod = []
-        for event in wikiCFP.em.events:
+        for event in jsonEm.events:
             lod.append(event.__dict__)
         return lod    
 
@@ -120,11 +132,8 @@ class WikiCfpEventSeriesManager(EventSeriesManager):
         '''
         get my list of dicts
         '''
-        lod = [{
-            "acronym": "ESWC",
-            "wikiCfpId": 933,
-            "title": "Extended Semantic Web Conference"
-        }]
-        # TODO implement
-        # return an empty list for the time being
-        return lod
+        jsonEm=self.wikicfpScrape.cacheToJsonManager(datasources.wikicfpscrape.CrawlType.SERIES)
+        lod = []
+        for event in jsonEm.events:
+            lod.append(event.__dict__)
+        return lod    
