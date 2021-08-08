@@ -218,7 +218,7 @@ class CrossrefEventManager(EventManager):
             if len(datetuple) == 3:
                 # a fully specified date
                 year, month, day = datetuple
-                dt = datetime.datetime(year=year, month=month, day=day)
+                dt = datetime(year=year, month=month, day=day)
                 date = dt.date()
                 rawEvent[f"{key}Date"] = date
             elif len(datetuple) == 2:
