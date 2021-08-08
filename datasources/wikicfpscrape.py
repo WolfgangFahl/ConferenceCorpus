@@ -200,9 +200,10 @@ class WikiCfpScrape(object):
         jsonFiles=self.jsonFiles(crawlType)
         if len(jsonFiles)==0:
             if self.profile or self.debug:
-                print("No wikiCFP crawl json backups available")
+                print(f"No wikiCFP crawl json backups for {crawlType.value} available")
                 
         else:
+            # loop over all crawled files
             for jsonFilePath in jsonFiles:
                 config=StorageConfig.getJSON(debug=self.debug)
                 config.cacheFile=jsonFilePath

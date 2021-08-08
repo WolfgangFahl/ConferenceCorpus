@@ -48,7 +48,7 @@ class TestWikiCFP(unittest.TestCase):
         jsonEm=wikiCfpScrape.getEventManager(mode='json')
         wikiCfpScrape.crawlFilesToJson(jsonEm,crawlType=CrawlType.EVENT,clazz=WikiCfpEvent,withStore=False)
         entityList=jsonEm.getList()
-        self.assertTrue(len(entityList)>880000)
+        self.assertTrue(len(entityList)>88000)
 
     def testCrawledJsonFiles(self):
         '''
