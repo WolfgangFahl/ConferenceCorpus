@@ -1,7 +1,6 @@
 """
 Created on 2020-08-20
 
-
   script to read event metadata from http://wikicfp.com
   
   use: python3 wikicfp.py [startId] [stopId] [threads]
@@ -611,7 +610,7 @@ def main(argv=None): # IGNORE:C0111
     program_version = "v%s" % __version__
     program_build_date = str(__updated__)
     program_version_message = '%%(prog)s %s (%s)' % (program_version, program_build_date)
-    program_shortdesc = __import__('__main__').__doc__.split("\n")[1]
+    program_shortdesc = "script to read event metadata from http://wikicfp.com"
     user_name="Wolfgang Fahl"
     program_license = '''%s
 
