@@ -10,6 +10,7 @@ import corpus.datasources.wikicfpscrape
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from corpus.quality.rating import Rating, RatingType
 from datetime import datetime
+from corpus.datasources import wikicfpscrape
 
 class WikiCfp(EventDataSource):
     '''
@@ -27,24 +28,6 @@ class WikiCfp(EventDataSource):
         jsonEventCache=WikiCfpEventManager(config=config)
         jsonEventSeriesCache=WikiCfpEventSeriesManager(config=config)
         self.wikiCfpScrape=corpus.datasources.wikicfpscrape.WikiCfpScrape(jsonEventCache,jsonEventSeriesCache)
-        
-class WikiCfpEventSeries(EventSeries):
-    '''
-    event series derived from WikiCFP
-    '''
-    
-    @classmethod
-    def getSamples(cls):
-        samples = [
-            {
-                "dblpSeriesId": "conf/aaai",
-                "seriesId": "3",
-                "title": "AAAI: National Conference on Artificial Intelligence 2022 2021 2020 ...",
-                "wikiCfpId": 3
-            }
-        ]
-        return samples
-    
     
 class WikiCfpEvent(Event):
     '''
@@ -75,11 +58,66 @@ class WikiCfpEvent(Event):
         }]
         return samples
     
+    @staticmethod
+    def postProcessLodRecord(rawEvent):
+        '''
+        postProcess the given rawEvent
+        
+        Args:
+            rawEvent(dict): the record to post process
+        '''
+        if not "url" in rawEvent:
+            crawlType=wikicfpscrape.CrawlType.EVENT
+            eventId=rawEvent["eventId"]
+            rawEvent["url"]=f"{crawlType.urlPrefix}{eventId}"
+    
     def rate(self,rating:Rating):
         '''
         rate me
+        
+        Args:
+            rating(Rating): the rating to modify
         '''
         rating.set(0, RatingType.ok, "")
+        
+class WikiCfpEventSeries(EventSeries):
+    '''
+    event series derived from WikiCFP
+    '''
+    
+    @classmethod
+    def getSamples(cls):
+        samples = [
+            {
+                "dblpSeriesId": "conf/aaai",
+                "seriesId": "3",
+                "title": "AAAI: National Conference on Artificial Intelligence 2022 2021 2020 ...",
+                "wikiCfpId": 3
+            }
+        ]
+        return samples
+    
+    @staticmethod
+    def postProcessLodRecord(rawEvent):
+        '''
+        postProcess the given rawEvent
+        
+        Args:
+            rawEvent(dict): the record to post process
+        '''
+        if not "url" in rawEvent:
+            crawlType=wikicfpscrape.CrawlType.SERIES
+            seriesId=rawEvent["seriesId"]
+            rawEvent["url"]=f"{crawlType.urlPrefix}{seriesId}"
+        if "title" in rawEvent:
+            title=rawEvent["title"]
+            if title:
+                if ":" in title:
+                    rawEvent["acronym"]=title.split(":")[0]
+                suffix="2022 2021 2020 ..."
+                if title.endswith(suffix):
+                    title=title.replace(suffix,"")
+            rawEvent["title"]=title
     
     
 class WikiCfpEventManager(EventManager):
@@ -109,6 +147,7 @@ class WikiCfpEventManager(EventManager):
             jsonEm=self.dataSource.wikiCfpScrape.cacheToJsonManager(corpus.datasources.wikicfpscrape.CrawlType.EVENT) 
             for event in jsonEm.events:
                 lod.append(event.__dict__)
+            self.postProcessLodRecords(lod)
         return lod    
 
  
@@ -138,4 +177,5 @@ class WikiCfpEventSeriesManager(EventSeriesManager):
             jsonEm=self.dataSource.wikiCfpScrape.cacheToJsonManager(corpus.datasources.wikicfpscrape.CrawlType.SERIES)
             for series in jsonEm.series:
                 lod.append(series.__dict__)
+            self.postProcessLodRecords(lod)
         return lod    

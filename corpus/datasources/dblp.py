@@ -57,7 +57,7 @@ class DblpEvent(Event):
         
     
     @staticmethod
-    def fixRawEvent(rawEvent:dict):
+    def postProcessLodRecord(rawEvent:dict):
         '''
         fix the given raw Event
         
@@ -160,8 +160,7 @@ class DblpEventManager(EventManager):
         order by series,year"""
         listOfDicts = self.sqlDb.query(query)
         self.setAllAttr(listOfDicts, "source", "dblp")
-        for rawEvent in listOfDicts:
-            DblpEvent.fixRawEvent(rawEvent)
+        self.postProcessLodRecords(listOfDicts)
         return listOfDicts
 
 
@@ -208,4 +207,5 @@ class DblpEventSeriesManager(EventSeriesManager):
         order by 2 desc"""
         listOfDicts = self.sqlDb.query(query)
         self.setAllAttr(listOfDicts, "source", "dblp")
+        self.postProcessLodRecords(listOfDicts)
         return listOfDicts

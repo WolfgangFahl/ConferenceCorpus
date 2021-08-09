@@ -28,7 +28,7 @@ class ConfrefEvent(Event):
     '''
     
     @staticmethod
-    def fixRawEvent(rawEvent:dict):
+    def postProcessLodRecord(rawEvent:dict):
         '''
         fix the given raw Event
         
@@ -41,8 +41,9 @@ class ConfrefEvent(Event):
                 value=html.unescape(value)
                 rawEvent[key]=value
         eventId=rawEvent.pop('id')
-        area=rawEvent.pop('area')
-        confSeries=rawEvent.pop('confSeries')
+        # TODO handle area and confSeries
+        _area=rawEvent.pop('area')
+        _confSeries=rawEvent.pop('confSeries')
         rawEvent['eventId']=eventId
         rawEvent['url']=f'http://portal.confref.org/list/{eventId}'        
         rawEvent['title']=rawEvent.pop('name')
@@ -90,8 +91,8 @@ class ConfrefEventManager(EventManager):
             rawEvents=json.load(jsonFile)
         lod=[]
         for rawEvent in rawEvents:
-            ConfrefEvent.fixRawEvent(rawEvent)
             lod.append(rawEvent)
+        self.postProcessLodRecords(lod)
         return lod
         
 class ConfrefEventSeriesManager(EventSeriesManager):

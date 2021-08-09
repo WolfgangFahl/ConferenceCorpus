@@ -35,7 +35,7 @@ class WikidataEvent(Event):
     '''
     
     @staticmethod
-    def fixRawEvent(rawEvent:dict):
+    def postProcessLodRecord(rawEvent:dict):
         '''
         fix the given raw Event
         
@@ -156,9 +156,6 @@ WHERE
         sparql=SPARQL(endpoint)
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
-        self.setAllAttr(listOfDicts,"source","dblp")
-        for rawEvent in listOfDicts:
-            WikidataEvent.fixRawEvent(rawEvent)
         return listOfDicts
     
 class WikidataEventSeriesManager(EventSeriesManager):

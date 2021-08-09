@@ -228,9 +228,7 @@ class WikiCfpScrape(object):
                     entity.source="wikicfp"
                     if hasattr(entity, "startDate"):
                         if entity.startDate is not None:
-                            entity.year=entity.startDate.year 
-                    if isinstance(entity,wcfp.WikiCfpEvent):   
-                        entity.url=WikiCfpEventFetcher.getUrl(entity.eventId)
+                            entity.year=entity.startDate.year
                     if not entity.deleted:
                         entityList.append(entity)
             if self.profile:
@@ -548,14 +546,11 @@ class WikiCfpEventFetcher(object):
             scrape(WebScrape): the webscrape object to be used for parsing
         '''
         title=scrape.soup.find("title")
-        if title:
-            rawEvent["title"]=title.text.strip()
+        rawEvent["title"]=title.text.strip()
         dblpM,_text=scrape.findLinkForRegexp(r'http://dblp.uni-trier.de/db/(conf/[a-z0-9]+)/index.html')
         if dblpM:
             dblpSeriesId=dblpM.group(1)
             rawEvent['dblpSeriesId']=dblpSeriesId
-        
-         
         pass
  
     
@@ -581,6 +576,7 @@ class WikiCfpEventFetcher(object):
             rawEvent['eventId']=f"{cfpId}" 
         elif self.crawlType.value is CrawlType.SERIES.value:
             rawEvent['seriesId']=f"{cfpId}" 
+        rawEvent['url']=url
         rawEvent['wikiCfpId']=cfpId
         rawEvent['deleted']=False
         scrape=WebScrape(debug=self.debug,timeout=self.timeout)
@@ -593,9 +589,9 @@ class WikiCfpEventFetcher(object):
             self.rawEventSeriesFromWebScrape(rawEvent,scrape)
         return rawEvent
     
-__version__ = 0.3
+__version__ = 0.4
 __date__ = '2020-06-22'
-__updated__ = '2021-07-31'    
+__updated__ = '2021-08-09'    
 
 DEBUG = 1
 

@@ -141,8 +141,7 @@ class OREventManager(EventManager):
             wikiuser=self.wikiUser
         lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
         self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
-        
-        self.fixRawEvents(lod,wikiUser=wikiuser)
+        self.postProcessLodRecords(lod,wikiUser=wikiuser)
         return lod
 
     def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
@@ -154,7 +153,7 @@ class OREventManager(EventManager):
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         # TODO set source more specific
         self.setAllAttr(lod,"source","or")
-        self.fixRawEvents(lod,wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser)
+        self.postProcessLodRecords(lod,wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser)
         return lod
 
 
@@ -289,7 +288,7 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
         return samplesWikiSon
     
     @staticmethod
-    def fixRawEvent(rawEvent:dict,wikiUser=None):
+    def postProcessLodRecord(rawEvent:dict,wikiUser=None):
         '''
         fix the given raw Event
         

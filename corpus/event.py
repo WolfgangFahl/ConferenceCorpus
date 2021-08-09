@@ -240,16 +240,16 @@ class EventBaseManager(EntityManager):
         csvString=CSV.toCSV(events, includeFields=fields, delimiter=separator)
         return csvString
     
-    def fixRawEvents(self,listOfDicts:list,**kwArgs):
+    def postProcessLodRecords(self,listOfDicts:list,**kwArgs):
         '''
-        fix the given list of Dicts with raw Events
+        post process the given list of Dicts with raw Events
         
         Args: 
             listOfDicts(list): the list of raw Events to fix
         '''
-        for rawEvent in listOfDicts:
-            if hasattr(self.clazz,"fixRawEvent") and callable(self.clazz.fixRawEvent): 
-                self.clazz.fixRawEvent(rawEvent,**kwArgs)
+        if hasattr(self.clazz,"postProcessLodRecord") and callable(self.clazz.postProcessLodRecord): 
+            for rawEvent in listOfDicts:
+                self.clazz.postProcessLodRecord(rawEvent,**kwArgs)
     
 class EventSeriesManager(EventBaseManager):
     '''
