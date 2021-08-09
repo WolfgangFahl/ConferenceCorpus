@@ -10,6 +10,7 @@ import os
 from collections import Counter
 import jsonpickle
 from datetime import datetime
+import corpus.datasources.wikicfpscrape
 
 class TestWikiCFP(unittest.TestCase):
     '''
@@ -167,6 +168,10 @@ class TestWikiCFP(unittest.TestCase):
             if self.debug:
                 print(crawlType.urlPrefix)
             self.assertTrue(crawlType.urlPrefix.endswith("="))
+            crawlBatch=CrawlBatch(1,0,1000,crawlTypeValue=crawlType.value)
+            bCrawlType=crawlBatch.crawlType
+            self.assertTrue(bCrawlType==crawlType)
+            self.assertTrue(bCrawlType is crawlType)
     
     def handleError(self,ex):
         '''
@@ -179,14 +184,18 @@ class TestWikiCFP(unittest.TestCase):
             print("WikiCFP is down and we can't do anything about it")
         else:
             raise ex #self.fail(f"{str(ex)}")
-
+    
+    def getTempJsonDir(self)->str:
+        jsondir=f"/tmp/wikicfp-crawl"
+        if not os.path.exists(jsondir):
+                    os.makedirs(jsondir)
+        return jsondir        
+            
     def testCrawlEvents(self):
         '''
         test crawling a few events and storing the result to a json file
         '''
-        jsondir=f"/tmp/wikicfp-crawl"
-        if not os.path.exists(jsondir):
-                    os.makedirs(jsondir)
+        jsondir=self.getTempJsonDir()
         try: 
             wikicfp=WikiCfp()
             wikiCfpScrape=wikicfp.wikiCfpScrape
@@ -204,6 +213,14 @@ class TestWikiCFP(unittest.TestCase):
         except Exception as ex:
             self.handleError(ex)
             
+    def testCrawlEventsViaCommandLine(self):
+        '''
+        test crawling via commandline
+        '''
+        jsondir=self.getTempJsonDir()
+        for crawlType in [CrawlType.SERIES]:
+            args=["--startId", "0", "--stopId", "10","-t", "1", "--targetPath",jsondir,"--crawlType",crawlType.value]
+            corpus.datasources.wikicfpscrape.main(args)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
