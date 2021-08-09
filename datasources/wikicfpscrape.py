@@ -188,7 +188,7 @@ class WikiCfpScrape(object):
         if jsonEm.isCached():
             jsonEm.fromStore()
         else:    
-            self.crawlFilesToJson(jsonEm,crawlType=crawlType,clazz=jsonEm.clazz)
+            self.crawlFilesToJson(crawlType=crawlType,withStore=True)
         return jsonEm    
         
     def crawlFilesToJson(self,crawlType:CrawlType,withStore=True):    
