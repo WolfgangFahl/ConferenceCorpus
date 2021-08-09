@@ -104,10 +104,11 @@ class WikiCfpEventManager(EventManager):
         '''
         get my list of dicts
         '''
-        jsonEm=self.wikicfpScrape.cacheToJsonManager(datasources.wikicfpscrape.CrawlType.EVENT)
         lod = []
-        for event in jsonEm.events:
-            lod.append(event.__dict__)
+        if  hasattr(self, "datasource"):
+            jsonEm=self.wikicfpScrape.cacheToJsonManager(datasources.wikicfpscrape.CrawlType.EVENT) 
+            for event in jsonEm.events:
+                lod.append(event.__dict__)
         return lod    
 
  
@@ -132,8 +133,9 @@ class WikiCfpEventSeriesManager(EventSeriesManager):
         '''
         get my list of dicts
         '''
-        jsonEm=self.wikicfpScrape.cacheToJsonManager(datasources.wikicfpscrape.CrawlType.SERIES)
         lod = []
-        for event in jsonEm.events:
-            lod.append(event.__dict__)
+        if  hasattr(self, "datasource"):
+            jsonEm=self.datasource.wikicfpScrape.cacheToJsonManager(datasources.wikicfpscrape.CrawlType.SERIES)
+            for event in jsonEm.events:
+                lod.append(event.__dict__)
         return lod    

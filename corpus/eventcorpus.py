@@ -23,8 +23,12 @@ class EventDataSource(object):
         '''
         self.sourceConfig=sourceConfig
         self.name=self.sourceConfig.name
+        
         self.eventManager=eventManager
+        self.eventManager.dataSource=self
+        
         self.eventSeriesManager=eventSeriesManager
+        self.eventSeriesManager.dataSource=self
         pass
         
     def load(self,forceUpdate=False):

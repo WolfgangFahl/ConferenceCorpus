@@ -59,7 +59,8 @@ class TestWikiCFP(unittest.TestCase):
         '''
         get the crawl files
         '''
-        wikiCfpScrape=WikiCfpScrape()
+        wikiCfp=WikiCfp()
+        wikiCfpScrape=wikiCfp.wikiCfpScrape
         expected={
             "Event": 140,
             "Series": 2
@@ -93,7 +94,8 @@ class TestWikiCFP(unittest.TestCase):
         self.assertTrue(len(jsonEm.events)>80000)
         names=[]
         for event in jsonEm.events:
-            names.append(event.locality)
+            if hasattr(event, "locality"):
+                names.append(event.locality)
         self.printDelimiterCount(names)
 
         pass
@@ -186,7 +188,9 @@ class TestWikiCFP(unittest.TestCase):
         if not os.path.exists(jsondir):
                     os.makedirs(jsondir)
         try: 
-            wikiCfpScrape=WikiCfpScrape(jsondir=jsondir)
+            wikicfp=WikiCfp()
+            wikiCfpScrape=wikicfp.wikiCfpScrape
+            wikiCfpScrape.jsondir=jsondir
             limit=10
             for crawlTypeValue in [CrawlType.SERIES.value,CrawlType.EVENT.value]:
                 batch=CrawlBatch(1, 1, limit,crawlTypeValue,None)
