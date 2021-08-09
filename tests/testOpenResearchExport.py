@@ -27,18 +27,19 @@ class TestOpenResearchExport(DataSourceTest):
         # do not run this in CI
         if getpass.getuser()!="wf":
             return
-        acronym='qurator'
         lookup=CorpusLookup(lookupIds=["dblp"])
         lookup.load(forceUpdate=False)
         dblpDataSource=lookup.getDataSource("dblp")
         seriesByAcronym,_dup=dblpDataSource.eventSeriesManager.getLookup("acronym")
-        eventSeries=seriesByAcronym[acronym]
-        print(eventSeries.asWikiMarkup())
-        eventBySeries=dblpDataSource.eventManager.getLookup("series",withDuplicates=True)
-        events=eventBySeries[acronym]
-        for event in events:
-            print(event.asWikiMarkup())
-        pass
+    
+        for acronym in ['seke','qurator']:
+            eventSeries=seriesByAcronym[acronym]
+            print(eventSeries.asWikiMarkup())
+            eventBySeries=dblpDataSource.eventManager.getLookup("series",withDuplicates=True)
+            events=eventBySeries[acronym]
+            for event in events:
+                print(event.asWikiMarkup())
+            pass
 
 
 if __name__ == "__main__":

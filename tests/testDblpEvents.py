@@ -7,6 +7,7 @@ import unittest
 from tests.testDblpXml import TestDblp
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
+import getpass
 
 class TestDblpEvents(DataSourceTest):
     '''
@@ -15,8 +16,9 @@ class TestDblpEvents(DataSourceTest):
  
     def setUp(self):
         '''
+        setup 
         '''
-        self.mock=TestDblp.mock
+        self.mock=False if getpass.getuser()=="wf" else TestDblp.mock 
         DataSourceTest.setUp(self)
         pass
     
@@ -25,7 +27,7 @@ class TestDblpEvents(DataSourceTest):
         callback to configure the corpus lookup
         '''
         dblpDataSource=lookup.getDataSource("dblp")
-        dblpXml=TestDblp.getMockedDblp(debug=self.debug)
+        dblpXml=TestDblp.getMockedDblp(mock=self.mock,debug=self.debug)
         dblpDataSource.eventManager.dblpXml=dblpXml
         dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         
@@ -35,11 +37,8 @@ class TestDblpEvents(DataSourceTest):
         test getting the conference series and events from dblp xml dump
         '''
         lookup=CorpusLookup(lookupIds=["dblp"],configure=self.configureCorpusLookup)
-        lookup.load(forceUpdate=False)
+        lookup.load(forceUpdate=True)
         dblpDataSource=lookup.getDataSource("dblp")
-        dblpXml=TestDblp.getMockedDblp(debug=self.debug)
-        dblpDataSource.eventManager.dblpXml=dblpXml
-        dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         self.checkDataSource(dblpDataSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
 
 
