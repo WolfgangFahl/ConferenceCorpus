@@ -7,6 +7,7 @@ from corpus.event import Event,EventSeries,EventManager,EventSeriesManager
 from lodstorage.storageconfig import StorageConfig
 from lodstorage.sql import SQLDB
 import html
+import re
 import os
 import json
 from corpus.eventcorpus import EventDataSourceConfig,EventDataSource
@@ -73,7 +74,9 @@ class ConfrefEvent(Event):
             Confref.htmlUnEscapeDict(_confSeries)
             dblpSeriesId=_confSeries["dblpId"]
             if dblpSeriesId is not None:
-                dblpSeriesId=dblpSeriesId.replace("https://dblp.org/db/","")
+                m=re.match("https://dblp.org/db/(.*)/",dblpSeriesId) 
+                if m:
+                    dblpSeriesId=m.group(1)
             rawEvent['dblpSeriesId']=dblpSeriesId
             rawEvent['seriesId']=_confSeries["id"]
             rawEvent['seriesTitle']=_confSeries["name"]   
