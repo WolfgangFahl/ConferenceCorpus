@@ -4,8 +4,8 @@ Created on 2021-07-31
 @author: wf
 '''
 import unittest
-from datasources.webscrape import WebScrape
-from datasources.wikicfpscrape import CrawlType
+from corpus.datasources.webscrape import WebScrape
+from corpus.datasources.wikicfpscrape import CrawlType
 
 class TestWebScrape(unittest.TestCase):
     '''

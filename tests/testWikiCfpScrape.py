@@ -4,8 +4,8 @@ Created on 2020-08-20
 @author: wf
 '''
 import unittest
-from datasources.wikicfp import WikiCfp
-from datasources.wikicfpscrape import WikiCfpScrape,WikiCfpEventFetcher, CrawlType, CrawlBatch
+from corpus.datasources.wikicfp import WikiCfp
+from corpus.datasources.wikicfpscrape import WikiCfpScrape,WikiCfpEventFetcher, CrawlType, CrawlBatch
 import os
 from collections import Counter
 import jsonpickle

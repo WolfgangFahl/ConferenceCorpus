@@ -5,7 +5,6 @@ Created on 2021-08-07
 '''
 
 import unittest
-from tests.testDblpXml import TestDblp
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 import getpass
@@ -33,8 +32,8 @@ class TestOpenResearchExport(DataSourceTest):
         lookup.load(forceUpdate=False)
         dblpDataSource=lookup.getDataSource("dblp")
         seriesByAcronym,_dup=dblpDataSource.eventSeriesManager.getLookup("acronym")
-        series=seriesByAcronym[acronym]
-        print(series.asWikiMarkup())
+        eventSeries=seriesByAcronym[acronym]
+        print(eventSeries.asWikiMarkup())
         eventBySeries=dblpDataSource.eventManager.getLookup("series",withDuplicates=True)
         events=eventBySeries[acronym]
         for event in events:

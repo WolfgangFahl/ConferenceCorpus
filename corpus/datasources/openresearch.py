@@ -8,7 +8,7 @@ from wikifile.wikiFileManager import WikiFileManager
 
 from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
 from corpus.eventcorpus import EventCorpus,EventDataSource,EventDataSourceConfig
-from smw.topic import SMWEntity, SMWEntityList
+from corpus.smw.topic import SMWEntity, SMWEntityList
 
 class OR(EventDataSource):
     '''

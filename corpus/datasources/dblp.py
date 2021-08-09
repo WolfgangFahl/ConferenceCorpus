@@ -5,7 +5,7 @@ Created on 2021-07-28
 '''
 from corpus.event import EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
-from datasources.dblpxml import DblpXml
+from corpus.datasources.dblpxml import DblpXml
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 
 

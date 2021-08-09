@@ -5,7 +5,7 @@ Created on 2021-01-25
 '''
 import unittest
 
-from datasources.dblpxml import DblpXml
+from corpus.datasources.dblpxml import DblpXml
 from lodstorage.schema import SchemaManager
 from datetime import datetime
 import os

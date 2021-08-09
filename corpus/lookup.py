@@ -6,12 +6,12 @@ Created on 2021-07-30
 from corpus.event import EventStorage
 from corpus.eventcorpus import EventCorpus, EventDataSource
 
-from datasources.confref import Confref
-from datasources.crossref import Crossref
-from datasources.dblp import Dblp
-from datasources.wikidata import Wikidata
-from datasources.openresearch import OR
-from datasources.wikicfp import WikiCfp
+from corpus.datasources.confref import Confref
+from corpus.datasources.crossref import Crossref
+from corpus.datasources.dblp import Dblp
+from corpus.datasources.wikidata import Wikidata
+from corpus.datasources.openresearch import OR
+from corpus.datasources.wikicfp import WikiCfp
 
 from lodstorage.uml import UML
 from wikibot.wikiuser import WikiUser
