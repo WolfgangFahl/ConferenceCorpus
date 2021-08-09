@@ -3,7 +3,7 @@ Created on 2021-08-07
 
 @author: wf
 '''
-from quality.rating import EntityRating
+from corpus.quality.rating import EntityRating
 
 class EventRating(EntityRating):
     '''

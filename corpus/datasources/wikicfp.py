@@ -6,9 +6,9 @@ Created on 2021-07-31
 
 from corpus.event import EventStorage,EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
-import datasources.wikicfpscrape
+import corpus.datasources.wikicfpscrape
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
-from quality.rating import Rating, RatingType
+from corpus.quality.rating import Rating, RatingType
 from datetime import datetime
 
 class WikiCfp(EventDataSource):
@@ -26,7 +26,7 @@ class WikiCfp(EventDataSource):
         config=EventStorage.getStorageConfig(mode='json')
         jsonEventCache=WikiCfpEventManager(config=config)
         jsonEventSeriesCache=WikiCfpEventSeriesManager(config=config)
-        self.wikiCfpScrape=datasources.wikicfpscrape.WikiCfpScrape(jsonEventCache,jsonEventSeriesCache)
+        self.wikiCfpScrape=corpus.datasources.wikicfpscrape.WikiCfpScrape(jsonEventCache,jsonEventSeriesCache)
         
 class WikiCfpEventSeries(EventSeries):
     '''
@@ -106,7 +106,7 @@ class WikiCfpEventManager(EventManager):
         '''
         lod = []
         if  hasattr(self, "dataSource"):
-            jsonEm=self.dataSource.wikiCfpScrape.cacheToJsonManager(datasources.wikicfpscrape.CrawlType.EVENT) 
+            jsonEm=self.dataSource.wikiCfpScrape.cacheToJsonManager(corpus.datasources.wikicfpscrape.CrawlType.EVENT) 
             for event in jsonEm.events:
                 lod.append(event.__dict__)
         return lod    
@@ -135,7 +135,7 @@ class WikiCfpEventSeriesManager(EventSeriesManager):
         '''
         lod = []
         if  hasattr(self, "dataSource"):
-            jsonEm=self.dataSource.wikiCfpScrape.cacheToJsonManager(datasources.wikicfpscrape.CrawlType.SERIES)
+            jsonEm=self.dataSource.wikiCfpScrape.cacheToJsonManager(corpus.datasources.wikicfpscrape.CrawlType.SERIES)
             for series in jsonEm.series:
                 lod.append(series.__dict__)
         return lod    

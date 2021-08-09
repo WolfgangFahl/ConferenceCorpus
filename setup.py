@@ -33,7 +33,7 @@ setup(name='ConferenceCorpus',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9'
       ],
-      packages=['smw','corpus','datasources','quality'],
+      packages=['corpus'],
       install_requires=[
           'pylodstorage>=0.0.64',
           'python-dateutil',

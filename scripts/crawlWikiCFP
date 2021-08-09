@@ -8,26 +8,44 @@ if [ ! -d $target ]
 then
    mkdir -p $target
 fi
-# loop over page batches of 1000
-for base in {0..140..1}
-do
-  startId=$((base*1000))
-  stopId=$((base*1000+999))
-  jsonFileName=$(printf "wikicfp_Event%06d-%06d.json" $startId $stopId)
-  jsonFile="$target/$jsonFileName"
-  if [ -f "$jsonFile" ]
-  then
-    echo "$jsonFileName ✅"
-    if [ $base -ge 140 ]
+
+
+#
+# crawl the given range of batches
+# for the given crawlType
+#
+# params
+#   #1: base start e.g. 0
+#   #2: baseend e.g. 141
+#   #3: crawlType e.g. Event / Series
+crawlBatches() {
+  local l_basestart="$1"
+  local l_baseend="$2"
+  local l_crawlType="$3"
+  # loop over page batches of 1000
+  for (( base = ${l_basestart}; base <= ${l_baseend}; base++))
+  do
+    startId=$((base*1000))
+    stopId=$((base*1000+999))
+    jsonFileName=$(printf "wikicfp_%s%06d-%06d.json" $l_crawlType $startId $stopId)
+    jsonFile="$target/$jsonFileName"
+    if [ -f "$jsonFile" ]
     then
-      jq . $jsonFile
-    fi
+      echo "$jsonFileName ✅"
+      if [ $base -ge $l_baseend ]
+      then
+        jq . $jsonFile
+      fi
     else
       echo "$jsonFileName ❌"
       # immediately fetch the batch with one thread
-      python3 datasources/wikicfpscrape.py --startId ${startId} --stopId ${stopId} -t 1 --targetPath $target
+      python3 corpus/datasources/wikicfpscrape.py --startId ${startId} --stopId ${stopId} --crawlType $l_crawlType -t 1 --targetPath $target
     fi
-done
+  done
+}
+
+crawlBatches 0 4 Series
+#crawlBatches 0 141 Event
 # fetch multithreaded
 # be polite and do not do this ...
 # python3 datasources/wikicfpscrape.py --startId ${base}0000 --stopId ${base}9999 -t 10 --targetPath $target

@@ -4,7 +4,7 @@ Created on 06.08.2021
 @author: wf
 '''
 import unittest
-from quality.painscale import PainScale
+from corpus.quality.painscale import PainScale
 from urllib.request import urlopen
 
 

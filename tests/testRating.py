@@ -5,7 +5,7 @@ Created on 2021-08-07
 '''
 import unittest
 from corpus.lookup import CorpusLookup
-from quality.rating import RatingManager
+from corpus.quality.rating import RatingManager
 from tests.datasourcetoolbox import DataSourceTest
 import getpass
 

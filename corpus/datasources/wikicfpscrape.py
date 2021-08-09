@@ -15,7 +15,7 @@ Created on 2020-08-20
   @copyright:  2020-2021 TIB Hannover, Wolfgang Fahl. All rights reserved.
 
 """
-from datasources.webscrape import WebScrape
+from corpus.datasources.webscrape import WebScrape
 from corpus.event import EventStorage,EventManager, EventSeriesManager
 import datetime
 from enum import Enum
@@ -29,7 +29,7 @@ from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 #from lodstorage.jsonpicklemixin import JsonPickleMixin
 from lodstorage.storageconfig import StorageConfig
-import datasources
+import corpus.datasources.wikicfp as wcfp
 #import jsonpickle
 
 class CrawlType(Enum):
@@ -234,7 +234,7 @@ class WikiCfpScrape(object):
                     if hasattr(entity, "startDate"):
                         if entity.startDate is not None:
                             entity.year=entity.startDate.year 
-                    if isinstance(entity,datasources.wikicfp.WikiCfpEvent):   
+                    if isinstance(entity,wcfp.WikiCfpEvent):   
                         entity.url=WikiCfpEventFetcher.getUrl(entity.eventId)
                     if not entity.deleted:
                         entityList.append(entity)
@@ -286,9 +286,11 @@ class WikiCfpScrape(object):
         config.cacheFile=jsonFilepath
         crawlType=crawlBatch.crawlType
         if crawlType==CrawlType.EVENT:
-            batchEm=datasources.wikicfp.WikiCfpEventManager(config=config)
+            batchEm=wcfp.WikiCfpEventManager(config=config)
         elif crawlType==CrawlType.SERIES:
-            batchEm=datasources.wikicfp.WikiCfpEventSeriesManager(config=config)
+            batchEm=wcfp.WikiCfpEventSeriesManager(config=config)
+        else:
+            raise Exception(f"Invalid crawlType {crawlType}")
         return batchEm
         
     def crawl(self,crawlBatch:CrawlBatch):
@@ -313,12 +315,12 @@ class WikiCfpScrape(object):
                 try:
                     rawEvent=wEvent.fromEventId(eventId)
                     if crawlType == CrawlType.EVENT:
-                        event=datasources.wikicfp.WikiCfpEvent()
+                        event=wcfp.WikiCfpEvent()
                         event.fromDict(rawEvent)
                         title="? deleted: %r" %event.deleted if not 'title' in rawEvent else event.title
                         batchEm.getList().append(event)
                     elif crawlType == CrawlType.SERIES:
-                        eventSeries=datasources.wikicfp.WikiCfpEventSeries()
+                        eventSeries=wcfp.WikiCfpEventSeries()
                         eventSeries.fromDict(rawEvent)
                         title="?" if not 'title' in rawEvent else eventSeries.title
                         batchEm.getList().append(eventSeries)
@@ -643,7 +645,7 @@ USAGE
 
         # Process arguments
         args = parser.parse_args()
-        wikiCfp=datasources.wikicfp.WikiCfp()
+        wikiCfp=wcfp.WikiCfp()
         wikiCfpScrape=wikiCfp.wikiCfpScrape
         wikiCfpScrape.jsondir=args.targetPath
         wikiCfpScrape.debug=args.debug

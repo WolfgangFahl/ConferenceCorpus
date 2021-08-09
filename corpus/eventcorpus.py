@@ -5,7 +5,7 @@ Created on 2021-04-16
 '''
 from corpus.event import EventManager, EventSeriesManager
 from corpus.config import EventDataSourceConfig            
-from quality.rating import RatingManager
+from corpus.quality.rating import RatingManager
 
 class EventDataSource(object):
     '''

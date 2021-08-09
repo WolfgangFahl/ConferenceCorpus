@@ -11,7 +11,7 @@ from lodstorage.jsonable import JSONAble
 from lodstorage.lod import LOD
 from lodstorage.sql import SQLDB
 from lodstorage.storageconfig import StorageConfig
-from quality.rating import RatingManager,Rating
+from corpus.quality.rating import RatingManager,Rating
 from corpus.eventrating import EventRating,EventSeriesRating
 
 class EventStorage:
