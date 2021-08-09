@@ -42,9 +42,9 @@ class CrawlType(Enum):
     @property
     def urlPrefix(self):
         baseUrl="http://www.wikicfp.com/cfp"
-        if self is CrawlType.EVENT:
+        if self.value is CrawlType.EVENT.value:
             url= f"{baseUrl}/servlet/event.showcfp?eventid="
-        elif self is CrawlType.SERIES:
+        elif self.value is CrawlType.SERIES.value:
             url= f"{baseUrl}/program?id="
         return url
     
@@ -213,9 +213,9 @@ class WikiCfpScrape(object):
             for jsonFilePath in jsonFiles:
                 config=StorageConfig.getJSON(debug=self.debug)
                 config.cacheFile=jsonFilePath
-                if crawlType is CrawlType.EVENT:
+                if crawlType.value is CrawlType.EVENT.value:
                     batchEm=EventManager(name=jsonFilePath,clazz=jsonEm.clazz,config=config)
-                elif crawlType is CrawlType.SERIES:
+                elif crawlType.value is CrawlType.SERIES.value:
                     batchEm=EventSeriesManager(name=jsonFilePath,clazz=jsonEm.clazz,config=config)
                 # legacy mode -file were created before ORM Mode
                 # was available - TODO: make new files available in ORM mode with jsonable
@@ -282,9 +282,9 @@ class WikiCfpScrape(object):
         config.cacheFile=jsonFilepath
         crawlType=crawlBatch.crawlType
         print(f"CrawlBatch has crawlType {type(crawlType)}{crawlType}/{crawlType.value}")
-        if crawlType is CrawlType.EVENT:
+        if crawlType.value is CrawlType.EVENT.value:
             batchEm=wcfp.WikiCfpEventManager(config=config)
-        elif crawlType is CrawlType.SERIES:
+        elif crawlType.value is CrawlType.SERIES.value:
             batchEm=wcfp.WikiCfpEventSeriesManager(config=config)
         else:
             raise Exception(f"Invalid crawlType {crawlType}")
@@ -311,12 +311,12 @@ class WikiCfpScrape(object):
             while not retrievedResult:
                 try:
                     rawEvent=wEvent.fromEventId(eventId)
-                    if crawlType is CrawlType.EVENT:
+                    if crawlType.value is CrawlType.EVENT.value:
                         event=wcfp.WikiCfpEvent()
                         event.fromDict(rawEvent)
                         title="? deleted: %r" %event.deleted if not 'title' in rawEvent else event.title
                         batchEm.getList().append(event)
-                    elif crawlType is CrawlType.SERIES:
+                    elif crawlType.value is CrawlType.SERIES.value:
                         eventSeries=wcfp.WikiCfpEventSeries()
                         eventSeries.fromDict(rawEvent)
                         title="?" if not 'title' in rawEvent else eventSeries.title
@@ -578,9 +578,9 @@ class WikiCfpEventFetcher(object):
         else:
             cfpId=int(m.group(1))
         rawEvent={}
-        if self.crawlType is CrawlType.EVENT:
+        if self.crawlType.value is CrawlType.EVENT.value:
             rawEvent['eventId']=f"{cfpId}" 
-        elif self.crawlType is CrawlType.SERIES:
+        elif self.crawlType.value is CrawlType.SERIES.value:
             rawEvent['seriesId']=f"{cfpId}" 
         rawEvent['wikiCfpId']=cfpId
         rawEvent['deleted']=False
@@ -588,7 +588,7 @@ class WikiCfpEventFetcher(object):
         triples=scrape.parseRDFa(url)
         if scrape.err:
             raise Exception(f"fromUrl {url} failed {scrape.err}")
-        if self.crawlType is CrawlType.EVENT:
+        if self.crawlType.value is CrawlType.EVENT.value:
             self.rawEventFromWebScrape(rawEvent, triples, scrape)
         else:
             self.rawEventSeriesFromWebScrape(rawEvent,scrape)
