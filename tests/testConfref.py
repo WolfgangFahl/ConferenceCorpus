@@ -25,7 +25,7 @@ class TestConfRef(DataSourceTest):
         lookup=CorpusLookup(lookupIds=["confref"])
         lookup.load(forceUpdate=False)
         crossRefDataSource=lookup.getDataSource("confref")
-        self.checkDataSource(crossRefDataSource,0,37900)
+        self.checkDataSource(crossRefDataSource,4800,37900)
         pass
     
 

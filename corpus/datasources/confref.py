@@ -5,6 +5,7 @@ Created on 2020-07-11
 '''
 from corpus.event import Event,EventSeries,EventManager,EventSeriesManager
 from lodstorage.storageconfig import StorageConfig
+from lodstorage.sql import SQLDB
 import html
 import os
 import json
@@ -22,6 +23,20 @@ class Confref(EventDataSource):
         '''
         super().__init__(ConfrefEventManager(),ConfrefEventSeriesManager(),Confref.sourceConfig)
 
+    @staticmethod
+    def htmlUnEscapeDict(htmlDict:dict):
+        '''
+        perform html unescaping on the given dict
+        
+        Args:
+            htmlDict(dict): the dictionary to unescape
+        '''
+        for key in htmlDict:
+            value=htmlDict[key]
+            if value is not None and type(value) is str:
+                value=html.unescape(value)
+                htmlDict[key]=value
+                
 class ConfrefEvent(Event):
     '''
     a scientific event derived from Confref
@@ -35,15 +50,35 @@ class ConfrefEvent(Event):
         Args:
             rawEvent(dict): the raw event record to fix
         '''
-        for key in rawEvent:
-            value=rawEvent[key]
-            if value is not None and type(value) is str:
-                value=html.unescape(value)
-                rawEvent[key]=value
+        Confref.htmlUnEscapeDict(rawEvent)
+        
         eventId=rawEvent.pop('id')
         # TODO handle area and confSeries
         _area=rawEvent.pop('area')
+        if isinstance(_area,dict):
+            Confref.htmlUnEscapeDict(_area)
+            rawEvent["area"]=_area["value"]
+            pass
         _confSeries=rawEvent.pop('confSeries')
+        if isinstance(_confSeries,dict):
+            # dict: 
+            #   {'id': 'btw', 
+            #    'issn': None, 
+            #    'eissn': None, 
+            #    'dblpId': 'https://dblp.org/db/conf/btw/', 
+            #    'name': 'Datenbanksysteme für Business, Technologie und Web Datenbanksysteme in Büro, Technik und Wissenschaft', 
+            #    'description': None
+            #  }
+            #
+            Confref.htmlUnEscapeDict(_confSeries)
+            dblpSeriesId=_confSeries["dblpId"]
+            if dblpSeriesId is not None:
+                dblpSeriesId=dblpSeriesId.replace("https://dblp.org/db/","")
+            rawEvent['dblpSeriesId']=dblpSeriesId
+            rawEvent['seriesId']=_confSeries["id"]
+            rawEvent['seriesTitle']=_confSeries["name"]   
+            rawEvent['seriesIssn']=_confSeries["issn"]
+            rawEvent['seriesEissn']=_confSeries["eissn"]
         rawEvent['eventId']=eventId
         rawEvent['url']=f'http://portal.confref.org/list/{eventId}'        
         rawEvent['title']=rawEvent.pop('name')
@@ -117,6 +152,13 @@ class ConfrefEventSeriesManager(EventSeriesManager):
         '''
         get my data
         '''
-        # TODO Replace this stub
-        lod=[{'source':'crossref','eventSeriesId':'dummy'}]
-        return lod
+        query="""select dblpSeriesId as eventSeriesId,acronym,seriesTitle as title,count(*) as count,min(year) as minYear,max(year) as maxYear
+from event_confref
+where dblpSeriesId is not Null
+group by dblpSeriesId"""
+        sqlDB=SQLDB(self.getCacheFile())
+        listOfDicts=sqlDB.query(query)
+        self.setAllAttr(listOfDicts, "source", "confref")
+        self.postProcessLodRecords(listOfDicts)
+        return listOfDicts
+ 
