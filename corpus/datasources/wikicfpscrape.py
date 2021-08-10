@@ -224,12 +224,20 @@ class WikiCfpScrape(object):
                 #    print("%4d: %s" % (len(jsonPickleEvents),jsonFilePath))
                 batchEm.fromStore(cacheFile=jsonFilePath)
                 for entity in batchEm.getList():
-                    # TODO should this be done later in WikiCfpEvent?
-                    entity.source="wikicfp"
                     if hasattr(entity, "startDate"):
                         if entity.startDate is not None:
-                            entity.year=entity.startDate.year
-                    if not entity.deleted:
+                            entity.year=entity.startDate.year  
+                    doAdd=not(entity.deleted)
+                    # SPAM Filter
+                    if hasattr(entity, "locality"):
+                        if entity.locality.startswith("1"):
+                            doAdd=False
+                    # Series Filter
+                    if hasattr(entity, "title"):
+                        if entity.title.startswith("WikiCFP : Call For Papers of Conferences, Workshops and Journals"):
+                            doAdd=False
+                    
+                    if doAdd:
                         entityList.append(entity)
             if self.profile:
                 elapsed=time.time()-startTime

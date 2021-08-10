@@ -66,10 +66,12 @@ class WikiCfpEvent(Event):
         Args:
             rawEvent(dict): the record to post process
         '''
+        rawEvent["source"]="wikicfp"
         if not "url" in rawEvent:
             crawlType=wikicfpscrape.CrawlType.EVENT
             eventId=rawEvent["eventId"]
             rawEvent["url"]=f"{crawlType.urlPrefix}{eventId}"
+        
     
     def rate(self,rating:Rating):
         '''
@@ -105,6 +107,7 @@ class WikiCfpEventSeries(EventSeries):
         Args:
             rawEvent(dict): the record to post process
         '''
+        rawEvent["source"]="wikicfp"
         if not "url" in rawEvent:
             crawlType=wikicfpscrape.CrawlType.SERIES
             seriesId=rawEvent["seriesId"]

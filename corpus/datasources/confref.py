@@ -55,7 +55,8 @@ class ConfrefEvent(Event):
         
         eventId=rawEvent.pop('id')
         # rename number to ordinal
-        rawEvent['ordinal']=rawEvent.pop('number')
+        if 'number' in rawEvent:
+            rawEvent['ordinal']=rawEvent.pop('number')
         # handle area and confSeries dicts
         _area=rawEvent.pop('area')
         if isinstance(_area,dict):
