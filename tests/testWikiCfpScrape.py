@@ -48,8 +48,8 @@ class TestWikiCFP(unittest.TestCase):
         wikiCfp=WikiCfp()
         wikiCfpScrape=wikiCfp.wikiCfpScrape
         expected={
-            "Event": 88000,
-            "Series": 1000
+            "Event": 87000,
+            "Series": 6000
         }
         for crawlType in CrawlType:
             jsonEm=wikiCfpScrape.crawlFilesToJson(crawlType=crawlType,withStore=False)
