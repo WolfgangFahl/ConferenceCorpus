@@ -137,6 +137,8 @@ class TestDblp(unittest.TestCase):
         '''
         get  dict of list of dicts (tables)
         '''
+        if not self.mock:
+            return
         sqlDB=self.getSqlDB(recreate=True)
         tableList=sqlDB.getTableList()
         expected=6 if self.mock else 8
