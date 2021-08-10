@@ -547,7 +547,7 @@ class WikiCfpEventFetcher(object):
         '''
         title=scrape.soup.find("title")
         rawEvent["title"]=title.text.strip()
-        dblpM,_text=scrape.findLinkForRegexp(r'http://dblp.uni-trier.de/db/(conf/[a-z0-9]+)/index.html')
+        dblpM,_text=scrape.findLinkForRegexp(r'http://dblp.uni-trier.de/db/([a-zA-Z0-9/-]+)/index.html')
         if dblpM:
             dblpSeriesId=dblpM.group(1)
             rawEvent['dblpSeriesId']=dblpSeriesId

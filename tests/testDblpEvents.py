@@ -7,7 +7,6 @@ import unittest
 from tests.testDblpXml import TestDblp
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
-import getpass
 
 class TestDblpEvents(DataSourceTest):
     '''
@@ -18,7 +17,7 @@ class TestDblpEvents(DataSourceTest):
         '''
         setup 
         '''
-        self.mock=False if getpass.getuser()=="wf" else TestDblp.mock 
+        self.mock=TestDblp.mock 
         DataSourceTest.setUp(self)
         pass
     

@@ -19,7 +19,7 @@ class TestDblp(unittest.TestCase):
     '''
     test the dblp xml parser and pylodstorage extraction for it
     '''
-    mock=True
+    mock=False if getpass.getuser()=="wf" else True
     
     def setUp(self):
         self.debug=False

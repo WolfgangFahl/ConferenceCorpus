@@ -54,7 +54,9 @@ class ConfrefEvent(Event):
         Confref.htmlUnEscapeDict(rawEvent)
         
         eventId=rawEvent.pop('id')
-        # TODO handle area and confSeries
+        # rename number to ordinal
+        rawEvent['ordinal']=rawEvent.pop('number')
+        # handle area and confSeries dicts
         _area=rawEvent.pop('area')
         if isinstance(_area,dict):
             Confref.htmlUnEscapeDict(_area)
