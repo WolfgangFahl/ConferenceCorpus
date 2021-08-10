@@ -68,8 +68,10 @@ class TestWikiCFP(unittest.TestCase):
         }
         for crawlType in CrawlType:
             crawlFiles=wikiCfpScrape.jsonFiles(crawlType)
-            print (f"found %d wikiCFP {crawlType.value}crawl files" % len(crawlFiles))
-            self.assertTrue(len(crawlFiles)>=expected[crawlType.value])
+            expectedLen=expected[crawlType.value]
+            msg=f"found {len(crawlFiles)}wikiCFP {crawlType.value} crawl files .. expecting {expectedLen}" 
+            print (msg)
+            self.assertTrue(len(crawlFiles)>=expected[crawlType.value],msg)
         
     def testJsonPickleDateTime(self):
         '''
