@@ -135,7 +135,7 @@ class TestDblp(unittest.TestCase):
         '''
         if not self.mock:
             return
-        sqlDB=self.getSqlDB(motestDblpEventsrecreate=True)
+        sqlDB=self.getSqlDB(recreate=True)
         tableList=sqlDB.getTableList()
         expected=6 if self.mock else 8
         self.assertEqual(expected,len(tableList))
