@@ -56,8 +56,9 @@ class TestDblp(unittest.TestCase):
             dblpXml.gzurl="https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/dblpsample.xml.gz"
             dblpXml.reinit()
         xmlfile=dblpXml.getXmlFile()
-        if debug:
-            print("dblp xml file is  %s with size %5.1f MB" % (xmlfile,dblpXml.getSize()/1024/1024))
+        sizeMB=dblpXml.getSize()/1024/1024
+        if debug or not mock:
+            print(f"dblp xml file is  {xmlfile} with size {sizeMB:5.1f} MB" )
         return dblpXml
     
     def getSqlDB(self,mock=True,recreate=False):

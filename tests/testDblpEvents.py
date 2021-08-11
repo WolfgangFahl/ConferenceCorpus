@@ -4,7 +4,7 @@ Created on 28.07.2021
 @author: wf
 '''
 import unittest
-from tests.testDblpXml import TestDblp
+import tests.testDblpXml 
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 
@@ -17,7 +17,7 @@ class TestDblpEvents(DataSourceTest):
         '''
         setup 
         '''
-        self.mock=TestDblp.mock 
+        self.mock=tests.testDblpXml.TestDblp.mock 
         DataSourceTest.setUp(self)
         pass
     
@@ -26,7 +26,7 @@ class TestDblpEvents(DataSourceTest):
         callback to configure the corpus lookup
         '''
         dblpDataSource=lookup.getDataSource("dblp")
-        dblpXml=TestDblp.getMockedDblp(mock=self.mock,debug=self.debug)
+        dblpXml=tests.testDblpXml.TestDblp.getMockedDblp(mock=self.mock,debug=self.debug)
         dblpDataSource.eventManager.dblpXml=dblpXml
         dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         
