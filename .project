@@ -3,6 +3,7 @@
 	<name>ConferenceCorpus</name>
 	<comment></comment>
 	<projects>
+		<project>geograpy3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

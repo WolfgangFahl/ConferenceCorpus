@@ -6,7 +6,9 @@ Created on 2021-08-06
 import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
+from corpus.location import LocationLookup
 from collections import Counter
+from geograpy.locator import City
 from lodstorage.tabulateCounter import TabulateCounter
 
 class TestLocationFixing(DataSourceTest):
@@ -14,9 +16,38 @@ class TestLocationFixing(DataSourceTest):
     test fixing Locations from different Datasources
     '''
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.locationLookup=LocationLookup()
+        lookupIds=["crossref","confref","wikidata","wikicfp","or"]
+        cls.lookup=CorpusLookup(lookupIds=lookupIds)
+        cls.lookup.load(forceUpdate=False)
+        
+        
     def setUp(self):
         DataSourceTest.setUp(self)
+        self.locationLookup=TestLocationFixing.locationLookup
+        self.lookup
         pass
+    
+    def testLocationLookup(self):
+        '''
+        test the location lookup
+        '''
+        examples=[ 
+            ("Beijing, China","Q956"),
+            ("Washington, DC, USA","Q61")
+        ] 
+        failures=[]
+        for locationText,expectedLocationId in examples:
+            location=self.locationLookup.lookup(locationText)
+            if not location.wikidataid == expectedLocationId:
+                failures.append(locationText)
+        if self.debug:
+            print(f"locationLooup failed for {failures}")
+        self.assertEqual(0,len(failures))
+        
 
     def getCounter(self,events:list,propertyName:str):
         '''
@@ -31,13 +62,11 @@ class TestLocationFixing(DataSourceTest):
         tabCounter=TabulateCounter(counter)
         return counter,tabCounter
 
-    def testCrossRef(self):
+    def testCrossRefParts(self):
         '''
         test CrossRef locations
         '''
-        lookup=CorpusLookup(lookupIds=["crossref"])
-        lookup.load(forceUpdate=False)
-        crossRefDataSource=lookup.getDataSource("crossref")
+        crossRefDataSource=self.lookup.getDataSource("crossref")
         events=crossRefDataSource.eventManager.events
         partCount=Counter()
         for event in events:
@@ -46,8 +75,31 @@ class TestLocationFixing(DataSourceTest):
             if location is not None:
                 parts=event.location.split(",")
                 partCount[len(parts)]+=1
-        print (partCount.most_common())
+        if self.debug:
+            print (partCount.most_common())
+        self.assertEqual(6,len(partCount))
         pass
+    
+    def testCrossRefLocationFix(self):
+        '''
+        test fixing CrossRef locations
+        '''
+        crossRefDataSource=self.lookup.getDataSource("crossref")
+        events=crossRefDataSource.eventManager.events
+        pCount,pCountTab=self.getCounter(events,"location")
+        eventsByLocation=crossRefDataSource.eventManager.getLookup("location",withDuplicates=True)
+        for i,locationTuple in enumerate(pCount.most_common(250)):
+            locationText,locationCount=locationTuple
+            city=None
+            try:
+                city=self.locationLookup.lookup(locationText)
+            except Exception as ex:
+                print(str(ex))
+            if city is not None and isinstance(city,City):
+                print(f"{i:4d}✅:{locationText}({locationCount})→{city} ({city.population})")
+            else:
+                print(f"{i:4d}❌:{locationText}({locationCount})")
+        
     
     def testStats(self):
         '''
@@ -55,14 +107,12 @@ class TestLocationFixing(DataSourceTest):
         '''
         lookupIds=["crossref","confref","wikidata","wikicfp","or"]
         formats=["latex","grid","mediawiki","github"]
-        lookup=CorpusLookup(lookupIds=lookupIds)
-        lookup.load(forceUpdate=False)
         show=self.debug
         show=True
         formats=["mediawiki"]
         
         for lookupId in lookupIds:
-            dataSource=lookup.getDataSource(lookupId)
+            dataSource=self.lookup.getDataSource(lookupId)
             events=dataSource.eventManager.events
             for propertyName in ["locality","location","country","region","city"]:
                 pCount,pCountTab=self.getCounter(events,propertyName)
