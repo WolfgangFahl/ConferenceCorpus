@@ -99,7 +99,8 @@ class TestLocationFixing(DataSourceTest):
         events=crossRefDataSource.eventManager.events
         pCount,pCountTab=self.getCounter(events,"location")
         eventsByLocation=crossRefDataSource.eventManager.getLookup("location",withDuplicates=True)
-        limit=400 if TestLocationFixing.inCI() else 100
+        limit=500 
+        #if TestLocationFixing.inCI() else 100
         total=sum(pCount.values())
         rsum=0
         for i,locationTuple in enumerate(pCount.most_common(limit)):
@@ -112,9 +113,9 @@ class TestLocationFixing(DataSourceTest):
             except Exception as ex:
                 print(str(ex))
             if city is not None and isinstance(city,City):
-                print(f"{i:4d}{rsum:5d}/{total:5d}({percent:5.1f}%)✅:{locationText}({locationCount})→{city} ({city.population})")
+                print(f"{i:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.population})")
             else:
-                print(f"{i:4d}{rsum:5d}/{total:5d}({percent:5.1f}%)❌:{locationText}({locationCount})")
+                print(f"{i:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
         
     
     def testStats(self):
