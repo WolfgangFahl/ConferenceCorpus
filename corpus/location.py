@@ -18,7 +18,8 @@ class LocationLookup:
         "Bangalore, India": "Q1355",
         "Xi'an": "Q5826",
         "Xi'an, China": "Q5826",
-        "Virtual Event USA": None,
+        "Virtual Event USA": "Q30",
+        "Virtual USA": "Q30",
         "London United Kingdom": "Q84",
         "Brno":"Q14960",
         "Cancun":"Q8969",
@@ -33,9 +34,19 @@ class LocationLookup:
         "Singapore Singapore":"Q334",
         "Tokyo Japan": "Q1490",
         "Vancouver BC Canada": "Q24639",
+        "Vancouver British Columbia Canada": "Q24639",
         "Amsterdam Netherlands":"Q727",
         "Paris France": "Q90",
-        "Nagoya": "Q11751"
+        "Nagoya": "Q11751",
+        "Marrakech":"Q101625",
+        "Austin Texas":"Q16559",
+        "Chicago IL USA":"Q1297",
+        "Bangkok Thailand":"Q1861",
+        "Firenze, Italy":"Q2044",
+        "Timisoara":"Q83404",
+        "Langkawi":"Q273303",
+        "Beijing China":"Q956",
+        "Berlin Germany": "Q64"
     }
 
     def __init__(self):
