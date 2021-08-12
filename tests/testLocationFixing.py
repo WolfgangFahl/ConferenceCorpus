@@ -10,6 +10,8 @@ from corpus.location import LocationLookup
 from collections import Counter
 from geograpy.locator import City
 from lodstorage.tabulateCounter import TabulateCounter
+import getpass
+import os
 
 class TestLocationFixing(DataSourceTest):
     '''
@@ -30,6 +32,15 @@ class TestLocationFixing(DataSourceTest):
         self.locationLookup=TestLocationFixing.locationLookup
         self.lookup
         pass
+    
+    @staticmethod
+    def inCI():
+        '''
+        are we running in a Continuous Integration Environment?
+        '''
+        publicCI=getpass.getuser() in ["travis", "runner"] 
+        jenkins= "JENKINS_HOME" in os.environ;
+        return publicCI or jenkins
     
     def testLocationLookup(self):
         '''
@@ -88,17 +99,22 @@ class TestLocationFixing(DataSourceTest):
         events=crossRefDataSource.eventManager.events
         pCount,pCountTab=self.getCounter(events,"location")
         eventsByLocation=crossRefDataSource.eventManager.getLookup("location",withDuplicates=True)
-        for i,locationTuple in enumerate(pCount.most_common(250)):
+        limit=400 if TestLocationFixing.inCI() else 100
+        total=sum(pCount.values())
+        rsum=0
+        for i,locationTuple in enumerate(pCount.most_common(limit)):
             locationText,locationCount=locationTuple
+            rsum+=locationCount
+            percent=rsum/total*100
             city=None
             try:
                 city=self.locationLookup.lookup(locationText)
             except Exception as ex:
                 print(str(ex))
             if city is not None and isinstance(city,City):
-                print(f"{i:4d}✅:{locationText}({locationCount})→{city} ({city.population})")
+                print(f"{i:4d}{rsum:5d}/{total:5d}({percent:5.1f}%)✅:{locationText}({locationCount})→{city} ({city.population})")
             else:
-                print(f"{i:4d}❌:{locationText}({locationCount})")
+                print(f"{i:4d}{rsum:5d}/{total:5d}({percent:5.1f}%)❌:{locationText}({locationCount})")
         
     
     def testStats(self):

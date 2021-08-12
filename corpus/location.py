@@ -24,7 +24,9 @@ class LocationLookup:
         "Cancun":"Q8969",
         "St. Petersburg": "Q656",
         "Gothenburg Sweden": "Q25287",
-        "Los Angeles California": "Q65"
+        "Los Angeles California": "Q65",
+        "Zurich, Switzerland": "Q72",
+        "Barcelona Spain": "Q1492",
     }
 
     def __init__(self):
