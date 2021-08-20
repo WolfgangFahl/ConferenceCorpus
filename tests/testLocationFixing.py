@@ -136,7 +136,7 @@ limit 20"""),
             except Exception as ex:
                 print(str(ex))
             if city is not None and isinstance(city,City):
-                print(f"{i:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.population})")
+                print(f"{i:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
             else:
                 print(f"{i:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
         

@@ -63,6 +63,17 @@ class LocationLookup:
         '''
         self.locationContext=LocationContext.fromCache()
         
+    def getCityByWikiDataId(self,wikidataID:str):
+        '''
+        get the city for the given wikidataID
+        '''
+        cities=self.locationContext.cityManager.getLocationsByWikidataId(wikidataID)
+        if len(cities)>0:
+            return cities[0]
+        else:
+            return None
+        
+        
     def lookup(self,locationText:str):
         '''
         lookup the given location by the given locationText
@@ -72,7 +83,7 @@ class LocationLookup:
             if locationId is None:
                 return None
             else:
-                location=self.locationContext._cityLookup[locationId]
+                location=self.getCityByWikiDataId(locationId)
                 return location
         locations=self.locationContext.locateLocation(locationText)
         if len(locations)>0:
