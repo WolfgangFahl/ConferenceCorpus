@@ -122,10 +122,12 @@ limit 20"""),
         events=crossRefDataSource.eventManager.events
         pCount,pCountTab=self.getCounter(events,"location")
         eventsByLocation=crossRefDataSource.eventManager.getLookup("location",withDuplicates=True)
-        limit=500 
+        limit=250
         #if TestLocationFixing.inCI() else 100
+        count=len(pCount.items())
         total=sum(pCount.values())
         rsum=0
+        problems=[]
         for i,locationTuple in enumerate(pCount.most_common(limit)):
             locationText,locationCount=locationTuple
             rsum+=locationCount
@@ -136,10 +138,15 @@ limit 20"""),
             except Exception as ex:
                 print(str(ex))
             if city is not None and isinstance(city,City):
-                print(f"{i:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
+                print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
             else:
-                print(f"{i:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
+                print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
+                problems.append(locationText)
         
+        for i,problem in enumerate(problems):
+            print(f"{i:4d}:{problem}")        
+        print(f"found {len(problems)} problems")      
+                
     
     def testStats(self):
         '''

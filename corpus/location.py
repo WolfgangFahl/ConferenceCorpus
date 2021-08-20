@@ -5,6 +5,10 @@ Created on 2021-08-11
 '''
 #from lodstorage.entity import EntityManager
 from geograpy.locator import LocationContext
+import OSMPythonTools
+from OSMPythonTools.nominatim import Nominatim 
+import os
+import logging
 
 class LocationLookup:
     '''
@@ -13,6 +17,8 @@ class LocationLookup:
     preDefinedLocations={
         "Not Known": None,
         "Online": None,
+    }
+    other={
         "Washington, DC, USA": "Q61",
         "Bangalore": "Q1355",
         "Bangalore, India": "Q1355",
@@ -62,19 +68,49 @@ class LocationLookup:
         Constructor
         '''
         self.locationContext=LocationContext.fromCache()
+        cacheRootDir=LocationContext.getDefaultConfig().cacheRootDir
+        cacheDir=f"{cacheRootDir}/.nominatim"
+        if not os.path.exists(cacheDir):
+            os.makedirs(cacheDir)
+            
+        self.nominatim = Nominatim(cacheDir=cacheDir)
+        logging.getLogger('OSMPythonTools').setLevel(logging.ERROR)
+        
         
     def getCityByWikiDataId(self,wikidataID:str):
         '''
         get the city for the given wikidataID
         '''
-        cities=self.locationContext.cityManager.getLocationsByWikidataId(wikidataID)
-        if len(cities)>0:
-            return cities[0]
+        citiesGen=self.locationContext.cityManager.getLocationsByWikidataId(wikidataID)
+        if citiesGen is not None:
+            cities=list(citiesGen)
+            if len(cities)>0:
+                return cities[0]
         else:
             return None
         
+    def lookupNominatim(self,locationText:str):
+        location=None
+        nresult=self.nominatim.query(locationText,params={"extratags":"1"})
+        nlod=nresult._json
+        if len(nlod)>0:
+            nrecord=nlod[0]
+            if "extratags" in nrecord:
+                extratags=nrecord["extratags"]
+                if "wikidata" in extratags:
+                    wikidataID=extratags["wikidata"]
+                    location=self.getCityByWikiDataId(wikidataID)
+        return location
         
     def lookup(self,locationText:str):
+        lg=self.lookupGeograpy(locationText)
+        ln=self.lookupNominatim(locationText)
+        if ln is not None and lg is not None and not ln.wikidataid==lg.wikidataid:
+            print(f"❌{locationText}→{lg}!={ln}")
+            return None
+        return lg
+        
+    def lookupGeograpy(self,locationText:str):
         '''
         lookup the given location by the given locationText
         '''
