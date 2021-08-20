@@ -9,7 +9,9 @@ from corpus.lookup import CorpusLookup
 from corpus.location import LocationLookup
 from collections import Counter
 from geograpy.locator import City
+from lodstorage.query import Query
 from lodstorage.tabulateCounter import TabulateCounter
+from corpus.event import EventStorage
 import getpass
 import os
 
@@ -42,13 +44,20 @@ class TestLocationFixing(DataSourceTest):
         jenkins= "JENKINS_HOME" in os.environ;
         return publicCI or jenkins
     
+    def testQuery(self):
+        sqlDB=EventStorage.getSqlDB()
+        query=Query("SGK Example","select locality from event_wikicfp where seriesId=2693",lang='sql')
+        localityRecords=sqlDB.query(query.query)
+        query.documentQueryResult(localityRecords)
+    
     def testLocationLookup(self):
         '''
         test the location lookup
         '''
         examples=[ 
             ("Beijing, China","Q956"),
-            ("Washington, DC, USA","Q61")
+            ("Washington, DC, USA","Q61"),
+            ("Brno","Q14960")
         ] 
         failures=[]
         for locationText,expectedLocationId in examples:

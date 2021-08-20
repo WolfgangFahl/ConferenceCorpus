@@ -43,10 +43,18 @@ class LocationLookup:
         "Chicago IL USA":"Q1297",
         "Bangkok Thailand":"Q1861",
         "Firenze, Italy":"Q2044",
+        "Florence Italy":"Q2044",
         "Timisoara":"Q83404",
         "Langkawi":"Q273303",
         "Beijing China":"Q956",
-        "Berlin Germany": "Q64"
+        "Berlin Germany": "Q64",
+        "Prague Czech Republic":"Q1085",
+        "Portland Oregon USA":"Q6106",
+        "Portland OR USA":"Q6106",
+        "Pittsburgh PA USA":"Q1342",
+        "Новосибирск":"Q883",
+        "Los Angeles CA USA":"Q65",
+        "Kyoto Japan": "Q34600"
     }
 
     def __init__(self):

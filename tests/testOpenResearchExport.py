@@ -32,7 +32,7 @@ class TestOpenResearchExport(DataSourceTest):
         dblpDataSource=lookup.getDataSource("dblp")
         seriesByAcronym,_dup=dblpDataSource.eventSeriesManager.getLookup("acronym")
     
-        for acronym in ['seke','qurator','vnc']:
+        for acronym in ['ds','seke','qurator','vnc']:
             eventSeries=seriesByAcronym[acronym]
             print(eventSeries.asWikiMarkup())
             eventBySeries=dblpDataSource.eventManager.getLookup("series",withDuplicates=True)
