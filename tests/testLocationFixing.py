@@ -24,7 +24,7 @@ class TestLocationFixing(DataSourceTest):
     def setUpClass(cls):
         super().setUpClass()
         cls.locationLookup=LocationLookup()
-        lookupIds=["crossref","confref","wikidata","wikicfp","or"]
+        lookupIds=["crossref","confref","wikidata","wikicfp"]
         cls.lookup=CorpusLookup(lookupIds=lookupIds)
         cls.lookup.load(forceUpdate=False)
         
@@ -61,7 +61,8 @@ limit 20"""),
         for title,queryString in queries:
             query=Query(title,queryString,lang='sql')
             localityRecords=sqlDB.query(query.query)
-            query.documentQueryResult(localityRecords)
+            dqr=query.documentQueryResult(localityRecords)
+            print(dqr)
     
     def testLocationLookup(self):
         '''
