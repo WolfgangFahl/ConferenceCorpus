@@ -45,10 +45,23 @@ class TestLocationFixing(DataSourceTest):
         return publicCI or jenkins
     
     def testQuery(self):
+        '''
+        test helpful queries for example selection
+        '''
         sqlDB=EventStorage.getSqlDB()
-        query=Query("SGK Example","select locality from event_wikicfp where seriesId=2693",lang='sql')
-        localityRecords=sqlDB.query(query.query)
-        query.documentQueryResult(localityRecords)
+        queries=[
+            ("wikicfp locality histogramm","""select count(*),seriesId,locality
+from event_wikicfp
+where seriesId is not null
+group by seriesId,locality
+order by 1 desc
+limit 20"""),
+            ("SGK Example","select locality from event_wikicfp where seriesId=2693")
+]
+        for title,queryString in queries:
+            query=Query(title,queryString,lang='sql')
+            localityRecords=sqlDB.query(query.query)
+            query.documentQueryResult(localityRecords)
     
     def testLocationLookup(self):
         '''
