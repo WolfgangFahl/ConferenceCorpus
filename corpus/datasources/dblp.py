@@ -151,6 +151,8 @@ class DblpEventSeriesManager(EventSeriesManager):
         configure me
         '''
         withProgress = False
+        if DblpEventManager.cacheOnly:
+            return
         if not hasattr(self, "dblpXml"): 
             self.dblpXml = DblpXml()
             self.dblpXml.warnFullSize()
