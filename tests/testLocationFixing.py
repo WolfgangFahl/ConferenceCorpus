@@ -180,10 +180,18 @@ limit 20"""),
         self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=500,addLocationInfo=True) 
         
     def testDblpLocationFix(self):
+        '''
+        test dblp Location fixing
+        '''
         dblpDataSource=self.lookup.getDataSource("dblp")
         for dblpEvent in dblpDataSource.eventManager.events:
-            print (dblpEvent.title)
-   
+            title=dblpEvent.title
+            if title is not None:
+                parts=title.split(",")
+                if len(parts)>3:
+                    dblpEvent.location=f"{parts[2]}, {parts[3]}"
+                    #print(dblpEvent.location)
+        self.fixLocations(dblpDataSource.eventManager, "location")
         
        
     def testStats(self):
