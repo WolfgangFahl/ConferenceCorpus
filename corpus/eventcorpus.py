@@ -3,9 +3,10 @@ Created on 2021-04-16
 
 @author: wf
 '''
-from corpus.event import EventManager, EventSeriesManager
+from corpus.event import EventManager, EventSeriesManager, EventStorage
 from corpus.config import EventDataSourceConfig            
 from corpus.quality.rating import RatingManager
+from corpus.datasources.download import Download
 
 class EventDataSource(object):
     '''
@@ -88,3 +89,14 @@ class EventCorpus(object):
         '''
         for eventDataSource in self.eventDataSources.values():
             eventDataSource.load(forceUpdate=forceUpdate)
+           
+    @staticmethod        
+    def download(self):
+        '''
+        download the EventCorpus.db if needed
+        '''
+        fileName="EventCorpus.db"
+        url = f"https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/{fileName}.gz"
+        targetDirectory=EventStorage.getStorageConfig().getCachePath()
+        Download.downloadBackupFile(url, fileName, targetDirectory)
+     
