@@ -29,7 +29,7 @@ class TestLocationFixing(DataSourceTest):
         locator.downloadDB()
         
         cls.locationLookup=LocationLookup()
-        lookupIds=["crossref","confref","wikidata","wikicfp"]
+        lookupIds=["crossref","confref","wikidata","wikicfp","orclone"]
         cls.lookup=CorpusLookup(lookupIds=lookupIds)
         cls.lookup.load(forceUpdate=False)
         
@@ -172,7 +172,7 @@ limit 20"""),
         '''
         test ConfRef locations
         '''
-        lookupIds=["crossref","confref","wikidata","wikicfp","or"]
+        lookupIds=["crossref","confref","wikidata","wikicfp","orclone"]
         formats=["latex","grid","mediawiki","github"]
         show=self.debug
         show=True
