@@ -69,13 +69,18 @@ limit 20"""),
         test the location lookup
         '''
         examples=[ 
+            ("Westonaria,Gauteng,South Africa","Q2671197"),
             ("Beijing, China","Q956"),
             ("Washington, DC, USA","Q61"),
-            ("Brno","Q14960")
+            ("Brno","Q14960"),
+            
         ] 
         failures=[]
+        show=self.debug
         for locationText,expectedLocationId in examples:
             location=self.locationLookup.lookup(locationText)
+            if show:
+                print(location)
             if not location.wikidataid == expectedLocationId:
                 failures.append(locationText)
         if self.debug:
@@ -120,9 +125,9 @@ limit 20"""),
         '''
         crossRefDataSource=self.lookup.getDataSource("crossref")
         events=crossRefDataSource.eventManager.events
-        pCount,pCountTab=self.getCounter(events,"location")
+        pCount,_pCountTab=self.getCounter(events,"location")
         eventsByLocation=crossRefDataSource.eventManager.getLookup("location",withDuplicates=True)
-        limit=250
+        limit=150
         #if TestLocationFixing.inCI() else 100
         count=len(pCount.items())
         total=sum(pCount.values())
@@ -139,6 +144,14 @@ limit 20"""),
                 print(str(ex))
             if city is not None and isinstance(city,City):
                 print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
+                events=eventsByLocation[locationText]
+                for event in events:
+                    event.city=city.name
+                    event.cityWikidataid=city.wikidataid
+                    event.region=city.region.name
+                    event.regionWikidataid=city.region.wikidataid
+                    event.country=city.country.name
+                    event.countryWikidataid=city.country.wikidataid
             else:
                 print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
                 problems.append(locationText)
@@ -146,7 +159,9 @@ limit 20"""),
         for i,problem in enumerate(problems):
             print(f"{i:4d}:{problem}")        
         print(f"found {len(problems)} problems")      
-                
+        addLocationInfo=True
+        if addLocationInfo:
+            crossRefDataSource.eventManager.store()       
     
     def testStats(self):
         '''

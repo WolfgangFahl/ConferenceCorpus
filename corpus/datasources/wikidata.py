@@ -83,10 +83,11 @@ SELECT DISTINCT
   (?event as ?url)
   ?acronym
   ?ordinal
-  #?eventLabel
   ?title
-  ?locationLabel 
-  #?countryIdLabel
+  ?location
+  ?locationId 
+  ?city
+  ?cityId
   ?country
   ?countryId
   ?eventInSeries
@@ -111,7 +112,6 @@ WHERE
   # ordinal
   OPTIONAL { ?event wdt:P1545 ?ordinal }
   # properties with type:literal # requiring label
-  OPTIONAL { ?event wdt:P276 ?location . }
   OPTIONAL { 
       ?event wdt:P17 ?countryId . 
       ?countryId rdfs:label ?country filter (lang(?country)   = "en").
@@ -119,6 +119,12 @@ WHERE
   OPTIONAL {
       ?event wdt:P276 ?locationId.
       ?locationId rdfs:label ?location filter (lang(?location)   = "en").
+  }
+  OPTIONAL {
+      ?event wdt:P276* ?cityId.
+      # instance of city
+      ?cityId wdt:P31 wd:Q515.
+      ?cityId rdfs:label ?city filter (lang(?city)   = "en").
   }
   OPTIONAL { 
     ?event wdt:P179 ?eventInSeriesId . 
