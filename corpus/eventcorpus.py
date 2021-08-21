@@ -91,7 +91,7 @@ class EventCorpus(object):
             eventDataSource.load(forceUpdate=forceUpdate)
            
     @staticmethod        
-    def download(self):
+    def download():
         '''
         download the EventCorpus.db if needed
         '''
