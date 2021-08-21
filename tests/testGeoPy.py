@@ -7,18 +7,11 @@ import unittest
 from geopy.geocoders import Nominatim
 from OSMPythonTools.nominatim import Nominatim as ONominatim
 import json
-class TestGeopy(unittest.TestCase):
+from tests.datasourcetoolbox import DataSourceTest
+class TestGeopy(DataSourceTest):
     '''
     test geopy and other nominatim handlers
     '''
-
-
-    def setUp(self):
-        pass
-
-
-    def tearDown(self):
-        pass
 
 
     def testNominatim(self):
