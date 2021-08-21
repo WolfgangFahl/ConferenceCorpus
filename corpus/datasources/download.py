@@ -71,7 +71,7 @@ class Download:
             msg=f"Downloading {zipped} from {url} ... this might take a few seconds"
             profiler=Profiler(msg=msg,profile=profile)
             urllib.request.urlretrieve(url, zipped)
-            profiler.time(extra=f"unzipping {extractTo} from {zipped}")
+            profiler.time(extraMsg=f"unzipping {extractTo} from {zipped}")
             with gzip.open(zipped, 'rb') as gzipped:
                 with open(extractTo, 'wb') as unzipped:
                     shutil.copyfileobj(gzipped, unzipped)
