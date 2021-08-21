@@ -170,14 +170,20 @@ limit 20"""),
         test fixing CrossRef locations
         '''
         crossRefDataSource=self.lookup.getDataSource("crossref")
-        self.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=150,addLocationInfo=False)
+        limit=50 if self.inCI() else 500
+        show=not self.inCI()
+        addLocationInfo=show
+        self.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=limit,show=show,addLocationInfo=addLocationInfo)
        
     def testWikiCFPLocationFix(self):
         '''
         test fixing WikiCFP locations
         '''
         wikicfpDataSource=self.lookup.getDataSource("wikicfp")
-        self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=500,addLocationInfo=True) 
+        limit=50 if self.inCI() else 500
+        show=not self.inCI()
+        addLocationInfo=show
+        self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,show=show,addLocationInfo=addLocationInfo) 
         
     def testDblpLocationFix(self):
         '''
@@ -191,7 +197,10 @@ limit 20"""),
                 if len(parts)>3:
                     dblpEvent.location=f"{parts[2].strip()}, {parts[3].strip()}"
                     #print(dblpEvent.location)
-        self.fixLocations(dblpDataSource.eventManager, "location",limit=200,show=not self.inCI(),addLocationInfo=True)
+        limit=50 if self.inCI() else 500
+        show=not self.inCI()
+        addLocationInfo=show
+        self.fixLocations(dblpDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
         
        
     def testStats(self):
