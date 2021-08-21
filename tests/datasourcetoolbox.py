@@ -7,28 +7,38 @@ from unittest import TestCase
 from corpus.eventcorpus import EventDataSource
 import warnings
 from lodstorage.lod import LOD
-
+from geograpy.utils import Profiler
+import getpass
+import os
 class DataSourceTest(TestCase):
     '''
     test for EventDataSources
     '''
  
-    def setUp(self):
+    def setUp(self,debug=False,profile=True):
         '''
         setUp test environment
         '''
         TestCase.setUp(self)
-        self.debug=False
-        print (f"starting test {self._testMethodName} ... with debug={self.debug}")
-        
+        self.debug=debug
+        msg=(f"test {self._testMethodName} ... with debug={self.debug}")
+        self.profiler=Profiler(msg=msg,profile=profile)
         self.forceUpdate=False
         # make sure unclosed socket warnings are not shown 
         warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
         #self.longMessage=True
         
     def tearDown(self):
+        self.profiler.time()
         pass    
         
+    def inCI(self):
+        '''
+        are we running in a Continuous Integration Environment?
+        '''
+        publicCI=getpass.getuser() in ["travis", "runner"] 
+        jenkins= "JENKINS_HOME" in os.environ;
+        return publicCI or jenkins
         
     def checkDataSource(self,eventDataSource:EventDataSource, expectedSeries:int,expectedEvents:int,eventSample:str=None):
         '''

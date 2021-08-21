@@ -6,19 +6,12 @@ Created on 2021-07-31
 import unittest
 from corpus.datasources.webscrape import WebScrape
 from corpus.datasources.wikicfpscrape import CrawlType
+from tests.datasourcetoolbox import DataSourceTest
 
-class TestWebScrape(unittest.TestCase):
+class TestWebScrape(DataSourceTest):
     '''
     test getting rdfA based triples from Webpages
     '''
-
-    def setUp(self):
-        self.debug=False
-        pass
-
-
-    def tearDown(self):
-        pass
 
     def testCrawlType(self):
         '''
@@ -31,15 +24,20 @@ class TestWebScrape(unittest.TestCase):
         '''
         test getting rdfA encoded info from a webpage
         '''
+        debug=self.debug
         url="http://ceur-ws.org/Vol-2635/"
-        scrape=WebScrape()
+        scrape=WebScrape(timeout=20 if self.inCI() else 3)
         scrapeDescr=[
             {'key':'acronym', 'tag':'span','attribute':'class', 'value':'CEURVOLACRONYM'},
             {'key':'title',   'tag':'span','attribute':'class', 'value':'CEURFULLTITLE'},
             {'key':'loctime', 'tag':'span','attribute':'class', 'value':'CEURLOCTIME'}
         ]
         scrapedDict=scrape.parseWithScrapeDescription(url,scrapeDescr)
-        if self.debug:
+        if scrape.err:
+            print(scrape.err)
+            print("We might not be able to do anything about it")
+            return
+        if debug:
             print(scrapedDict)
         self.assertEqual('DL4KG2020',scrapedDict["acronym"])
         self.assertEqual('Heraklion, Greece, June 02, 2020',scrapedDict["loctime"])
