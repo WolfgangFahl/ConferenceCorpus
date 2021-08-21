@@ -29,7 +29,7 @@ class TestLocationFixing(DataSourceTest):
         locator.downloadDB()
         
         cls.locationLookup=LocationLookup()
-        lookupIds=["crossref","confref","wikidata","wikicfp","orclone"]
+        lookupIds=["crossref","confref","dblp","wikidata","wikicfp","orclone"]
         cls.lookup=CorpusLookup(lookupIds=lookupIds)
         cls.lookup.load(forceUpdate=False)
         
@@ -125,17 +125,10 @@ limit 20"""),
         self.assertEqual(6,len(partCount))
         pass
     
-    def testCrossRefLocationFix(self):
-        '''
-        test fixing CrossRef locations
-        '''
-        crossRefDataSource=self.lookup.getDataSource("crossref")
-        events=crossRefDataSource.eventManager.events
-        pCount,_pCountTab=self.getCounter(events,"location")
-        eventsByLocation=crossRefDataSource.eventManager.getLookup("location",withDuplicates=True)
-        limit=150
-        #if TestLocationFixing.inCI() else 100
-        show=self.debug
+    def fixLocations(self,eventManager,locationAttribute,addLocationInfo=False,limit=100,show=True):
+        events=eventManager.events
+        pCount,_pCountTab=self.getCounter(events,locationAttribute)
+        eventsByLocation=eventManager.getLookup(locationAttribute,withDuplicates=True)
         count=len(pCount.items())
         total=sum(pCount.values())
         rsum=0
@@ -164,15 +157,35 @@ limit 20"""),
                 if show:
                     print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
                 problems.append(locationText)
-        
         for i,problem in enumerate(problems):
             if show:
                 print(f"{i:4d}:{problem}")        
         print(f"found {len(problems)} problems")      
-        addLocationInfo=True
         if addLocationInfo:
-            crossRefDataSource.eventManager.store()       
+            eventManager.store()       
     
+    
+    def testCrossRefLocationFix(self):
+        '''
+        test fixing CrossRef locations
+        '''
+        crossRefDataSource=self.lookup.getDataSource("crossref")
+        self.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=150,addLocationInfo=False)
+       
+    def testWikiCFPLocationFix(self):
+        '''
+        test fixing WikiCFP locations
+        '''
+        wikicfpDataSource=self.lookup.getDataSource("wikicfp")
+        self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=500,addLocationInfo=True) 
+        
+    def testDblpLocationFix(self):
+        dblpDataSource=self.lookup.getDataSource("dblp")
+        for dblpEvent in dblpDataSource.eventManager.events:
+            print (dblpEvent.title)
+   
+        
+       
     def testStats(self):
         '''
         test ConfRef locations

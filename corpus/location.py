@@ -17,6 +17,11 @@ class LocationLookup:
     preDefinedLocations={
         "Not Known": None,
         "Online": None,
+        "Valencia, Spain": "Q8818",
+        "Amsterdam": "Q727",
+        "Amsterdam, Netherlands":"Q727",
+        "Amsterdam, The Netherlands":"Q727",
+        "Thessaloniki, Greece": "Q17151"
     }
     other={
         "Washington, DC, USA": "Q61",
@@ -41,7 +46,6 @@ class LocationLookup:
         "Tokyo Japan": "Q1490",
         "Vancouver BC Canada": "Q24639",
         "Vancouver British Columbia Canada": "Q24639",
-        "Amsterdam Netherlands":"Q727",
         "Paris France": "Q90",
         "Nagoya": "Q11751",
         "Marrakech":"Q101625",
