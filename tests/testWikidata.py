@@ -21,7 +21,7 @@ class TestWikiData(DataSourceTest):
         test getting the wikiData Event Series
         '''
         lookup=CorpusLookup(lookupIds=["wikidata"])
-        lookup.load(forceUpdate=False)
+        lookup.load(forceUpdate=True)
         wikidataDataSource=lookup.getDataSource("wikidata")
         self.checkDataSource(wikidataDataSource,4200,7400)
 

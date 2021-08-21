@@ -43,6 +43,24 @@ class WikidataEventSeries(EventSeries):
                 rawEvent["url"]=rawEvent[key]
                 rawEvent[key]=rawEvent[key].replace("http://www.wikidata.org/entity/","")
 
+    def asWikiMarkup(self)->str:
+        '''
+        copy me to the given wiki
+        
+        see https://github.com/WolfgangFahl/ConferenceCorpus/issues/10
+        '''
+        dblpPid=self.DBLP_pid
+        if dblpPid:
+            dblpPid=dblpPid.replace("conf/","")
+        markup=f"""{{{{Event series
+|Acronym={self.acronym}
+|Title={self.title}
+|DblpSeries={dblpPid}
+|WikiDataId={self.eventSeriesId}
+|Homepage={self.homepage}
+}}}}"""
+        #
+        return markup
     
 class WikidataEvent(Event):
     '''
@@ -213,7 +231,7 @@ class WikidataEventSeriesManager(EventSeriesManager):
         PREFIX wd: <http://www.wikidata.org/entity/>
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT (?confSeries as ?eventSeriesId) ?acronym ?title ?official_website ?DBLP_pid ?WikiCFP_pid ?FreeBase_pid ?Microsoft_Academic_pid ?Publons_pid ?ACM_pid ?GND_pid
+        SELECT (?confSeries as ?eventSeriesId) ?acronym ?title ?homepage ?DBLP_pid ?WikiCFP_pid ?FreeBase_pid ?Microsoft_Academic_pid ?Publons_pid ?ACM_pid ?GND_pid
         WHERE 
         {
           #  scientific conference series (Q47258130) 

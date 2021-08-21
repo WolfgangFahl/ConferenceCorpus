@@ -91,6 +91,29 @@ class ConfrefEvent(Event):
         rawEvent["source"]="confref"
         pass
     
+    def asWikiMarkup(self,series)->str:
+        '''
+        Return:
+            my WikiMarkup
+        '''
+        markup=f"""{{{{Event
+|Acronym={self.acronym} {self.year}
+|Title={self.title}
+|Start date={self.startDate}
+|End date={self.endDate}
+|Series={series}
+|City={self.city}
+|Country={self.country}
+}}}}"""
+#|Type=Symposium
+
+#|Submission deadline=2019/09/03
+#|Homepage=http://ieeevr.org/2020/
+#|City=Atlanta
+#|Country=USA
+#}}
+        return markup
+    
     def fromDict(self,rawEvent:dict):
         '''
         get me from the given dict

@@ -19,6 +19,10 @@ class TestOpenResearchExport(DataSourceTest):
         '''
         DataSourceTest.setUp(self)
         pass
+    
+    def exportSeries(self,dblpSeriesId):
+        '''
+        '''
 
     def testSeriesExport(self):
         '''
@@ -27,20 +31,24 @@ class TestOpenResearchExport(DataSourceTest):
         # do not run this in CI
         if getpass.getuser()!="wf":
             return
-        lookup=CorpusLookup(lookupIds=["dblp"])
+        lookup=CorpusLookup(lookupIds=["dblp","wikidata","confref"])
         lookup.load(forceUpdate=False)
         dblpDataSource=lookup.getDataSource("dblp")
-        seriesByAcronym,_dup=dblpDataSource.eventSeriesManager.getLookup("acronym")
+        confrefDataSource=lookup.getDataSource("confref")
+        wikidataDataSource=lookup.getDataSource("wikidata")
+        seriesByAcronym,_dup=wikidataDataSource.eventSeriesManager.getLookup("DBLP_pid")
     
-        for acronym in ['dc',
-                        #'ds','seke','qurator','vnc'
+        for acronym in [#'dc','ds'
+                        #,'seke','qurator',
+                        'vnc'
             ]:
-            eventSeries=seriesByAcronym[acronym]
+            dblpSeriesId=f"conf/{acronym}"
+            eventSeries=seriesByAcronym[dblpSeriesId]
             print(eventSeries.asWikiMarkup())
-            eventBySeries=dblpDataSource.eventManager.getLookup("series",withDuplicates=True)
-            events=eventBySeries[acronym]
+            eventBySeries=confrefDataSource.eventManager.getLookup("dblpSeriesId",withDuplicates=True)
+            events=eventBySeries[dblpSeriesId]
             for event in events:
-                print(event.asWikiMarkup())
+                print(event.asWikiMarkup(eventSeries.acronym))
             pass
 
 
