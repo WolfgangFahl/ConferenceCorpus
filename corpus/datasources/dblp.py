@@ -90,6 +90,7 @@ class DblpEventManager(EventManager):
     Example event: https://dblp.org/db/conf/aaai/aaai2020.html
     
     '''
+    cacheOnly=False
 
     def __init__(self, config: StorageConfig=None):
         '''
@@ -104,6 +105,8 @@ class DblpEventManager(EventManager):
         configure me
         '''
         withProgress = False
+        if DblpEventManager.cacheOnly:
+            return
         if not hasattr(self, "dblpXml"): 
             self.dblpXml = DblpXml()
             self.dblpXml.warnFullSize()

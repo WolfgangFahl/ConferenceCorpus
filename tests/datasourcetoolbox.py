@@ -5,6 +5,7 @@ Created on 2021-07-29
 '''
 from unittest import TestCase
 from corpus.eventcorpus import EventDataSource,EventCorpus
+from corpus.datasources.dblp import DblpEventManager
 import warnings
 from lodstorage.lod import LOD
 from geograpy.utils import Profiler
@@ -24,6 +25,7 @@ class DataSourceTest(TestCase):
         msg=(f"test {self._testMethodName} ... with debug={self.debug}")
         # make sure there is an EventCorpus.db to speed up tests
         EventCorpus.download()
+        DblpEventManager.cacheOnly=True
         self.profiler=Profiler(msg=msg,profile=profile)
         self.forceUpdate=False
         # make sure unclosed socket warnings are not shown 
