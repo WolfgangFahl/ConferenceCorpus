@@ -27,14 +27,18 @@ class TestGeopy(unittest.TestCase):
         '''
         geolocator = Nominatim(user_agent="ConferenceCorpus")
         nominatim = ONominatim(cacheDir="/tmp")
+        show=self.debug
         for example in ["London","Dublin","Vienna Austra","Athens, Georgia","St. Petersburg","Arlington, VA"]:
             location = geolocator.geocode(example)
-            print(example)
+            if show:
+                print(example)
             if location is not None:
-                print(location)
+                if show:
+                    print(location)
             nresult=nominatim.query(example,params={"extratags":"1"})
             for result in nresult._json:
-                print(json.dumps(result,indent=4))
+                if show:
+                    print(json.dumps(result,indent=4))
         pass
 
 
