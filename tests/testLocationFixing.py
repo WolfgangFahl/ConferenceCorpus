@@ -67,7 +67,8 @@ limit 20"""),
             query=Query(title,queryString,lang='sql')
             localityRecords=sqlDB.query(query.query)
             dqr=query.documentQueryResult(localityRecords)
-            print(dqr)
+            if self.debug:
+                print(dqr)
     
     def testLocationLookup(self):
         '''
@@ -134,6 +135,7 @@ limit 20"""),
         eventsByLocation=crossRefDataSource.eventManager.getLookup("location",withDuplicates=True)
         limit=150
         #if TestLocationFixing.inCI() else 100
+        show=self.debug
         count=len(pCount.items())
         total=sum(pCount.values())
         rsum=0
@@ -148,7 +150,8 @@ limit 20"""),
             except Exception as ex:
                 print(str(ex))
             if city is not None and isinstance(city,City):
-                print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
+                if show:
+                    print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
                 events=eventsByLocation[locationText]
                 for event in events:
                     event.city=city.name
@@ -158,11 +161,13 @@ limit 20"""),
                     event.country=city.country.name
                     event.countryWikidataid=city.country.wikidataid
             else:
-                print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
+                if show:
+                    print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
                 problems.append(locationText)
         
         for i,problem in enumerate(problems):
-            print(f"{i:4d}:{problem}")        
+            if show:
+                print(f"{i:4d}:{problem}")        
         print(f"found {len(problems)} problems")      
         addLocationInfo=True
         if addLocationInfo:
