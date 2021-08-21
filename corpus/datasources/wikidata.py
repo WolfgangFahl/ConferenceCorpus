@@ -29,6 +29,21 @@ class WikidataEventSeries(EventSeries):
     event series derived from Wikidata
     '''
     
+    @staticmethod
+    def postProcessLodRecord(rawEvent:dict):
+        '''
+        fix the given raw EventSeries
+        
+        Args:
+            rawEvent(dict): the raw event record to fix
+        '''
+        rawEvent["source"]="wikidata"
+        for key in ["eventSeriesId"]:
+            if key in rawEvent:
+                rawEvent["url"]=rawEvent[key]
+                rawEvent[key]=rawEvent[key].replace("http://www.wikidata.org/entity/","")
+
+    
 class WikidataEvent(Event):
     '''
     event derived from Wikidata
@@ -42,6 +57,10 @@ class WikidataEvent(Event):
         Args:
             rawEvent(dict): the raw event record to fix
         '''
+        rawEvent["source"]="wikidata"
+        for key in ["eventId","countryId","locationId","eventInSeriesId"]:
+            if key in rawEvent:
+                rawEvent[key]=rawEvent[key].replace("http://www.wikidata.org/entity/","")
         if 'startDate' in rawEvent:
             startDate=rawEvent['startDate']
             if startDate:
@@ -162,6 +181,7 @@ WHERE
         sparql=SPARQL(endpoint)
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
+        self.postProcessLodRecords(listOfDicts)
         return listOfDicts
     
 class WikidataEventSeriesManager(EventSeriesManager):
@@ -247,6 +267,7 @@ class WikidataEventSeriesManager(EventSeriesManager):
         sparql=SPARQL(endpoint)
         query=self.getSparqlQuery()
         listOfDicts=sparql.queryAsListOfDicts(query)
+        self.postProcessLodRecords(listOfDicts)
         self.setAllAttr(listOfDicts,"source","wikidata")
         return listOfDicts
             
