@@ -189,9 +189,9 @@ limit 20"""),
             if title is not None:
                 parts=title.split(",")
                 if len(parts)>3:
-                    dblpEvent.location=f"{parts[2]}, {parts[3]}"
+                    dblpEvent.location=f"{parts[2].strip()}, {parts[3].strip()}"
                     #print(dblpEvent.location)
-        self.fixLocations(dblpDataSource.eventManager, "location")
+        self.fixLocations(dblpDataSource.eventManager, "location",limit=200,show=not self.inCI(),addLocationInfo=True)
         
        
     def testStats(self):

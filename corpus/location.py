@@ -21,7 +21,11 @@ class LocationLookup:
         "Amsterdam": "Q727",
         "Amsterdam, Netherlands":"Q727",
         "Amsterdam, The Netherlands":"Q727",
-        "Thessaloniki, Greece": "Q17151"
+        "Thessaloniki, Greece": "Q17151",
+        "Cambridge, UK": "Q350",
+        "Montreal, QC": "Q340",
+        "Santa Barbara, California": "Q159288",
+        "Cambridge, MA":"Q49111"
     }
     other={
         "Washington, DC, USA": "Q61",
