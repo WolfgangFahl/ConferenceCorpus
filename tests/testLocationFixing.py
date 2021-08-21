@@ -8,7 +8,7 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from corpus.location import LocationLookup
 from collections import Counter
-from geograpy.locator import City
+from geograpy.locator import City,Locator
 from lodstorage.query import Query
 from lodstorage.tabulateCounter import TabulateCounter
 from corpus.event import EventStorage
@@ -23,6 +23,11 @@ class TestLocationFixing(DataSourceTest):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # makes sure the geograpy3 data is available
+        Locator.resetInstance()
+        locator=Locator.getInstance()
+        locator.downloadDB()
+        
         cls.locationLookup=LocationLookup()
         lookupIds=["crossref","confref","wikidata","wikicfp"]
         cls.lookup=CorpusLookup(lookupIds=lookupIds)
