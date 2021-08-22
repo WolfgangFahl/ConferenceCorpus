@@ -92,20 +92,6 @@ limit 20"""),
         if self.debug:
             print(f"locationLooup failed for {failures}")
         self.assertEqual(0,len(failures))
-        
-
-    def getCounter(self,events:list,propertyName:str):
-        '''
-        get a counter for the given propertyName
-        '''
-        counter=Counter()
-        for event in events:
-            if hasattr(event,propertyName):
-                value=getattr(event,propertyName)
-                if value is not None:
-                    counter[value]+=1
-        tabCounter=TabulateCounter(counter)
-        return counter,tabCounter
 
     def testCrossRefParts(self):
         '''
@@ -124,6 +110,19 @@ limit 20"""),
             print (partCount.most_common())
         self.assertEqual(6,len(partCount))
         pass
+    
+    def getCounter(self,events:list,propertyName:str):
+        '''
+        get a counter for the given propertyName
+        '''
+        counter=Counter()
+        for event in events:
+            if hasattr(event,propertyName):
+                value=getattr(event,propertyName)
+                if value is not None:
+                    counter[value]+=1
+        tabCounter=TabulateCounter(counter)
+        return counter,tabCounter
     
     def fixLocations(self,eventManager,locationAttribute,addLocationInfo=False,limit=100,show=True):
         events=eventManager.events
@@ -146,6 +145,7 @@ limit 20"""),
                 if show:
                     print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
                 events=eventsByLocation[locationText]
+                # loop over all events
                 for event in events:
                     event.city=city.name
                     event.cityWikidataid=city.wikidataid
@@ -170,9 +170,9 @@ limit 20"""),
         test fixing CrossRef locations
         '''
         crossRefDataSource=self.lookup.getDataSource("crossref")
-        limit=50 if self.inCI() else 500
+        limit=50 if self.inCI() else 150
         show=not self.inCI()
-        addLocationInfo=show
+        addLocationInfo=limit>=2000
         self.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=limit,show=show,addLocationInfo=addLocationInfo)
        
     def testWikiCFPLocationFix(self):
@@ -180,9 +180,9 @@ limit 20"""),
         test fixing WikiCFP locations
         '''
         wikicfpDataSource=self.lookup.getDataSource("wikicfp")
-        limit=50 if self.inCI() else 500
+        limit=50 if self.inCI() else 150
         show=not self.inCI()
-        addLocationInfo=show
+        addLocationInfo=limit>=2000
         self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,show=show,addLocationInfo=addLocationInfo) 
         
     def testDblpLocationFix(self):
@@ -199,10 +199,36 @@ limit 20"""),
                     #print(dblpEvent.location)
         limit=50 if self.inCI() else 500
         show=not self.inCI()
-        addLocationInfo=show
+        addLocationInfo=limit>=1000
         self.fixLocations(dblpDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
         
-       
+    def testORLocationFix(self):
+        '''
+        test OpenResearch Location Fixing
+        '''
+        orDataSource=self.lookup.getDataSource("orclone")
+        for orEvent in orDataSource.eventManager.events:
+            loc=""
+            delim=""
+            if orEvent.city:
+                city=orEvent.city.replace("Category:","")
+                loc=f"{city}"
+                delim=", "
+            if orEvent.region:
+                region=orEvent.region.replace("Category:","")
+                loc=f"{loc}{delim}{region}"
+                delim=", "    
+            if orEvent.country:
+                country=orEvent.country.replace("Category:","")
+                loc=f"{loc}{delim}{country}"
+            orEvent.location=loc
+            pass
+        limit=50 if self.inCI() else 200
+        show=not self.inCI()
+        addLocationInfo=limit>=1200
+        self.fixLocations(orDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
+        
+        
     def testStats(self):
         '''
         test ConfRef locations
