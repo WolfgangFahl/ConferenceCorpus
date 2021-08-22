@@ -73,7 +73,7 @@ class EventStorage:
         return tableList
     
     @classmethod
-    def getCommonViewDDLs(cls):
+    def getCommonViewDDLs(cls,exclude=None):
         '''
         get the SQL DDL for a common view 
         
@@ -82,7 +82,7 @@ class EventStorage:
         '''
         # TODO use generalize instead of fixed list
         commonMap={
-            "event": "eventId,title,url,acronym,source,year",
+            "event": "eventId,title,url,city,country,region,countryIso,regionIso,acronym,source,year",
             "eventseries": "source"
         }
         viewDDLs=[]
@@ -95,8 +95,12 @@ class EventStorage:
             for table in tableList:
                 tableName=table["name"]
                 if tableName.startswith(f"{viewName}_"):
-                    createViewDDL=f"{createViewDDL}{delim}  SELECT {common} FROM {tableName}"
-                    delim="\nUNION\n" 
+                    include=True
+                    if exclude is not None:
+                        include=tableName not in exclude
+                    if include:
+                        createViewDDL=f"{createViewDDL}{delim}  SELECT {common} FROM {tableName}"
+                        delim="\nUNION\n" 
             viewDDLs.append(createViewDDL)
         return viewDDLs
         
