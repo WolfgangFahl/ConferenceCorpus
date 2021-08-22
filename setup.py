@@ -12,7 +12,7 @@ except:
     long_description = open('../../README.md').read()
 
 setup(name='ConferenceCorpus',
-      version='0.0.21',
+      version='0.0.22',
       description='python api providing access to academic events and event series from different sources',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -35,7 +35,7 @@ setup(name='ConferenceCorpus',
       ],
       packages=['corpus','corpus.smw','corpus.datasources','corpus.quality'],
       install_requires=[
-          'pylodstorage>=0.0.64',
+          'pylodstorage>=0.0.69',
           'python-dateutil',
           'py-3rdparty-mediawiki>=0.4.10',
           'wikirender>=0.0.24',
