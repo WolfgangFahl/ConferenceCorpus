@@ -250,7 +250,7 @@ limit 20"""),
         lookupIds=["crossref","confref","wikidata","wikicfp","orclone"]
         formats=["latex","grid","mediawiki","github"]
         show=self.debug
-        show=True
+        #show=True
         formats=["mediawiki"]
         
         for lookupId in lookupIds:
