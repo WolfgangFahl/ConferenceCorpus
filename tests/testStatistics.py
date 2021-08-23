@@ -29,7 +29,7 @@ class TestStatistics(DataSourceTest):
     def testIssue255(self):
         '''
         '''
-        show=True
+        show=False
         lookup=self.lookup
         sqlQuery="""select url,endDate-startdate+1 as duration from 
 event_orclone
@@ -54,8 +54,8 @@ order by duration"""
         qm=self.lookup.getQueryManager()
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)
-        #showMarkup=False
-        showMarkup=True
+        showMarkup=False
+        #showMarkup=True
         failCount=0
         for _name,query in qm.queriesByName.items():
             try:
