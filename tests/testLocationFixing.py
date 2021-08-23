@@ -237,7 +237,7 @@ limit 20"""),
                 loc=f"{loc}{delim}{country}"
             orEvent.location=loc
             pass
-        limit=50 if self.inCI() else 100
+        limit=50 if self.inCI() else 1200
         show=not self.inCI()
         addLocationInfo=limit>=1200
         self.fixLocations(orDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)

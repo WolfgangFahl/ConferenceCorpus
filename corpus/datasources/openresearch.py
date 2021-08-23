@@ -9,6 +9,7 @@ from wikifile.wikiFileManager import WikiFileManager
 from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
 from corpus.eventcorpus import EventCorpus,EventDataSource,EventDataSourceConfig
 from corpus.smw.topic import SMWEntity, SMWEntityList
+import urllib
 
 class OR(EventDataSource):
     '''
@@ -299,7 +300,8 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
             baseUrl=wikiUser.getWikiUrl()
             if 'pageTitle' in rawEvent:
                 pageTitle=rawEvent["pageTitle"]
-                url=f"{baseUrl}index.php?title={pageTitle}"
+                qPageTitle=urllib.parse.quote(pageTitle)
+                url=f"{baseUrl}/index.php?title={qPageTitle}"
                 rawEvent['url']=url
         rawEvent['eventId']=rawEvent['pageTitle']
         if 'year' in rawEvent:
