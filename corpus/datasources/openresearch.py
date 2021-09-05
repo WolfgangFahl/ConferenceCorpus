@@ -47,29 +47,6 @@ class OREventManager(EventManager):
     see https://www.openresearch.org
     '''
 
-    propertyLookupList=[
-            { 'prop':'Acronym',             'name': 'acronym',         'templateParam': "Acronym"},
-            { 'prop':'End date',            'name': 'endDate',         'templateParam': "End date"},
-            { 'prop':'Event in series',     'name': 'inEventSeries',   'templateParam': "Series"},
-            { 'prop':'Event presence',      'name': 'presence',        'templateParam': "presence"},
-            { 'prop':'Event type',          'name': 'eventType',       'templateParam': "Type"},
-            { 'prop':'Has_location_country','name': 'country',         'templateParam': "Country"},
-            { 'prop':'Has_location_state',  'name': 'region',          'templateParam': "State"},
-            { 'prop':'Has_location_city',   'name': 'city',            'templateParam': "City"},
-            { 'prop':'Has year',            'name': 'year',            'templateParam': "Year"},
-            { 'prop':'Homepage',            'name': 'homepage',        'templateParam': "Homepage"},
-            { 'prop':'Ordinal',             'name': 'ordinal',         'templateParam': "Ordinal"},
-            { 'prop':'Start date',          'name': 'startDate',       'templateParam': "Start date"},
-            { 'prop':'Title',               'name': 'title',           'templateParam': "Title"},
-            { 'prop':'Accepted papers',     'name': 'acceptedPapers',  'templateParam': "Accepted papers"},
-            { 'prop':'Submitted papers',    'name': 'submittedPapers', 'templateParam': "Submitted papers"},
-            { 'prop':'presence',            'name': 'presence',         'templateParam': "presence"}
-    ]
-
-    '''
-    i represent a list of Events
-    '''
-
     def __init__(self,sourceConfig:EventDataSourceConfig=None,config:StorageConfig=None, verbose:bool=False, debug=False):
         '''
         Constructor
@@ -104,8 +81,8 @@ class OREventManager(EventManager):
             dict: my mapping from wiki property names to LoD attribute Names or None if no mapping is defined
         '''
         lookup = None
-        if 'propertyLookupList' in cls.__dict__:
-            propertyLookupList = cls.__dict__['propertyLookupList']
+        if hasattr(OREvent, 'propertyLookupList'):
+            propertyLookupList = OREvent.propertyLookupList
             lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
         return lookup
 
@@ -148,7 +125,7 @@ class OREventManager(EventManager):
         '''
         get my list of dicts from the given WikiFileManager
         '''
-        if wikiFileManager is None and 'wikiFileManager' in self.__dict__:
+        if wikiFileManager is None and hasattr(self, 'wikiFileManager'):
             wikiFileManager=self.wikiFileManager
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         # TODO set source more specific
@@ -166,12 +143,31 @@ class OREvent(Event):
     templateName = "Event"
     entityName = 'Event'
 
+    propertyLookupList = [
+        {'prop': 'Acronym', 'name': 'acronym', 'templateParam': "Acronym"},
+        {'prop': 'End date', 'name': 'endDate', 'templateParam': "End date"},
+        {'prop': 'Event in series', 'name': 'inEventSeries', 'templateParam': "Series"},
+        {'prop': 'Event presence', 'name': 'presence', 'templateParam': "presence"},
+        {'prop': 'Event type', 'name': 'eventType', 'templateParam': "Type"},
+        {'prop': 'Has_location_country', 'name': 'country', 'templateParam': "Country"},
+        {'prop': 'Has_location_state', 'name': 'region', 'templateParam': "State"},
+        {'prop': 'Has_location_city', 'name': 'city', 'templateParam': "City"},
+        {'prop': 'Has year', 'name': 'year', 'templateParam': "Year"},
+        {'prop': 'Homepage', 'name': 'homepage', 'templateParam': "Homepage"},
+        {'prop': 'Ordinal', 'name': 'ordinal', 'templateParam': "Ordinal"},
+        {'prop': 'Start date', 'name': 'startDate', 'templateParam': "Start date"},
+        {'prop': 'Title', 'name': 'title', 'templateParam': "Title"},
+        {'prop': 'Accepted papers', 'name': 'acceptedPapers', 'templateParam': "Accepted papers"},
+        {'prop': 'Submitted papers', 'name': 'submittedPapers', 'templateParam': "Submitted papers"},
+        {'prop': 'presence', 'name': 'presence', 'templateParam': "presence"}
+    ]
+
     def __init__(self, wikiFile:WikiFile=None):
         '''
         Constructor
         '''
         super().__init__()
-        self.smwHandler=SMWEntity(wikiFile)
+        self.smwHandler=SMWEntity(self, wikiFile)
 
     @property
     def wikiFile(self):
@@ -286,6 +282,32 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
             samplesWikiSon = "..."
 
         return samplesWikiSon
+
+    @classmethod
+    def getPropertyLookup(cls, lookupId: str = 'prop') -> dict:
+        '''
+        get my PropertyLookupList as a map
+
+        Args:
+            lookupId(str): name of the lookup id
+
+        Returns:
+            dict: my mapping from wiki property names to LoD attribute Names or None if no mapping is defined
+        '''
+        lookup = None
+        if hasattr(cls, 'propertyLookupList'):
+            propertyLookupList = getattr(cls, 'propertyLookupList')
+            lookup = {prop[lookupId]: prop['name'] for prop in propertyLookupList}
+        return lookup
+
+    @classmethod
+    def getTemplateParamLookup(cls) -> dict:
+        '''
+        get my templateParam lookup list as a map
+        Returns:
+            dict: my mapping from templateParam names to LoD attribute Names or None if no mapping is defined
+        '''
+        return cls.getPropertyLookup("templateParam")
     
     @staticmethod
     def postProcessLodRecord(rawEvent:dict,wikiUser=None):
@@ -299,6 +321,7 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
             baseUrl=wikiUser.getWikiUrl()
             if 'pageTitle' in rawEvent:
                 pageTitle=rawEvent["pageTitle"]
+                #ToDO escape pageTitle
                 url=f"{baseUrl}index.php?title={pageTitle}"
                 rawEvent['url']=url
         rawEvent['eventId']=rawEvent['pageTitle']
@@ -316,23 +339,6 @@ class OREventSeriesManager(EventSeriesManager):
     '''
     i represent a list of EventSeries
     '''
-
-    propertyLookupList = [
-        {'prop': 'EventSeries acronym', 'name': 'acronym', 'templateParam': 'Acronym'},
-        {'prop': 'DblpSeries', 'name': 'dblpSeries', 'templateParam': 'DblpSeries'},
-        {'prop': 'Homepage', 'name': 'homepage', 'templateParam': 'Homepage'},
-        {'prop': 'Logo', 'name': 'logo', 'templateParam': 'Logo'},
-        {'prop': 'Title', 'name': 'title', 'templateParam': 'Title'},
-        # TODO enable and handle
-        # { 'prop':'Field',      'name': 'subject'},
-        {'prop': 'Wikidataid', 'name': 'wikidataId', 'templateParam': 'WikiDataId'},
-        {'prop': 'WikiCfpSeries', 'name': 'wikiCfpSeries', 'templateParam': 'WikiCfpSeries'},
-        {'prop': 'Period', 'name': 'period', 'templateParam': 'Period'},
-        {'prop': 'Unit', 'name': 'unit', 'templateParam': 'Unit'},
-        {'prop': 'Has CORE Rank', 'name': 'core2018Rank', 'templateParam': 'has CORE2018 Rank'}
-        # TODO add more fields according to
-        # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
-    ]
 
     def __init__(self,sourceConfig:EventDataSourceConfig=None,config:StorageConfig=None, verbose:bool=False, debug=False):
         '''
@@ -371,8 +377,8 @@ class OREventSeriesManager(EventSeriesManager):
             dict: my mapping from wiki property names to LoD attribute Names or None if no mapping is defined
         '''
         lookup = None
-        if 'propertyLookupList' in cls.__dict__:
-            propertyLookupList = cls.__dict__['propertyLookupList']
+        if hasattr(OREventSeries, 'propertyLookupList'):
+            propertyLookupList = OREventSeries.propertyLookupList
             lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
         return lookup
 
@@ -432,12 +438,29 @@ class OREventSeries(EventSeries):
     templateName = "Event series"
     entityName='EventSeries'
 
+    propertyLookupList = [
+        {'prop': 'EventSeries acronym', 'name': 'acronym', 'templateParam': 'Acronym'},
+        {'prop': 'DblpSeries', 'name': 'dblpSeries', 'templateParam': 'DblpSeries'},
+        {'prop': 'Homepage', 'name': 'homepage', 'templateParam': 'Homepage'},
+        {'prop': 'Logo', 'name': 'logo', 'templateParam': 'Logo'},
+        {'prop': 'Title', 'name': 'title', 'templateParam': 'Title'},
+        # TODO enable and handle
+        # { 'prop':'Field',      'name': 'subject'},
+        {'prop': 'Wikidataid', 'name': 'wikidataId', 'templateParam': 'WikiDataId'},
+        {'prop': 'WikiCfpSeries', 'name': 'wikiCfpSeries', 'templateParam': 'WikiCfpSeries'},
+        {'prop': 'Period', 'name': 'period', 'templateParam': 'Period'},
+        {'prop': 'Unit', 'name': 'unit', 'templateParam': 'Unit'},
+        {'prop': 'Has CORE Rank', 'name': 'core2018Rank', 'templateParam': 'has CORE2018 Rank'}
+        # TODO add more fields according to
+        # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
+    ]
+
     def __init__(self, wikiFile:WikiFile=None):
         '''
         Constructor
         '''
         super().__init__()
-        self.smwHandler=SMWEntity(wikiFile)
+        self.smwHandler=SMWEntity(self, wikiFile)
 
     @property
     def wikiFile(self):
@@ -504,3 +527,29 @@ class OREventSeries(EventSeries):
             samplesWikiSon = "..."
 
         return samplesWikiSon
+
+    @classmethod
+    def getPropertyLookup(cls, lookupId: str = 'prop') -> dict:
+        '''
+        get my PropertyLookupList as a map
+
+        Args:
+            lookupId(str): name of the lookup id
+
+        Returns:
+            dict: my mapping from wiki property names to LoD attribute Names or None if no mapping is defined
+        '''
+        lookup = None
+        if hasattr(cls, 'propertyLookupList'):
+            propertyLookupList = getattr(cls, 'propertyLookupList')
+            lookup = {prop[lookupId]: prop['name'] for prop in propertyLookupList}
+        return lookup
+
+    @classmethod
+    def getTemplateParamLookup(cls) -> dict:
+        '''
+        get my templateParam lookup list as a map
+        Returns:
+            dict: my mapping from templateParam names to LoD attribute Names or None if no mapping is defined
+        '''
+        return cls.getPropertyLookup("templateParam")
