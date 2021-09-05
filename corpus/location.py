@@ -5,7 +5,6 @@ Created on 2021-08-11
 '''
 #from lodstorage.entity import EntityManager
 from geograpy.locator import LocationContext
-import OSMPythonTools
 from OSMPythonTools.nominatim import Nominatim 
 import os
 import logging
@@ -17,15 +16,72 @@ class LocationLookup:
     preDefinedLocations={
         "Not Known": None,
         "Online": None,
-        "Valencia, Spain": "Q8818",
+        "Albuquerque, New Mexico, USA":"Q34804",
+        "Alexandria, Virginia, USA":"Q88",
         "Amsterdam": "Q727",
-        "Amsterdam, Netherlands":"Q727",
+        "Amsterdam, Amsterdam": "Q727",
+        "Amsterdam Netherlands": "Q727",
+        "Amsterdam, Netherlands": "Q727",
         "Amsterdam, The Netherlands":"Q727",
-        "Thessaloniki, Greece": "Q17151",
-        "Cambridge, UK": "Q350",
+        "Bergen, Norway":"Q26793",
+        "Bremen, Germany": "Q24879",
+        "Cancun, Mexico":"Q8969",
+        "Cancún, Mexico": "Q8969",
+        "Cambridge, United Kingdom": "Q21713103",
+        "Cambridge, UK": "Q21713103",
+        "Cambridge, USA": "Q49111",
+        "Cambridge, MA":"Q49111",
+        "Cambridge, Massachusetts, USA":"Q49111",
+        "Cambridge, MA, USA":"Q49111",
+        "Charleston, South Carolina, USA":"Q47716",
+        "Gdansk, Poland":"Q1792",
+        "Heraklion, Crete, Greece":"Q160544",
+        "Los Angeles California": "Q65",
+        "Los Angeles CA USA": "Q65",
+        "Luxembourg, Luxembourg":"Q1842",
+        "Macau, Macau, China":"Q14773",
+        "Monterrey, Mexico":"Q81033",
         "Montreal, QC": "Q340",
+        "Montreal, QC, Canada": "Q340",
+        "Montrèal, Canada": "Q340",
+        "New Brunswick, New Jersey, USA":"Q138338",
+        "New Delhi": "Q987",
+        "New Delhi, India": "Q987",
+        "New Orleans, LA": "Q34404",
+        "Palo Alto, USA": "Q47265",
+        "Palo Alto, California, USA": "Q47265",
+        "Pasadena, California, USA":"Q485176",
+        "Phoenix": "Q16556",
+        "Phoenix, AZ": "Q16556",
+        "Phoenix AZ USA": "Q16556",
+        "Phoenix, Arizona, USA": "Q16556",
+        "Phoenix, USA":  "Q16556",
+        "Phoenix, USA": "Q16556",
+        "Phoenix, AZ, USA": "Q16556",
+        "Salamanca, Spain": "Q15695",
         "Santa Barbara, California": "Q159288",
-        "Cambridge, MA":"Q49111"
+        "Santa Barbara, CA": "Q159288",
+        "Santa Barbara, CA, USA": "Q159288",
+        "Santa Barbara CA USA":  "Q159288",
+        "Santa Barbara, USA": "Q159288",
+        "Santa Barbara, California, USA": "Q159288",
+        "Santa Fe, New Mexico": "Q38555",
+        "Santa Fe, NM, USA": "Q38555",
+        "Santa Fe, New Mexico, USA": "Q38555",
+        "Santa Fe, USA": "Q38555",
+        "Santa Fe, New Mexico, United States": "Q38555",
+        "Skovde, Sweden": "Q21166",
+        "Snowbird, Utah, USA": "Q3487194",
+        "St. Louis, MO, USA": "Q38022",
+        "St. Petersburg": "Q656",
+        "Saint-Petersburg, Russia":"Q656",
+        "Thessaloniki": "Q17151",
+        "Thessaloniki, Greece": "Q17151",
+        "Trondheim, Norway":"Q25804",
+        "Valencia": "Q8818",
+        "Valencia, Spain": "Q8818",  
+        "Valencia, Valencia, Spain": "Q8818",  
+        "York, UK":"Q42462"
     }
     other={
         "Washington, DC, USA": "Q61",
@@ -38,9 +94,8 @@ class LocationLookup:
         "London United Kingdom": "Q84",
         "Brno":"Q14960",
         "Cancun":"Q8969",
-        "St. Petersburg": "Q656",
         "Gothenburg Sweden": "Q25287",
-        "Los Angeles California": "Q65",
+        
         "Zurich, Switzerland": "Q72",
         "Barcelona Spain": "Q1492",
         "Vienna Austria": "Q1741",
@@ -111,10 +166,19 @@ class LocationLookup:
         return location
         
     def lookup(self,locationText:str):
+        if locationText in LocationLookup.preDefinedLocations:
+            locationId=LocationLookup.preDefinedLocations[locationText]
+            if locationId is None:
+                return None
+            else:
+                location=self.getCityByWikiDataId(locationId)
+                if location is None:
+                    print(f"❌❌-predefinedLocation {locationText}→{locationId} wikidataId not resolved")
+                return location
         lg=self.lookupGeograpy(locationText)
         ln=self.lookupNominatim(locationText)
         if ln is not None and lg is not None and not ln.wikidataid==lg.wikidataid:
-            print(f"❌{locationText}→{lg}!={ln}")
+            print(f"❌❌{locationText}→{lg}!={ln}")
             return None
         return lg
         
@@ -122,13 +186,6 @@ class LocationLookup:
         '''
         lookup the given location by the given locationText
         '''
-        if locationText in LocationLookup.preDefinedLocations:
-            locationId=LocationLookup.preDefinedLocations[locationText]
-            if locationId is None:
-                return None
-            else:
-                location=self.getCityByWikiDataId(locationId)
-                return location
         locations=self.locationContext.locateLocation(locationText)
         if len(locations)>0:
             return locations[0]

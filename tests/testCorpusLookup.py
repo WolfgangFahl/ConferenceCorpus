@@ -54,12 +54,13 @@ class TestCorpusLookup(DataSourceTest):
         '''
         test the view DDL
         '''
-        viewDDLs=EventStorage.getCommonViewDDLs()
+        viewDDLs=EventStorage.getCommonViewDDLs(exclude=["event_wikidata","event_orclonebackup","event_or","event_orbackup"])
         debug=self.debug
-        #debug=True
+        debug=True
         
         if debug:
-            print(viewDDLs)
+            for viewDDL in viewDDLs:
+                print(viewDDL)
         self.assertEqual(2,len(viewDDLs))
         for viewDDL in viewDDLs:
             self.assertTrue("CREATE VIEW" in viewDDL)

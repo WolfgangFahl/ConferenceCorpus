@@ -18,6 +18,9 @@ class EventStorage:
     '''
     common storage aspects of the EventManager and EventSeriesManager
     '''
+    profile=True
+    withShowProgress=False
+    
     @staticmethod
     def getStorageConfig(debug:bool=False,mode='sql')->StorageConfig:
         '''
@@ -40,6 +43,8 @@ class EventStorage:
             raise Exception(f"invalid mode {mode}")
         config.cacheDirName="conferencecorpus"
         cachedir=config.getCachePath() 
+        config.profile=EventStorage.profile
+        config.withShowProgress=EventStorage.withShowProgress
         if mode=='sql':
             config.cacheFile=f"{cachedir}/EventCorpus.db"
         return config
@@ -73,7 +78,7 @@ class EventStorage:
         return tableList
     
     @classmethod
-    def getCommonViewDDLs(cls):
+    def getCommonViewDDLs(cls,exclude=None):
         '''
         get the SQL DDL for a common view 
         
@@ -82,7 +87,7 @@ class EventStorage:
         '''
         # TODO use generalize instead of fixed list
         commonMap={
-            "event": "eventId,title,url,acronym,source,year",
+            "event": "eventId,title,url,city,country,region,countryIso,regionIso,acronym,source,year",
             "eventseries": "source"
         }
         viewDDLs=[]
@@ -95,8 +100,12 @@ class EventStorage:
             for table in tableList:
                 tableName=table["name"]
                 if tableName.startswith(f"{viewName}_"):
-                    createViewDDL=f"{createViewDDL}{delim}  SELECT {common} FROM {tableName}"
-                    delim="\nUNION\n" 
+                    include=True
+                    if exclude is not None:
+                        include=tableName not in exclude
+                    if include:
+                        createViewDDL=f"{createViewDDL}{delim}  SELECT {common} FROM {tableName}"
+                        delim="\nUNION\n" 
             viewDDLs.append(createViewDDL)
         return viewDDLs
         
@@ -185,6 +194,7 @@ class EventBaseManager(EntityManager):
         self.profile=profile
         if config is None:
             config=EventStorage.getStorageConfig(debug=debug)
+            self.profile=config.profile
         if sourceConfig is not None:
             tableName=sourceConfig.getTableName(entityName)
         else:
@@ -271,7 +281,7 @@ class EventManager(EventBaseManager):
         '''
         constructor 
         '''
-        super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,sourceConfig=sourceConfig,config=config,handleInvalidListTypes=True,debug=debug)
+        super(EventManager, self).__init__(name=name,entityName="Event",entityPluralName="Events",primaryKey=primaryKey,listName="events",clazz=clazz,sourceConfig=sourceConfig,config=config,handleInvalidListTypes=True,debug=debug,profile=config.profile if config else False)
         
  
     def linkSeriesAndEvent(self, eventSeriesManager:EventSeriesManager, seriesKey:str="series"):

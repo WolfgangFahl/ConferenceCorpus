@@ -149,9 +149,12 @@ limit 20"""),
                 for event in events:
                     event.city=city.name
                     event.cityWikidataid=city.wikidataid
+                    
                     event.region=city.region.name
+                    event.regionIso=city.region.iso
                     event.regionWikidataid=city.region.wikidataid
                     event.country=city.country.name
+                    event.countryIso=city.country.iso
                     event.countryWikidataid=city.country.wikidataid
             else:
                 if show:
@@ -164,13 +167,24 @@ limit 20"""),
         if addLocationInfo:
             eventManager.store()       
     
-    
+    def testConfRefLocationFix(self):
+        '''
+        test fixing confref locations
+        '''
+        confrefDataSource=self.lookup.getDataSource("confref")
+        limit=50 if self.inCI() else 200
+        show=not self.inCI()
+        addLocationInfo=limit>=2000
+        for event in confrefDataSource.eventManager.events:
+            event.location=f"{event.city}, {event.country}"
+        self.fixLocations(confrefDataSource.eventManager,locationAttribute="location",limit=limit,show=show,addLocationInfo=addLocationInfo)
+        
     def testCrossRefLocationFix(self):
         '''
         test fixing CrossRef locations
         '''
         crossRefDataSource=self.lookup.getDataSource("crossref")
-        limit=50 if self.inCI() else 150
+        limit=50 if self.inCI() else 200
         show=not self.inCI()
         addLocationInfo=limit>=2000
         self.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=limit,show=show,addLocationInfo=addLocationInfo)
@@ -197,7 +211,7 @@ limit 20"""),
                 if len(parts)>3:
                     dblpEvent.location=f"{parts[2].strip()}, {parts[3].strip()}"
                     #print(dblpEvent.location)
-        limit=50 if self.inCI() else 500
+        limit=50 if self.inCI() else 100
         show=not self.inCI()
         addLocationInfo=limit>=1000
         self.fixLocations(dblpDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
@@ -236,7 +250,7 @@ limit 20"""),
         lookupIds=["crossref","confref","wikidata","wikicfp","orclone"]
         formats=["latex","grid","mediawiki","github"]
         show=self.debug
-        show=True
+        #show=True
         formats=["mediawiki"]
         
         for lookupId in lookupIds:

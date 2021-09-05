@@ -94,6 +94,20 @@
         where endDate is not Null and startDate is not Null
         group by duration
         order by 2 
+'OPENRESEARCH conference durations':
+    sql: |
+        select count(*),endDate-startdate+1 as duration from 
+        event_orclone
+        where endDate is not Null and startDate is not Null
+        group by duration
+        order by 2 
+'OPENRESEARCH country distribution':
+    sql: |
+        select count(*),countryIso 
+        from event_orclone
+        group by countryIso
+        order by 1 desc
+        limit 100
 
 
 

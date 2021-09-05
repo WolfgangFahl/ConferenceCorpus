@@ -20,7 +20,7 @@ class TestOpenResearch(DataSourceTest):
         # by convention the lookupId "or" is for the OpenResearch via API / WikiUser access
         # the lookupId "orclone" is for for the access via API on the OpenResearch clone
         self.lookup = CorpusLookup(lookupIds=["or", "or-backup", "orclone", "orclone-backup"],configure=self.configureCorpusLookup)
-        self.lookup.load(forceUpdate=False)   # forceUpdate=True to test the filling of the cache
+        self.lookup.load(forceUpdate=True)   # forceUpdate=True to test the filling of the cache
 
     def configureCorpusLookup(self,lookup:CorpusLookup):
         '''
