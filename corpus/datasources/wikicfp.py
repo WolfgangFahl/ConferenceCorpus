@@ -156,7 +156,7 @@ class WikiCfpEventManager(EventManager):
  
 class WikiCfpEventSeriesManager(EventSeriesManager):
     '''
-    mange WikiCFP derived scientific conference series
+    manage WikiCFP derived scientific conference series
     '''
 
     def __init__(self, config:StorageConfig=None):
