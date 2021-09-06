@@ -230,7 +230,8 @@ class OREvent(Event):
                 'pageTitle': 'IDC 2009',
                 'ordinal': 8,
                 'year':2009,
-                'yearStr':'2009'
+                'yearStr':'2009',
+                'url':'https://confident.dbis.rwth-aachen.de/or/index.php?title=IDC_2009'
             }
 
         ]
@@ -416,6 +417,7 @@ class OREventSeriesManager(EventSeriesManager):
             wikiuser=self.wikiUser
         lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
         self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
+        self.postProcessLodRecords(lod, wikiUser=wikiuser)
         return lod
 
     def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
@@ -428,6 +430,7 @@ class OREventSeriesManager(EventSeriesManager):
             wikiFileManager=self.wikiFileManager
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         self.setAllAttr(lod,"source",f"{wikiFileManager.wikiUser.wikiId}-backup")
+        self.postProcessLodRecords(lod, wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser)
         return lod
 
 class OREventSeries(EventSeries):
@@ -497,7 +500,8 @@ class OREventSeries(EventSeries):
                 "title": "IEEE Symposium on 3D User Interfaces",
                 "period": "year",
                 "unit": 1,
-                "wikidataId": "Q105456162"
+                "wikidataId": "Q105456162",
+                'url': 'https://confident.dbis.rwth-aachen.de/or/index.php?title=3DUI'
             }, ]
         return samplesLOD
 
@@ -528,6 +532,23 @@ class OREventSeries(EventSeries):
             samplesWikiSon = "..."
 
         return samplesWikiSon
+
+    @staticmethod
+    def postProcessLodRecord(rawEvent: dict, wikiUser=None):
+        '''
+        fix the given raw Event
+
+        Args:
+            rawEvent(dict): the raw event record to fix
+        '''
+        if wikiUser is not None:
+            baseUrl = wikiUser.getWikiUrl()
+            if 'pageTitle' in rawEvent:
+                pageTitle = rawEvent["pageTitle"]
+                qPageTitle = urllib.parse.quote(pageTitle)
+                url = f"{baseUrl}/index.php?title={qPageTitle}"
+                rawEvent['url'] = url
+        rawEvent['seriesId'] = rawEvent['pageTitle']
 
     @classmethod
     def getPropertyLookup(cls, lookupId: str = 'prop') -> dict:
