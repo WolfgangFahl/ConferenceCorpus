@@ -13,6 +13,7 @@ from lodstorage.sql import SQLDB
 from lodstorage.storageconfig import StorageConfig
 from corpus.quality.rating import RatingManager,Rating
 from corpus.eventrating import EventRating,EventSeriesRating
+from lodstorage.sparql import SPARQL
 
 class EventStorage:
     '''
@@ -260,6 +261,17 @@ class EventBaseManager(EntityManager):
         if hasattr(self.clazz,"postProcessLodRecord") and callable(self.clazz.postProcessLodRecord): 
             for rawEvent in listOfDicts:
                 self.clazz.postProcessLodRecord(rawEvent,**kwArgs)
+                
+    def getLoDfromEndpoint(self)->list:
+        '''
+        get my content from my endpoint
+        '''
+        sparql=SPARQL(self.endpoint)
+        query=self.getSparqlQuery()
+        listOfDicts=sparql.queryAsListOfDicts(query)
+        self.postProcessLodRecords(listOfDicts)
+        self.setAllAttr(listOfDicts,"source",self.source)
+        return listOfDicts
     
 class EventSeriesManager(EventBaseManager):
     '''

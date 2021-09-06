@@ -93,6 +93,8 @@ class WikidataEventManager(EventManager):
         '''
         Constructor
         '''
+        self.source="wikidata"
+        self.endpoint=Wikidata.endpoint
         super(WikidataEventManager,self).__init__(name="WikidataEvents", sourceConfig=Wikidata.sourceConfig,clazz=WikidataEvent,config=config)
         
     def configure(self):
@@ -104,7 +106,7 @@ class WikidataEventManager(EventManager):
    
     def getSparqlQuery(self):
         '''
-        get  the SPARQL query for this series
+        get  the SPARQL query for this event manager
         
         see also 
            https://github.com/TIBHannover/confiDent-dataimports/blob/master/wip/wikidata_academic_conferences.rq
@@ -192,16 +194,6 @@ WHERE
 """
         return query
     
-    def getLoDfromEndpoint(self,endpoint=Wikidata.endpoint):
-        '''
-        get my content from the given endpoint
-        '''
-        sparql=SPARQL(endpoint)
-        query=self.getSparqlQuery()
-        listOfDicts=sparql.queryAsListOfDicts(query)
-        self.postProcessLodRecords(listOfDicts)
-        return listOfDicts
-    
 class WikidataEventSeriesManager(EventSeriesManager):
     '''
     wikidata scientific conference Series Manager
@@ -211,6 +203,8 @@ class WikidataEventSeriesManager(EventSeriesManager):
         '''
         Constructor
         '''
+        self.source="wikidata"
+        self.endpoint=Wikidata.endpoint
         super(WikidataEventSeriesManager,self).__init__(name="WikidataEventSeries", sourceConfig=Wikidata.sourceConfig,clazz=WikidataEventSeries,config=config)
         
     def configure(self):
@@ -222,7 +216,7 @@ class WikidataEventSeriesManager(EventSeriesManager):
         
     def getSparqlQuery(self):
         '''
-        get  the SPARQL query for this series
+        get  the SPARQL query for this series  manager
         '''
         query="""
         # Conference Series wikidata query
@@ -277,17 +271,5 @@ class WikidataEventSeriesManager(EventSeriesManager):
         ORDER BY (?acronym)
 """
         return query
-
-    def getLoDfromEndpoint(self,endpoint=Wikidata.endpoint)->list:
-        '''
-        get my content from the given endpoint
-        '''
-        sparql=SPARQL(endpoint)
-        query=self.getSparqlQuery()
-        listOfDicts=sparql.queryAsListOfDicts(query)
-        self.postProcessLodRecords(listOfDicts)
-        self.setAllAttr(listOfDicts,"source","wikidata")
-        return listOfDicts
-            
         
         
