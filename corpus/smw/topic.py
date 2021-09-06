@@ -4,6 +4,7 @@ Created on 2021-07-21
 @author: wf
 '''
 from lodstorage.entity import EntityManager
+from lodstorage.jsonable import JSONAble
 from lodstorage.lod import LOD
 from wikibot.wikiuser import WikiUser
 from wikibot.wikiclient import WikiClient
@@ -20,36 +21,53 @@ class SMWEntity(object):
     an Entity stored in Semantic MediaWiki in WikiSon notation
     '''
 
-    def __init__(self, wikiFile=None):
+    def __init__(self, entity:JSONAble, wikiFile=None):
         '''
         Constructor
         '''
-        super().__init__()
+        self.entity=entity
         self.wikiFile = wikiFile
 
     @classmethod
-    def fromWikiSonToLod(cls, record: dict, lookup: dict) -> dict:
+    def updateDictKeys(cls, record: dict, lookup: dict, reverseLookup:bool=False) -> dict:
         '''
-        convert the given record from wikiSon to list of dict with the given lookup map
+        Updates the keys of the given record bassed on the given lookup dict.
+        The key of the given lookup dict identifies the old key and the value the new key
 
         Args:
             cls: the class this is called for
-            record(dict): the original record in WikiSon format
-            lookup(dict): the mapping of keys/names for the name/value pairs
+            record(dict): the record to be updated
+            lookup(dict): the mapping of keys/names for the new key names
+            reverseLookup(bool): If true the lookup is reversed
         Return:
-            dict: a dict which replaces name,value pairs with lookup[name],value pairs
+            dict: given record with updated keys
         '''
+        reverseDict = lambda d: {value:key for key, value in d.items()}
         result = None
         if record:
             result = {}
-            for propertyKey in lookup:
-                templateKey = lookup[propertyKey].get('templateParam')
-                if templateKey in record:
-                    newKey = lookup[propertyKey].get('name')
-                    if newKey is not None:
-                        result[newKey] = record[templateKey]
-                        # del record[key]
+            if reverseLookup:
+                lookup=reverseDict(lookup)
+            for oldKey, newKey in lookup.items():
+                if oldKey in record:
+                    result[newKey] = record[oldKey]
         return result
+
+    def saveToWikiText(self, overwrite:bool=False):
+        '''
+        Saves the entity to a wikiText file. The wikiSon in the files is updated with the values of the entity
+        Args:
+            lookup(dict): lookup from entity properties to wikiSon template parameter names
+            overwrite(bool): If True existing files might be overwritten
+        '''
+        wikiSonRecords=self.entity.__dict__
+        lookup=self.entity.getTemplateParamLookup()
+        if lookup:
+            wikiSonRecords=self.updateDictKeys(wikiSonRecords, lookup, reverseLookup=True)
+        self.wikiFile.add_template(self.entity.templateName,wikiSonRecords, overwrite=overwrite)
+        self.wikiFile.save_to_file(overwrite=overwrite)
+
+
 
 
 class SMWEntityList(object):
@@ -57,13 +75,13 @@ class SMWEntityList(object):
     Semantic MediaWiki backed entity list
     '''
 
-    def __init__(self, entityManager:EntityManager):
+    def __init__(self, entityManager:EntityManager, wikiFileManager:WikiFileManager=None):
         self.entityManager=entityManager
         self.profile = False
         self.debug = False
         self.wikiClient = None
         self.wikiPush = None
-        self.wikiFileManager = None
+        self.wikiFileManager = wikiFileManager
         self.askExtra = ""
 
     @classmethod
@@ -112,8 +130,8 @@ class SMWEntityList(object):
 |?Last editor is=lastEditor
 """ % (selector, askExtra)
         if propertyLookupList is None:
-            if self.entityManager is not None and'propertyLookupList' in self.entityManager.__class__.__dict__:
-                propertyLookupList = self.entityManager.__class__.__dict__['propertyLookupList']
+            if self.entityManager is not None and hasattr(self.entityManager.clazz, 'propertyLookupList'):
+                propertyLookupList = getattr(self.entityManager.clazz, 'propertyLookupList')
         for propertyLookup in propertyLookupList:
             propName = propertyLookup['prop']
             name = propertyLookup['name']
@@ -169,8 +187,7 @@ class SMWEntityList(object):
         '''
         templateName = self.entityManager.clazz.templateName
         wikiSonLod = WikiFileManager.convertWikiFilesToLOD(wikiFileList, templateName)
-        propertyLookup = self.getPropertyLookup()
-        lod = self.normalizeLodFromWikiSonToLod(wikiSonLod, propertyLookup)
+        lod = self.normalizeLodFromWikiSonToLod(wikiSonLod)
         return lod
 
     def fromWikiFileManager(self, wikiFileManager):
@@ -187,19 +204,6 @@ class SMWEntityList(object):
         lod=self.getLoDfromWikiFiles(wikiFileList)
         self.entityManager.fromLoD(lod)
 
-    def getPropertyLookup(self) -> dict:
-        '''
-        get my PropertyLookupList as a map
-
-        Returns:
-            dict: my mapping from wiki property names to LoD attribute Names or None if no mapping is defined
-        '''
-        lookup = None
-        if 'propertyLookupList' in self.entityManager.__class__.__dict__:
-            propertyLookupList = self.entityManager.__class__.__dict__['propertyLookupList']
-            lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
-        return lookup
-
     def fromSampleWikiSonLod(self, entityClass):
         '''
         get a list of dicts derived form the wikiSonSamples
@@ -214,8 +218,7 @@ class SMWEntityList(object):
             wikiFileList.append(wikiFile)
         self.fromWikiFiles(wikiFileList)
 
-    @staticmethod
-    def normalizeLodFromWikiSonToLod(wikiSonRecords: list, lookup:dict) -> list:
+    def normalizeLodFromWikiSonToLod(self, wikiSonRecords: list) -> list:
         '''
         normalize the given LOD to the properties in the propertyLookupList
 
@@ -226,14 +229,26 @@ class SMWEntityList(object):
             list: a list of dict to retrieve entities from
         '''
         lod = []
-        if lookup is not None:
-            # convert all my records (in place)
+        lookup=None
+        if callable(getattr(self.entityManager, "getPropertyLookup", None)):
+            lookup=self.entityManager.clazz.getTemplateParamLookup()
+        if lookup:
             for record in wikiSonRecords:
                 if not isinstance(record, dict):
                     continue
-                normalizedDict = SMWEntity.fromWikiSonToLod(record, lookup)
+                normalizedDict = SMWEntity.updateDictKeys(record, lookup)
                 # make sure the pageTitle survives (it is not in the property mapping ...)
                 if "pageTitle" in record:
                     normalizedDict["pageTitle"] = record["pageTitle"]
                 lod.append(normalizedDict)
         return lod
+
+    def interlinkEnititesWithWikiMarkupFile(self):
+        '''
+        Assigns the correspondingWikiFile to the SMWEntity
+        '''
+        for entity in self.entityManager.getList():
+            if hasattr(entity, "pageTitle"):
+                wikiFile=self.wikiFileManager.getWikiFile(entity.pageTitle)
+                if hasattr(entity, 'smwHandler'):
+                    entity.smwHandler.wikiFile=wikiFile
