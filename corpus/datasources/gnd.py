@@ -13,6 +13,7 @@ class GND(EventDataSource):
     https://d-nb.info/standards/elementset/gnd
     '''
     endpoint="https://confident.dbis.rwth-aachen.de/jena/gnd/sparql"
+    limit=100000
     sourceConfig = EventDataSourceConfig(lookupId="gnd", name="GND", url='https://d-nb.info/standards/elementset/gnd', title='Gemeinsame Normdatei', tableSuffix="gnd")
     
     def __init__(self,debug=False):
@@ -73,11 +74,12 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX dc: <http://purl.org/dc/terms/>
 PREFIX wdrs: <http://www.w3.org/2007/05/powder-s#>
 
-SELECT  ?event ?eventId ?acronym  ?variant ?title ?date ?areaCode ?place ?topic ?homepage 
+SELECT  ?event ?eventId ?acronym  ?sameAs ?variant ?title ?date ?areaCode ?place ?topic ?homepage ?prec ?succ
 WHERE {
   ?event a gnd:ConferenceOrEvent.
   ?event gnd:gndIdentifier ?eventId.
   OPTIONAL { ?event gnd:abbreviatedNameForTheConferenceOrEvent ?acronym. }
+  OPTIONAL { ?event owl:sameAs ?sameAs. }
   OPTIONAL { ?event gnd:variantNameForTheConferenceOrEvent ?variant.}
   OPTIONAL { ?event gnd:preferredNameForTheConferenceOrEvent ?title.}
   OPTIONAL { ?event gnd:dateOfConferenceOrEvent ?date. }
@@ -85,8 +87,10 @@ WHERE {
   OPTIONAL { ?event gnd:placeOfConferenceOrEvent ?place. }
   OPTIONAL { ?event gnd:topic ?topic. }
   OPTIONAL { ?event gnd:homepage ?homepage. }
+  OPTIONAL { ?event gnd:precedingConferenceOrEvent ?prec }.
+  OPTIONAL { ?event gnd:succeedingConferenceOrEvent ?succ }.
 }
-LIMIT 1000"""
+LIMIT %d""" % (GND.limit)
         return sparql
 
 class GndEventSeriesManager(EventSeriesManager):

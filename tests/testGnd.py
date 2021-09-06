@@ -6,6 +6,8 @@ Created on 05.09.2021
 import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
+from corpus.datasources.gnd import GND
+import math
     
 class TestGnd(DataSourceTest):
     '''
@@ -20,9 +22,11 @@ class TestGnd(DataSourceTest):
         test getting conference information from Gemeinsame Normdatei
         '''
         lookup=CorpusLookup(lookupIds=["gnd"])
-        lookup.load(forceUpdate=True)
+        
+        lookup.load(forceUpdate=False)
         wikidataDataSource=lookup.getDataSource("gnd")
-        self.checkDataSource(wikidataDataSource,1,1000)
+        expected=min(GND.limit,6000)
+        self.checkDataSource(wikidataDataSource,1,expected)
         pass
 
 
