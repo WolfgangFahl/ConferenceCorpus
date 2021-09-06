@@ -130,8 +130,8 @@ class SMWEntityList(object):
 |?Last editor is=lastEditor
 """ % (selector, askExtra)
         if propertyLookupList is None:
-            if self.entityManager is not None and'propertyLookupList' in self.entityManager.__class__.__dict__:
-                propertyLookupList = self.entityManager.__class__.__dict__['propertyLookupList']
+            if self.entityManager is not None and hasattr(self.entityManager.clazz, 'propertyLookupList'):
+                propertyLookupList = getattr(self.entityManager.clazz, 'propertyLookupList')
         for propertyLookup in propertyLookupList:
             propName = propertyLookup['prop']
             name = propertyLookup['name']
