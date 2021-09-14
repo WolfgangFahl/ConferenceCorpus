@@ -9,6 +9,33 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 import getpass
 
+class EventExporter():
+    '''
+    exporter for Events and series
+    '''
+    
+    def __init__(self):
+        '''
+        construct me
+        '''
+        lookup=CorpusLookup(lookupIds=["dblp","wikidata","confref"])
+        lookup.load(forceUpdate=False)
+        self.dblpDataSource=lookup.getDataSource("dblp")
+        self.confrefDataSource=lookup.getDataSource("confref")
+        wikidataDataSource=lookup.getDataSource("wikidata")
+        self.seriesByAcronym,_dup=wikidataDataSource.eventSeriesManager.getLookup("DBLP_pid")
+    
+    def exportSeries2OpenResearch(self,dblpSeriesId):
+        '''
+        export the seriew with the given dblp Series Id to OpenResearch
+        '''
+        eventSeries=self.seriesByAcronym[dblpSeriesId]
+        print(eventSeries.asWikiMarkup())
+        eventBySeries=self.confrefDataSource.eventManager.getLookup("dblpSeriesId",withDuplicates=True)
+        events=eventBySeries[dblpSeriesId]
+        for event in events:
+            print(event.asWikiMarkup(eventSeries.acronym))
+
 class TestOpenResearchExport(DataSourceTest):
     '''
     test the dblp data source
@@ -19,10 +46,7 @@ class TestOpenResearchExport(DataSourceTest):
         '''
         DataSourceTest.setUp(self)
         pass
-    
-    def exportSeries(self,dblpSeriesId):
-        '''
-        '''
+  
 
     def testSeriesExport(self):
         '''
@@ -31,24 +55,14 @@ class TestOpenResearchExport(DataSourceTest):
         # do not run this in CI
         if getpass.getuser()!="wf":
             return
-        lookup=CorpusLookup(lookupIds=["dblp","wikidata","confref"])
-        lookup.load(forceUpdate=False)
-        dblpDataSource=lookup.getDataSource("dblp")
-        confrefDataSource=lookup.getDataSource("confref")
-        wikidataDataSource=lookup.getDataSource("wikidata")
-        seriesByAcronym,_dup=wikidataDataSource.eventSeriesManager.getLookup("DBLP_pid")
-    
+        exporter=EventExporter()
         for acronym in [#'dc','ds'
                         #,'seke','qurator',
-                        'vnc'
+                        #'vnc'
+                        'dawak'
             ]:
             dblpSeriesId=f"conf/{acronym}"
-            eventSeries=seriesByAcronym[dblpSeriesId]
-            print(eventSeries.asWikiMarkup())
-            eventBySeries=confrefDataSource.eventManager.getLookup("dblpSeriesId",withDuplicates=True)
-            events=eventBySeries[dblpSeriesId]
-            for event in events:
-                print(event.asWikiMarkup(eventSeries.acronym))
+            exporter.exportSeries2OpenResearch(dblpSeriesId)
             pass
 
 

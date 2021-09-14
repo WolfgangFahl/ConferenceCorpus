@@ -6,9 +6,11 @@ Created on 05.09.2021
 import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
+from corpus.event import EventStorage
 from corpus.datasources.gnd import GND
 from collections import Counter
 import re
+from lodstorage.query import Query
     
 class TestGnd(DataSourceTest):
     '''
@@ -19,10 +21,13 @@ class TestGnd(DataSourceTest):
         super().setUp(debug=True)
         
         
-    def getGndDataSource(self):
+    def getGndDataSource(self,forceUpdate=False):
+        '''
+        get the Gemeinsame Normdatei Datasource
+        '''
         lookup=CorpusLookup(lookupIds=["gnd"])
         
-        lookup.load(forceUpdate=False)
+        lookup.load(forceUpdate=forceUpdate)
         gndDataSource=lookup.getDataSource("gnd")
         return gndDataSource
 
@@ -30,7 +35,7 @@ class TestGnd(DataSourceTest):
         '''
         test getting conference information from Gemeinsame Normdatei
         '''
-        gndDataSource=self.getGndDataSource()
+        gndDataSource=self.getGndDataSource(forceUpdate=True)
         expected=min(GND.limit,6000)
         self.checkDataSource(gndDataSource,1,expected)
         pass
@@ -108,6 +113,26 @@ class TestGnd(DataSourceTest):
         for event in events:
             self.gndTitleExtract(event,counter)
         print (counter.most_common())
+        
+    def testStats(self):
+        '''
+        test statistics
+        '''
+        EventStorage.withShowProgress=True
+        _gndDataSource=self.getGndDataSource()
+        sqlDB=EventStorage.getSqlDB()
+        sql="""select count(*) as count,title,event 
+from event_GND
+group by title 
+order by 1 desc
+limit 25"""
+        title="GND query duplicates"
+        query=Query(title,sql,lang='sql')
+        eventRecords=sqlDB.query(query.query)
+        dqr=query.documentQueryResult(eventRecords)
+        show=True
+        if show:
+            print(dqr)
 
 
 if __name__ == "__main__":
