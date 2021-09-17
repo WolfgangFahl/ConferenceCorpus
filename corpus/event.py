@@ -148,6 +148,30 @@ class Event(JSONAble):
                 delim=":" 
         return text
     
+    def asWikiMarkup(self,series:str,templateParamLookup:dict)->str:
+        '''
+        Return:
+            my WikiMarkup
+        '''
+        nameValues=""
+        delim=""
+        for wikiName,attrName in templateParamLookup.items():
+            if hasattr(self, attrName):
+                value=getattr(self,attrName)
+                nameValues=f"{nameValues}{delim}|{wikiName}={value}"
+                delim="\n"
+        markup=f"""{{{{Event
+{nameValues}
+}}}}"""
+#|Type=Symposium
+
+#|Submission deadline=2019/09/03
+#|Homepage=http://ieeevr.org/2020/
+#|City=Atlanta
+#|Country=USA
+#}}
+        return markup
+    
 class EventSeries(JSONAble):
     '''
     base class for Event Series entities
@@ -171,6 +195,25 @@ class EventSeries(JSONAble):
                 text+=f"{delim}{value}"
                 delim=":" 
         return text
+    
+    def asWikiMarkup(self)->str:
+        '''
+        convert me to wikimarkup
+        
+        see https://github.com/WolfgangFahl/ConferenceCorpus/issues/10
+        '''
+        #dblpPid=self.DBLP_pid
+        #if dblpPid:
+        #    dblpPid=dblpPid.replace("conf/","")
+        # |WikiDataId=
+        #|Title={self.title}
+        #|Homepage={self.homepage}
+        markup=f"""{{{{Event series
+|Acronym={self.acronym}
+|DblpSeries={self.eventSeriesId}
+}}}}"""
+        #
+        return markup
 
 
 class EventBaseManager(EntityManager):
@@ -272,6 +315,8 @@ class EventBaseManager(EntityManager):
         self.postProcessLodRecords(listOfDicts)
         self.setAllAttr(listOfDicts,"source",self.source)
         return listOfDicts
+    
+    
     
 class EventSeriesManager(EventBaseManager):
     '''

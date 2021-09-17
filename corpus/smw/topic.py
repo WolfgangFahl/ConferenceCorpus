@@ -5,7 +5,6 @@ Created on 2021-07-21
 '''
 from lodstorage.entity import EntityManager
 from lodstorage.jsonable import JSONAble
-from lodstorage.lod import LOD
 from wikibot.wikiuser import WikiUser
 from wikibot.wikiclient import WikiClient
 from wikibot.wikipush import WikiPush
@@ -31,7 +30,7 @@ class SMWEntity(object):
     @classmethod
     def updateDictKeys(cls, record: dict, lookup: dict, reverseLookup:bool=False) -> dict:
         '''
-        Updates the keys of the given record bassed on the given lookup dict.
+        Updates the keys of the given record based on the given lookup dict.
         The key of the given lookup dict identifies the old key and the value the new key
 
         Args:
@@ -56,18 +55,16 @@ class SMWEntity(object):
     def saveToWikiText(self, overwrite:bool=False):
         '''
         Saves the entity to a wikiText file. The wikiSon in the files is updated with the values of the entity
+  
         Args:
-            lookup(dict): lookup from entity properties to wikiSon template parameter names
             overwrite(bool): If True existing files might be overwritten
         '''
-        wikiSonRecords=self.entity.__dict__
+        wikiSonRecord=self.entity.__dict__
         lookup=self.entity.getTemplateParamLookup()
         if lookup:
-            wikiSonRecords=self.updateDictKeys(wikiSonRecords, lookup, reverseLookup=True)
-        self.wikiFile.add_template(self.entity.templateName,wikiSonRecords, overwrite=overwrite)
+            wikiSonRecord=self.updateDictKeys(wikiSonRecord, lookup, reverseLookup=True)
+        self.wikiFile.add_template(self.entity.templateName,wikiSonRecord, overwrite=overwrite)
         self.wikiFile.save_to_file(overwrite=overwrite)
-
-
 
 
 class SMWEntityList(object):
@@ -76,6 +73,9 @@ class SMWEntityList(object):
     '''
 
     def __init__(self, entityManager:EntityManager, wikiFileManager:WikiFileManager=None):
+        '''
+        constructor
+        '''
         self.entityManager=entityManager
         self.profile = False
         self.debug = False

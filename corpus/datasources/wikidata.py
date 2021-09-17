@@ -42,25 +42,6 @@ class WikidataEventSeries(EventSeries):
             if key in rawEvent:
                 rawEvent["url"]=rawEvent[key]
                 rawEvent[key]=rawEvent[key].replace("http://www.wikidata.org/entity/","")
-
-    def asWikiMarkup(self)->str:
-        '''
-        copy me to the given wiki
-        
-        see https://github.com/WolfgangFahl/ConferenceCorpus/issues/10
-        '''
-        dblpPid=self.DBLP_pid
-        if dblpPid:
-            dblpPid=dblpPid.replace("conf/","")
-        markup=f"""{{{{Event series
-|Acronym={self.acronym}
-|Title={self.title}
-|DblpSeries={dblpPid}
-|WikiDataId={self.eventSeriesId}
-|Homepage={self.homepage}
-}}}}"""
-        #
-        return markup
     
 class WikidataEvent(Event):
     '''

@@ -7,6 +7,7 @@ Created on 2021-08-07
 import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
+from corpus.datasources.openresearch import OREvent
 import getpass
 
 class EventExporter():
@@ -23,18 +24,32 @@ class EventExporter():
         self.dblpDataSource=lookup.getDataSource("dblp")
         self.confrefDataSource=lookup.getDataSource("confref")
         wikidataDataSource=lookup.getDataSource("wikidata")
-        self.seriesByAcronym,_dup=wikidataDataSource.eventSeriesManager.getLookup("DBLP_pid")
+        self.wikiDataSeriesByDblpPid,_dup=wikidataDataSource.eventSeriesManager.getLookup("DBLP_pid")
+        self.dblpSeriesById,_dup=self.dblpDataSource.eventSeriesManager.getLookup("eventSeriesId")
+        self.orTemplateParamLookup=OREvent.getTemplateParamLookup()
     
     def exportSeries2OpenResearch(self,dblpSeriesId):
         '''
         export the seriew with the given dblp Series Id to OpenResearch
+        
+        Args:
+            dblpSeriesId(str): the id of the dblp series to be exported
+            
+        Return:
+            int: the number of events exported
         '''
-        eventSeries=self.seriesByAcronym[dblpSeriesId]
-        print(eventSeries.asWikiMarkup())
-        eventBySeries=self.confrefDataSource.eventManager.getLookup("dblpSeriesId",withDuplicates=True)
-        events=eventBySeries[dblpSeriesId]
-        for event in events:
-            print(event.asWikiMarkup(eventSeries.acronym))
+        dblpSeriesPid=f"conf/{dblpSeriesId}"
+        count=0
+        if dblpSeriesId in self.dblpSeriesById:
+            eventSeries=self.dblpSeriesById[dblpSeriesId]
+            print(eventSeries.asWikiMarkup())
+            eventBySeries=self.dblpDataSource.eventManager.getLookup("series",withDuplicates=True)
+            events=eventBySeries[dblpSeriesId]
+            for event in events:
+                print(event.asWikiMarkup(eventSeries.acronym,self.orTemplateParamLookup))
+                count+=1
+        return count
+            
 
 class TestOpenResearchExport(DataSourceTest):
     '''
@@ -59,10 +74,10 @@ class TestOpenResearchExport(DataSourceTest):
         for acronym in [#'dc','ds'
                         #,'seke','qurator',
                         #'vnc'
-                        'dawak'
+                        'dawak','emnlp'
             ]:
-            dblpSeriesId=f"conf/{acronym}"
-            exporter.exportSeries2OpenResearch(dblpSeriesId)
+            dblpSeriesId=f"{acronym}"
+            self.assertTrue(exporter.exportSeries2OpenResearch(dblpSeriesId)>0)
             pass
 
 
