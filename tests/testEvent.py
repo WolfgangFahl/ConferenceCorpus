@@ -12,6 +12,21 @@ class TestEvent(TestCase):
 
 
 
+    def testFromCsv(self):
+        """
+        tests csv string to events conversion.
+        """
+        csvString='''"pageTitle","acronym","ordinal","eventType","subject","startDate","endDate","homepage","title","series","country","region","city","acceptedPapers","submittedPapers","presence","lastEditor","creationDate","modificationDate","year","yearStr"\r
+"ICSME 2020","ICSME 2020",36,"Conference","Software engineering","2020-09-27 00:00:00","2020-09-27 00:00:00","","","","","","","","","","","","","",""\r
+"WebSci 2019","WebSci 2019",10,"Conference","","2019-06-30 00:00:00","2019-07-03 00:00:00","http://websci19.webscience.org/","10th ACM Conference on Web Science","WebSci","USA","US-MA","Boston",41,120,"online","","","","",""\r
+"5GU 2017","5GU 2017",2,"Conference","","2017-06-08 00:00:00","2017-06-09 00:00:00","http://5guconference.org/2017/show/cf-papers","2nd EAI International Conference on 5G for Ubiquitous Connectivity","5GU","Australia","","Melbourne","","","","Wolfgang Fahl","2016-09-25 07:36:02","2020-11-05 12:33:23","",""\r
+"IDC 2009","IDC 2009",8,"","","","","","The 8th International Conference on Interaction Design and Children","","","","","","","","","","",2009,"2010"\r
+'''
+        self.eventManager.fromCsv(csvString=csvString)
+        for event in self.eventManager.getList():
+            if getattr(event,self.eventManager.primaryKey) == "IDC 2009":
+                self.assertEqual(getattr(event,'yearStr'),'2010')
+
     def testAsCsv(self):
         '''
         test csv conversion of events
@@ -107,7 +122,7 @@ class TestEvent(TestCase):
                 'title': 'Web Science Conference'
             }
         ]
-        self.eventManager = EventManager(name="TestEventManager", clazz=Event)
+        self.eventManager = EventManager(name="TestEventManager", clazz=Event, primaryKey='pageTitle')
         self.eventManager.fromLoD(sampleEvents)
         self.eventSeriesManager = EventSeriesManager(name="TestEventSeriesManager", clazz=EventSeries)
         self.eventSeriesManager.fromLoD(sampleEventSeries)

@@ -147,7 +147,18 @@ class Event(JSONAble):
                 text+=f"{delim}{value}"
                 delim=":" 
         return text
-    
+
+    def getRecord(self):
+        fields = None
+        if hasattr(self, 'getSamples') and callable(getattr(self, 'getSamples')):
+            fields = LOD.getFields(self.getSamples())
+        record = {}
+        recordDict= self.__dict__
+        for field in fields:
+            if field in recordDict:
+                record[field] = recordDict[field]
+        return record
+
     def asWikiMarkup(self,series:str,templateParamLookup:dict)->str:
         '''
         Return:
@@ -273,6 +284,39 @@ class EventBaseManager(EntityManager):
                 entity.rate(rating)
                 ratingManager.ratings.append(rating)
             
+    def fromCsv(self, csvString, separator:str= ',', overwriteEvents:bool = True, updateEntitiesCallback:Callable =None):
+        """
+
+        Args:
+            csvString: csvString having all the csv content
+            separator: the separator of the csv
+            append: to append to the self object.
+            updateEntitiesCallback:
+
+        Returns: Nothing. The self object is upadated
+
+        """
+        fields= None
+        # limit csv fields to the fields defined in the samples
+        if hasattr(self.clazz, 'getSamples') and callable(getattr(self.clazz, 'getSamples')):
+            fields = LOD.getFields(self.clazz.getSamples())
+        eventRecords= CSV.fromCSV(csvString=csvString,fields=None,delimiter=separator)
+        originalEventsLookup = self.getLookup(attrName=self.primaryKey)[0]
+        for eventRecord in eventRecords:
+            if self.primaryKey in eventRecord:
+                eventRecordPrimaryKey= eventRecord.get(self.primaryKey)
+                if eventRecordPrimaryKey in originalEventsLookup:
+                    originalEvent= originalEventsLookup[eventRecordPrimaryKey]
+                    if hasattr(originalEvent, self.primaryKey):
+                        for key, value in eventRecord.items():
+                            if hasattr(originalEvent, key):
+                                setattr(originalEvent, key, value)
+                        if updateEntitiesCallback is not None and callable(updateEntitiesCallback):
+                            updateEntitiesCallback(originalEvent,overwrite=overwriteEvents)
+            else:
+                self.fromLoD(lod=eventRecords, append=True, debug=self.debug)
+        return None
+
 
     def asCsv(self, separator:str=',', selectorCallback:Callable=None):
         """
@@ -289,8 +333,8 @@ class EventBaseManager(EntityManager):
             events=selectorCallback()
         fields=None
         # limit csv fields to the fields defined in the samples
-        if hasattr(self, 'getSamples') and callable(getattr(self, 'getSamples')):
-            fields=LOD.getFields(self.getSamples())
+        if hasattr(self.clazz, 'getSamples') and callable(getattr(self.clazz, 'getSamples')):
+            fields=LOD.getFields(self.clazz.getSamples())
         csvString=CSV.toCSV(events, includeFields=fields, delimiter=separator)
         return csvString
     
