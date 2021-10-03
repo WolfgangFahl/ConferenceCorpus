@@ -131,7 +131,11 @@ class OREventManager(EventManager):
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         # TODO set source more specific
         self.setAllAttr(lod,"source","or")
-        self.postProcessLodRecords(lod,wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser)
+        wikiUser=None
+        if wikiFileManager.wikiPush.fromWiki:
+            if wikiFileManager.wikiPush.fromWiki.wikiUser:
+                wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser
+        self.postProcessLodRecords(lod,wikiUser=wikiUser)
         return lod
 
 
@@ -160,7 +164,8 @@ class OREvent(Event):
         {'prop': 'Title', 'name': 'title', 'templateParam': "Title"},
         {'prop': 'Accepted papers', 'name': 'acceptedPapers', 'templateParam': "Accepted papers"},
         {'prop': 'Submitted papers', 'name': 'submittedPapers', 'templateParam': "Submitted papers"},
-        {'prop': 'presence', 'name': 'presence', 'templateParam': "presence"}
+        {'prop': 'presence', 'name': 'presence', 'templateParam': "presence"},
+        {'prop': 'wikicfpId', 'name': 'wikicfpId', 'templateParam': 'wikicfpId' }
     ]
 
     def __init__(self, wikiFile:WikiFile=None):
@@ -205,7 +210,8 @@ class OREvent(Event):
                 "city": "Boston",
                 "acceptedPapers": 41,
                 "submittedPapers": 120,
-                "presence": "online"
+                "presence": "online",
+                "wikicfpId": 891
             },
             {
                 "acronym": "5GU 2017",
@@ -430,7 +436,11 @@ class OREventSeriesManager(EventSeriesManager):
             wikiFileManager=self.wikiFileManager
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         self.setAllAttr(lod,"source",f"{wikiFileManager.wikiUser.wikiId}-backup")
-        self.postProcessLodRecords(lod, wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser)
+        wikiUser=None
+        if wikiFileManager.wikiPush.fromWiki:
+            if wikiFileManager.wikiPush.fromWiki.wikiUser:
+                wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser
+        self.postProcessLodRecords(lod, wikiUser=wikiUser)
         return lod
 
 class OREventSeries(EventSeries):
@@ -454,7 +464,8 @@ class OREventSeries(EventSeries):
         {'prop': 'WikiCfpSeries', 'name': 'wikiCfpSeries', 'templateParam': 'WikiCfpSeries'},
         {'prop': 'Period', 'name': 'period', 'templateParam': 'Period'},
         {'prop': 'Unit', 'name': 'unit', 'templateParam': 'Unit'},
-        {'prop': 'Has CORE Rank', 'name': 'core2018Rank', 'templateParam': 'has CORE2018 Rank'}
+        {'prop': 'Has CORE Rank', 'name': 'core2018Rank', 'templateParam': 'has CORE2018 Rank'},
+        {'prop': 'wikiCfpSeries', 'name': 'wikiCfpSeries', 'templateParam': 'WikiCfpSeries'},
         # TODO add more fields according to
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
@@ -501,7 +512,8 @@ class OREventSeries(EventSeries):
                 "period": "year",
                 "unit": 1,
                 "wikidataId": "Q105456162",
-                'url': 'https://confident.dbis.rwth-aachen.de/or/index.php?title=3DUI'
+                'url': 'https://confident.dbis.rwth-aachen.de/or/index.php?title=3DUI',
+                'WikiCfpSeries': 160
             }, ]
         return samplesLOD
 
