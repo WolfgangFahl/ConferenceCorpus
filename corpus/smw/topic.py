@@ -245,13 +245,13 @@ class SMWEntityList(object):
                 lod.append(normalizedDict)
         return lod
 
-    def updateEntitytoWiki(self, entity, overwrite:bool = True, uploadToWikiCallback:Callable = None):
+    def updateEntitytoWiki(self, entity, overwrite:bool = True, targetWiki=None, uploadToWikiCallback:Callable = None):
         if hasattr(entity, 'pageTitle'):
             self.interlinkEnititesWithWikiMarkupFile()
             entity.smwHandler.saveToWikiText(overwrite=overwrite)
             wikiFile = self.wikiFileManager.getWikiFile(entity.pageTitle)
             if uploadToWikiCallback is not None:
-                uploadToWikiCallback(wikiFile)
+                uploadToWikiCallback(wikiFile,targetWiki)
 
     def interlinkEnititesWithWikiMarkupFile(self):
         '''
