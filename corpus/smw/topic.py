@@ -20,12 +20,42 @@ class SMWEntity(object):
     an Entity stored in Semantic MediaWiki in WikiSon notation
     '''
 
-    def __init__(self, entity:JSONAble, wikiFile=None):
+    def __init__(self, entity:JSONAble, wikiFile:WikiFile=None):
         '''
         Constructor
         '''
         self.entity=entity
-        self.wikiFile = wikiFile
+        self._wikiFile = wikiFile
+        self._wikiFileManager = wikiFile.wikiFileManager if wikiFile else None
+
+    @property
+    def wikiFile(self):
+        if self._wikiFile:
+            return self._wikiFile
+        else:
+            if hasattr(self.entity, "wikiMarkup"):
+                pageTitle=getattr(self.entity, "pageTitle")
+                wikiMarkup=getattr(self.entity, "wikiMarkup")
+                wikiMarkup=wikiMarkup if wikiMarkup else ""
+                self._wikiFile=WikiFile(pageTitle, wikiFileManager=self.wikiFileManager, wikiText=wikiMarkup)
+                return self._wikiFile
+            else:
+                return None
+
+    @wikiFile.setter
+    def wikiFile(self, wikiFile:WikiFile):
+        '''Sets the wikiFile and overwrites the wikiMarkup of the entity'''
+        self._wikiFile=wikiFile
+        if hasattr(self.entity, "wikiMarkup"):
+            setattr(self.entity,"wikiMarkup", wikiFile.wikiText)
+
+    @property
+    def wikiFileManager(self):
+        return self._wikiFileManager
+
+    @wikiFileManager.setter
+    def wikiFileManager(self, wikiFileManager:WikiFileManager):
+        self._wikiFileManager=wikiFileManager
 
     @classmethod
     def updateDictKeys(cls, record: dict, lookup: dict, reverseLookup:bool=False) -> dict:
@@ -173,6 +203,11 @@ class SMWEntityList(object):
         self.wikiFileManager = wikiFileManager
         wikiFileDict = wikiFileManager.getAllWikiFiles()
         lod=self.getLoDfromWikiFiles(wikiFileDict.values())
+        for record in lod:
+            pageTitle=record.get("pageTitle")
+            wikiFile=wikiFileDict.get(pageTitle)
+            if isinstance(wikiFile, WikiFile):
+                record["wikiMarkup"]=wikiFile.wikiText
         return lod
 
     def getLoDfromWikiFiles(self, wikiFileList: list):
@@ -243,12 +278,18 @@ class SMWEntityList(object):
                 lod.append(normalizedDict)
         return lod
 
-    def interlinkEnititesWithWikiMarkupFile(self):
+    def interlinkEnititesWithWikiMarkupFile(self, useCacheIfPresent:bool=False):
         '''
         Assigns the correspondingWikiFile to the SMWEntity
         '''
         for entity in self.entityManager.getList():
             if hasattr(entity, "pageTitle"):
-                wikiFile=self.wikiFileManager.getWikiFile(entity.pageTitle)
-                if hasattr(entity, 'smwHandler'):
-                    entity.smwHandler.wikiFile=wikiFile
+                pageTitle=entity.pageTitle
+                if hasattr(entity, "smwHandler") and isinstance(getattr(entity, "smwHandler"), SMWEntity):
+                    smwHandler=entity.smwHandler
+                    if useCacheIfPresent and hasattr(entity, "wikiMarkup"):
+                        smwHandler.wikiFileManager=self.wikiFileManager
+                        smwHandler._wikiFile=None
+                    else:
+                        wikiFile=self.wikiFileManager.getWikiFile(entity.pageTitle)
+                        smwHandler.wikiFile=wikiFile
