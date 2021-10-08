@@ -3,6 +3,8 @@ Created on 2021-07-21
 
 @author: wf
 '''
+from typing import Callable
+
 from lodstorage.entity import EntityManager
 from lodstorage.jsonable import JSONAble
 from wikibot.wikiuser import WikiUser
@@ -230,7 +232,7 @@ class SMWEntityList(object):
         '''
         lod = []
         lookup=None
-        if callable(getattr(self.entityManager, "getPropertyLookup", None)):
+        if callable(getattr(self.entityManager.clazz, "getPropertyLookup", None)):
             lookup=self.entityManager.clazz.getTemplateParamLookup()
         if lookup:
             for record in wikiSonRecords:
@@ -242,6 +244,14 @@ class SMWEntityList(object):
                     normalizedDict["pageTitle"] = record["pageTitle"]
                 lod.append(normalizedDict)
         return lod
+
+    def updateEntitytoWiki(self, entity, overwrite:bool = True, targetWiki=None, uploadToWikiCallback:Callable = None):
+        if hasattr(entity, 'pageTitle'):
+            self.interlinkEnititesWithWikiMarkupFile()
+            entity.smwHandler.saveToWikiText(overwrite=overwrite)
+            wikiFile = self.wikiFileManager.getWikiFile(entity.pageTitle)
+            if uploadToWikiCallback is not None:
+                uploadToWikiCallback(wikiFile,targetWiki)
 
     def interlinkEnititesWithWikiMarkupFile(self):
         '''
