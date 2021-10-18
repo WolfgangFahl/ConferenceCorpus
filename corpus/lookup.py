@@ -45,8 +45,8 @@ class CorpusLookupConfigure:
      
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
             if orDataSource is not None:
-                orDataSource.eventManager.wikiFileManager=wikiFileManager
-                orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+                orDataSource.eventManager.smwHandler.wikiFileManager=wikiFileManager
+                orDataSource.eventSeriesManager.smwHandler.wikiFileManager=wikiFileManager
 
             orDataSource=lookup.getDataSource(lookupId)
             if orDataSource is not None:
