@@ -74,7 +74,10 @@ class TestOpenResearchExport(DataSourceTest):
         for acronym in [#'dc','ds'
                         #,'seke','qurator',
                         #'vnc'
-                        'dawak','emnlp'
+                        #'dawak','emnlp','cla'
+                        #'ijcnn'
+                        #'recsys'
+                        'ideas'
             ]:
             dblpSeriesId=f"{acronym}"
             self.assertTrue(exporter.exportSeries2OpenResearch(dblpSeriesId)>0)
