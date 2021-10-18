@@ -12,6 +12,7 @@ The EventCorpus provides access to academic events and event series from differe
 ## Documentation
 [Wiki](http://wiki.bitplan.com/index.php/ConferenceCorpus)
 
+
 ### Authors
 * [Wolfgang Fahl](http://www.bitplan.com/Wolfgang_Fahl)
 * [Tim Holzheim](https://github.com/tholzheim)
