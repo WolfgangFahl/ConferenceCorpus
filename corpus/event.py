@@ -15,6 +15,7 @@ from corpus.quality.rating import RatingManager,Rating
 from corpus.eventrating import EventRating,EventSeriesRating
 from lodstorage.sparql import SPARQL
 
+import re
 class EventStorage:
     '''
     common storage aspects of the EventManager and EventSeriesManager
@@ -164,15 +165,22 @@ class Event(JSONAble):
         Return:
             my WikiMarkup
         '''
-        nameValues=""
+        nameValues={}
         delim=""
         for wikiName,attrName in templateParamLookup.items():
             if hasattr(self, attrName):
                 value=getattr(self,attrName)
-                nameValues=f"{nameValues}{delim}|{wikiName}={value}"
-                delim="\n"
+                nameValues[wikiName]=value
+                
+        markup=""
+        nameValues["Series"]=series.upper()
+        dblpConferenceId=re.sub("^conf\/","",self.eventId)
+        nameValues["DblpConferenceId"]=dblpConferenceId
+        for name,value in nameValues.items():
+            markup=f"{markup}{delim}|{name}={value}"
+            delim="\n"
         markup=f"""{{{{Event
-{nameValues}
+{markup}
 }}}}"""
 #|Type=Symposium
 
