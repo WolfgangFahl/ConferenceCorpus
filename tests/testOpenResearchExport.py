@@ -38,22 +38,37 @@ class EventExporter():
         Return:
             int: the number of events exported
         '''
-        dblpSeriesPid=f"conf/{dblpSeriesId}"
         count=0
         if dblpSeriesId in self.dblpSeriesById:
             eventSeries=self.dblpSeriesById[dblpSeriesId]
-            print(eventSeries.asWikiMarkup())
             eventBySeries=self.dblpDataSource.eventManager.getLookup("series",withDuplicates=True)
             events=eventBySeries[dblpSeriesId]
-            for event in events:
-                print(event.asWikiMarkup(eventSeries.acronym,self.orTemplateParamLookup))
-                count+=1
+            count=self.exportSeries2OpenRessearch(eventSeries, events)
+        return count
+            
+    def exportSeries2OpenRessearch(self,eventSeries,events):
+        '''
+        Args:
+            eventSeries(EventSeries): the series to export
+            events(list): the list of events to export
+        Return:
+            int: the number of events exported
+        '''
+        count=0
+        for event in events:
+            pass
+        markup=eventSeries.asWikiMarkup()
+        print(markup)
+        for event in events:
+            markup=event.asWikiMarkup(eventSeries.acronym,self.orTemplateParamLookup)
+            print(markup)
+            count+=1
         return count
             
 
 class TestOpenResearchExport(DataSourceTest):
     '''
-    test the dblp data source
+    test exporting series and events from the  dblp data source
     '''
  
     def setUp(self):
@@ -77,10 +92,12 @@ class TestOpenResearchExport(DataSourceTest):
                         #'dawak','emnlp','cla'
                         #'ijcnn'
                         #'recsys'
-                        'ideas'
+                        #'ideas'
+                        'er'
             ]:
             dblpSeriesId=f"{acronym}"
-            self.assertTrue(exporter.exportSeries2OpenResearch(dblpSeriesId)>0)
+            exportCount=exporter.exportSeries2OpenResearch(dblpSeriesId)
+            self.assertTrue(exportCount>0)
             pass
 
 
