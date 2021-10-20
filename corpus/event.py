@@ -331,6 +331,8 @@ class EventBaseManager(EntityManager):
         events=self.getList()
         if selectorCallback is not None and callable(selectorCallback):
             events=selectorCallback()
+            if type(events) != list:
+                events=[events]
         fields=None
         # limit csv fields to the fields defined in the samples
         if hasattr(self.clazz, 'getSamples') and callable(getattr(self.clazz, 'getSamples')):
@@ -359,9 +361,16 @@ class EventBaseManager(EntityManager):
         self.postProcessLodRecords(listOfDicts)
         self.setAllAttr(listOfDicts,"source",self.source)
         return listOfDicts
-    
-    
-    
+
+    def getEventByKey(self, keyToSearch, keytype='pageTitle'):
+        for event in self.getList():
+            if hasattr(event, keytype):
+                if getattr(event, keytype) == keyToSearch:
+                    return event
+            else:
+                raise ValueError("Invalid keytype given")
+
+
 class EventSeriesManager(EventBaseManager):
     '''
     Event series list
