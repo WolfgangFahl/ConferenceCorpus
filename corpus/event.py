@@ -137,7 +137,10 @@ class Event(JSONAble):
 
     def __str__(self):
         '''
-        return my
+        return my string representation
+        
+        Return:
+            str: the string representation
         '''
         text=self.__class__.__name__
         attrs=["pageTitle","acronym","eventId","title","year","source","url"]
@@ -148,8 +151,35 @@ class Event(JSONAble):
                 text+=f"{delim}{value}"
                 delim=":" 
         return text
+    
+    def getLookupAcronym(self):
+        ''' 
+            get the lookup acronym of this event e.g. add year information 
+            
+        Return:
+            str: the acronym to be used for lookup operations
+        '''
+        if hasattr(self,'acronym') and self.acronym is not None:
+            self.lookupAcronym=self.acronym
+        else:
+            if hasattr(self,'event'):
+                self.lookupAcronym=self.event
+        if hasattr(self,'lookupAcronym'):
+            if self.lookupAcronym is not None:
+                try:
+                    if hasattr(self, 'year') and self.year is not None and not re.search(r'[0-9]{4}',self.lookupAcronym):
+                        self.lookupAcronym="%s %s" % (self.lookupAcronym,str(self.year))
+                except TypeError as te:
+                    print ('Warning getLookupAcronym failed for year: %s and lookupAcronym %s' % (self.year,self.lookupAcronym))   
+    
 
     def getRecord(self):
+        '''
+        get my dict elements that are defined in getSamples
+        
+        Return:
+            dict: fields of my __dict__ which are defined in getSamples
+        '''
         fields = None
         if hasattr(self, 'getSamples') and callable(getattr(self, 'getSamples')):
             fields = LOD.getFields(self.getSamples())
@@ -162,8 +192,12 @@ class Event(JSONAble):
 
     def asWikiMarkup(self,series:str,templateParamLookup:dict)->str:
         '''
+        Args:
+            series(str): the name of the series
+            templateParamLookup(dict): the mapping of python attributes to Mediawiki template parameters to be used
+        
         Return:
-            my WikiMarkup
+            str: my WikiMarkup
         '''
         nameValues={}
         delim=""
@@ -263,6 +297,7 @@ class EventBaseManager(EntityManager):
         else:
             tableName=entityName
         super().__init__(name, entityName, entityPluralName, listName, clazz, tableName, primaryKey, config, handleInvalidListTypes, filterInvalidListTypes, debug)
+   
         
     def configure(self):
         '''
@@ -431,4 +466,21 @@ class EventManager(EventBaseManager):
                 print(f"Event Series Acronym {seriesAcronym} lookup failed")
             return None
         return seriesEvents
+    
+    @staticmethod
+    def asWikiSon(eventDicts):  
+        wikison=""
+        for eventDict in eventDicts:
+            wikison+=EventManager.eventDictToWikiSon(eventDict)
+        return wikison
+    
+    @staticmethod
+    def eventDictToWikiSon(eventDict):
+        wikison="{{Event\n"
+        for key,value in eventDict.items():
+            if key not in ['foundBy','source','creation_date','modification_date']:
+                if value is not None:
+                    wikison+="|%s=%s\n" % (key,value)
+        wikison+="}}\n"  
+        return wikison
 
