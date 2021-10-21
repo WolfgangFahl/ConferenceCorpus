@@ -68,10 +68,18 @@ class OREventManager(EventManager):
         configure me
         '''
         if not hasattr(self, "getListOfDicts"):
-            if hasattr(self.smwHandler,'wikiFileManager'):
+            if self.wikiFileManager:
                 self.getListOfDicts=self.getLoDfromWikiFileManager
-            if hasattr(self.smwHandler,'wikiUser'):
-                self.getListOfDicts=self.getLoDfromWikiUser 
+            if hasattr(self,'wikiUser'):
+                self.getListOfDicts=self.getLoDfromWikiUser
+
+    @property
+    def wikiFileManager(self):
+        return self.smwHandler.wikiFileManager
+
+    @wikiFileManager.setter
+    def wikiFileManager(self, wikiFileManager:WikiFileManager):
+        self.smwHandler.wikiFileManager=wikiFileManager
 
     @classmethod
     def getPropertyLookup(cls) -> dict:
@@ -115,8 +123,8 @@ class OREventManager(EventManager):
             askExtra(str):
             profile(bool):
         '''
-        if wikiuser is None and hasattr(self.smwHandler,'wikiUser'):
-            wikiuser=self.smwHandler.wikiUser
+        if wikiuser is None and hasattr(self,'wikiUser'):
+            wikiuser=self.wikiUser
         lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
         self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
         self.postProcessLodRecords(lod,wikiUser=wikiuser)
@@ -126,8 +134,8 @@ class OREventManager(EventManager):
         '''
         get my list of dicts from the given WikiFileManager
         '''
-        if wikiFileManager is None and hasattr(self.smwHandler, 'wikiFileManager'):
-            wikiFileManager=self.smwHandler.wikiFileManager
+        if self.wikiFileManager:
+            wikiFileManager=self.wikiFileManager
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         # TODO set source more specific
         self.setAllAttr(lod,"source","or")
@@ -370,11 +378,18 @@ class OREventSeriesManager(EventSeriesManager):
         configure me
         '''
         if not hasattr(self, "getListOfDicts"):
-            if hasattr(self.smwHandler,'wikiFileManager'):
+            if self.wikiFileManager:
                 self.getListOfDicts=self.getLoDfromWikiFileManager  
-            if hasattr(self.smwHandler,'wikiUser'):
+            if hasattr(self,'wikiUser'):
                 self.getListOfDicts=self.getLoDfromWikiUser               
-        
+
+    @property
+    def wikiFileManager(self):
+        return self.smwHandler.wikiFileManager
+
+    @wikiFileManager.setter
+    def wikiFileManager(self, wikiFileManager: WikiFileManager):
+        self.smwHandler.wikiFileManager = wikiFileManager
 
     @classmethod
     def getPropertyLookup(cls) -> dict:
@@ -419,8 +434,8 @@ class OREventSeriesManager(EventSeriesManager):
             askExtra(str):
             profile(bool):
         '''
-        if wikiuser is None and hasattr(self.smwHandler,'wikiUser'):
-            wikiuser=self.smwHandler.wikiUser
+        if wikiuser is None and hasattr(self,'wikiUser'):
+            wikiuser=self.wikiUser
         lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
         self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
         self.postProcessLodRecords(lod, wikiUser=wikiuser)
@@ -432,8 +447,8 @@ class OREventSeriesManager(EventSeriesManager):
         
         
         '''
-        if wikiFileManager is None and hasattr(self.smwHandler,'wikiFileManager'):
-            wikiFileManager=self.smwHandler.wikiFileManager
+        if self.wikiFileManager:
+            wikiFileManager=self.wikiFileManager
         lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
         self.setAllAttr(lod,"source",f"{wikiFileManager.wikiUser.wikiId}-backup")
         wikiUser=None

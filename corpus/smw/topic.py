@@ -201,8 +201,9 @@ class SMWEntityList(object):
         Return:
             list of dicts
         '''
-        self.wikiFileManager = wikiFileManager
-        wikiFileDict = wikiFileManager.getAllWikiFiles()
+        if not self.wikiFileManager and wikiFileManager:
+            self.wikiFileManager = wikiFileManager
+        wikiFileDict = self.wikiFileManager.getAllWikiFiles()
         lod=self.getLoDfromWikiFiles(wikiFileDict.values())
         for record in lod:
             pageTitle=record.get("pageTitle")
