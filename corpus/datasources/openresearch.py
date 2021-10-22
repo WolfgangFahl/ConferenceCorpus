@@ -173,7 +173,8 @@ class OREvent(Event):
         {'prop': 'Accepted papers', 'name': 'acceptedPapers', 'templateParam': "Accepted papers"},
         {'prop': 'Submitted papers', 'name': 'submittedPapers', 'templateParam': "Submitted papers"},
         {'prop': 'presence', 'name': 'presence', 'templateParam': "presence"},
-        {'prop': 'wikicfpId', 'name': 'wikicfpId', 'templateParam': 'wikicfpId' }
+        {'prop': 'wikicfpId', 'name': 'wikicfpId', 'templateParam': 'wikicfpId' },
+        {'prop':'DblpConferenceId','name':'DblpConferenceId','templateParam':'DblpConferenceId'}
     ]
 
     def __init__(self, wikiFile:WikiFile=None):

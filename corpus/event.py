@@ -374,14 +374,16 @@ class EventBaseManager(EntityManager):
         events=self.getList()
         if selectorCallback is not None and callable(selectorCallback):
             events=selectorCallback()
-            if type(events) != list:
+            if events and type(events) != list:
                 events=[events]
         fields=None
         # limit csv fields to the fields defined in the samples
         if hasattr(self.clazz, 'getSamples') and callable(getattr(self.clazz, 'getSamples')):
             fields=LOD.getFields(self.clazz.getSamples())
-        csvString=CSV.toCSV(events, includeFields=fields, delimiter=separator)
-        return csvString
+        if events:
+            csvString=CSV.toCSV(events, includeFields=fields, delimiter=separator)
+            return csvString
+        return None
     
     def postProcessLodRecords(self,listOfDicts:list,**kwArgs):
         '''

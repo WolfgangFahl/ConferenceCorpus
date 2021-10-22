@@ -83,6 +83,14 @@ class SMWEntity(object):
                     result[newKey] = record[oldKey]
         return result
 
+    def updateWikiText(self, overwrite:bool=False):
+        """Updates the WikiSon notation in the WikiText/WikiFile with the records of this entity"""
+        wikiSonRecord = self.entity.__dict__
+        lookup = self.entity.getTemplateParamLookup()
+        if lookup:
+            wikiSonRecord = self.updateDictKeys(wikiSonRecord, lookup, reverseLookup=True)
+        self.wikiFile.updateTemplate(self.entity.templateName, wikiSonRecord, overwrite=overwrite)
+
     def saveToWikiText(self, overwrite:bool=False):
         '''
         Saves the entity to a wikiText file. The wikiSon in the files is updated with the values of the entity
@@ -90,12 +98,13 @@ class SMWEntity(object):
         Args:
             overwrite(bool): If True existing files might be overwritten
         '''
-        wikiSonRecord=self.entity.__dict__
-        lookup=self.entity.getTemplateParamLookup()
-        if lookup:
-            wikiSonRecord=self.updateDictKeys(wikiSonRecord, lookup, reverseLookup=True)
-        self.wikiFile.add_template(self.entity.templateName,wikiSonRecord, overwrite=overwrite)
+        self.updateWikiText()
         self.wikiFile.save_to_file(overwrite=overwrite)
+
+    def pushToWiki(self, msg:str=None):
+        """Pushes the wikiMarkup of this entity to the target wiki of the assigned wikiFileManager"""
+        self.updateWikiText()
+        self.wikiFile.pushToWiki(msg=msg)
 
 
 class SMWEntityList(object):
