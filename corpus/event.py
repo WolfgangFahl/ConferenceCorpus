@@ -344,22 +344,38 @@ class EventBaseManager(EntityManager):
         if hasattr(self.clazz, 'getSamples') and callable(getattr(self.clazz, 'getSamples')):
             fields = LOD.getFields(self.clazz.getSamples())
         eventRecords= CSV.fromCSV(csvString=csvString,fields=None,delimiter=separator)
+        self.updateFromLod(eventRecords, overwriteEvents=overwriteEvents, updateEntitiesCallback=updateEntitiesCallback)
+
+    def updateFromLod(self, lod:list, overwriteEvents:bool = True, updateEntitiesCallback:Callable =None):
+        """
+        Updates the entities from the given LoD. If a entity does not already exist a new one will be added.
+        Args:
+            lod: data to update the entities
+            overwriteEvents: If False only missing values are added
+            updateEntitiesCallback: Callback function that is called on an updated entity
+
+        Returns:
+
+        """
         originalEventsLookup = self.getLookup(attrName=self.primaryKey)[0]
-        for eventRecord in eventRecords:
+        for eventRecord in lod:
             if self.primaryKey in eventRecord:
-                eventRecordPrimaryKey= eventRecord.get(self.primaryKey)
+                eventRecordPrimaryKey = eventRecord.get(self.primaryKey)
                 if eventRecordPrimaryKey in originalEventsLookup:
-                    originalEvent= originalEventsLookup[eventRecordPrimaryKey]
+                    originalEvent = originalEventsLookup[eventRecordPrimaryKey]
                     if hasattr(originalEvent, self.primaryKey):
                         for key, value in eventRecord.items():
                             if hasattr(originalEvent, key):
                                 setattr(originalEvent, key, value)
                         if updateEntitiesCallback is not None and callable(updateEntitiesCallback):
-                            updateEntitiesCallback(originalEvent,overwrite=overwriteEvents)
-            else:
-                self.fromLoD(lod=eventRecords, append=True, debug=self.debug)
-        return None
-
+                            updateEntitiesCallback(originalEvent, overwrite=overwriteEvents)
+                else:
+                    self.fromLoD(lod=[eventRecord], append=True, debug=self.debug)
+                    # new entity was addded → update lookup
+                    originalEventsLookup = self.getLookup(attrName=self.primaryKey)[0]
+                    originalEvent = originalEventsLookup[eventRecordPrimaryKey]
+                    if updateEntitiesCallback is not None and callable(updateEntitiesCallback):
+                        updateEntitiesCallback(originalEvent, overwrite=overwriteEvents)
 
     def asCsv(self, separator:str=',', selectorCallback:Callable=None):
         """

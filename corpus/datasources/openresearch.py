@@ -247,6 +247,13 @@ class OREvent(Event):
                 'year':2009,
                 'yearStr':'2009',
                 'url':'https://confident.dbis.rwth-aachen.de/or/index.php?title=IDC_2009'
+            },
+            {
+                'acronym': "VNC 2019",
+                'title': "2019 IEEE Vehicular Networking Conference (VNC)",
+                'pageTitle': 'VNC 2019',
+                'ordinal': 11,
+                'DblpConferenceId':"vnc/vnc2019"
             }
 
         ]

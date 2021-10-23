@@ -34,14 +34,10 @@ class SMWEntity(object):
         if self._wikiFile:
             return self._wikiFile
         else:
-            if hasattr(self.entity, "wikiMarkup"):
-                pageTitle=getattr(self.entity, "pageTitle")
-                wikiMarkup=getattr(self.entity, "wikiMarkup")
-                wikiMarkup=wikiMarkup if wikiMarkup else ""
-                self._wikiFile=WikiFile(pageTitle, wikiFileManager=self.wikiFileManager, wikiText=wikiMarkup)
-                return self._wikiFile
-            else:
-                return None
+            pageTitle = getattr(self.entity, "pageTitle")
+            wikiMarkup=getattr(self.entity, "wikiMarkup") if hasattr(self.entity, "wikiMarkup") else ""
+            self._wikiFile=WikiFile(pageTitle, wikiFileManager=self.wikiFileManager, wikiText=wikiMarkup)
+            return self._wikiFile
 
     @wikiFile.setter
     def wikiFile(self, wikiFile:WikiFile):
@@ -58,14 +54,13 @@ class SMWEntity(object):
     def wikiFileManager(self, wikiFileManager:WikiFileManager):
         self._wikiFileManager=wikiFileManager
 
-    @classmethod
-    def updateDictKeys(cls, record: dict, lookup: dict, reverseLookup:bool=False) -> dict:
+    @staticmethod
+    def updateDictKeys( record: dict, lookup: dict, reverseLookup:bool=False) -> dict:
         '''
         Updates the keys of the given record based on the given lookup dict.
         The key of the given lookup dict identifies the old key and the value the new key
 
         Args:
-            cls: the class this is called for
             record(dict): the record to be updated
             lookup(dict): the mapping of keys/names for the new key names
             reverseLookup(bool): If true the lookup is reversed
@@ -85,7 +80,7 @@ class SMWEntity(object):
 
     def updateWikiText(self, overwrite:bool=False):
         """Updates the WikiSon notation in the WikiText/WikiFile with the records of this entity"""
-        wikiSonRecord = self.entity.__dict__
+        wikiSonRecord = self.entity.__dict__.copy()
         lookup = self.entity.getTemplateParamLookup()
         if lookup:
             wikiSonRecord = self.updateDictKeys(wikiSonRecord, lookup, reverseLookup=True)
@@ -101,10 +96,22 @@ class SMWEntity(object):
         self.updateWikiText()
         self.wikiFile.save_to_file(overwrite=overwrite)
 
-    def pushToWiki(self, msg:str=None):
-        """Pushes the wikiMarkup of this entity to the target wiki of the assigned wikiFileManager"""
-        self.updateWikiText()
+    def pushToWiki(self, msg:str=None, overwrite:bool=False, wikiFileManager:WikiFileManager=None):
+        """
+        Pushes the wikiMarkup of this entity to the target wiki of the assigned wikiFileManager
+
+        Args:
+            msg(str): message to show on as comment on the pushed changes
+            overwrite(bool): If True existing files might be overwritten
+            wikiFileManager(WikiFileManager): Overwrites the wikiFileManager of this object if not None
+        """
+        if wikiFileManager:
+            self.wikiFileManager=wikiFileManager
+            if self._wikiFile:
+                self.wikiFile.wikiFileManager=self.wikiFileManager
+        self.updateWikiText(overwrite=overwrite)
         self.wikiFile.pushToWiki(msg=msg)
+
 
 
 class SMWEntityList(object):
