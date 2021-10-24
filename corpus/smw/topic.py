@@ -93,7 +93,7 @@ class SMWEntity(object):
         Args:
             overwrite(bool): If True existing files might be overwritten
         '''
-        self.updateWikiText()
+        self.updateWikiText(overwrite=overwrite)
         self.wikiFile.save_to_file(overwrite=overwrite)
 
     def pushToWiki(self, msg:str=None, overwrite:bool=False, wikiFileManager:WikiFileManager=None):
