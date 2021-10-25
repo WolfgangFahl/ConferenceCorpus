@@ -14,3 +14,5 @@ habanero
 geopy
 # https://github.com/mocnik-science/osm-python-tools
 OSMPythonTools
+# https://pypi.org/project/wikidataintegrator/
+wikidataintegrator

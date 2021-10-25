@@ -112,6 +112,7 @@ SELECT DISTINCT
   ?countryId
   ?eventInSeries
   ?eventInSeriesId
+  ?followedById
   ?startDate
   ?endDate
   ?homepage 
@@ -129,8 +130,7 @@ WHERE
   ?event wdt:P31 wd:Q2020153 .
   # acronym
   OPTIONAL { ?event wdt:P1813 ?acronym }
-  # ordinal
-  OPTIONAL { ?event wdt:P1545 ?ordinal }
+ 
   # properties with type:literal # requiring label
   OPTIONAL { 
       ?event wdt:P17 ?countryId . 
@@ -149,6 +149,9 @@ WHERE
   OPTIONAL { 
     ?event wdt:P179 ?eventInSeriesId . 
     ?eventInSeriesId rdfs:label ?eventInSeries filter (lang(?eventInSeries)   = "en").
+    ?event p:P179 ?inSeries.
+    OPTIONAL { ?inSeries   pq:P1545 ?ordinal}.
+    OPTIONAL { ?inSeries   pq:P156 ?followedById}.
   }
   OPTIONAL { 
     ?event wdt:P2936 ?languageId .
