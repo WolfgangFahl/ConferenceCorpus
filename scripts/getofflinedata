@@ -2,27 +2,87 @@
 # WF 2021-07-31
 # get the offline data
 
-force="false"
-# commandline option
-while [  "$1" != ""  ]
-do
-  option="$1"
-  case $option in
-	  -f|--force)
-		  force="true"
-			;;
-	esac
-	shift
-done
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
 
-base=$HOME/.conferencecorpus
-if [ ! -d $base ]
-then
-  mkdir $base
-	force="true"
-fi
-if [ "$force" = "true" ]
-then
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+  local l_msg="$2"
+  echo -e "${l_color}$l_msg${endColor}"
+}
+
+# error
+#
+#   show an error message and exit
+#
+#   params:
+#     1: l_msg - the message to display
+error() {
+  local l_msg="$1"
+  # use ansi red for error
+  color_msg $red "Error: $l_msg" 1>&2
+  exit 1
+}
+
+#
+# show the usage
+#
+usage() {
+  echo "usage: $0 [-h|--help][--confref]"
+  echo "  -h|--help: show this usage"
+  echo "  --crossref: get offline data for crossref and exit"
+  echo "  --fromgithub: get offline data from github"
+}
+
+#
+# download
+#
+download() {
+  local l_src="$1"
+  local l_target="$2"
+  if [ ! -f $l_target ]
+  then
+    color_msg $blue "downloading $l_target from $l_src"
+    curl -o $l_target $l_src
+  else
+    color_msg $green "$l_target already downloaded"
+  fi
+  # show number of lines
+  # check if the file has json format
+  if [[ $l_target =~ ^.*\.json$ ]]; then
+    jq length $l_target
+    # invalid json?
+    if [ $? -ne 0 ]
+    then
+      color_msg $red "invalid json received for $l_target:"
+      # show first few lines which might contain error message
+      head $l_target
+      color_msg $red "test will have to work-around this issue e.g. downloading a cached result"
+    fi
+  else
+    wc -l $l_target
+  fi
+}
+
+
+#
+# download an archived version of the offline data from github
+#
+downloadFromGithub() {
+  if [ ! -d $base ]
+  then
+    mkdir $base
+  fi
   cd $base
   for tgz in wikicfp crossref confref
   do
@@ -31,6 +91,79 @@ then
     # unpack and unzip
     tar xvfz $tgz.tgz
   done
-else
-  echo "$base exists - will not override any content ..."
-fi
+}
+
+#
+# download from crossref RESTful API via cursor
+#
+downloadWithCursor() {
+  local l_rows="$1"
+  local l_index="$2"
+  local l_cursor="$3"
+  target=$sampledir/crossref-$l_index.json
+  src="https://api.crossref.org/types/proceedings/works?select=event,title,DOI&rows=$l_rows&cursor=$l_cursor"
+  download $src $target
+}
+
+#
+# get Crossref data
+# see also https://github.com/TIBHannover/confIDent-dataScraping
+#
+getCrossRef() {
+  rows=1000
+  index=1
+  totalRows=0
+  # force while entry
+  total=$rows
+  downloadWithCursor $rows $index "*"
+  while [ $totalRows -lt $total ]
+  do
+    target=$sampledir/crossref-$index.json
+    status=$(jq '.status' $target | tr -d '"')
+    total=$(jq '.message["total-results"]' $target)
+    # get and remove quotes from cursor
+    cursor=$(jq '.message["next-cursor"]' $target | tr -d '"' | python -c "import urllib.parse;print (urllib.parse.quote(input()))"
+    target=$sampledir/crossref-$l_index.json)
+    startindex=$(jq '.message.query["start-index"]' $target)
+    perpage=$(jq '.message["items-per-page"]' $target)
+    index=$[$index+1]
+    if [ "$status" == "ok" ]
+    then
+      totalRows=$[$totalRows+$rows]
+    else
+      # force while exit
+      totalRows=1
+      total=0
+      # remove invalid
+      mv $target $target.err
+    fi
+    echo "status: $status index: $index $totalRows of $total startindex: $startindex perpage=$perpage cursor:$cursor"
+    if [ $totalRows -lt $total ]
+    then
+      # wait a bit
+      sleep 2
+      downloadWithCursor $rows $index "$cursor"
+    fi
+  done
+  cat $sampledir/crossref-*.json | jq .message.items[].title | cut -f2 -d'[' | cut -f2 -d'"' | grep -v "]" | tr -s '\n' > $sampledir/proceedings-crossref.txt
+}
+
+base=$HOME/.conferencecorpus
+sampledir=$base/crossref
+# commandline option
+while [  "$1" != ""  ]
+do
+  option="$1"
+  case $option in
+    -h|--help)
+      usage
+      exit 0;;
+	  --fromgithub)
+		  downloadFromGithub
+			;;
+    --crossref)
+      getCrossRef $base/crossref
+      ;;
+	esac
+	shift
+done

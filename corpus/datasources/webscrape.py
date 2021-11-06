@@ -4,6 +4,7 @@ Created on 2020-08-20
 @author: wf
 '''
 import urllib.request
+from urllib.request import build_opener, HTTPCookieProcessor
 from bs4 import BeautifulSoup
 import re
 
@@ -19,7 +20,7 @@ class WebScrape(object):
     https://www.w3.org/MarkUp/2009/rdfa-for-html-authors
     '''
 
-    def __init__(self,debug:bool=False,showHtml:bool=False,timeout:float=20):
+    def __init__(self,debug:bool=False,showHtml:bool=False,timeout:float=20,agent='Mozilla/5.0'):
         '''
         Constructor
         
@@ -27,12 +28,14 @@ class WebScrape(object):
             debug(bool): if True show debugging information
             showHtml(bool): if True show the HTML retrieved
             timeout(float): the default timeout 
+            agent(str): the agent to mimic
         '''
         self.err=None
         self.valid=False
         self.debug=debug
         self.showHtml=showHtml
         self.timeout=timeout
+        self.agent=agent
         
     def findLinkForRegexp(self,regex:str):
         '''
@@ -90,7 +93,10 @@ class WebScrape(object):
         Return:
             BeautifulSoup: the html parser
         '''
-        response = urllib.request.urlopen(url,timeout=self.timeout)
+        req=urllib.request.Request(url,headers={'User-Agent': f'{self.agent}'})
+        # handle cookies
+        opener = build_opener(HTTPCookieProcessor())
+        response = opener.open(req,timeout=self.timeout)
         html = response.read()
         soup = BeautifulSoup(html, 'html.parser', from_encoding='utf-8')  
         if showHtml:

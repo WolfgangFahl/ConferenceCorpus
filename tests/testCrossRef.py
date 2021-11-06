@@ -8,6 +8,7 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from corpus.datasources.crossref import Crossref,CrossrefEvent, CrossrefEventManager
 from lodstorage.lod import LOD
+import json
 
 class TestCrossRef(DataSourceTest):
     '''
@@ -38,6 +39,14 @@ class TestCrossRef(DataSourceTest):
         Crossref.fixEncodings(eventInfo,debug=self.debug)
         self.assertEqual(eventInfo['location'],"Münster, Germany")
         
+        
+    def prettyJson(self,d):
+        '''
+        prettry print the given jsonStr
+        '''
+        jsonStr=json.dumps(d,indent=2,sort_keys=True)
+        print(jsonStr)
+        
     def testCrossref_DOI_Lookup(self):
         ''' test crossref API access 
         see https://github.com/WolfgangFahl/ProceedingsTitleParser/issues/28
@@ -48,10 +57,11 @@ class TestCrossRef(DataSourceTest):
             {'title':'Tenth International Symposium on Avian Influenza'},
             {'title':'Proceedings of the 7th International Workshop on Feature-Oriented Software Development'}
         ]
+        debug=True
         for index,doi in enumerate(dois):
             doimeta=cr.doiMetaData(doi)
-            if self.debug:
-                print (doimeta)
+            if debug:
+                self.prettyJson (doimeta)
             self.assertTrue('title' in doimeta)
             title=doimeta['title'][0]
             if self.debug:
