@@ -18,7 +18,7 @@ class TestGnd(DataSourceTest):
     '''
     
     def setUp(self):
-        super().setUp(debug=True)
+        super().setUp(debug=False)
         
         
     def getGndDataSource(self,forceUpdate=False):
