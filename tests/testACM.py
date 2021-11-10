@@ -26,7 +26,7 @@ class TestACM(DataSourceTest):
         '''
         if self.inCI():
             return
-        debug=True
+        debug=self.debug
         acm=ACM(debug=debug,showHtml=False)
         # example https://dl.acm.org/event.cfm?id=RE149
         for acmDlEventId in ["RE149"]:
@@ -58,7 +58,7 @@ ORDER by ?acmEventId"""
         qlod=wd.queryAsListOfDicts(queryString,fixNone=True)
         query=Query(name="ACM DL Events",query=queryString,lang='sparql')
         debug=self.debug
-        debug=True
+        #debug=True
         for tablefmt in ["github","mediawiki","latex"]:
             lod=copy.deepcopy(qlod)
             qdoc=query.documentQueryResult(lod,tablefmt=tablefmt)
