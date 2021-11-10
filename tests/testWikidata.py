@@ -50,7 +50,7 @@ class TestWikiData(DataSourceTest):
         '''
         test getting the wikiData Event Series
         '''
-        self.checkDataSource(self.wikidataDataSource,4200,7400)
+        self.checkDataSource(self.wikidataDataSource,4200,7800)
         
     def showQuery(self,name,sqlQuery,show=True):
         query=Query(name=name,query=sqlQuery,lang='sql')
