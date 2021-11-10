@@ -4,9 +4,9 @@ Created on 2021-07-21
 @author: wf
 '''
 from corpus.event import EventSeriesManager,EventSeries, Event, EventManager
-from lodstorage.sparql import SPARQL
 from lodstorage.storageconfig import StorageConfig
 from corpus.eventcorpus import EventDataSource,EventDataSourceConfig
+import re
 
 class Wikidata(EventDataSource):
     '''
@@ -116,7 +116,7 @@ SELECT DISTINCT
   ?startDate
   ?endDate
   ?homepage 
-  ?dblpConferenceId
+  ?describedAtUrl
   ?wikiCfpId
   ?gndId
   ?mainSubject
@@ -165,7 +165,7 @@ WHERE
   OPTIONAL { ?event wdt:P582 ?endDate . }
   
   OPTIONAL { ?event wdt:P856 ?homepage . }
-  OPTIONAL { ?event wdt:P8926 ?dblpConferenceId . } 
+  OPTIONAL { ?event wdt:P973 ?describedAtUrl . } 
   OPTIONAL { ?event wdt:P5124 ?wikiCfpId . }
   OPTIONAL { ?event wdt:P227 ?gndId. }
   OPTIONAL { ?event wdt:P214 ?viafId. }
