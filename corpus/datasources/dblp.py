@@ -16,22 +16,32 @@ class Dblp(EventDataSource):
     '''
     sourceConfig = EventDataSourceConfig(lookupId="dblp", name="dblp", url='https://dblp.org/', title='dblp computer science bibliography', tableSuffix="dblp")
     
+    
     def __init__(self):
         '''
         constructor
         '''
         super().__init__(DblpEventManager(), DblpEventSeriesManager(), Dblp.sourceConfig)
-        self.dayPattern=r""
+       
+    @classmethod
+    def setPatterns(cls):
+        if hasattr(cls,"dayPattern"):
+            return
+        cls.dayPattern=r""
+        cls.dayPatternWithSuffix=r""
         delim=""
         for day in range(1,31):
-            self.dayPattern=self.dayPattern+f"{delim}{day}"
+            # https://stackoverflow.com/a/739266/1497139
+            cls.dayPattern=cls.dayPattern+f"{delim}{day}"
             delim="|"
-        self.monthPattern=r"January|February|March|April|May|June|July|August|September|October|November|December"
-        self.yearPattern=r"([12][0-9]{3})"
-        self.ws=r"\s+"
-        self.dateRangePattern=f"^({self.dayPattern})[-]({self.dayPattern}){self.ws}({self.monthPattern}){self.ws}({self.yearPattern})$"
-        
-    def strToDate(self,dateStr):
+        cls.monthPattern=r"January|February|March|April|May|June|July|August|September|October|November|December"
+        cls.yearPattern=r"([12][0-9]{3})"
+        cls.ws=r"\s+"
+        cls.dateRangePattern=f"^\s*({cls.dayPattern})[-]({cls.dayPattern})(st|nd|rd|th)?{cls.ws}({cls.monthPattern}){cls.ws}({cls.yearPattern})\s*[.]?$"        
+
+
+    @classmethod
+    def strToDate(cls,dateStr):
         '''
         Args:
             dateStr(str): the string to convert
@@ -46,9 +56,18 @@ class Dblp(EventDataSource):
             
             pass
         return d
-        
-
-    def getDateRange(self,dateStr):
+    
+    @classmethod
+    def getDateRangeFromTitle(cls,title:str):
+        dateRange={}
+        if title is not None:
+            parts=title.split(",")
+            datePartStr=parts[len(parts)-1]
+            dateRange=Dblp.getDateRange(datePartStr)
+        return dateRange 
+    
+    @classmethod
+    def getDateRange(cls,dateStr):
         '''
         given a dblp date string create a date range
         
@@ -61,21 +80,25 @@ class Dblp(EventDataSource):
             18-21 September 2005
 
         '''
+        cls.setPatterns()
         result={}
         if dateStr is not None:
-            yearOnly=re.search(f"^{self.yearPattern}$",dateStr)
-            dateRangeMatch=re.search(self.dateRangePattern,dateStr)
+            yearOnly=re.search(f"^{cls.yearPattern}$",dateStr)
+            dateRangeMatch=re.search(cls.dateRangePattern,dateStr)
             if yearOnly: 
                 result['year']=int(yearOnly.group(1))
             elif dateRangeMatch:      
                 fromDay=dateRangeMatch.group(1)
                 toDay=dateRangeMatch.group(2)
-                month=dateRangeMatch.group(3)
-                year=dateRangeMatch.group(4)
+                month=dateRangeMatch.group(4)
+                year=dateRangeMatch.group(5)
                 startDateStr=f"{fromDay} {month} {year}"
-                toDateStr=f"{toDay} {month} {year}"          
-                result['startDate']=self.strToDate(startDateStr)
-                result['endDate']=self.strToDate(toDateStr)
+                toDateStr=f"{toDay} {month} {year}"   
+                startDate=cls.strToDate(startDateStr)   
+                endDate=cls.strToDate(toDateStr)
+                if startDate and endDate: 
+                    result['startDate']=startDate
+                    result['endDate']=endDate
         if 'startDate' in result:
                 result['year']=result['startDate'].year
         return result
@@ -104,6 +127,11 @@ class DblpEvent(Event):
         '''
         if 'url' in rawEvent:
             rawEvent["url"] = f"https://dblp.org/{rawEvent['url']}" 
+        if 'title' in rawEvent:   
+            title=rawEvent["title"]
+            dateRange=Dblp.getDateRangeFromTitle(title)
+            for key, value in dateRange.items():
+                rawEvent[key]=value
         if "year" in rawEvent:
             # set year to integer value
             yearStr = rawEvent['year']

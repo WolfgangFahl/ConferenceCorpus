@@ -13,21 +13,34 @@ class TestDblpEvents(DataSourceTest):
     '''
     test the dblp data source
     '''
+    
+    @classmethod
+    def setUpClass(cls):
+        super(TestDblpEvents, cls).setUpClass()
+        cls.debug=False
+        cls.mock=False # tests.testDblpXml.TestDblp.mock 
+        cls.lookup=CorpusLookup(lookupIds=["dblp"],configure=cls.configureCorpusLookup)
+        cls.lookup.load(forceUpdate=True)
+        cls.dblp=Dblp()
+       
  
     def setUp(self):
         '''
         setup 
         '''
-        self.mock=tests.testDblpXml.TestDblp.mock 
+       
         DataSourceTest.setUp(self)
+        self.lookup=TestDblpEvents.lookup
+        self.dblp=TestDblpEvents.dblp
         pass
     
-    def configureCorpusLookup(self,lookup:CorpusLookup):
+    @classmethod
+    def configureCorpusLookup(cls,lookup:CorpusLookup):
         '''
         callback to configure the corpus lookup
         '''
         dblpDataSource=lookup.getDataSource("dblp")
-        dblpXml=tests.testDblpXml.TestDblp.getMockedDblp(mock=self.mock,debug=self.debug)
+        dblpXml=tests.testDblpXml.TestDblp.getMockedDblp(mock=cls.mock,debug=cls.debug)
         dblpDataSource.eventManager.dblpXml=dblpXml
         dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         
@@ -36,19 +49,23 @@ class TestDblpEvents(DataSourceTest):
         '''
         test getting the conference series and events from dblp xml dump
         '''
-        lookup=CorpusLookup(lookupIds=["dblp"],configure=self.configureCorpusLookup)
-        lookup.load(forceUpdate=False)
-        dblpDataSource=lookup.getDataSource("dblp")
+      
+        dblpDataSource=self.lookup.getDataSource("dblp")
         self.checkDataSource(dblpDataSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
 
+    def testDblpDateFix(self):
+        dblpDataSource=self.lookup.getDataSource("dblp")
+        for dblpEvent in dblpDataSource.eventManager.events:
+            dateRange=Dblp.getDateRangeFromTitle(dblpEvent.title)
+            print(dateRange)
+                
     def testDateRange(self):
         '''
         test date Range parsing
         '''
-        dblp=Dblp()
-        dateStrings=['18-21 September 2005']
+        dateStrings=['18-21 September 2005','18-21st September 2005']
         for dateString in dateStrings:
-            dateRange=dblp.getDateRange(dateString)
+            dateRange=Dblp.getDateRange(dateString)
             print(dateRange)
         
 
