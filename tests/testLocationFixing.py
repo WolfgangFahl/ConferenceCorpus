@@ -199,6 +199,16 @@ limit 20"""),
         addLocationInfo=limit>=2000
         self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,show=show,addLocationInfo=addLocationInfo) 
         
+        
+    def testDblpDateFix(self):
+        dblpDataSource=self.lookup.getDataSource("dblp")
+        for dblpEvent in dblpDataSource.eventManager.events:
+            title=dblpEvent.title
+            if title is not None:
+                parts=title.split(",")
+                datePart=parts[len(parts)-1]
+                print(datePart)
+            
     def testDblpLocationFix(self):
         '''
         test dblp Location fixing
@@ -211,7 +221,7 @@ limit 20"""),
                 if len(parts)>3:
                     dblpEvent.location=f"{parts[2].strip()}, {parts[3].strip()}"
                     #print(dblpEvent.location)
-        limit=50 if self.inCI() else 100
+        limit=50 if self.inCI() else 50000
         show=not self.inCI()
         addLocationInfo=limit>=1000
         self.fixLocations(dblpDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)

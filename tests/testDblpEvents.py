@@ -5,6 +5,7 @@ Created on 28.07.2021
 '''
 import unittest
 import tests.testDblpXml 
+from corpus.datasources.dblp import Dblp
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 
@@ -40,6 +41,16 @@ class TestDblpEvents(DataSourceTest):
         dblpDataSource=lookup.getDataSource("dblp")
         self.checkDataSource(dblpDataSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
 
+    def testDateRange(self):
+        '''
+        test date Range parsing
+        '''
+        dblp=Dblp()
+        dateStrings=['18-21 September 2005']
+        for dateString in dateStrings:
+            dateRange=dblp.getDateRange(dateString)
+            print(dateRange)
+        
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

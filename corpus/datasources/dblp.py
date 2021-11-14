@@ -7,7 +7,8 @@ from corpus.event import EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 from corpus.datasources.dblpxml import DblpXml
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
-
+import re
+from datetime import datetime
 
 class Dblp(EventDataSource):
     '''
@@ -20,6 +21,64 @@ class Dblp(EventDataSource):
         constructor
         '''
         super().__init__(DblpEventManager(), DblpEventSeriesManager(), Dblp.sourceConfig)
+        self.dayPattern=r""
+        delim=""
+        for day in range(1,31):
+            self.dayPattern=self.dayPattern+f"{delim}{day}"
+            delim="|"
+        self.monthPattern=r"January|February|March|April|May|June|July|August|September|October|November|December"
+        self.yearPattern=r"([12][0-9]{3})"
+        self.ws=r"\s+"
+        self.dateRangePattern=f"^({self.dayPattern})[-]({self.dayPattern}){self.ws}({self.monthPattern}){self.ws}({self.yearPattern})$"
+        
+    def strToDate(self,dateStr):
+        '''
+        Args:
+            dateStr(str): the string to convert
+            
+        Return:
+            datetime: the date
+        '''
+        d=None
+        try:
+            d = datetime.strptime(dateStr, '%d %B %Y')
+        except ValueError as _ve:
+            
+            pass
+        return d
+        
+
+    def getDateRange(self,dateStr):
+        '''
+        given a dblp date string create a date range
+        
+        Args:
+            dateStr(str): the date string to analyze
+            
+        Returns:
+            dict: containing year, startDate, endDate
+        examples:
+            18-21 September 2005
+
+        '''
+        result={}
+        if dateStr is not None:
+            yearOnly=re.search(f"^{self.yearPattern}$",dateStr)
+            dateRangeMatch=re.search(self.dateRangePattern,dateStr)
+            if yearOnly: 
+                result['year']=int(yearOnly.group(1))
+            elif dateRangeMatch:      
+                fromDay=dateRangeMatch.group(1)
+                toDay=dateRangeMatch.group(2)
+                month=dateRangeMatch.group(3)
+                year=dateRangeMatch.group(4)
+                startDateStr=f"{fromDay} {month} {year}"
+                toDateStr=f"{toDay} {month} {year}"          
+                result['startDate']=self.strToDate(startDateStr)
+                result['endDate']=self.strToDate(toDateStr)
+        if 'startDate' in result:
+                result['year']=result['startDate'].year
+        return result
 
         
 class DblpEvent(Event):
