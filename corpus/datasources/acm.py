@@ -7,6 +7,7 @@ from corpus.event import Event,EventSeries,EventManager,EventSeriesManager
 from lodstorage.storageconfig import StorageConfig
 from corpus.eventcorpus import EventDataSourceConfig,EventDataSource
 from corpus.datasources.webscrape import WebScrape
+from corpus.datasources.wikidata import Wikidata
 
 class ACM(EventDataSource):
     '''
@@ -111,8 +112,63 @@ class AcmEventManager(EventManager):
         '''
         Constructor
         '''
-        super().__init__(name="ConfrefEvents", sourceConfig=ACM.sourceConfig, clazz=AcmEvent, config=config)
-        
+        self.source="acm"
+        self.endpoint=Wikidata.endpoint
+        super().__init__(name="ACMEvents", sourceConfig=ACM.sourceConfig, clazz=AcmEvent, config=config)
+
+    def configure(self):
+        '''
+        configure me
+        '''
+        if not hasattr(self, "getListOfDicts"):
+            self.getListOfDicts=self.getLoDfromEndpoint    
+   
+    def getSparqlQuery(self):
+        '''
+        get  the SPARQL query for this event manager 
+        '''
+        query="""# WF 2021-11-12
+# ACM proceedings
+SELECT ?doi ?publisher ?publisherLabel ?proc ?procLabel ?event ?eventLabel ?type ?typeLabel ?series ?seriesLabel ?acmConferenceId ?acmEventSeriesId ?gndEventId ?dblpEventSeriesId WHERE {
+  # proceedings
+  ?proc wdt:P31 wd:Q1143604.
+  # publisher ACM
+  ?proc wdt:P123 wd:Q127992.
+  OPTIONAL {
+    ?proc wdt:P123 ?publisher
+  }
+  # doi
+  OPTIONAL {
+    ?proc wdt:P356 ?doi.
+  }
+  OPTIONAL {
+    # of an event
+    ?proc wdt:P4745 ?event.
+    OPTIONAL {
+      ?event wdt:P227 ?gndEventId.
+    }
+    OPTIONAL {
+      ?event wdt:P31 ?type.
+    } 
+    OPTIONAL {
+      ?event wdt:P179 ?series
+  
+      OPTIONAL {
+        ?series wdt:P7979 ?acmConferenceId.
+      }
+      OPTIONAL {
+        ?series wdt:P3333 ?acmEventSeriesId.
+      }
+      OPTIONAL  {
+       ?series wdt:P8926 ?dblpEventSeriesId.
+      } 
+    }
+  }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+        """
+        return query      
+    
 class AcmEventSeriesManager(EventSeriesManager):
     '''
     event series handling for event series derived from the ACM digital library
@@ -122,5 +178,32 @@ class AcmEventSeriesManager(EventSeriesManager):
         '''
         Constructor
         '''
+        self.source="acm"
+        self.endpoint=Wikidata.endpoint
         super().__init__(name="AcmEventSeries", sourceConfig=ACM.sourceConfig,clazz=AcmEventSeries,config=config)
 
+    def configure(self):
+        '''
+        configure me
+        '''
+        if not hasattr(self, "getListOfDicts"):
+            self.getListOfDicts=self.getLoDfromEndpoint
+            
+    def getSparqlQuery(self):
+        '''
+        get  the SPARQL query for this series  manager
+        '''
+        query="""# WF 2021-11-04
+# ACM events in Wikidata
+SELECT ?event ?eventLabel ?acmConferenceId ?acmEventId ?dblpEventId ?type ?typeLabel WHERE {
+  #?event wdt:P31 wd:Q52260246.  
+  ?event wdt:P31 ?type.
+  ?event wdt:P7979 ?acmConferenceId.
+  ?event wdt:P3333 ?acmEventId.
+  OPTIONAL  {
+    ?event wdt:P8926 ?dblpEventId.
+  }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER by ?acmEventId"""
+        return query

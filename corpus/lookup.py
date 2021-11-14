@@ -5,7 +5,7 @@ Created on 2021-07-30
 '''
 from corpus.event import EventStorage
 from corpus.eventcorpus import EventCorpus, EventDataSource
-
+from corpus.datasources.acm import ACM
 from corpus.datasources.confref import Confref
 from corpus.datasources.crossref import Crossref
 from corpus.datasources.dblp import Dblp
@@ -76,6 +76,8 @@ class CorpusLookup(object):
         self.eventCorpus=EventCorpus()
         if lookupIds is None:
             lookupIds=CorpusLookup.lookupIds
+        if "acm" in lookupIds:
+            self.eventCorpus.addDataSource(ACM())
         if "confref" in lookupIds:
             self.eventCorpus.addDataSource(Confref())
         if "crossref" in lookupIds:

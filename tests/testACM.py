@@ -5,8 +5,10 @@ Created on 04.11.2021
 '''
 import unittest
 from lodstorage.query import Query
+from corpus.lookup import CorpusLookup
 from corpus.datasources.acm import ACM,AcmEvent,AcmEventSeries
 import copy
+from corpus.datasources.wikidata import Wikidata
 from tests.datasourcetoolbox import DataSourceTest
 
 from lodstorage.sparql import SPARQL
@@ -18,7 +20,13 @@ class TestACM(DataSourceTest):
 
     def setUp(self):
         DataSourceTest.setUp(self)
+        self.lookup=CorpusLookup(lookupIds=["acm"])
+        self.lookup.load(forceUpdate=True)
+        self.acmDataSource=self.lookup.getDataSource("acm")
         pass
+    
+    def testACMDataSource(self):
+        self.checkDataSource(self.acmDataSource,1,1)
 
     def testACM(self):
         '''
@@ -40,20 +48,9 @@ class TestACM(DataSourceTest):
         '''
         see https://github.com/WolfgangFahl/ConferenceCorpus/issues/17
         '''
-        queryString="""# WF 2021-11-04
-# ACM events in Wikidata
-SELECT ?event ?eventLabel ?acmConferenceId ?acmEventId ?dblpEventId ?type ?typeLabel WHERE {
-  #?event wdt:P31 wd:Q52260246.  
-  ?event wdt:P31 ?type.
-  ?event wdt:P7979 ?acmConferenceId.
-  ?event wdt:P3333 ?acmEventId.
-  OPTIONAL  {
-    ?event wdt:P8926 ?dblpEventId.
-  }
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-}
-ORDER by ?acmEventId"""
-        endpoint="https://query.wikidata.org/sparql"
+        acmSeriesManager=self.acmDataSource.eventSeriesManager
+        queryString=acmSeriesManager.getSparqlQuery()
+        endpoint=Wikidata.endpoint
         wd=SPARQL(endpoint)
         qlod=wd.queryAsListOfDicts(queryString,fixNone=True)
         query=Query(name="ACM DL Events",query=queryString,lang='sparql')
