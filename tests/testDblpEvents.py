@@ -54,10 +54,15 @@ class TestDblpEvents(DataSourceTest):
         self.checkDataSource(dblpDataSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
 
     def testDblpDateFix(self):
+        '''
+        test Dblp DateRange extraction/fixing
+        '''
         dblpDataSource=self.lookup.getDataSource("dblp")
-        for dblpEvent in dblpDataSource.eventManager.events:
+        limit=100
+        for i,dblpEvent in enumerate(dblpDataSource.eventManager.events):
             dateRange=Dblp.getDateRangeFromTitle(dblpEvent.title)
-            print(dateRange)
+            if self.debug and i < limit:
+                print(dateRange)
                 
     def testDateRange(self):
         '''
