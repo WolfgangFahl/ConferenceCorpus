@@ -18,7 +18,7 @@ class TestDblpEvents(DataSourceTest):
     def setUpClass(cls):
         super(TestDblpEvents, cls).setUpClass()
         cls.debug=False
-        cls.mock=False # tests.testDblpXml.TestDblp.mock 
+        cls.mock=tests.testDblpXml.TestDblp.mock 
         cls.lookup=CorpusLookup(lookupIds=["dblp"],configure=cls.configureCorpusLookup)
         cls.lookup.load(forceUpdate=True)
         cls.dblp=Dblp()
