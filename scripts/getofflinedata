@@ -42,6 +42,7 @@ usage() {
   echo "  -h|--help: show this usage"
   echo "  --crossref: get offline data for crossref and exit"
   echo "  --fromgithub: get offline data from github"
+  echo "  --all: get all offline data"
 }
 
 #
@@ -162,6 +163,10 @@ do
 		  downloadFromGithub
 			;;
     --crossref)
+      getCrossRef $base/crossref
+      ;;
+    --all)
+      downloadFromGithub
       getCrossRef $base/crossref
       ;;
 	esac

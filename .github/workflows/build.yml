@@ -35,7 +35,7 @@ jobs:
         scripts/getbackup
     - name: get offline data
       run: |
-        scripts/getofflinedata    
+        scripts/getofflinedata --all
     - name: Run tests
       run: |
         scripts/test
