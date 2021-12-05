@@ -7,7 +7,6 @@ import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from corpus.datasources.crossref import Crossref,CrossrefEvent, CrossrefEventManager
-from lodstorage.lod import LOD
 import json
 
 class TestCrossRef(DataSourceTest):

@@ -63,9 +63,9 @@ class GndEventManager(EventManager):
         '''
         get  the SPARQL query for this event manager
         '''
-        sparql="""# get events with most often used columns from GND
-# plus acronym, topic, homepage (seldom but useful)
-# WF 2020-07-12
+        sparql="""# performance optimized query of GND event details
+# with aggregated properties as single, count and | separated list column
+# WF 2021-12-05
 PREFIX gndi:  <https://d-nb.info/gnd>
 PREFIX gnd:  <https://d-nb.info/standards/elementset/gnd#>
 PREFIX gndo: <https://d-nb.info/standards/vocab/gnd/>
@@ -74,22 +74,44 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX dc: <http://purl.org/dc/terms/>
 PREFIX wdrs: <http://www.w3.org/2007/05/powder-s#>
 
-SELECT  ?event ?eventId ?acronym  ?sameAs ?variant ?title ?date ?areaCode ?place ?topic ?homepage ?prec ?succ
+SELECT  
+   ?event 
+   ?eventId  
+   (MIN(?eventTitle) as ?title)
+
+   (COUNT (DISTINCT ?eventDate) as ?dateCount)
+   (MIN(?eventDate) as ?date)
+
+   (MIN(?eventAcronym) as ?acronym)
+   (COUNT (DISTINCT ?eventAcronym) as ?acronymCount)
+   (GROUP_CONCAT(DISTINCT ?eventAcronym; SEPARATOR="| ") AS ?acronyms)
+
+   (MIN(?eventVariant) as ?variant)
+   (COUNT (DISTINCT ?eventVariant) as ?variantCount)
+   (GROUP_CONCAT(DISTINCT ?eventVariant; SEPARATOR="| ") AS ?variants) 
+
+   (MIN(?eventPlace) as ?place)
+   (COUNT (DISTINCT ?eventPlace) as ?placeCount)
+   (GROUP_CONCAT(DISTINCT ?eventPlace; SEPARATOR="| ") AS ?places) 
+
+   (MIN(?eventHomepage) as ?homepage)
 WHERE {
   ?event a gnd:ConferenceOrEvent.
   ?event gnd:gndIdentifier ?eventId.
-  OPTIONAL { ?event gnd:abbreviatedNameForTheConferenceOrEvent ?acronym. }
-  OPTIONAL { ?event owl:sameAs ?sameAs. }
-  OPTIONAL { ?event gnd:variantNameForTheConferenceOrEvent ?variant.}
-  OPTIONAL { ?event gnd:preferredNameForTheConferenceOrEvent ?title.}
-  OPTIONAL { ?event gnd:dateOfConferenceOrEvent ?date. }
-  OPTIONAL { ?event gnd:geographicAreaCode ?areaCode. }
-  OPTIONAL { ?event gnd:placeOfConferenceOrEvent ?place. }
-  OPTIONAL { ?event gnd:topic ?topic. }
-  OPTIONAL { ?event gnd:homepage ?homepage. }
-  OPTIONAL { ?event gnd:precedingConferenceOrEvent ?prec }.
-  OPTIONAL { ?event gnd:succeedingConferenceOrEvent ?succ }.
+  ?event gnd:preferredNameForTheConferenceOrEvent ?eventTitle.
+  OPTIONAL { ?event gnd:abbreviatedNameForTheConferenceOrEvent ?eventAcronym. }
+  OPTIONAL { ?event gnd:homepage ?eventHomepage. }
+  OPTIONAL { ?event gnd:variantNameForTheConferenceOrEvent ?eventVariant. }
+  OPTIONAL { ?event gnd:dateOfConferenceOrEvent ?eventDate. }
+  OPTIONAL { ?event gnd:placeOfConferenceOrEvent ?eventPlace }
+  # only available 3520 times 2021-12
+  # ?event gnd:topic ?topic.
+  # only available 12106 times 2021-12
+  # ?event gnd:precedingConferenceOrEvent ?prec
+  # only available 11929 times 2021-12
+  #?event gnd:succeedingConferenceOrEvent ?succ
 }
+GROUP BY ?event ?eventId
 LIMIT %d""" % (GND.limit)
         return sparql
 

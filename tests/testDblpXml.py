@@ -21,6 +21,12 @@ class TestDblp(unittest.TestCase):
     mock=True
     
     def setUp(self):
+        '''
+        setUp the test environment 
+        
+        especically the mocking parameter - if mock is  False a multi-Gigabyte download
+        might be activated
+        '''
         self.debug=False
         self.verbose=True
         self.mock=TestDblp.mock
@@ -66,8 +72,8 @@ class TestDblp(unittest.TestCase):
         get the Sql Database
         '''
         dblpXml=self.getMockedDblp(mock=mock)
-        limit=10000 if self.mock else 10000000
-        showProgress=not self.mock  and not self.inCI()
+        limit=10000 if mock else 10000000
+        showProgress=not mock  and not self.inCI()
         sample=5
         sqlDB=dblpXml.getSqlDB(limit, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblpXml.postProcess,showProgress=showProgress)
         return sqlDB
@@ -133,9 +139,11 @@ class TestDblp(unittest.TestCase):
         '''
         get  dict of list of dicts (tables)
         '''
-        if not self.mock:
+        mock=self.mock
+        #mock=False
+        if not mock:
             return
-        sqlDB=self.getSqlDB(recreate=True)
+        sqlDB=self.getSqlDB(mock=mock,recreate=True)
         tableList=sqlDB.getTableList()
         expected=6 if self.mock else 8
         self.assertEqual(expected,len(tableList))

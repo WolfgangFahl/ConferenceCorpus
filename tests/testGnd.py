@@ -35,8 +35,8 @@ class TestGnd(DataSourceTest):
         '''
         test getting conference information from Gemeinsame Normdatei
         '''
-        gndDataSource=self.getGndDataSource(forceUpdate=True)
-        expected=min(GND.limit,6000)
+        gndDataSource=self.getGndDataSource(forceUpdate=False)
+        expected=min(GND.limit,700000)
         self.checkDataSource(gndDataSource,1,expected)
         pass
     
