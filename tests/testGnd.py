@@ -11,6 +11,8 @@ from corpus.datasources.gnd import GND
 from collections import Counter
 import re
 from lodstorage.query import Query
+import getpass
+import subprocess, platform
     
 class TestGnd(DataSourceTest):
     '''
@@ -19,6 +21,20 @@ class TestGnd(DataSourceTest):
     
     def setUp(self):
         super().setUp(debug=False)
+        
+    def pingTest(self,sHost=GND.host):
+        # https://stackoverflow.com/a/34455969/1497139
+        try:
+            option="-n" if platform.system().lower()=="windows" else "-c"
+            cmd="ping %s 1 -t 1 %s" % (option,sHost) 
+            output = subprocess.check_output(cmd, shell=True)
+            return output is not None
+        except Exception:
+            return False
+       
+    def available(self):
+        return False
+        return getpass.getuser()=="wf" and self.pingTest();
         
         
     def getGndDataSource(self,forceUpdate=False):
@@ -124,13 +140,22 @@ class TestGnd(DataSourceTest):
         sql="""select count(*) as count,title,event 
 from event_GND
 group by title 
+having count(*)>1
 order by 1 desc
-limit 25"""
+"""
         title="GND query duplicates"
         query=Query(title,sql,lang='sql')
         eventRecords=sqlDB.query(query.query)
-        dqr=query.documentQueryResult(eventRecords)
-        show=True
+        duplicates=0
+        for eventRecord in eventRecords:
+            duplicates+=int(eventRecord["count"])
+        msg=f"found {duplicates} duplicates for {len(eventRecords)} duplicate titles"
+        print(msg)
+        self.assertTrue(duplicates<2500)
+        show=False
+        limit=5
+        dqr=query.documentQueryResult(eventRecords,limit=limit)
+        
         if show:
             print(dqr)
 

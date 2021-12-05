@@ -12,7 +12,8 @@ class GND(EventDataSource):
     manages event data from Gemeinsame Normdatei
     https://d-nb.info/standards/elementset/gnd
     '''
-    endpoint="https://confident.dbis.rwth-aachen.de/jena/gnd/sparql"
+    host="confident.dbis.rwth-aachen.de"
+    endpoint=f"https://{host}/jena/gnd/sparql"
     limit=1000000
     sourceConfig = EventDataSourceConfig(lookupId="gnd", name="GND", url='https://d-nb.info/standards/elementset/gnd', title='Gemeinsame Normdatei', tableSuffix="gnd")
     
