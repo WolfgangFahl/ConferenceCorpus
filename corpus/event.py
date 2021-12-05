@@ -485,13 +485,13 @@ class EventManager(EventBaseManager):
         """
         Return all the events in a given series.
         """
-        if seriesAcronym in self.seriesAcronymLookup:
+        if seriesAcronym in self.seriesLookup:
             seriesEvents = self.seriesLookup[seriesAcronym]
             if self.debug:
                 print(f"{seriesAcronym}:{len(seriesEvents):4d}")
         else:
             if self.debug:
-                print(f"Event Series Acronym {seriesAcronym} lookup failed")
+                print(f"Event Series Acronym {seriesAcronym} lookup failed - Series not known")
             return None
         return seriesEvents
     
