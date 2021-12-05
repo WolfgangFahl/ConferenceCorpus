@@ -61,7 +61,7 @@ class TestGnd(DataSourceTest):
         test ordinal analysis
         '''
         oldDebug=GND.debug
-        GND.debug=True
+        #GND.debug=True
         gndDataSource=self.getGndDataSource()
         events=gndDataSource.eventManager.events
         counter=Counter()
