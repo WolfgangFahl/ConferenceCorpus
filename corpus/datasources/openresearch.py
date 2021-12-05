@@ -174,7 +174,10 @@ class OREvent(Event):
         {'prop': 'Submitted papers', 'name': 'submittedPapers', 'templateParam': "Submitted papers"},
         {'prop': 'presence', 'name': 'presence', 'templateParam': "presence"},
         {'prop': 'wikicfpId', 'name': 'wikicfpId', 'templateParam': 'wikicfpId' },
-        {'prop':'DblpConferenceId','name':'DblpConferenceId','templateParam':'DblpConferenceId'}
+        {'prop':'DblpConferenceId','name':'DblpConferenceId','templateParam':'DblpConferenceId'},
+        {'prop': 'TibKatId', 'name': 'TibKatId', 'templateParam': 'TibKatId'},
+        {'prop': 'TIBKAT-ISBN', 'name': 'ISBN', 'templateParam': 'ISBN'},
+        {'prop': 'Wikidataid', 'name': 'wikidataId', 'templateParam': 'WikiDataId'}
     ]
 
     def __init__(self, wikiFile:WikiFile=None):
@@ -220,7 +223,9 @@ class OREvent(Event):
                 "acceptedPapers": 41,
                 "submittedPapers": 120,
                 "presence": "online",
-                "wikicfpId": 891
+                "wikicfpId": 891,
+                "tibKatId":"1736060724",
+                "ISBN":"9781450370707"
             },
             {
                 "acronym": "5GU 2017",
@@ -253,7 +258,9 @@ class OREvent(Event):
                 'title': "2019 IEEE Vehicular Networking Conference (VNC)",
                 'pageTitle': 'VNC 2019',
                 'ordinal': 11,
-                'DblpConferenceId':"vnc/vnc2019"
+                'DblpConferenceId':"vnc/vnc2019",
+                'wikidataId':"Q106335329",
+                'doi':'10.1109/VNC48660.2019'
             }
 
         ]
@@ -513,17 +520,19 @@ class OREventSeries(EventSeries):
         '''
         Returns a sample LOD of an event Series
         '''
-        samplesLOD = [{
-            'pageTitle': 'AAAI',
-            'acronym': 'AAAI',
-            'title': 'Conference on Artificial Intelligence',
-            'subject': 'Artificial Intelligence',
-            'homepage': 'www.aaai.org/Conferences/AAAI/aaai.php',
-            'wikidataId': 'Q56682083',
-            'dblpSeries': 'aaai',
-            'period': 1,
-            'unit': 'year'
-        },
+        samplesLOD = [
+            {
+                'pageTitle': 'AAAI',
+                'acronym': 'AAAI',
+                'title': 'Conference on Artificial Intelligence',
+                'subject': 'Artificial Intelligence',
+                'homepage': 'www.aaai.org/Conferences/AAAI/aaai.php',
+                'wikidataId': 'Q56682083',
+                'dblpSeries': 'aaai',
+                'period': 1,
+                'unit': 'year',
+                'logo':'Aaai-logo.jpg'
+            },
             {
                 "acronym": "3DUI",
                 "creationDate": datetime.fromisoformat("2020-03-17T22:54:10"),
@@ -536,8 +545,10 @@ class OREventSeries(EventSeries):
                 "unit": 1,
                 "wikidataId": "Q105456162",
                 'url': 'https://confident.dbis.rwth-aachen.de/or/index.php?title=3DUI',
-                'WikiCfpSeries': 160
-            }, ]
+                'WikiCfpSeries': 160,
+                'core2018Rank':'B'
+            },
+            ]
         return samplesLOD
 
     @classmethod
