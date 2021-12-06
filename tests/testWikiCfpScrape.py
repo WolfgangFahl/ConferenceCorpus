@@ -20,7 +20,7 @@ class TestWikiCFP(unittest.TestCase):
     def setUp(self):
         self.debug=True
         self.profile=True
-        self.wikiCFPDown=True
+        self.wikiCFPDown=False
         pass
 
     def tearDown(self):
