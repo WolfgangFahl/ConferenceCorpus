@@ -3,6 +3,7 @@ Created on 2021-07-21
 
 @author: wf
 '''
+import datetime
 from typing import Callable
 from lodstorage.entity import EntityManager
 from lodstorage.jsonable import JSONAble
@@ -84,7 +85,12 @@ class SMWEntity(object):
         lookup = self.entity.getTemplateParamLookup()
         if lookup:
             wikiSonRecord = self.updateDictKeys(wikiSonRecord, lookup, reverseLookup=True)
-        self.wikiFile.updateTemplate(self.entity.templateName, wikiSonRecord, overwrite=overwrite)
+        # handle datetime to date (if only date do not add 00:00:00 as default time)
+        for key, value in wikiSonRecord.items():
+            if isinstance(value, datetime.datetime):
+                if value.hour==0 and value.minute==0:
+                    wikiSonRecord[key]=value.date()
+        self.wikiFile.updateTemplate(self.entity.templateName, wikiSonRecord, prettify=True, overwrite=overwrite)
 
     def saveToWikiText(self, overwrite:bool=False):
         '''

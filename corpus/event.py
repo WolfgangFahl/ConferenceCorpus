@@ -347,13 +347,14 @@ class EventBaseManager(EntityManager):
         eventRecords= CSV.fromCSV(csvString=csvString,fields=None,delimiter=separator)
         self.updateFromLod(eventRecords, overwriteEvents=overwriteEvents, updateEntitiesCallback=updateEntitiesCallback)
 
-    def updateFromLod(self, lod:list, overwriteEvents:bool = True, updateEntitiesCallback:Callable =None):
+    def updateFromLod(self, lod:list, overwriteEvents:bool = True, updateEntitiesCallback:Callable=None, restrictToSamples:bool=True):
         """
         Updates the entities from the given LoD. If a entity does not already exist a new one will be added.
         Args:
             lod: data to update the entities
             overwriteEvents: If False only missing values are added
             updateEntitiesCallback: Callback function that is called on an updated entity
+            restrictToSamples(bool): If True only properties that are names in the samples are set.
 
         Returns:
 
@@ -365,9 +366,17 @@ class EventBaseManager(EntityManager):
                 if eventRecordPrimaryKey in originalEventsLookup:
                     originalEvent = originalEventsLookup[eventRecordPrimaryKey]
                     if hasattr(originalEvent, self.primaryKey):
+                        sampleProperties = []
+                        if hasattr(originalEvent, 'getSamples') and callable(originalEvent.getSamples):
+                            sampleProperties = LOD.getFields(originalEvent.getSamples())
                         for key, value in eventRecord.items():
                             if hasattr(originalEvent, key):
                                 setattr(originalEvent, key, value)
+                            else:
+                                if restrictToSamples or key in sampleProperties:
+                                    setattr(originalEvent, key, value)
+                                else:
+                                    pass
                         if updateEntitiesCallback is not None and callable(updateEntitiesCallback):
                             updateEntitiesCallback(originalEvent, overwrite=overwriteEvents)
                 else:
@@ -485,13 +494,13 @@ class EventManager(EventBaseManager):
         """
         Return all the events in a given series.
         """
-        if seriesAcronym in self.seriesAcronymLookup:
+        if seriesAcronym in self.seriesLookup:
             seriesEvents = self.seriesLookup[seriesAcronym]
             if self.debug:
                 print(f"{seriesAcronym}:{len(seriesEvents):4d}")
         else:
             if self.debug:
-                print(f"Event Series Acronym {seriesAcronym} lookup failed")
+                print(f"Event Series Acronym {seriesAcronym} lookup failed - Series not known")
             return None
         return seriesEvents
     
