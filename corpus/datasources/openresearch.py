@@ -177,7 +177,7 @@ class OREvent(Event):
         {'prop':'DblpConferenceId','name':'DblpConferenceId','templateParam':'DblpConferenceId'},
         {'prop': 'TibKatId', 'name': 'TibKatId', 'templateParam': 'TibKatId'},
         {'prop': 'TIBKAT-ISBN', 'name': 'ISBN', 'templateParam': 'ISBN'},
-        {'prop': 'Wikidataid', 'name': 'wikidataId', 'templateParam': 'WikiDataId'}
+        {'prop': 'Wikidataid', 'name': 'wikidataId', 'templateParam': 'wikidataid'}
     ]
 
     def __init__(self, wikiFile:WikiFile=None):
@@ -259,7 +259,7 @@ class OREvent(Event):
                 'pageTitle': 'VNC 2019',
                 'ordinal': 11,
                 'DblpConferenceId':"vnc/vnc2019",
-                'wikidataId':"Q106335329",
+                'wikidataid':"Q106335329",
                 'doi':'10.1109/VNC48660.2019'
             }
 
@@ -495,7 +495,6 @@ class OREventSeries(EventSeries):
         {'prop': 'Period', 'name': 'period', 'templateParam': 'Period'},
         {'prop': 'Unit', 'name': 'unit', 'templateParam': 'Unit'},
         {'prop': 'Has CORE Rank', 'name': 'core2018Rank', 'templateParam': 'has CORE2018 Rank'},
-        {'prop': 'wikiCfpSeries', 'name': 'wikiCfpSeries', 'templateParam': 'WikiCfpSeries'},
         # TODO add more fields according to
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
