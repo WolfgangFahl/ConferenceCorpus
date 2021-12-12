@@ -61,7 +61,6 @@ order by duration"""
             try:
                 qlod=lookup.getLod4Query(query.query)
                 for tablefmt in ["mediawiki","github","latex"]:
-                    lod=copy.deepcopy(qlod)
                     qdoc=query.documentQueryResult(lod,tablefmt=tablefmt)
                     if showMarkup:
                         print(qdoc)

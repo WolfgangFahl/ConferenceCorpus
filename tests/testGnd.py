@@ -54,6 +54,24 @@ class TestGnd(DataSourceTest):
         expected=min(GND.limit,700000)
         self.checkDataSource(gndDataSource,1,expected)
         pass
+    
+    def testQuery(self):
+        '''
+        '''
+        queryMap={"name":"dblp","lang":"sql","query":"""select event,eventId,title,date
+from event_gnd
+where title like '%Italian Research Conference on Digital Libraries%'"""
+        }
+        query=Query(**queryMap)
+        sqlDB=EventStorage.getSqlDB()
+        lod=sqlDB.query(query.query)
+        for tablefmt in ["mediawiki","github","latex"]:
+            doc=query.documentQueryResult(lod, tablefmt=tablefmt,floatfmt=".0f")
+            show=True
+            if show:
+                docstr=str(doc)
+            print(docstr)
+                        
 
     
     def testTitleExtract(self):

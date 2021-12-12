@@ -57,7 +57,6 @@ class TestACM(DataSourceTest):
         debug=self.debug
         #debug=True
         for tablefmt in ["github","mediawiki","latex"]:
-            lod=copy.deepcopy(qlod)
             qdoc=query.documentQueryResult(lod,tablefmt=tablefmt)
             if debug:
                 print (qdoc)

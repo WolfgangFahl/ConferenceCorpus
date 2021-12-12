@@ -31,7 +31,7 @@ class TestOpenResearchExport(DataSourceTest):
         if getpass.getuser()!="wf":
             return
         exporter=EventExporter()
-        for acronym in ['dc'
+        for acronym in [#'dc'
                         #,'ds'
                         #,'seke','qurator',
                         #'vnc'
@@ -40,6 +40,7 @@ class TestOpenResearchExport(DataSourceTest):
                         #'recsys'
                         #'ideas'
                         #'er'
+                        'ice/itmc'
             ]:
             dblpSeriesId=f"{acronym}"
             exportCount=exporter.exportSeries2OpenResearch(dblpSeriesId)

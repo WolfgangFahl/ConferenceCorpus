@@ -208,7 +208,7 @@ class Event(JSONAble):
                 
         markup=""
         nameValues["Series"]=series.upper()
-        dblpConferenceId=re.sub("^https:\/\/dblp.org\/db\/conf\/","",self.url)
+        dblpConferenceId=re.sub(r"^https:\/\/dblp.org\/db\/conf\/","",self.url)
         dblpConferenceId=dblpConferenceId.replace(".html","")
         nameValues["DblpConferenceId"]=dblpConferenceId
         for name,value in nameValues.items():
