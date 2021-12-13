@@ -13,7 +13,6 @@ class TestGeopy(DataSourceTest):
     test geopy and other nominatim handlers
     '''
 
-
     def testNominatim(self):
         '''
         test nominatim results - especially the extra tags
