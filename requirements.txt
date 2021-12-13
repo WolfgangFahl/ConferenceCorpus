@@ -13,6 +13,6 @@ habanero
 # https://github.com/geopy/geopy
 geopy
 # https://github.com/mocnik-science/osm-python-tools
-OSMPythonTools
+OSMPythonTools~=0.3.3
 # https://pypi.org/project/wikibaseintegrator/
 wikibaseintegrator~=0.11.1

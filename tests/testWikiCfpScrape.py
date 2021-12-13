@@ -11,19 +11,16 @@ from collections import Counter
 import jsonpickle
 from datetime import datetime
 import corpus.datasources.wikicfpscrape
+from tests.datasourcetoolbox import DataSourceTest
 
-class TestWikiCFP(unittest.TestCase):
+class TestWikiCFP(DataSourceTest):
     '''
     test events from WikiCFP
     '''
 
     def setUp(self):
-        self.debug=True
-        self.profile=True
+        DataSourceTest.setUp(self, debug=False, profile=True)
         self.wikiCFPDown=False
-        pass
-
-    def tearDown(self):
         pass
 
     def printDelimiterCount(self,names):
@@ -69,7 +66,7 @@ class TestWikiCFP(unittest.TestCase):
         for crawlType in CrawlType:
             crawlFiles=wikiCfpScrape.jsonFiles(crawlType)
             expectedLen=expected[crawlType.value]
-            msg=f"found {len(crawlFiles)}wikiCFP {crawlType.value} crawl files .. expecting {expectedLen}" 
+            msg=f"found {len(crawlFiles)} wikiCFP {crawlType.value} crawl files .. expecting {expectedLen}" 
             print (msg)
             self.assertTrue(len(crawlFiles)>=expected[crawlType.value],msg)
         
@@ -100,7 +97,6 @@ class TestWikiCFP(unittest.TestCase):
             if hasattr(event, "locality"):
                 names.append(event.locality)
         self.printDelimiterCount(names)
-
         pass
 
     def testInvalidUrl(self):
