@@ -5,7 +5,8 @@ Created on 2021-08-11
 '''
 #from lodstorage.entity import EntityManager
 from geograpy.locator import LocationContext
-from OSMPythonTools.nominatim import Nominatim 
+from OSMPythonTools.cachingStrategy import CachingStrategy, JSON
+from OSMPythonTools.nominatim import Nominatim
 import os
 import logging
 
@@ -136,7 +137,8 @@ class LocationLookup:
         if not os.path.exists(cacheDir):
             os.makedirs(cacheDir)
             
-        self.nominatim = Nominatim(cacheDir=cacheDir)
+        CachingStrategy.use(JSON, cacheDir=cacheDir)
+        self.nominatim = Nominatim()  
         logging.getLogger('OSMPythonTools').setLevel(logging.ERROR)
         
         
