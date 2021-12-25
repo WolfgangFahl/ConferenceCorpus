@@ -32,6 +32,9 @@ class TestGnd(DataSourceTest):
             return False
        
     def available(self):
+        '''
+        check whether the SPARQL server is available
+        '''
         return False
         return getpass.getuser()=="wf" and self.pingTest();
         
@@ -67,12 +70,10 @@ where title like '%Italian Research Conference on Digital Libraries%'"""
         lod=sqlDB.query(query.query)
         for tablefmt in ["mediawiki","github","latex"]:
             doc=query.documentQueryResult(lod, tablefmt=tablefmt,floatfmt=".0f")
-            show=True
+            show=self.debug
             if show:
                 docstr=str(doc)
-            print(docstr)
-                        
-
+                print(docstr)
     
     def testTitleExtract(self):
         '''
@@ -87,6 +88,26 @@ where title like '%Italian Research Conference on Digital Libraries%'"""
             event.titleExtract(counter)
         print (counter.most_common())
         GND.debug=oldDebug
+        
+    def testDateRanges(self):
+        '''
+        test date range parsing
+        '''
+        gndDataSource=self.getGndDataSource(forceUpdate=False)
+        events=gndDataSource.eventManager.events
+        debug=self.debug
+        minTotal=len(events)
+        invalid=0
+        for i,event in enumerate(events):
+            dateRange=(GND.getDateRange(event.date))
+            if (len(dateRange)==0 and event.date is not None):
+                invalid+=1
+                if debug:
+                    print("%5d: %s: %s %s" % (i,event.eventId,event.date,dateRange))
+        if debug:
+            print("%d GND dates are invalid " % invalid)
+        self.assertTrue(invalid<minTotal/300)
+        
         
     def testStats(self):
         '''
