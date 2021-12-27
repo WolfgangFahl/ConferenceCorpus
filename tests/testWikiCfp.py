@@ -24,7 +24,8 @@ class TestWikiCFP(DataSourceTest):
         lookup=CorpusLookup(lookupIds=["wikicfp"])
         lookup.load(forceUpdate=False)
         wikiCfpDataSource=lookup.getDataSource("wikicfp")
-        self.checkDataSource(wikiCfpDataSource,3000,89000)
+        # TODO 89000 as of 2021-12-27
+        self.checkDataSource(wikiCfpDataSource,3000,87000)
         pass
 
 

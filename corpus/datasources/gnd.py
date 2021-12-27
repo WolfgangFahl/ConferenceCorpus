@@ -28,9 +28,26 @@ class GND(EventDataSource):
         self.debug=debug
         
     @staticmethod
-    def strToDate(dateStr):
-        result=datetime.datetime.strptime(
+    def strToDate(dateStr,debug:bool=False):
+        '''
+        convert the given string to a date
+        
+        Args:
+            dateStr(str): the date string to convert
+            debug(bool): if True show debug information
+            
+        Return:
+            Date: - the converted data but None if there is a ValueError on conversion
+        '''
+        result=None
+        try:
+            result=datetime.datetime.strptime(
                         dateStr, "%d.%m.%Y").date()
+        except ValueError as ve:
+            # TODO year might be ok but not garbage such as
+            if debug:
+                print(f"{dateStr}:{str(ve)}")
+            pass
         return result
         
     @staticmethod
@@ -50,6 +67,8 @@ class GND(EventDataSource):
         '''
         result={}
         if date is not None:
+            startDate=None
+            endDate=None
             yearPattern="[12][0-9]{3}"
             datePattern="[0-9]{2}[.][0-9]{2}[.]"+yearPattern
             yearOnly=re.search(r"^("+yearPattern+")[-]?("+yearPattern+")?$",date)
@@ -58,12 +77,16 @@ class GND(EventDataSource):
             else:
                 fromOnly=re.search(r"^("+datePattern+")[-]?$",date)
                 if fromOnly:
-                    result['startDate']=GND.strToDate(fromOnly.group(1))
+                    startDate=GND.strToDate(fromOnly.group(1))
                 else:
                     fromTo=re.search(r"^("+datePattern+")[-]("+datePattern+")$",date)
                     if fromTo:
-                        result['startDate']=GND.strToDate(fromTo.group(1))
-                        result['endDate']=GND.strToDate(fromTo.group(2))
+                        startDate=GND.strToDate(fromTo.group(1))
+                        endDate=GND.strToDate(fromTo.group(2))
+            if startDate:
+                result['startDate']=startDate
+            if endDate:
+                result['endDate']=endDate
         if 'startDate' in result:
                 result['year']=result['startDate'].year
         return result

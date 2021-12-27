@@ -63,7 +63,7 @@ class TestGeopy(DataSourceTest):
             if show:
                 print(f"{city:<22}:{str(wikidataId):<7}/{str(q):<7}:{location}→{expected}")
             self.assertEqual(str(q),str(wikidataId))
-            self.assertTrue(expected in str(location))
+            self.assertTrue(expected in str(location),f"{location}→{expected}")
         pass
 
 

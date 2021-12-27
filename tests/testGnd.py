@@ -96,6 +96,7 @@ where title like '%Italian Research Conference on Digital Libraries%'"""
         gndDataSource=self.getGndDataSource(forceUpdate=False)
         events=gndDataSource.eventManager.events
         debug=self.debug
+        #debug=True
         minTotal=len(events)
         invalid=0
         for i,event in enumerate(events):
