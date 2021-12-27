@@ -11,10 +11,11 @@ class EventExporter():
     exporter for Events and series
     '''
     
-    def __init__(self):
+    def __init__(self,debug:bool=False):
         '''
         construct me
         '''
+        self.debug=debug
         lookup=CorpusLookup(lookupIds=["dblp","wikidata","confref"])
         lookup.load(forceUpdate=False)
         self.dblpDataSource=lookup.getDataSource("dblp")

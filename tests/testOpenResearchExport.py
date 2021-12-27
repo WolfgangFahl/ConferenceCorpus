@@ -30,7 +30,8 @@ class TestOpenResearchExport(DataSourceTest):
         # do not run this in CI
         if getpass.getuser()!="wf":
             return
-        exporter=EventExporter()
+        debug=True
+        exporter=EventExporter(debug=debug)
         for acronym in [#'dc'
                         #,'ds'
                         #,'seke','qurator',
@@ -39,8 +40,8 @@ class TestOpenResearchExport(DataSourceTest):
                         #'ijcnn'
                         #'recsys'
                         #'ideas'
-                        #'er'
-                        'ice/itmc'
+                        'er'
+                        #'ice/itmc'
             ]:
             dblpSeriesId=f"{acronym}"
             exportCount=exporter.exportSeries2OpenResearch(dblpSeriesId)
