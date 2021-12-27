@@ -30,7 +30,8 @@ class NominatimWrapper(object):
         if cacheDir is None:
             home = str(Path.home())
             cacheDir=f"{home}/.nominatim"     
-        if not os.path.exists(cacheDir):
+        self.cacheDir=cacheDir
+        if not os.path.exists(self.cacheDir):
             os.makedirs(cacheDir)
         logging.getLogger('OSMPythonTools').setLevel(logging.ERROR)     
         CachingStrategy.use(JSON, cacheDir=cacheDir)

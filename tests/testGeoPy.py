@@ -45,8 +45,7 @@ class TestGeopy(DataSourceTest):
             "expected": "Санкт-Петербург"
         },{
             "city":"Arlington, VA",
-            # not really satisfactory but that's the state of affairs 2021-12-27
-            "q": None,
+            "q": "Q107126",
             "expected": "Virginia"
         }
         ]
@@ -54,6 +53,8 @@ class TestGeopy(DataSourceTest):
         nw=NominatimWrapper()
         show=self.debug
         show=True
+        if show:
+            print(nw.cacheDir)
         for example in examples:
             city=example["city"]
             location = nw.geolocator.geocode(city)
