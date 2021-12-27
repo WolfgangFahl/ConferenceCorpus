@@ -13,7 +13,8 @@ class TestWikiCFP(DataSourceTest):
     '''
 
     def setUp(self):
-        DataSourceTest.setUp(self)
+        debug=False
+        DataSourceTest.setUp(self,debug=debug)
         pass
 
 
@@ -25,7 +26,7 @@ class TestWikiCFP(DataSourceTest):
         lookup.load(forceUpdate=False)
         wikiCfpDataSource=lookup.getDataSource("wikicfp")
         # TODO 89000 as of 2021-12-27
-        self.checkDataSource(wikiCfpDataSource,3000,87000)
+        self.checkDataSource(wikiCfpDataSource,6000,89800)
         pass
 
 

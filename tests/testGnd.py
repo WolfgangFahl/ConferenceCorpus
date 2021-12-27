@@ -131,6 +131,8 @@ order by 1 desc
             duplicates+=int(eventRecord["count"])
         msg=f"found {duplicates} duplicates for {len(eventRecords)} duplicate titles"
         print(msg)
+        # TODO
+        # activate test for new version
         self.assertTrue(duplicates<2500)
         show=False
         limit=5

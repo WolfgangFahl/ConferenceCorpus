@@ -44,8 +44,8 @@ crawlBatches() {
   done
 }
 
-#crawlBatches 0 4 Series
-crawlBatches 141 152 Event
+crawlBatches 152 153 Event
+#crawlBatches 6 6 Series
 # fetch multithreaded
 # be polite and do not do this ...
 # python3 datasources/wikicfpscrape.py --startId ${base}0000 --stopId ${base}9999 -t 10 --targetPath $target

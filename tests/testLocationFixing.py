@@ -194,13 +194,10 @@ limit 20"""),
         test fixing WikiCFP locations
         '''
         wikicfpDataSource=self.lookup.getDataSource("wikicfp")
-        limit=50 if self.inCI() else 150
+        limit=50 if self.inCI() else 1200
         show=not self.inCI()
-        addLocationInfo=limit>=2000
+        addLocationInfo=limit>=1000
         self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,show=show,addLocationInfo=addLocationInfo) 
-        
-        
-   
             
     def testDblpLocationFix(self):
         '''
@@ -214,7 +211,8 @@ limit 20"""),
                 if len(parts)>3:
                     dblpEvent.location=f"{parts[2].strip()}, {parts[3].strip()}"
                     #print(dblpEvent.location)
-        limit=50 if self.inCI() else 50000
+        # 48517 as of 2021-12-27
+        limit=50 if self.inCI() else 1500
         show=not self.inCI()
         addLocationInfo=limit>=1000
         self.fixLocations(dblpDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
