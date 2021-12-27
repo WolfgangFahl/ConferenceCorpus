@@ -5,10 +5,7 @@ Created on 2021-08-11
 '''
 #from lodstorage.entity import EntityManager
 from geograpy.locator import LocationContext
-from OSMPythonTools.cachingStrategy import CachingStrategy, JSON
-from OSMPythonTools.nominatim import Nominatim
-import os
-import logging
+from corpus.nominatim import NominatimWrapper
 
 class LocationLookup:
     '''
@@ -134,13 +131,7 @@ class LocationLookup:
         self.locationContext=LocationContext.fromCache()
         cacheRootDir=LocationContext.getDefaultConfig().cacheRootDir
         cacheDir=f"{cacheRootDir}/.nominatim"
-        if not os.path.exists(cacheDir):
-            os.makedirs(cacheDir)
-            
-        CachingStrategy.use(JSON, cacheDir=cacheDir)
-        self.nominatim = Nominatim()  
-        logging.getLogger('OSMPythonTools').setLevel(logging.ERROR)
-        
+        self.nominatimWrapper=NominatimWrapper(cacheDir=cacheDir)
         
     def getCityByWikiDataId(self,wikidataID:str):
         '''
@@ -154,17 +145,21 @@ class LocationLookup:
         else:
             return None
         
+        
     def lookupNominatim(self,locationText:str):
+        '''
+        lookup the location for the given locationText (if any)
+        
+        Args:
+            locationText(str): the location text to search for
+            
+        Return:
+            the location by first finding the wikidata id for the location text and then looking up the location
+        '''
         location=None
-        nresult=self.nominatim.query(locationText,params={"extratags":"1"})
-        nlod=nresult._json
-        if len(nlod)>0:
-            nrecord=nlod[0]
-            if "extratags" in nrecord:
-                extratags=nrecord["extratags"]
-                if "wikidata" in extratags:
-                    wikidataID=extratags["wikidata"]
-                    location=self.getCityByWikiDataId(wikidataID)
+        wikidataId=self.nominatimWrapper.lookupWikiDataId(locationText)
+        if wikidataId is not None:
+            location=self.getCityByWikiDataId(wikidataId)
         return location
         
     def lookup(self,locationText:str):
