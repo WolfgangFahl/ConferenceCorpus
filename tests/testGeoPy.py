@@ -31,12 +31,13 @@ class TestGeopy(DataSourceTest):
             "city":"Athens, Georgia",
             "q": "Q203263",
             "expected": "Athens-Clarke County"
-        },{
-            "city":"St. Petersburg",
-            "q": "Q49236",
-            # not really expected but that's the state of affairs 2021-12-27
-            "expected": "Florida"
         },
+        # inconsistent results - 2021-12-27
+        #{
+        #    "city":"St. Petersburg",
+        #    "q": "Q656",
+        #    "expected": "Санкт-Петербург"
+        #},
         {
             # so for St. Petersburg we need to be more specific
             "city":"St. Petersburg, Russia",
