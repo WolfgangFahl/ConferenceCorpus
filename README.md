@@ -1,6 +1,7 @@
 # ConferenceCorpus
 The EventCorpus provides access to academic events and event series from different sources
 
+[![Website ConferenceCorpus](https://img.shields.io/website-up-down-green-red/https/conferencecorpus.bitplan.com.svg)](https://conferencecorpus.bitplan.com)
 [![Documentation Status](https://readthedocs.org/projects/conferencecorpus/badge/?version=latest)](https://conferencecorpus.readthedocs.io/en/latest/?badge=latest)
 [![Github Actions Build](https://github.com/WolfgangFahl/ConferenceCorpus/workflows/Build/badge.svg?branch=main)](https://github.com/WolfgangFahl/ConferenceCorpus/actions?query=workflow%3ABuild+branch%3Amain)
 [![PyPI Status](https://img.shields.io/pypi/v/ConferenceCorpus.svg)](https://pypi.python.org/pypi/ConferenceCorpus/)
