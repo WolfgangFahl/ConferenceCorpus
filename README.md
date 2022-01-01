@@ -9,6 +9,9 @@ The EventCorpus provides access to academic events and event series from differe
 [![pypi](https://img.shields.io/pypi/pyversions/ConferenceCorpus)](https://pypi.org/project/ConferenceCorpus/)
 [![License](https://img.shields.io/github/license/WolfgangFahl/ConferenceCorpus.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
+## Demo
+* [Conference Corpus Service](https://conferencecorpus.bitplan.com) 
+
 ## Documentation
 [Wiki](http://wiki.bitplan.com/index.php/ConferenceCorpus)
 
