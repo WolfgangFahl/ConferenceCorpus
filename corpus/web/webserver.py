@@ -5,7 +5,7 @@ Created on 2021-01-01
 '''
 from fb4.app import AppWrap
 from fb4.widgets import Link,Menu, MenuItem
-from flask import render_template
+from flask import flash,render_template, url_for
 import os
 import socket
 import sys
@@ -44,15 +44,20 @@ class WebServer(AppWrap):
         
         @self.app.route('/queries')
         def queries():
-            return self.showQueries()   
+            return self.showQueries() 
+        
+        @self.app.route('/query/<name>')
+        def query(name:str):
+            return self.showQuery(name)   
         
     def initLookup(self):
         '''
         init my corpus lookup
         '''
-        lookup=CorpusLookup()
-        lookup.load(forceUpdate=False,showProgress=True)
-        self.queryManager=lookup.getQueryManager()
+        self.lookup=CorpusLookup()
+        # TODO add lookupId handling for pre loaded data
+        #lookup.load(forceUpdate=False,showProgress=True)
+        self.queryManager=self.lookup.getQueryManager()
         
         
     def homePage(self): 
@@ -71,7 +76,29 @@ class WebServer(AppWrap):
         '''
         template="cc/queries.html"
         title="Conference Corpus Queries"
-        html=render_template(template, title=title, menu=self.getMenuList(),queryManager=self.queryManager)
+        linkList=[]
+        for queryName in self.queryManager.queriesByName:
+            linkList.append(Link(self.basedUrl(url_for("query",name=queryName)),title=queryName))
+        html=render_template(template, title=title, menu=self.getMenuList(),linkList=linkList)
+        
+        return html
+    
+    def showQuery(self,name):
+        '''
+        
+        '''
+        flash(f"query {name}")
+        template="cc/table.html"
+        title=f"Conference Corpus Query {name}"
+        lodKeys=[]
+        if name not in self.queryManager.queriesByName:
+            flash(f"unknown query {name}","warn")
+            qlod=[]
+        else:
+            query=self.queryManager.queriesByName[name]
+            qlod=self.lookup.getLod4Query(query.query)
+            lodKeys=qlod[0].keys()
+        html=render_template(template, title=title, menu=self.getMenuList(),dictList=qlod,lodKey=lodKeys,tableHeaders=lodKeys)
         return html
     
     def getMenuList(self,activeItem:str=None):
@@ -104,6 +131,7 @@ def main(_argv=None):
     
     parser = web.getParser(description="Conference Corpus Webserver")
     parser.add_argument('--verbose', default=True, action="store_true", help="should relevant server actions be logged [default: %(default)s]")
+    parser.add_argument('-li','--lookupIds', nargs='+', help='which corpus parts should be loaded')
     args = parser.parse_args()
     web.optionalDebug(args)
     web.run(args)
