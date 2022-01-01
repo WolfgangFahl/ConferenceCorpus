@@ -35,10 +35,11 @@ setup(name='ConferenceCorpus',
       ],
       packages=['corpus','corpus.smw','corpus.datasources','corpus.quality'],
       install_requires=[
-          'pylodstorage>=0.0.69',
+          'pyFlaskBootstrap4~=0.3.1',
+          'pylodstorage~=0.0.85',
           'python-dateutil',
-          'py-3rdparty-mediawiki>=0.4.10',
-          'wikirender>=0.0.24',
+          'py-3rdparty-mediawiki~=0.5.1',
+          'wikirender~=0.0.34',
           'habanero'
       ],
       entry_points={

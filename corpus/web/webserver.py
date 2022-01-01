@@ -15,7 +15,7 @@ class WebServer(AppWrap):
     ConferenceCorpus WebService
     """
 
-    def __init__(self, host=None, port=8560, verbose=True, debug=False):
+    def __init__(self, host=None, port=5005, verbose=True, debug=False):
         '''
         constructor
 
