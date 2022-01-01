@@ -54,7 +54,7 @@ class TestCorpusLookup(DataSourceTest):
         '''
         test the view DDL
         '''
-        viewDDLs=EventStorage.getCommonViewDDLs(exclude=["event_wikidata","event_orclonebackup","event_or","event_orbackup"])
+        viewDDLs=EventStorage.getCommonViewDDLs(exclude=["event_acm","event_wikidata","event_orclonebackup","event_or","event_orbackup"])
         debug=self.debug
         debug=True
         
