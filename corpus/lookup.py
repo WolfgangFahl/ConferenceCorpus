@@ -134,15 +134,17 @@ class CorpusLookup(object):
         return None
 
 
-    def load(self,forceUpdate:bool=False):
+    def load(self,forceUpdate:bool=False,showProgress:bool=False):
         '''
         load the event corpora
+        
         Args:
-            forceUpdate(bool): True if the data should be fetched from the source instead of the cache
+            forceUpdate(bool): if True the data should be fetched from the source instead of the cache
+            showProgress(bool): if True the progress of the loading should be shown
         '''
         if self.configure:
             self.configure(self)
-        self.eventCorpus.loadAll(forceUpdate=forceUpdate)
+        self.eventCorpus.loadAll(forceUpdate=forceUpdate,showProgress=showProgress)
         EventStorage.createViews()
 
     def getQueryManager(self):

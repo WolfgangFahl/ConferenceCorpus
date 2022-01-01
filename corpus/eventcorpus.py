@@ -7,6 +7,7 @@ from corpus.event import EventManager, EventSeriesManager, EventStorage
 from corpus.config import EventDataSourceConfig            
 from corpus.quality.rating import RatingManager
 from corpus.datasources.download import Download
+from geograpy.utils import Profiler
 
 class EventDataSource(object):
     '''
@@ -32,10 +33,16 @@ class EventDataSource(object):
         self.eventSeriesManager.dataSource=self
         pass
         
-    def load(self,forceUpdate=False):
+    def load(self,forceUpdate=False,showProgress=False):
         '''
         load this data source
+        
+        Args:
+            forceUpdate(bool): if true force updating this datasource
+            showProgress(bool): if true show the progress
         '''
+        msg=f"loading {self.sourceConfig.title}"
+        profiler=Profiler(msg=msg,profile=showProgress)
         self.eventSeriesManager.configure()
         self.eventManager.configure()
         # first events
@@ -44,6 +51,7 @@ class EventDataSource(object):
         self.eventSeriesManager.fromCache(force=forceUpdate)
         # TODO use same foreign key in all dataSources
         self.eventManager.linkSeriesAndEvent(self.eventSeriesManager,"inEventSeries")
+        profiler.time()
         
     def rateAll(self,ratingManager:RatingManager):
         '''
@@ -80,7 +88,7 @@ class EventCorpus(object):
         self.eventDataSources[eventDataSource.sourceConfig.lookupId]=eventDataSource
         pass
     
-    def loadAll(self,forceUpdate:bool=False):
+    def loadAll(self,forceUpdate:bool=False,showProgress=False):
         '''
         load all eventDataSources
         
@@ -88,7 +96,7 @@ class EventCorpus(object):
             forceUpdate(bool): True if the data should be fetched from the source instead of the cache
         '''
         for eventDataSource in self.eventDataSources.values():
-            eventDataSource.load(forceUpdate=forceUpdate)
+            eventDataSource.load(forceUpdate=forceUpdate,showProgress=showProgress)
            
     @staticmethod        
     def download():

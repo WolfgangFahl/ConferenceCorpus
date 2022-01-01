@@ -9,6 +9,7 @@ from flask import render_template
 import os
 import socket
 import sys
+from corpus.lookup import CorpusLookup
 
 class WebServer(AppWrap):
     """
@@ -35,10 +36,24 @@ class WebServer(AppWrap):
         self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
         self.app.app_context().push()
         self.authenticate=False
+        self.initLookup()
  
         @self.app.route('/')
         def home():
             return self.homePage()   
+        
+        @self.app.route('/queries')
+        def queries():
+            return self.showQueries()   
+        
+    def initLookup(self):
+        '''
+        init my corpus lookup
+        '''
+        lookup=CorpusLookup()
+        lookup.load(forceUpdate=False,showProgress=True)
+        self.queryManager=lookup.getQueryManager()
+        
         
     def homePage(self): 
         '''
@@ -48,6 +63,15 @@ class WebServer(AppWrap):
         title="Conference Corpus"
         
         html=render_template(template, title=title, menu=self.getMenuList())
+        return html
+    
+    def showQueries(self):
+        '''
+        show the available queries for selection
+        '''
+        template="cc/queries.html"
+        title="Conference Corpus Queries"
+        html=render_template(template, title=title, menu=self.getMenuList(),queryManager=self.queryManager)
         return html
     
     def getMenuList(self,activeItem:str=None):
