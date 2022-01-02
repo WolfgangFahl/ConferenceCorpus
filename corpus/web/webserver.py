@@ -112,7 +112,7 @@ class WebServer(AppWrap):
         menu=Menu()
         #self.basedUrl(url_for(
         menu.addItem(MenuItem("/","Home"))
-        menu.addItem(MenuItem('https://wiki.bitplan.com/index.php/ConferenceCorpus/queries',"Queries")),
+        menu.addItem(MenuItem(self.basedUrl(url_for("queries")),"Queries")),
         menu.addItem(MenuItem('https://wiki.bitplan.com/index.php/ConferenceCorpus',"Docs")),
         menu.addItem(MenuItem('https://github.com/WolfgangFahl/ConferenceCorpus','github'))
         if activeItem is not None:
