@@ -29,7 +29,7 @@ class WebServer(AppWrap):
         self.debug = debug
         self.verbose = verbose
         scriptdir = os.path.dirname(os.path.abspath(__file__))
-        template_folder=scriptdir + '/../templates'
+        template_folder=scriptdir + '/../../templates'
         if host is None:
             host=socket.gethostname()
         super().__init__(host=host, port=port, debug=debug, template_folder=template_folder)
