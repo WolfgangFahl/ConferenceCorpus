@@ -6,9 +6,11 @@ Created on 2021-01-01
 from fb4.app import AppWrap
 from fb4.widgets import Copyright, Link,Menu, MenuItem
 from flask import flash,render_template, url_for
+from werkzeug.exceptions import HTTPException
 import os
 import socket
 import sys
+import traceback
 from corpus.lookup import CorpusLookup
 
 class WebServer(AppWrap):
@@ -57,6 +59,27 @@ class WebServer(AppWrap):
         @self.app.route('/query/<name>')
         def query(name:str):
             return self.showQuery(name)   
+        
+        @self.app.errorhandler(Exception)
+        def handle_exception(e):
+            # pass through HTTP errors
+            if isinstance(e, HTTPException):
+                return e
+            traceMessage = traceback.format_exc()
+            print(traceMessage)
+            errorMessage=f"A server error occurred - see log for trace"
+            
+            return self.handleError(errorMessage)
+
+
+    def handleError(self,errorMessage,level="error"):   
+        '''
+        handle the error with the given error Message
+        '''     
+        flash(errorMessage,level)
+        # now you're handling non-HTTP exceptions only
+        html=self.render_template("cc/generic500.html", title="Error", activeItem="Home", error=errorMessage)
+        return html
         
     def initLookup(self):
         '''
@@ -121,20 +144,27 @@ class WebServer(AppWrap):
         Args:
             name(str): the name of the query to be shown
         '''
-        flash(f"query {name}")
-        template="cc/table.html"
-        activeItem="Queries"
-        title=f"Conference Corpus Query {name}"
-        lodKeys=[]
         if name not in self.queryManager.queriesByName:
-            flash(f"unknown query {name}","warn")
-            qlod=[]
+            errorMessage=f"unknown query {name}"
+            return self.handleError(errorMessage,"warn")
         else:
             query=self.queryManager.queriesByName[name]
             qlod=self.lookup.getLod4Query(query.query)
-            lodKeys=qlod[0].keys()
-        html=render_template(template, title=title, activeItem=activeItem,dictList=qlod,lodKey=lodKeys,tableHeaders=lodKeys)
+            dictOfLod={name:qlod}
+            title=f"Conference Corpus Query {name}"
+            return self.renderDictOfLod(dictOfLod,title=title)
+    
+    def renderDictOfLod(self,dictOfLod:dict,title):
+        '''
+        render a dict of list of dicts
+        '''
+        template="cc/table.html"
+        activeItem="Queries"
+        qlod=next(iter(dictOfLod.values()))
+        lodKeys=qlod[0].keys()
+        html=self.render_template(template, title=title, activeItem=activeItem,dictList=qlod,lodKey=lodKeys,tableHeaders=lodKeys)
         return html
+        
     
     def getMenu(self,activeItem:str=None):
         '''
