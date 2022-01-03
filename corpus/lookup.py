@@ -158,6 +158,21 @@ class CorpusLookup(object):
                 qm=QueryManager(lang='sql',debug=self.debug,path=path)
                 return qm
         return None
+    
+    def getDataSourceInfos(self):
+        infos=[]
+        for dataSourceName,dataSource in self.eventCorpus.eventDataSources.items():
+            info={"source":dataSourceName,"url":dataSource.sourceConfig.url}
+            em=dataSource.eventManager
+            esm=dataSource.eventSeriesManager
+            for title,manager in [("event",em),("series",esm)]:
+                query=f"SELECT count(*) as count from {manager.tableName}"
+                lod=self.getLod4Query(query)
+                record=lod[0]
+                info[title]=record["count"]
+            infos.append(info)
+        return infos
+            
 
     def getLod4Query(self,query:str):
         '''
@@ -169,12 +184,6 @@ class CorpusLookup(object):
         sqlDB=EventStorage.getSqlDB()
         listOfDicts=sqlDB.query(query)
         return listOfDicts
-
-    def performQuery(self,query:str):
-        '''
-        Args:
-            query: the query to run
-        '''
 
 
     def asPlantUml(self,baseEntity='Event'):
@@ -211,9 +220,9 @@ see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
         return plantUml
         
         
-__version__ = "0.0.17"
+__version__ = "0.0.27"
 __date__ = '2020-06-22'
-__updated__ = '2021-08-07'
+__updated__ = '2022-01-03'
 
 DEBUG = 1
 

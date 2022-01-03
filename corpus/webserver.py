@@ -46,6 +46,10 @@ class WebServer(AppWrap):
         def home():
             return self.homePage()   
         
+        @self.app.route('/datasources')
+        def datasources():
+            return self.showDataSources() 
+        
         @self.app.route('/queries')
         def queries():
             return self.showQueries() 
@@ -83,6 +87,16 @@ class WebServer(AppWrap):
         title="Conference Corpus"
         activeItem="Home"
         
+        html=self.render_template(template, title=title, activeItem=activeItem)
+        return html
+    
+    def showDataSources(self):
+        '''
+        show the datasources
+        '''
+        template="cc/datasources.html"
+        title="Data Sources"
+        activeItem=title
         html=self.render_template(template, title=title, activeItem=activeItem)
         return html
     
@@ -133,7 +147,9 @@ class WebServer(AppWrap):
         menu=Menu()
         #self.basedUrl(url_for(
         menu.addItem(MenuItem("/","Home",mdiIcon="home"))
-        menu.addItem(MenuItem(self.basedUrl(url_for("queries")),"Queries",mdiIcon="quiz")),
+        menu.addItem(MenuItem(url_for("queries"),"Queries",mdiIcon="quiz")),
+        menu.addItem(MenuItem(url_for("datasources"),"Data Sources",mdiIcon="arrow_circle_up")),
+        
         menu.addItem(MenuItem('https://wiki.bitplan.com/index.php/ConferenceCorpus',"Docs",mdiIcon="description",newTab=True)),
         menu.addItem(MenuItem('https://github.com/WolfgangFahl/ConferenceCorpus','github',mdiIcon="reviews",newTab=True))
         if activeItem is not None:

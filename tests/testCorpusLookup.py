@@ -64,6 +64,16 @@ class TestCorpusLookup(DataSourceTest):
         self.assertEqual(2,len(viewDDLs))
         for viewDDL in viewDDLs:
             self.assertTrue("CREATE VIEW" in viewDDL)
+            
+    def testGetDataSourceInfos(self):
+        '''
+        test getting the infos for the datasources
+        '''
+        lookup=CorpusLookup(configure=self.configureCorpusLookup)
+        infos=lookup.getDataSourceInfos()
+        debug=True
+        if debug:
+            print(infos)
         
     def testDataSource4Table(self):
         '''
