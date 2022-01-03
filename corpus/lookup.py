@@ -162,7 +162,11 @@ class CorpusLookup(object):
     def getDataSourceInfos(self):
         infos=[]
         for dataSourceName,dataSource in self.eventCorpus.eventDataSources.items():
-            info={"source":dataSourceName,"url":dataSource.sourceConfig.url}
+            info={
+                "source":dataSourceName,
+                "title": dataSource.sourceConfig.title,
+                "url":dataSource.sourceConfig.url
+            }
             em=dataSource.eventManager
             esm=dataSource.eventSeriesManager
             for title,manager in [("event",em),("series",esm)]:
