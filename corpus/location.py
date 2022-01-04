@@ -87,6 +87,7 @@ class LocationLookup:
         "Thessaloniki, Greece": "Q17151",
         "Toronto, ON": "Q172",
         "Toronto, Ontario": "Q172",
+        "Toronto, Ontario, Canada": "Q172",
         "Toronto, Canada": "Q172",
         "Trondheim, Norway":"Q25804",
         "Valencia": "Q8818",

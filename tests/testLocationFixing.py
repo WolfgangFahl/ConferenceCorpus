@@ -238,6 +238,7 @@ limit 20"""),
                 loc=f"{loc}{delim}{country}"
             orEvent.location=loc
             pass
+        # 1500 -> > 90%
         limit=50 if self.inCI() else 200
         show=not self.inCI()
         addLocationInfo=limit>=1200
