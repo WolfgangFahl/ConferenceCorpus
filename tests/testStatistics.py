@@ -18,16 +18,15 @@ class TestStatistics(DataSourceTest):
     def setUpClass(cls):
         super().setUpClass()
         cls.lookup=CorpusLookup()
-       
 
     def setUp(self):
         DataSourceTest.setUp(self)
         self.lookup=TestStatistics.lookup
-        
         pass
     
     def testIssue255(self):
         '''
+        test issue 255 problem list
         '''
         show=False
         lookup=self.lookup
@@ -45,6 +44,17 @@ order by duration"""
             qdoc=query.documentQueryResult(lod,tablefmt=tablefmt)
             if show:
                 print(qdoc)
+                
+    def testMultiQuery(self):
+        '''
+        test MultiQuery
+        '''
+        lookup=self.lookup;
+        multiQuery="""SELECT count(*),ordinal 
+        FROM @event
+        GROUP BY ordinal ORDER by 1"""
+        dictOfLod=lookup.getDictOfLod4MultiQuery(multiQuery)
+        print(dictOfLod)
 
     def testStatistics(self):
         '''
@@ -55,7 +65,7 @@ order by duration"""
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)
         showMarkup=False
-        #showMarkup=True
+        showMarkup=True
         failCount=0
         for _name,query in qm.queriesByName.items():
             try:

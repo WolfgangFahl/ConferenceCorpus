@@ -108,6 +108,7 @@ class WikiCfpEventSeries(EventSeries):
             rawEvent(dict): the record to post process
         '''
         rawEvent["source"]="wikicfp"
+        rawEvent["eventSeriesId"]=rawEvent["seriesId"]
         if not "url" in rawEvent:
             crawlType=wikicfpscrape.CrawlType.SERIES
             seriesId=rawEvent["seriesId"]
@@ -169,7 +170,7 @@ class WikiCfpEventSeriesManager(EventSeriesManager):
         '''
         configure me
         '''
-        # TODO implement
+        # no need - getListOfDicts has a specialized implementation
         
     def getListOfDicts(self):
         '''

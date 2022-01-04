@@ -77,11 +77,15 @@ class ACM(EventDataSource):
         acmSeries=self.eventSeriesFromSoups(seriesSoup,proceedingsSoup)
         return acmSeries
         
-    def eventSeriesFromSoups(self,seriesSoup,proceedingsSoup):
+    def eventSeriesFromSoups(self,seriesSoup,proceedingsSoup,debug=False):
         '''
         create an eventSeries from two beautiful soup parsed html pages
         '''
         acmSeries=AcmEventSeries()
+        #debug=True
+        if debug:
+            seriesHTML = seriesSoup.prettify()
+            print (seriesHTML)
         
         return acmSeries
     
@@ -194,14 +198,15 @@ class AcmEventSeriesManager(EventSeriesManager):
         get  the SPARQL query for this series  manager
         '''
         query="""# WF 2021-11-04
-# ACM events in Wikidata
-SELECT ?event ?eventLabel ?acmConferenceId ?acmEventId ?dblpEventId ?type ?typeLabel WHERE {
-  #?event wdt:P31 wd:Q52260246.  
-  ?event wdt:P31 ?type.
-  ?event wdt:P7979 ?acmConferenceId.
-  ?event wdt:P3333 ?acmEventId.
+# ACM event series in Wikidata
+SELECT ?eventSeries ?eventSeriesLabel ?acmConferenceId ?acmEventId ?dblpEventId  WHERE {
+  # scientific conference series
+  ?eventSeries wdt:P31 wd:Q47258130.  
+  #?eventSeries wdt:P31 ?type.
+  ?eventSeries wdt:P7979 ?acmConferenceId.
+  ?eventSeries wdt:P3333 ?acmEventId.
   OPTIONAL  {
-    ?event wdt:P8926 ?dblpEventId.
+    ?eventSeries wdt:P8926 ?dblpEventId.
   }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }

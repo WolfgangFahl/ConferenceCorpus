@@ -21,6 +21,7 @@ from wikifile.wikiFileManager import WikiFileManager
 from datetime import datetime
 
 import os
+import re
 from os import path
 import sys
 
@@ -177,7 +178,6 @@ class CorpusLookup(object):
             infos.append(info)
         return infos
             
-
     def getLod4Query(self,query:str):
         '''
         Args:
@@ -188,6 +188,22 @@ class CorpusLookup(object):
         sqlDB=EventStorage.getSqlDB()
         listOfDicts=sqlDB.query(query)
         return listOfDicts
+    
+    def getDictOfLod4MultiQuery(self,query:str):
+        '''
+        Args:
+            query: the (multi)query to run
+            
+        Return:
+            dict: the dict of list of dicts for the queries derived
+            from the multi query
+        '''
+        sqlDB=EventStorage.getSqlDB()
+        dictOfLod={}
+        varMatch=re.match(r"@(.*)\w", query)
+        if varMatch:
+            var=varMatch.group(1)
+        return dictOfLod
 
 
     def asPlantUml(self,baseEntity='Event'):

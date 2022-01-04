@@ -14,6 +14,7 @@ from lodstorage.storageconfig import StorageConfig
 from corpus.quality.rating import RatingManager,Rating
 from corpus.eventrating import EventRating,EventSeriesRating
 from lodstorage.sparql import SPARQL
+from lodstorage.schema import Schema
 
 import re
 class EventStorage:
@@ -80,35 +81,38 @@ class EventStorage:
         return tableList
     
     @classmethod
-    def getCommonViewDDLs(cls,exclude=None):
+    def getCommonViewDDLs(cls,viewNames=["event","eventseries"],exclude={
+            "event":
+                ["event_acm",
+                 "event_wikidata",
+                 "event_orclonebackup",
+                 "event_or",
+                 "event_orbackup"],
+            "eventseries":
+                ["eventseries_acm",
+                 "eventseries_or",
+                 "eventseries_orbackup",
+                 "eventseries_orclonebackup",
+                 "eventseries_gnd"]
+            }):
         '''
         get the SQL DDL for a common view 
         
         Return:
             str: the SQL DDL CREATE VIEW command
         '''
-        # TODO use generalize instead of fixed list
-        commonMap={
-            "event": "eventId,title,url,city,country,region,countryIso,regionIso,acronym,source,year",
-            "eventseries": "source"
-        }
-        viewDDLs=[]
-        for viewName in commonMap.keys():
-            createViewDDL=f"""CREATE VIEW IF NOT EXISTS {viewName} AS\n"""
-            delim=""
-            common=commonMap[viewName]
-            sqlDB=EventStorage.getSqlDB()
-            tableList=sqlDB.getTableList()
+        sqlDB=EventStorage.getSqlDB()
+        tableList=sqlDB.getTableList()     
+        viewDDLs={}
+        for viewName in viewNames:
+            viewTableList=[]
             for table in tableList:
                 tableName=table["name"]
                 if tableName.startswith(f"{viewName}_"):
-                    include=True
-                    if exclude is not None:
-                        include=tableName not in exclude
-                    if include:
-                        createViewDDL=f"{createViewDDL}{delim}  SELECT {common} FROM {tableName}"
-                        delim="\nUNION\n" 
-            viewDDLs.append(createViewDDL)
+                    if exclude is None or tableName not in exclude[viewName]:
+                        viewTableList.append(table)
+            viewDDL=Schema.getGeneralViewDDL(viewTableList, viewName)
+            viewDDLs[viewName]=viewDDL
         return viewDDLs
         
     @classmethod
@@ -121,7 +125,8 @@ class EventStorage:
         '''
         sqlDB=EventStorage.getSqlDB()
         viewDDLs=EventStorage.getCommonViewDDLs()
-        for viewDDL in viewDDLs:
+        for viewName,viewDDL in viewDDLs.items():
+            sqlDB.c.execute(f"DROP VIEW IF EXISTS {viewName}")
             sqlDB.c.execute(viewDDL)
     
 

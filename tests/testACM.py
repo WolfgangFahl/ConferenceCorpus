@@ -54,11 +54,11 @@ class TestACM(DataSourceTest):
         wd=SPARQL(endpoint)
         qlod=wd.queryAsListOfDicts(queryString,fixNone=True)
         query=Query(name="ACM DL Events",query=queryString,lang='sparql')
-        debug=self.debug
-        #debug=True
+        show=self.debug
+        show=True
         for tablefmt in ["github","mediawiki","latex"]:
             qdoc=query.documentQueryResult(qlod,tablefmt=tablefmt)
-            if debug:
+            if show:
                 print (qdoc)
 
 

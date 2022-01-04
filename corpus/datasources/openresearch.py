@@ -593,7 +593,7 @@ class OREventSeries(EventSeries):
                 qPageTitle = urllib.parse.quote(pageTitle)
                 url = f"{baseUrl}/index.php?title={qPageTitle}"
                 rawEvent['url'] = url
-        rawEvent['seriesId'] = rawEvent['pageTitle']
+        rawEvent['eventSeriesId'] = rawEvent['pageTitle']
 
     @classmethod
     def getPropertyLookup(cls, lookupId: str = 'prop') -> dict:

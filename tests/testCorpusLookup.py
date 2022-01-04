@@ -9,6 +9,7 @@ from tests.testDblpXml import TestDblp
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
 from tests.datasourcetoolbox import DataSourceTest
+from lodstorage.schema import Schema
 
 class TestCorpusLookup(DataSourceTest):
     '''
@@ -50,19 +51,20 @@ class TestCorpusLookup(DataSourceTest):
         lookup.load()
         self.assertEqual(10,len(lookup.eventCorpus.eventDataSources))
         
+                
     def testViewDDL(self):
         '''
         test the view DDL
         '''
-        viewDDLs=EventStorage.getCommonViewDDLs(exclude=["event_acm","event_wikidata","event_orclonebackup","event_or","event_orbackup"])
+        viewDDLs=EventStorage.getCommonViewDDLs()
         debug=self.debug
         debug=True
         
         if debug:
-            for viewDDL in viewDDLs:
+            for viewDDL in viewDDLs.values():
                 print(viewDDL)
         self.assertEqual(2,len(viewDDLs))
-        for viewDDL in viewDDLs:
+        for viewDDL in viewDDLs.values():
             self.assertTrue("CREATE VIEW" in viewDDL)
             
     def testGetDataSourceInfos(self):

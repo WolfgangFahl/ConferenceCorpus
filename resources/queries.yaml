@@ -108,10 +108,10 @@
         group by countryIso
         order by 1 desc
         limit 100
-'Ordinal distribution':
+#'Ordinal distribution':
 # see 
-    sql: |
-        SELECT count(*),ordinal 
-        FROM @event
-        GROUP BY ordinal ORDER by 1
+#    sql: |
+#        SELECT count(*),ordinal 
+#        FROM @event
+#        GROUP BY ordinal ORDER by 1
 
