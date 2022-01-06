@@ -88,6 +88,9 @@ where title like '%Italian Research Conference on Digital Libraries%'"""
             event.titleExtract(counter)
         print (counter.most_common())
         GND.debug=oldDebug
+        storeToDatabase=False
+        if storeToDatabase:
+            gndDataSource.eventManager.store()
         
     def testDateRanges(self):
         '''

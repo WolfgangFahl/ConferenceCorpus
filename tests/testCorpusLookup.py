@@ -9,8 +9,7 @@ from tests.testDblpXml import TestDblp
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
 from tests.datasourcetoolbox import DataSourceTest
-from lodstorage.schema import Schema
-
+import json
 class TestCorpusLookup(DataSourceTest):
     '''
     test the event corpus
@@ -87,6 +86,26 @@ class TestCorpusLookup(DataSourceTest):
             print (f"{dataSource.name}")
         self.assertEqual("confref.org",dataSource.name)
         
+    def testMultiQuery(self):
+        '''
+        test getting entries for a given query
+        '''
+        multiQuery="select * from {event}"
+        lookup=CorpusLookup(configure=self.configureCorpusLookup)
+        var=lookup.getMultiQueryVariable(multiQuery)
+        if self.debug:
+            print(var)
+        self.assertEqual("{event}",var)
+        lookup.load()
+        idQuery="""select source,eventId from event where acronym like "%WEBIST%" order by year desc"""
+        dictOfLod=lookup.getDictOfLod4MultiQuery(idQuery, "event", multiQuery)
+        debug=self.debug
+        #debug=True
+        if debug:
+            jsonStr=json.dumps(dictOfLod, sort_keys=True, indent=2,default=str)
+            print(jsonStr)
+        
+        
     def testGetPlantUmlDiagram(self):
         '''
         test creating a plantuml diagram of the tables involved in the lookup
@@ -96,7 +115,7 @@ class TestCorpusLookup(DataSourceTest):
         storageTableList=EventStorage.getTableList()
         #self.assertEqual(22,len(storageTableList))
         for baseEntity in ["Event","EventSeries"]:
-            plantUml=lookup.asPlantUml(baseEntity)
+            plantUml=lookup.asPlantUml(baseEntity,exclude=EventStorage.viewTableExcludes)
             debug=self.debug
             debug=True
             if debug:

@@ -29,7 +29,7 @@ class TestLocationFixing(DataSourceTest):
         locator.downloadDB()
         
         cls.locationLookup=LocationLookup()
-        lookupIds=["crossref","confref","dblp","wikidata","wikicfp","orclone"]
+        lookupIds=["crossref","confref","dblp","gnd","wikidata","wikicfp","orclone"]
         cls.lookup=CorpusLookup(lookupIds=lookupIds)
         cls.lookup.load(forceUpdate=False)
         
@@ -184,6 +184,9 @@ limit 20"""),
         test fixing CrossRef locations
         '''
         crossRefDataSource=self.lookup.getDataSource("crossref")
+        # 40%   at  270 locations
+        # 60%   at  692 locations
+        # 79.7% at 2000 locations 
         limit=50 if self.inCI() else 200
         show=not self.inCI()
         addLocationInfo=limit>=2000
@@ -194,7 +197,11 @@ limit 20"""),
         test fixing WikiCFP locations
         '''
         wikicfpDataSource=self.lookup.getDataSource("wikicfp")
-        limit=50 if self.inCI() else 1200
+        # 20% at   35 locations (220 per location)
+        # 40% at  172 locations ( 67 per location)
+        # 60% at  634 locations ( 19 per location)
+        # 80% at 3144 locations (  3 per location) - 1166 secs
+        limit=50 if self.inCI() else 175  
         show=not self.inCI()
         addLocationInfo=limit>=1000
         self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,show=show,addLocationInfo=addLocationInfo) 
@@ -216,7 +223,18 @@ limit 20"""),
         show=not self.inCI()
         addLocationInfo=limit>=1000
         self.fixLocations(dblpDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
-        
+ 
+    def testGNDLocationFix(self):
+        '''
+        test fixing WikiCFP locations
+        '''
+        gndDataSource=self.lookup.getDataSource("gnd")
+        # 87% at 3500 locations (  16 per location) - 2100 secs
+        limit=50 if self.inCI() else 300
+        show=not self.inCI()
+        addLocationInfo=limit>=1000
+        self.fixLocations(gndDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo) 
+     
     def testORLocationFix(self):
         '''
         test OpenResearch Location Fixing

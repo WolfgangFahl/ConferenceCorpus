@@ -23,6 +23,20 @@ class EventStorage:
     '''
     profile=True
     withShowProgress=False
+    viewTableExcludes={
+            "event":
+                ["event_acm",
+                 "event_ceurws"
+                 "event_orclonebackup",
+                 "event_or",
+                 "event_orbackup"],
+            "eventseries":
+                ["eventseries_acm",
+                 "eventseries_or",
+                 "eventseries_orbackup",
+                 "eventseries_orclonebackup",
+                 "eventseries_gnd"]
+            }
     
     @staticmethod
     def getStorageConfig(debug:bool=False,mode='sql')->StorageConfig:
@@ -81,42 +95,35 @@ class EventStorage:
         return tableList
     
     @classmethod
-    def getCommonViewDDLs(cls,viewNames=["event","eventseries"],exclude={
-            "event":
-                ["event_acm",
-                 "event_wikidata",
-                 "event_orclonebackup",
-                 "event_or",
-                 "event_orbackup"],
-            "eventseries":
-                ["eventseries_acm",
-                 "eventseries_or",
-                 "eventseries_orbackup",
-                 "eventseries_orclonebackup",
-                 "eventseries_gnd"]
-            }):
+    def getViewTableList(cls,viewName,exclude=None):
+        sqlDB=EventStorage.getSqlDB()
+        tableList=sqlDB.getTableList()  
+        viewTableList=[]
+        for table in tableList:
+            tableName=table["name"]
+            if tableName.startswith(f"{viewName}_"):
+                if exclude is None or tableName not in exclude[viewName]:
+                    viewTableList.append(table)
+        return viewTableList
+    
+    @classmethod
+    def getCommonViewDDLs(cls,viewNames=["event","eventseries"],exclude=None):
         '''
         get the SQL DDL for a common view 
         
         Return:
             str: the SQL DDL CREATE VIEW command
         '''
-        sqlDB=EventStorage.getSqlDB()
-        tableList=sqlDB.getTableList()     
+           
         viewDDLs={}
         for viewName in viewNames:
-            viewTableList=[]
-            for table in tableList:
-                tableName=table["name"]
-                if tableName.startswith(f"{viewName}_"):
-                    if exclude is None or tableName not in exclude[viewName]:
-                        viewTableList.append(table)
+            viewTableList=cls.getViewTableList(viewName, exclude=exclude)
             viewDDL=Schema.getGeneralViewDDL(viewTableList, viewName)
             viewDDLs[viewName]=viewDDL
         return viewDDLs
         
     @classmethod
-    def createViews(cls):
+    def createViews(cls,exclude=None):
         ''' 
           create the general Event view
           
@@ -124,7 +131,7 @@ class EventStorage:
             cacheFileName(string): the path to the database
         '''
         sqlDB=EventStorage.getSqlDB()
-        viewDDLs=EventStorage.getCommonViewDDLs()
+        viewDDLs=EventStorage.getCommonViewDDLs(exclude=exclude)
         for viewName,viewDDL in viewDDLs.items():
             sqlDB.c.execute(f"DROP VIEW IF EXISTS {viewName}")
             sqlDB.c.execute(viewDDL)

@@ -195,7 +195,7 @@ class GndEventManager(EventManager):
         configure me
         '''
         if not hasattr(self, "getListOfDicts"):
-            self.getListOfDicts=self.getLoDfromEndpoint  
+            self.getListOfDicts=self.getLoDfromEndpoint
     
     def getSparqlQuery(self):
         '''

@@ -15,6 +15,7 @@ from corpus.datasources.openresearch import OR
 from corpus.datasources.wikicfp import WikiCfp
 
 from lodstorage.uml import UML
+from lodstorage.lod import LOD
 from wikibot.wikiuser import WikiUser
 from wikifile.wikiFileManager import WikiFileManager
 
@@ -135,7 +136,7 @@ class CorpusLookup(object):
         return None
 
 
-    def load(self,forceUpdate:bool=False,showProgress:bool=False):
+    def load(self,forceUpdate:bool=False,showProgress:bool=False,withCreateViews=True):
         '''
         load the event corpora
         
@@ -146,7 +147,8 @@ class CorpusLookup(object):
         if self.configure:
             self.configure(self)
         self.eventCorpus.loadAll(forceUpdate=forceUpdate,showProgress=showProgress)
-        EventStorage.createViews()
+        if withCreateViews:
+            EventStorage.createViews(exclude=EventStorage.viewTableExcludes)
 
     def getQueryManager(self):
         '''
@@ -160,80 +162,123 @@ class CorpusLookup(object):
                 return qm
         return None
     
-    def getDataSourceInfos(self):
+    def getDataSourceInfos(self,withInstanceCount:bool=True):
+        '''
+        get the dataSource Infos
+        '''
         infos=[]
         for dataSourceName,dataSource in self.eventCorpus.eventDataSources.items():
             info={
                 "source":dataSourceName,
                 "title": dataSource.sourceConfig.title,
-                "url":dataSource.sourceConfig.url
+                "url":dataSource.sourceConfig.url,
+                "lookupId": dataSource.sourceConfig.lookupId,
+                "tableSuffix": dataSource.sourceConfig.tableSuffix
             }
-            em=dataSource.eventManager
-            esm=dataSource.eventSeriesManager
-            for title,manager in [("event",em),("series",esm)]:
-                query=f"SELECT count(*) as count from {manager.tableName}"
-                lod=self.getLod4Query(query)
-                record=lod[0]
-                info[title]=record["count"]
+            if withInstanceCount:
+                em=dataSource.eventManager
+                esm=dataSource.eventSeriesManager
+                for title,manager in [("event",em),("series",esm)]:
+                    query=f"SELECT count(*) as count from {manager.tableName}"
+                    lod=self.getLod4Query(query)
+                    record=lod[0]
+                    info[title]=record["count"]
             infos.append(info)
         return infos
             
-    def getLod4Query(self,query:str):
+    def getLod4Query(self,query:str,params=None):
         '''
         Args:
             query: the query to run
+            params(tuple): the query params, if any
         Return:
             list: the list of dicts for the query
         '''
         sqlDB=EventStorage.getSqlDB()
-        listOfDicts=sqlDB.query(query)
+        listOfDicts=sqlDB.query(query,params)
         return listOfDicts
     
-    def getDictOfLod4MultiQuery(self,query:str):
+    def getMultiQueryVariable(self,multiquery:str,lenient:bool=False):
+        '''
+        '''
+        var=None
+        regEx=r"(\{.*\})"
+        varMatch=re.search(regEx, multiquery)
+        # which variable to we want to replace?
+        if varMatch:
+            var=varMatch.group(1)
+        else:
+            if not lenient:
+                raise Exception("need a variable for the tableName to be queried in {viewName} notation")   
+        return var
+    
+    def getDictOfLod4MultiQuery(self,idQuery:str,viewName:str,multiquery:str=None):
         '''
         Args:
-            query: the (multi)query to run
+            idQuery: the query to run to get the ids
+            viewName: the view to query e.g. event, eventseries
+            multiquery: the multi query for the result
             
         Return:
             dict: the dict of list of dicts for the queries derived
             from the multi query
         '''
-        sqlDB=EventStorage.getSqlDB()
+        dataSourceInfos=self.getDataSourceInfos(withInstanceCount=False)
+        dataSourcesByTableSuffix,_dup=LOD.getLookup(dataSourceInfos, "tableSuffix")
         dictOfLod={}
-        varMatch=re.match(r"@(.*)\w", query)
-        if varMatch:
-            var=varMatch.group(1)
+        idLod=self.getLod4Query(idQuery)
+        idDict={}
+        idColumn=f"{viewName}Id"
+        for idRecord in idLod:
+            source=idRecord["source"]
+            recordId=f"'{idRecord[idColumn]}'"
+            if source in idDict:
+                idDict[source].append(recordId)
+            else:
+                idDict[source]=[recordId]
+         
+        var=self.getMultiQueryVariable(multiquery)
+        tableList=EventStorage.getViewTableList(viewName, exclude=EventStorage.viewTableExcludes)
+        for table in tableList:
+            tableName=table["name"]
+            tableSuffix=tableName.replace(f"{viewName}_","")
+            if tableSuffix in dataSourcesByTableSuffix:
+                dataSourceName=dataSourcesByTableSuffix[tableSuffix]["lookupId"]
+                if dataSourceName in idDict: 
+                    queryPrefix=multiquery.replace(var,tableName)
+                    idList=",".join(idDict[dataSourceName])
+                    whereClause=f"{idColumn} in ({idList})"
+                    query=f"{queryPrefix} WHERE {whereClause}"
+                    #params=(idList,)
+                    lod=self.getLod4Query(query)
+                    dictOfLod[dataSourceName]=lod
         return dictOfLod
 
 
-    def asPlantUml(self,baseEntity='Event'):
+    def asPlantUml(self,baseEntity='Event',exclude=None):
         '''
         return me as a plantUml Diagram markup
         '''
-        storageTableList=EventStorage.getTableList()
         schemaManager=None
         uml=UML()
         now=datetime.now()
         nowYMD=now.strftime("%Y-%m-%d")
-
-        tableList=[]
-        for table in storageTableList:
+        viewName=f"{baseEntity.lower()}"
+        tableList=EventStorage.getViewTableList(viewName, exclude=exclude)
+        for table in tableList:
             tableName=table['name']
-            prefix=f"{baseEntity.lower()}_"
-            if tableName.startswith(prefix):
-                if 'instances' in table:
-                    instanceNote=""
-                    dataSource=self.getDataSource4TableName(tableName)
-                    if dataSource is not None:
-                        sourceConfig=dataSource.sourceConfig
-                        instanceNote=f"[[{sourceConfig.url} {sourceConfig.title}]]"
-                    instanceCount=table['instances']
-                    instanceNote=f"{instanceNote}\n{instanceCount} instances "
-                    table['notes']=instanceNote
-                tableList.append(table)
+            if 'instances' in table:
+                instanceNote=""
+                dataSource=self.getDataSource4TableName(tableName)
+                if dataSource is not None:
+                    sourceConfig=dataSource.sourceConfig
+                    instanceNote=f"[[{sourceConfig.url} {sourceConfig.title}]]"
+                instanceCount=table['instances']
+                instanceNote=f"{instanceNote}\n{instanceCount} instances "
+                table['notes']=instanceNote
         title=f"""ConfIDent  {baseEntity}
 {nowYMD}
-[[https://projects.tib.eu/en/confident/ © 2019-2021 ConfIDent project]]
+[[https://projects.tib.eu/en/confident/ © 2019-2022 ConfIDent project]]
 see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
 """
         plantUml=uml.mergeSchema(schemaManager,tableList,title=title,packageName='DataSources',generalizeTo=baseEntity)
