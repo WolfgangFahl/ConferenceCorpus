@@ -24,6 +24,7 @@ from datetime import datetime
 import os
 import re
 from os import path
+import sqlite3
 import sys
 
 from argparse import ArgumentParser
@@ -200,9 +201,21 @@ class CorpusLookup(object):
     
     def getMultiQueryVariable(self,multiquery:str,lenient:bool=False):
         '''
+        get the variable being used in a multiquery
+        
+        Args:
+            multiquery(str): the multiquery containing a {variable}
+            lenient(bool): if True allow to return a None value otherwise raise an Exception if no variable was found
+            
+        Returns:
+            str: variable
+            
+        Raises:
+            Exception: if lenient is False and no variable was found
+            
         '''
         var=None
-        regEx=r"(\{.*\})"
+        regEx=r"\{(.*)\}"
         varMatch=re.search(regEx, multiquery)
         # which variable to we want to replace?
         if varMatch:
@@ -212,46 +225,73 @@ class CorpusLookup(object):
                 raise Exception("need a variable for the tableName to be queried in {viewName} notation")   
         return var
     
-    def getDictOfLod4MultiQuery(self,idQuery:str,viewName:str,multiquery:str=None):
+    def getDictOfLod4MultiQuery(self,multiquery:str,idQuery:str=None,omitFailed:bool=True)->dict:
         '''
         Args:
-            idQuery: the query to run to get the ids
-            viewName: the view to query e.g. event, eventseries
-            multiquery: the multi query for the result
+            multiquery(str): the multi query containing a variable
+            idQuery(str): optional query to get lists of ids for selection
+            omitFaild(bool): if True omit failed queries if False raise Exception on failure
             
         Return:
             dict: the dict of list of dicts for the queries derived
             from the multi query
+            
+        Raises:
+            Exception: if omitFailed is False and an error occured for a query
         '''
         dataSourceInfos=self.getDataSourceInfos(withInstanceCount=False)
         dataSourcesByTableSuffix,_dup=LOD.getLookup(dataSourceInfos, "tableSuffix")
+        viewName=self.getMultiQueryVariable(multiquery)
+        variable="{%s}" % viewName
         dictOfLod={}
-        idLod=self.getLod4Query(idQuery)
-        idDict={}
-        idColumn=f"{viewName}Id"
-        for idRecord in idLod:
-            source=idRecord["source"]
-            recordId=f"'{idRecord[idColumn]}'"
-            if source in idDict:
-                idDict[source].append(recordId)
-            else:
-                idDict[source]=[recordId]
-         
-        var=self.getMultiQueryVariable(multiquery)
+        # if an idquery is given create a dictionary of ids pers source
+        if idQuery:
+            idLod=self.getLod4Query(idQuery)
+            idDict={}
+            idColumn=f"{viewName}Id"
+            for idRecord in idLod:
+                source=idRecord["source"]
+                recordId=f"'{idRecord[idColumn]}'"
+                if source in idDict:
+                    idDict[source].append(recordId)
+                else:
+                    idDict[source]=[recordId]
+        # get the tables to potentially query 
         tableList=EventStorage.getViewTableList(viewName, exclude=EventStorage.viewTableExcludes)
+        # loop over all relevant tables
         for table in tableList:
             tableName=table["name"]
+            # create the base query per table by replacing the viewname for the base table
+            queryPrefix=multiquery.replace(variable,tableName)
             tableSuffix=tableName.replace(f"{viewName}_","")
+            # do we have a data source for the table?
             if tableSuffix in dataSourcesByTableSuffix:
+                # are we going to actually query?
+                queryDataSource=True
+                whereClause=""
+                # get the dataSource
                 dataSourceName=dataSourcesByTableSuffix[tableSuffix]["lookupId"]
-                if dataSourceName in idDict: 
-                    queryPrefix=multiquery.replace(var,tableName)
-                    idList=",".join(idDict[dataSourceName])
-                    whereClause=f"{idColumn} in ({idList})"
-                    query=f"{queryPrefix} WHERE {whereClause}"
-                    #params=(idList,)
-                    lod=self.getLod4Query(query)
-                    dictOfLod[dataSourceName]=lod
+                # shall we select only certain ids?
+                if idQuery:
+                    # do we have an idList?
+                    if dataSourceName in idDict: 
+                        idList=",".join(idDict[dataSourceName])
+                        whereClause=f" WHERE {idColumn} in ({idList})"
+                    else:
+                        # no idList - do not query at all
+                        queryDataSource=False
+                # if we want to query
+                if queryDataSource:
+                    # query the table
+                    query=f"{queryPrefix}{whereClause}"
+                    try:
+                        # get the list of dicts
+                        lod=self.getLod4Query(query)
+                        # put the result into the dict for the given datasource
+                        dictOfLod[dataSourceName]=lod
+                    except sqlite3.OperationalError as ex:
+                        if not omitFailed:
+                            raise ex
         return dictOfLod
 
 

@@ -92,18 +92,20 @@ class TestCorpusLookup(DataSourceTest):
         '''
         multiQuery="select * from {event}"
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
-        var=lookup.getMultiQueryVariable(multiQuery)
-        if self.debug:
-            print(var)
-        self.assertEqual("{event}",var)
-        lookup.load()
-        idQuery="""select source,eventId from event where acronym like "%WEBIST%" order by year desc"""
-        dictOfLod=lookup.getDictOfLod4MultiQuery(idQuery, "event", multiQuery)
+        variable=lookup.getMultiQueryVariable(multiQuery)
         debug=self.debug
         #debug=True
         if debug:
+            print(f"found '{variable}' as the variable in '{multiQuery}'")
+        self.assertEqual("event",variable)
+        lookup.load()
+        idQuery="""select source,eventId from event where acronym like "%WEBIST%" order by year desc"""
+        dictOfLod=lookup.getDictOfLod4MultiQuery(multiQuery,idQuery)
+        if debug:
             jsonStr=json.dumps(dictOfLod, sort_keys=True, indent=2,default=str)
             print(jsonStr)
+        for dataSourceName in ["confref","dblp","wikicfp"]:
+            self.assertTrue(dataSourceName in dictOfLod)
         
         
     def testGetPlantUmlDiagram(self):

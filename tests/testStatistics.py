@@ -8,6 +8,7 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from lodstorage.query import Query
 import copy
+import json
 
 class TestStatistics(DataSourceTest):
     '''
@@ -50,11 +51,15 @@ order by duration"""
         test MultiQuery
         '''
         lookup=self.lookup;
-        multiQuery="""SELECT count(*),ordinal 
-        FROM @event
+        multiQuery="""SELECT count(*) AS count,ordinal 
+        FROM {event}
         GROUP BY ordinal ORDER by 1"""
         dictOfLod=lookup.getDictOfLod4MultiQuery(multiQuery)
-        print(dictOfLod)
+        debug=self.debug
+        #debug=True
+        if debug:
+            jsonStr=json.dumps(dictOfLod, sort_keys=True, indent=2,default=str)
+            print(jsonStr)
 
     def testStatistics(self):
         '''
@@ -65,7 +70,7 @@ order by duration"""
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)
         showMarkup=False
-        showMarkup=True
+        #showMarkup=True
         failCount=0
         for _name,query in qm.queriesByName.items():
             try:
