@@ -94,7 +94,7 @@ class TestCorpusLookup(DataSourceTest):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         variable=lookup.getMultiQueryVariable(multiQuery)
         debug=self.debug
-        #debug=True
+        debug=True
         if debug:
             print(f"found '{variable}' as the variable in '{multiQuery}'")
         self.assertEqual("event",variable)
