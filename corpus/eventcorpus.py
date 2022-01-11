@@ -105,7 +105,7 @@ class EventCorpus(object):
         download the EventCorpus.db if needed
         '''
         fileName="EventCorpus.db"
-        url = f"https://github.com/WolfgangFahl/ConferenceCorpus/wiki/data/{fileName}.gz"
+        url = f"https://confident.dbis.rwth-aachen.de/downloads/conferencecorpus/{fileName}.gz"
         targetDirectory=EventStorage.getStorageConfig().getCachePath()
         Download.downloadBackupFile(url, fileName, targetDirectory)
      
