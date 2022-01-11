@@ -158,7 +158,7 @@ class WebServer(AppWrap):
             title=f"Conference Corpus Query {name}"
             return self.renderDictOfLod(dictOfLod,title=title)
 
-    def getEventSeries(self, name):
+    def getEventSeries(self, name:str):
         '''
         Query multiple datasources for the given event series
 
@@ -170,7 +170,7 @@ class WebServer(AppWrap):
         if self.debug:
             print(f"found '{variable}' as the variable in '{multiQuery}'")
         #self.lookup.load()
-        idQuery = """select source,eventId from event where acronym like "%WEBIST%" order by year desc"""
+        idQuery = f"""select source,eventId from event where acronym like "%{name}%" order by year desc"""
         dictOfLod = self.lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
         return self.convertToRequestedFormat(dictOfLod)
 
