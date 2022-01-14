@@ -70,6 +70,7 @@ class WebServer(AppWrap):
             if isinstance(e, HTTPException):
                 return e
             traceMessage = traceback.format_exc()
+            # to the server log
             print(traceMessage)
             errorMessage=f"A server error occurred - see log for trace"
             
