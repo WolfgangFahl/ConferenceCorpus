@@ -70,7 +70,7 @@ order by duration"""
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)
         showMarkup=False
-        #showMarkup=True
+        showMarkup=True
         failCount=0
         for _name,query in qm.queriesByName.items():
             try:

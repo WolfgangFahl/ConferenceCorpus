@@ -8,7 +8,7 @@ from pybtex.database.input import bibtex
 
 class BibParser(object):
     '''
-    classdocs
+    Wraper for BibText parser
     '''
 
 

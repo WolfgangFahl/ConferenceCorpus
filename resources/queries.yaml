@@ -108,6 +108,13 @@
         group by countryIso
         order by 1 desc
         limit 100
+'Ordinal distribution wikidata':
+    sql: |
+         SELECT count(*) as count,ordinal 
+         FROM event_wikidata
+         GROUP BY ordinal 
+         ORDER by cast(ordinal as integer)
+ 
 #'Ordinal distribution':
 # see 
 #    sql: |
