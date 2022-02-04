@@ -38,11 +38,12 @@ error() {
 # show the usage
 #
 usage() {
-  echo "usage: $0 [-s] [-c] [-h] [--host host] [--port port]"
-  echo "  -h: show this usage"
+  echo "usage: $0 [-k|--kill] [-s] [-c] [-h|--help] [--baseUrl] [--host host] [--port port]"
+  echo "  -h|--help: show this usage"
   echo "  -s: start as server"
-  echo "  -k: kill server if running"
+  echo "  -k|--kill: kill server if running"
   echo "  -c: start client"
+  echo "  --baseUrl - the baseUrl to server from"
   echo "  --host host - the host to serve from"
   echo "  --port port - the port to server from"
 }
@@ -102,7 +103,7 @@ startServer() {
   local l_baseUrl="$1"
   local l_logdir=/var/log/conferencecorpus
   local l_logfile=conferencecorpus.log
-  color_msg $blue "starting server only"
+  color_msg $blue "starting server only on baseUrl $l_baseUrl"
   if [ ! -d $l_logdir ]
   then
     sudo mkdir -p $l_logdir
@@ -117,8 +118,8 @@ startServer() {
 
 pyapp=corpus/web/webserver.py
 port=5005
-host=$(hostname)
-baseUrl="http://$host:$port"
+host=$(hostname -f)
+baseUrl=""
 
 # commandline option
 while [  "$1" != ""  ]
@@ -137,8 +138,29 @@ do
       baseUrl=$1
       shift
       ;;
-    -s)
-      startServer $baseUrl
+
+    --host)
+      if [ $# -lt 1 ]
+      then
+        usage
+      fi
+      host=$1
+      shift
+      ;;
+    --port)
+      if [ $# -lt 1 ]
+      then
+        usage
+      fi
+      port=$1
+      shift
+      ;;
+    -s) 
+      if [ $baseUrl="" ]
+      then
+	baseUrl="http://$host:$port"
+      fi
+      startServer $baseUrl 
       ;;
     -k)
       killifrunning $pyapp
