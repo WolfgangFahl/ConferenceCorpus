@@ -12,6 +12,8 @@ import socket
 import sys
 import traceback
 from corpus.lookup import CorpusLookup
+from corpus.web.scholar import ScholarBlueprint
+
 
 class WebServer(AppWrap):
     """
@@ -43,6 +45,9 @@ class WebServer(AppWrap):
         link=Link("http://www.bitplan.com/Wolfgang_Fahl",title="Wolfgang Fahl")
         self.copyRight=Copyright(period="2021-2022",link=link)
         self.initLookup()
+
+        #Blueprints
+        self.scholarBlueprint=ScholarBlueprint(self.app, "scholar", template_folder="scholar", appWrap=self)
  
         @self.app.route('/')
         def home():
