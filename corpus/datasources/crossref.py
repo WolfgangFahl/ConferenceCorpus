@@ -22,18 +22,19 @@ class Crossref(EventDataSource):
         Access to Crossref's search api see https://github.com/CrossRef/rest-api-doc
     '''
     sourceConfig = EventDataSourceConfig(lookupId="crossref", name="crossref.org", url="https://www.crossref.org/", title="CrossRef", tableSuffix="crossref")
-
+    cr = habanero.Crossref()  
+       
     def __init__(self):
         '''
         constructor
         '''
-        self.cr = habanero.Crossref()   
         super().__init__(CrossrefEventManager(), CrossrefEventSeriesManager(), Crossref.sourceConfig)
      
-    def doiMetaData(self, doi):
+    @classmethod 
+    def doiMetaData(cls, doi):
         ''' get the meta data for the given doi '''
         metadata = None
-        response = self.cr.works([doi])
+        response = cls.cr.works([doi])
         if 'status' in response and 'message' in response and response['status'] == 'ok':
             metadata = response['message']
         return metadata
@@ -94,6 +95,25 @@ class CrossrefEvent(Event):
             }    
         ]
         return samples
+    
+    @classmethod
+    def fromDOI(cls,doi:str):
+        '''
+        create a CrossRef Event from the given DOI
+        
+        Args:
+           doi(str): the doi to get a CrossRef event for
+        '''
+        metadata=Crossref.doiMetaData(doi)
+        event=CrossrefEvent()
+        event.source='crossref'
+        event.mapFromDict(metadata, [('doi','doi'),('ISBN','isbn'),('URL','url')])        
+        if 'event' in metadata:
+            eventdata=metadata['event']
+            event.mapFromDict(eventdata,[('acronym','acronym'),('name','title')])          
+        event.metadata=metadata
+        return event
+        
 
     
 class CrossrefEventSeries(Event):

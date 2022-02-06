@@ -67,6 +67,31 @@ class TestCrossRef(DataSourceTest):
                 print (title)
             self.assertEqual(expected[index]['title'],title)
         pass
+    
+    def testCrossRefEventFromDOI(self):
+        '''
+        test creating CrossRefEvents via API
+        '''
+        dois=['10.7551/978-0-262-33027-5']
+        expectedList=[
+            {
+                'source': 'crossref',
+                'acronym':'ECAL 2015',
+                'title': 'European Conference on Artificial Life 2015'
+            }
+             
+        ]
+        debug=self.debug
+        #debug=True
+        for index,doi in enumerate(dois):
+            event=CrossrefEvent.fromDOI(doi)
+            if debug:
+                print(f"#{index:2}:{doi:40}→{event}")
+                print(event.metadata)
+            expected=expectedList[index]
+            for key in expected:
+                self.assertEqual(expected[key],getattr(event,key))
+    
 
 
 if __name__ == "__main__":

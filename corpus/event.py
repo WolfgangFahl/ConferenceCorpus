@@ -216,6 +216,19 @@ class Event(JSONAble):
             if field in recordDict:
                 record[field] = recordDict[field]
         return record
+    
+    def mapFromDict(self,d:dict,maptuples):
+        '''
+        set my attributes from the given dict mapping with the given
+        mapping (key->attr) tuples
+        
+        Args:
+            d(dict): the dictionary to map
+            maptuples(list): the list of tuples for mapping
+        '''
+        for key,attr in maptuples:
+            if key in d:
+                setattr(self,attr,d[key])
 
     def asWikiMarkup(self,series:str,templateParamLookup:dict)->str:
         '''
