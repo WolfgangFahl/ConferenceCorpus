@@ -77,7 +77,7 @@ class EventStorage:
         '''
         config=cls.getStorageConfig()
         cachedir=config.getCachePath()
-        dbfile=f"{cachedir}/{cacheFileName}.db" % (cachedir,cacheFileName) 
+        dbfile=f"{cachedir}/{cacheFileName}.db"
         dbfile=os.path.abspath(dbfile)
         return dbfile
     
