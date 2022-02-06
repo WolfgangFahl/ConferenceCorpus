@@ -16,7 +16,6 @@ The EventCorpus provides access to academic events and event series from differe
 * [WEBIST html](https://conferencecorpus.bitplan.com/eventseries/WEBIST?format=html)
 * [WEBIST json](https://conferencecorpus.bitplan.com/eventseries/WEBIST?format=json)
 
-
 ## Documentation
 [Wiki](http://wiki.bitplan.com/index.php/ConferenceCorpus)
 
