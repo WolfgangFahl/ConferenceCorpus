@@ -86,8 +86,8 @@ class EventStorage:
         '''
         get the SQL Database
         '''
-        config=EventStorage.getDBFile()
-        sqlDB=SQLDB(config.cacheFile)
+        dbfile=EventStorage.getDBFile()
+        sqlDB=SQLDB(dbfile)
         return sqlDB
     
     @classmethod
