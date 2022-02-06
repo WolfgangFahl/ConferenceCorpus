@@ -15,6 +15,7 @@ from corpus.quality.rating import RatingManager,Rating
 from corpus.eventrating import EventRating,EventSeriesRating
 from lodstorage.sparql import SPARQL
 from lodstorage.schema import Schema
+import os
 
 import re
 class EventStorage:
@@ -67,11 +68,25 @@ class EventStorage:
         return config
     
     @classmethod
+    def getDBFile(cls,cacheFileName="EventCorpus"):
+        '''
+        get the database file for the given cacheFileName
+        
+        Args:
+            cacheFileName(str): the name of the cacheFile without suffix
+        '''
+        config=cls.getStorageConfig()
+        cachedir=config.getCachePath()
+        dbfile=f"{cachedir}/{cacheFileName}.db" % (cachedir,cacheFileName) 
+        dbfile=os.path.abspath(dbfile)
+        return dbfile
+    
+    @classmethod
     def getSqlDB(cls):
         '''
         get the SQL Database
         '''
-        config=EventStorage.getStorageConfig()
+        config=EventStorage.getDBFile()
         sqlDB=SQLDB(config.cacheFile)
         return sqlDB
     

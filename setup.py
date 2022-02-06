@@ -12,7 +12,7 @@ except:
     long_description = open('../../README.md').read()
 
 setup(name='ConferenceCorpus',
-      version='0.0.27',
+      version='0.0.28',
       description='python api providing access to academic events and event series from different sources',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -35,10 +35,10 @@ setup(name='ConferenceCorpus',
       ],
       packages=['corpus','corpus.smw','corpus.datasources','corpus.quality'],
       install_requires=[
-          'pyFlaskBootstrap4~=0.3.1',
+          'pyFlaskBootstrap4~=0.4.4',
           'pylodstorage~=0.0.85',
           'python-dateutil',
-          'py-3rdparty-mediawiki~=0.5.1',
+          'py-3rdparty-mediawiki~=0.5.4',
           'wikirender~=0.0.34',
           'habanero'
       ],
