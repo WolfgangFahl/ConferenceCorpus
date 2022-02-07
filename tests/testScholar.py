@@ -1,5 +1,5 @@
 import json
-
+import unittest
 from corpus.web.scholar import Scholar
 from tests.testWebServer import TestWebServer
 
@@ -18,3 +18,7 @@ class TestScholarBlueprint(TestWebServer):
         data=[{"wikiDataId":"Q54303353"}]
         res=client.post('/scholar/complete', data=json.dumps(data))
         self.assertDictEqual(expectedScholars[0], res.json[0])
+
+
+if __name__ == "__main__":
+    unittest.main()
