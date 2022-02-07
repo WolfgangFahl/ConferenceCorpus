@@ -14,7 +14,6 @@ class ScholarBlueprint():
 
         Args:
             name(str): my name
-            welcome(str): the welcome page
             template_folder(str): the template folder
         '''
         self.name = name
@@ -62,6 +61,14 @@ class Scholar(object):
         return samples
 
     def completeScholar(self, lod:List[dict]) -> List[dict]:
+        """
+        completes the given list of scholar records by fetching additional information from wikidata
+        Args:
+            lod: list of scholar records
+
+        Returns:
+            list of completed scholar records
+        """
         query = """SELECT 
               (GROUP_CONCAT(?_gndId;separator="|") as ?gndId) 
               (GROUP_CONCAT(?_dblpId;separator="|") as ?dblpId) 
