@@ -53,16 +53,6 @@ class TestWebServer(DataSourceTest):
         self.assertTrue("https://github.com/WolfgangFahl/ConferenceCorpus" in html)
         pass
 
-    def testGetEventSeries(self):
-        '''
-        tests the multiquerying of event series over api
-        '''
-        jsonStr=self.getResponse("/eventseries/WEBIST?format=json")
-        res=json.loads(jsonStr)
-        print(res)
-        self.assertTrue("confref" in res)
-        self.assertTrue(len(res["confref"])>15)
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
