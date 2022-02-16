@@ -45,7 +45,7 @@ class DataSourceTest(TestCase):
         are we running in a Continuous Integration Environment?
         '''
         publicCI=getpass.getuser() in ["travis", "runner"] 
-        jenkins= "JENKINS_HOME" in os.environ;
+        jenkins= "JENKINS_HOME" in os.environ
         return publicCI or jenkins
         
     def checkDataSource(self,eventDataSource:EventDataSource, expectedSeries:int,expectedEvents:int,eventSample:str=None):

@@ -45,7 +45,8 @@ setup(name='ConferenceCorpus',
       ],
       entry_points={
          'console_scripts': [
-             'aelookup = corpus.lookup:main', 
+             'aelookup = corpus.lookup:main',
+             'ccTibkat = corpus.datasources.tibkat:main'
       ],
     },
       zip_safe=False)
