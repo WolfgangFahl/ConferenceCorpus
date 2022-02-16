@@ -12,6 +12,9 @@ import socket
 import sys
 import traceback
 from corpus.lookup import CorpusLookup
+from corpus.web.eventseriesblueprint import EventSeriesBlueprint
+from corpus.web.scholar import ScholarBlueprint
+
 
 class WebServer(AppWrap):
     """
@@ -43,6 +46,10 @@ class WebServer(AppWrap):
         link=Link("http://www.bitplan.com/Wolfgang_Fahl",title="Wolfgang Fahl")
         self.copyRight=Copyright(period="2021-2022",link=link)
         self.initLookup()
+
+        #Blueprints
+        self.scholarBlueprint=ScholarBlueprint(self.app, "scholar", template_folder="scholar", appWrap=self)
+        self.eventSeriesBlueprint = EventSeriesBlueprint(self.app, "eventseries", template_folder="eventseries", appWrap=self)
  
         @self.app.route('/')
         def home():
@@ -59,10 +66,6 @@ class WebServer(AppWrap):
         @self.app.route('/query/<name>')
         def query(name:str):
             return self.showQuery(name)
-
-        @self.app.route('/eventseries/<name>')
-        def getEventSeries(name: str):
-            return self.getEventSeries(name)
 
         @self.app.errorhandler(Exception)
         def handle_exception(e):
@@ -158,22 +161,6 @@ class WebServer(AppWrap):
             dictOfLod={name:qlod}
             title=f"Conference Corpus Query {name}"
             return self.renderDictOfLod(dictOfLod,title=title)
-
-    def getEventSeries(self, name:str):
-        '''
-        Query multiple datasources for the given event series
-
-        Args:
-            name(str): the name of the event series to be queried
-        '''
-        multiQuery="select * from {event}"
-        variable = self.lookup.getMultiQueryVariable(multiQuery)
-        if self.debug:
-            print(f"found '{variable}' as the variable in '{multiQuery}'")
-        #self.lookup.load()
-        idQuery = f"""select source,eventId from event where acronym like "%{name}%" order by year desc"""
-        dictOfLod = self.lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
-        return self.convertToRequestedFormat(dictOfLod)
 
     def convertToRequestedFormat(self, dictOfLods:dict):
         """

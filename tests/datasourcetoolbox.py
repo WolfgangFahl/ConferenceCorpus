@@ -11,6 +11,10 @@ from lodstorage.lod import LOD
 from geograpy.utils import Profiler
 import getpass
 import os
+
+from corpus.lookup import CorpusLookup
+
+
 class DataSourceTest(TestCase):
     '''
     test for EventDataSources
@@ -78,3 +82,21 @@ class DataSourceTest(TestCase):
             event=eventsByAcronym[eventSample]
             print (event.toJSON())
         return esl,el
+
+    @staticmethod
+    def getEventSeries(seriesAcronym:str):
+        """
+        Returns the event series as dict of lod (records are categorized into the different data sources)
+
+        Args:
+            seriesAcronym: acronym of the series
+
+        Returns:
+            dict of lod
+        """
+        lookup=CorpusLookup()
+        multiQuery = "select * from {event}"
+        variable = lookup.getMultiQueryVariable(multiQuery)
+        idQuery = f"""select source,eventId from event where acronym like "{seriesAcronym.replace('"','')}%" order by year desc"""
+        dictOfLod = lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
+        return dictOfLod
