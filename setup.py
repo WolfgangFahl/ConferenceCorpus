@@ -1,5 +1,6 @@
-from setuptools import setup,find_packages
+import pathlib
 import os
+from setuptools import setup,find_packages
 from collections import OrderedDict
 from corpus.version import Version
 
@@ -11,6 +12,8 @@ try:
 except:
     print('Curr dir:', os.getcwd())
     long_description = open('../../README.md').read()
+here = pathlib.Path(__file__).parent.resolve()
+requirements = (here / 'requirements.txt').read_text(encoding='utf-8').split("\n")
 
 setup(name='ConferenceCorpus',
       version=Version.version,
@@ -35,14 +38,7 @@ setup(name='ConferenceCorpus',
             'Programming Language :: Python :: 3.9'
       ],
       packages=['corpus','corpus.smw','corpus.datasources','corpus.quality'],
-      install_requires=[
-          'pyFlaskBootstrap4~=0.4.4',
-          'pylodstorage~=0.0.85',
-          'python-dateutil',
-          'py-3rdparty-mediawiki~=0.5.4',
-          'wikirender~=0.0.34',
-          'habanero'
-      ],
+      install_requires=requirements,
       entry_points={
          'console_scripts': [
              'aelookup = corpus.lookup:main',
