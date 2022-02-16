@@ -32,12 +32,21 @@ class Tibkat:
     https://tib.eu/data/rdf
     
     '''
+
+    @property
+    def debug(self):
+        return getattr(self, "_debug", False)
+
+    @debug.setter
+    def debug(self, debug:bool):
+        setattr(self, "_debug", debug)
     
     def main(self,args):
         '''
         command line access
         '''
         # should take json import and modify target wiki
+        self.debug=args.debug
         wikiId = args.target
         # read from stdin
         if args.file is not None:
@@ -53,7 +62,10 @@ class Tibkat:
         data = [json.loads(f"{l}]") for l in rawInput.split("]\n") if l is not None and len(l.strip())>1]
         records = list(itertools.chain(*data))
         stats={}
-        for record in records:
+        total = len(records)
+        for i, record in enumerate(records):
+            if self.debug:
+                print(f"{i}/{total}:\t {record.get('title', '<Has no title>')}")
             pageTitle, ppnId = self.addPpnIdToWiki(wikiId, record, args.dryrun)
             if pageTitle is None:
                 continue
