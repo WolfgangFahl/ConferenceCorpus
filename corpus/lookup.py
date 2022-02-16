@@ -159,7 +159,7 @@ class CorpusLookup(object):
         for path in cachedir,os.path.dirname(__file__)+"/../resources":
             qYamlFile=f"{path}/queries.yaml"
             if os.path.isfile(qYamlFile):
-                qm=QueryManager(lang='sql',debug=self.debug,path=qYamlFile)
+                qm=QueryManager(lang='sql',debug=self.debug,queriesPath=qYamlFile)
                 return qm
         return None
     
