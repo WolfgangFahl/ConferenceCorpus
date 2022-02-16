@@ -1,6 +1,7 @@
 from setuptools import setup,find_packages
 import os
 from collections import OrderedDict
+from corpus.version import Version
 
 try:
     long_description = ""
@@ -12,7 +13,7 @@ except:
     long_description = open('../../README.md').read()
 
 setup(name='ConferenceCorpus',
-      version='0.0.28',
+      version=Version.version,
       description='python api providing access to academic events and event series from different sources',
       long_description=long_description,
       long_description_content_type='text/markdown',
