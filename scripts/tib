@@ -1,0 +1,164 @@
+#!/bin/bash
+# WF 2022-02-15
+base=$HOME/source/java/JSON2RDF/target
+jarfile=json2rdf-jar-with-dependencies.jar
+jar=$base/$jarfile
+corpus=$HOME/.conferencecorpus
+#tibkat=$corpus/tibkat/json
+tibkat=/hd/seel/tibkat-ftx/json
+#cache=$corpus/tibsearch
+cache=/hd/seel/tibkat-ftx/search
+
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
+
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+  local l_msg="$2"
+  echo -e "${l_color}$l_msg${endColor}"
+}
+
+#
+# error
+#
+# show the given error message on stderr and exit
+#
+#   params:
+#     1: l_msg - the error message to display
+#
+error() {
+  local l_msg="$1"
+  # use ansi red for error
+  color_msg $red "Error:" 1>&2
+  color_msg $red "\t$l_msg" 1>&2
+  exit 1
+}
+
+# show usage
+#
+usage() {
+  echo "$0 [-d|--debug] [-ds|--debug-script] [-h|--help] [-s|--search][-r|--rdf]"
+  echo "-d  |--debug: show debug info"
+  echo "-ds |--debug-script: set -x for debug"
+  echo "-h  |--help:  show this usage"
+  echo "-s  |--search: search tib catalog for the given pattern"  
+  echo "-r  |--rdf: create rdf dump"
+  exit 1
+}
+
+#
+# apply the given jq query filter to the given list of l_filelist
+# params
+#  #1: filelist - list of json files to process
+#  #2: cmd - the jq command to execute with jq's -f option
+#
+jqfilter() {
+  local l_filelist="$1"
+  local l_cmd="$2"
+  while read jsonfile
+  do
+    jq -f $l_cmd $jsonfile
+  done < "$l_filelist"
+}
+
+#
+# create a jq filter
+#
+# params
+#   #1: search phrase for acronym
+#   #2: search phrase for title
+createFilter() {
+  local l_asearch="$1"
+  local l_tsearch="$2"
+  local l_searchclause=""
+  if [ "$l_asearch" != "" ] && [ "$l_tsearch" != "" ]
+  then 
+    l_searchclause="| select(.bib.title | contains(\"$l_tsearch\")) | select(.bib.conferenceInfo.name?!=null and (.bib.conferenceInfo.name? | startswith(\"$l_asearch\")))"
+  fi
+  cat << EOF
+# a filter for events
+[.[]? | .event | select(.bib.title!=null) $l_searchclause | {
+ "title":  .bib.title,
+ "event":  .bib.conferenceInfo.name?,
+ "desc":  .bib.conferenceInfo."dc:description"?,
+ "starttime": .bib.conferenceInfo.dates."dc:date"[0]?,
+ "endtime": .bib.conferenceInfo.dates."dc:date"[1]?,
+ "location": .bib.conferenceInfo.places.place?,
+ "ppn": .ids[] | select(."@type"=="ppn") | ."#text",
+ "isbn13": .ids[] | select(."@type"=="isbn13") | ."#text",
+ "firstid": .ids[] | select(."@type"=="firstid") | ."#text"
+}
+]
+EOF
+}
+
+#
+# search the TIBKAT FTX dump json files for the given search phrase
+# params
+#  #1: search phrase for acronym
+#  #2: search pharse for title
+#
+tibsearch() {
+  local l_asearch="$1"
+  local l_tsearch="$2"
+
+  local l_searchfile=$(echo "$l_asearch"|sed -e "s/ /_/g")
+  grepresult="$cache/$l_searchfile.txt"
+
+  if [ ! -f $grepresult ]
+  then
+    grep -l "$l_asearch ;" $tibkat/*.json > $grepresult
+  fi
+  local l_filtercmd="$cache/ftxfilter$$.jq"
+  createFilter "$l_asearch ;" $l_tsearch > $l_filtercmd
+  jqfilter $grepresult $l_filtercmd
+  #rm $l_filtercmd
+}
+
+if [ ! -d $cache ]
+then
+  mkdir -p $cache
+fi
+
+# Filter command
+ftxfiltercmd="$cache/ftxfilter.jq"
+createFilter > $ftxfiltercmd
+while [  "$1" != ""  ]
+do
+  option="$1"
+  case $option in
+    -d|--debug) 
+       cat $ftxfiltercmd;;
+    -ds|--debug-script) 
+       set-x;;
+    -h|--help) usage;;
+    -r|--rdf)
+      if [ $# -lt 1 ]
+      then
+        usage
+      fi
+      shift
+      cat $1 | jq $ftxfiltercmd
+      java -jar $jar $2
+      ;;
+    -s|--search)
+      if [ $# -lt 2 ]
+      then
+        usage
+      fi
+      shift
+      tibsearch "$1" "$2" "$ftxfiltercmd"
+      ;;
+  esac
+  shift
+done

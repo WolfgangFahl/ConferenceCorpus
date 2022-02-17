@@ -1,0 +1,63 @@
+#!/bin/bash
+# WF 2021-08-10
+# needs xq - to install use
+# pip install yq
+
+
+#
+# Convert a TIBKAT FTX xml dump to json
+#
+ftx2json() {
+  local l_xml="$1"
+  local l_json="$2"
+  # Convert FTX content to simple JSON
+xq '[
+  ."OAI-PMH".ListRecords.record[].metadata."ftx:documentContainer".document
+ | {
+     event: {
+
+     bib:
+       .bibliographicInfo | {
+          title: ."dc:title",
+          alternativeTitles: .alternativeTitles."dcterms:alternative",
+          pubyear: .publicationInfo."dcterms:issued",
+          pubplace: .publicationInfo.publicationPlaces.publicationPlace,
+          publisher: .publicationInfo."dc:publisher",
+          conferenceInfo: .additionalDocumentInfo.conferenceInfos.conferenceInfo[]?
+       },
+       fields:
+         .classificationInfo.classifications.classification,
+       lang:
+         .formalInfo | .documentLanguages.documentLanguage,
+       ids:
+        .formalInfo  | .identifiers.identifier,
+
+     }
+   }
+]' $l_xml > $l_json
+}
+
+#
+# show  a timestamp
+#
+timestamp() {
+  date -u +"%Y-%m-%d %H:%M:%S"
+}
+
+# loop over up to 10000 xml dump files
+index=0
+limit=10000
+timestamp
+for xml in $(find tib-intern-ftx_0 -type f -name "*.xml")
+do
+   index=$((index+1))
+   b=$(basename $xml .xml) 
+   target=$(echo $b | sed -r 's/tib-intern-ftx_2021-12-20_//' ) 
+   printf "%5d:%s\n" $index $target.json
+   ftx2json $xml json/$target.json
+   if [ $index -ge $limit ]
+   then
+     exit 1
+   fi
+done
+timestamp
