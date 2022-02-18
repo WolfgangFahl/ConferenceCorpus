@@ -47,11 +47,12 @@ error() {
 # show usage
 #
 usage() {
-  echo "$0 [-d|--debug] [-ds|--debug-script] [-h|--help] [-s|--search][-r|--rdf]"
+  echo "$0 [-d|--debug] [-ds|--debug-script] [-h|--help] [-s|--search][-r|--rdf][-ts|--title-search]"
   echo "-d  |--debug: show debug info"
   echo "-ds |--debug-script: set -x for debug"
   echo "-h  |--help:  show this usage"
-  echo "-s  |--search: search tib catalog for the given pattern"  
+  echo "-ts |--title-search: search tib catalog for the given title pattern"  
+  echo "-s  |--search: search tib catalog for the given acronym and title pattern"  
   echo "-r  |--rdf: create rdf dump"
   exit 1
 }
@@ -81,20 +82,27 @@ createFilter() {
   local l_asearch="$1"
   local l_tsearch="$2"
   local l_searchclause=""
-  if [ "$l_asearch" != "" ] && [ "$l_tsearch" != "" ]
-  then 
+  if [ "$l_asearch" = "" ]
+  then
+    l_searchclause="| select(.bib.title | contains(\"$l_tsearch\"))"
+  else
     l_searchclause="| select(.bib.title | contains(\"$l_tsearch\")) | select(.bib.conferenceInfo.name?!=null and (.bib.conferenceInfo.name? | startswith(\"$l_asearch\")))"
   fi
   cat << EOF
 # a filter for events
 [.[]? | .event | select(.bib.title!=null) $l_searchclause | {
  "title":  .bib.title,
+ "alternativeTitles": .bib.alternativeTitles?,
  "event":  .bib.conferenceInfo.name?,
  "desc":  .bib.conferenceInfo."dc:description"?,
  "starttime": .bib.conferenceInfo.dates."dc:date"[0]?,
  "endtime": .bib.conferenceInfo.dates."dc:date"[1]?,
  "location": .bib.conferenceInfo.places.place?,
+ "pubyear": .bib.pubyear?,
+ "pubplace": .bib.pubplace?,
+ "publisher": .bib.publisher?,
  "ppn": .ids[] | select(."@type"=="ppn") | ."#text",
+ "doi": .ids[] | select(."@type"=="doi") | ."#text"?,
  "isbn13": .ids[] | select(."@type"=="isbn13") | ."#text",
  "firstid": .ids[] | select(."@type"=="firstid") | ."#text"
 }
@@ -109,28 +117,39 @@ EOF
 #  #2: search pharse for title
 #
 tibsearch() {
+  # acronym
   local l_asearch="$1"
+  # title
   local l_tsearch="$2"
+  # grep
+  local l_gsearch="$1"
+  if [ "$l_asearch" = "" ]
+  then
+    l_gsearch="$l_tsearch"
+  else
+    l_gsearch="$l_asearch ;"
+  fi
+  local l_searchfile=$(echo "$l_gsearch"|sed -e "s/ /_/g")
 
-  local l_searchfile=$(echo "$l_asearch"|sed -e "s/ /_/g")
   grepresult="$cache/$l_searchfile.txt"
 
   if [ ! -f $grepresult ]
   then
-    grep -l "$l_asearch ;" $tibkat/*.json > $grepresult
+    grep -l "$l_gsearch" $tibkat/*.json > $grepresult
   fi
   local l_filtercmd="$cache/ftxfilter$$.jq"
-  createFilter "$l_asearch ;" $l_tsearch > $l_filtercmd
+  createFilter "$l_asearch" $l_tsearch > $l_filtercmd
   jqfilter $grepresult $l_filtercmd
   #rm $l_filtercmd
 }
 
+# create the cache directory
 if [ ! -d $cache ]
 then
   mkdir -p $cache
 fi
 
-# Filter command
+# default Filter command without selection of events
 ftxfiltercmd="$cache/ftxfilter.jq"
 createFilter > $ftxfiltercmd
 while [  "$1" != ""  ]
@@ -143,6 +162,7 @@ do
        set-x;;
     -h|--help) usage;;
     -r|--rdf)
+      # rdf conversion
       if [ $# -lt 1 ]
       then
         usage
@@ -151,12 +171,26 @@ do
       cat $1 | jq $ftxfiltercmd
       java -jar $jar $2
       ;;
+    -ts|--title-search)
+      # search event by title 
+      if [ $# -lt 1 ]
+      then
+        usage
+      fi
+      shift
+      # first parameter is acronym (being searched with startswith in event)
+      # second parameter is title  (being searched with contains in title)
+      tibsearch "" "$1" "$ftxfiltercmd"
+      ;; 
     -s|--search)
+      # search event by acronym and title 
       if [ $# -lt 2 ]
       then
         usage
       fi
       shift
+      # first parameter is acronym (being searched with startswith in event)
+      # second parameter is title  (being searched with contains in title)
       tibsearch "$1" "$2" "$ftxfiltercmd"
       ;;
   esac
