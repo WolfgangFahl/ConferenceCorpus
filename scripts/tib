@@ -92,21 +92,28 @@ createFilter() {
     fi
   fi
   cat << EOF
-# a filter for events
-[.[]? | .event | select(.bib.title!=null) $l_searchclause | {
- "title":  .bib.title,
- "alternativeTitles": .bib.alternativeTitles?,
- "event":  .bib.conferenceInfo.name?,
- "desc":  .bib.conferenceInfo."dc:description"?,
- "starttime": .bib.conferenceInfo.dates."dc:date"[0]?,
- "endtime": .bib.conferenceInfo.dates."dc:date"[1]?,
- "location": .bib.conferenceInfo.places.place?,
- "pubyear": .bib.pubyear?,
- "pubplace": .bib.pubplace?,
- "publisher": .bib.publisher?,
- "ppn": .ids[] | select(."@type"=="ppn") | ."#text",
- "isbn13": .ids[] | select(."@type"=="isbn13") | ."#text",
- "firstid": .ids[] | select(."@type"=="firstid") | ."#text"
+# a JQ query filter for events
+[.[]? | .event | select(.bib.title!=null) | select(.bib.title? | type == "string") $l_searchclause | {
+   "title":  .bib.title,
+   "alternativeTitles": .bib.alternativeTitles?,
+   # conferencInfo
+   "event":  .bib.conferenceInfo.name?,
+   "desc":  .bib.conferenceInfo."dc:description"?,
+   "starttime": .bib.conferenceInfo.dates."dc:date"[0]?,
+   "endtime": .bib.conferenceInfo.dates."dc:date"[1]?,
+   "location": .bib.conferenceInfo.places.place?,
+   # publication info
+   "pubyear": .bib.pubyear?,
+   "pubplace": .bib.pubplace?,
+   "publisher": .bib.publisher?,
+   "bk":  (if .fields|type=="array" then
+      .fields[] | (if ."@classificationName"=="bk" then select(."@classificationName"=="bk") | .code? else null end)
+    else null end),
+   # ids
+   "ppn":     .ids[] | select(."@type"=="ppn") | ."#text",
+   "isbn13":  .ids[] | (if "@type"=="isbn13" then select(."@type"=="isbn13") | ."#text" else null end),
+   "doi":     .ids[] | (if "@type"=="doi"    then select(."@type"=="doi")    | ."#text" else null end),
+   "firstid": .ids[] | select(."@type"=="firstid") | ."#text",
 }
 ]
 EOF
