@@ -82,11 +82,14 @@ createFilter() {
   local l_asearch="$1"
   local l_tsearch="$2"
   local l_searchclause=""
-  if [ "$l_asearch" = "" ]
+  if [ "$l_tsearch" != "" ]
   then
-    l_searchclause="| select(.bib.title | contains(\"$l_tsearch\"))"
-  else
-    l_searchclause="| select(.bib.title | contains(\"$l_tsearch\")) | select(.bib.conferenceInfo.name?!=null and (.bib.conferenceInfo.name? | startswith(\"$l_asearch\")))"
+    if [ "$l_asearch" = "" ]
+    then
+      l_searchclause="| select(.bib.title | contains(\"$l_tsearch\"))"
+    else
+      l_searchclause="| select(.bib.title | contains(\"$l_tsearch\")) | select(.bib.conferenceInfo.name?!=null and (.bib.conferenceInfo.name? | startswith(\"$l_asearch ;\")))"
+    fi
   fi
   cat << EOF
 # a filter for events
@@ -102,7 +105,6 @@ createFilter() {
  "pubplace": .bib.pubplace?,
  "publisher": .bib.publisher?,
  "ppn": .ids[] | select(."@type"=="ppn") | ."#text",
- "doi": .ids[] | select(."@type"=="doi") | ."#text"?,
  "isbn13": .ids[] | select(."@type"=="isbn13") | ."#text",
  "firstid": .ids[] | select(."@type"=="firstid") | ."#text"
 }
@@ -123,13 +125,14 @@ tibsearch() {
   local l_tsearch="$2"
   # grep
   local l_gsearch="$1"
+  local l_searchfile=$(echo "$l_gsearch"|sed -e "s/ /_/g")
   if [ "$l_asearch" = "" ]
   then
     l_gsearch="$l_tsearch"
+    l_searchfile=$(echo "$l_tsearch"|sed -e "s/ /_/g")
   else
     l_gsearch="$l_asearch ;"
   fi
-  local l_searchfile=$(echo "$l_gsearch"|sed -e "s/ /_/g")
 
   grepresult="$cache/$l_searchfile.txt"
 
@@ -138,7 +141,7 @@ tibsearch() {
     grep -l "$l_gsearch" $tibkat/*.json > $grepresult
   fi
   local l_filtercmd="$cache/ftxfilter$$.jq"
-  createFilter "$l_asearch" $l_tsearch > $l_filtercmd
+  createFilter "$l_asearch" "$l_tsearch" > $l_filtercmd
   jqfilter $grepresult $l_filtercmd
   #rm $l_filtercmd
 }
