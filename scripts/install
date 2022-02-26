@@ -22,5 +22,5 @@ esac
 #$install python3-pip
 $pip --version
 # --force-reinstall
-$pip install  -r requirements.txt
+$pip install  -r requirements.txt --user
 #python3 setup.py install --user
