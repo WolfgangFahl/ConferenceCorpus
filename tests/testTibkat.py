@@ -5,12 +5,17 @@ from wikifile.wikiFile import WikiFile
 
 from corpus.datasources.tibkat import Tibkat, main
 from tests.datasourcetoolbox import DataSourceTest
+from tests.testSMW import TestSMW
 
 
 class TestTibkat(DataSourceTest):
     """
     tests Tibkat
     """
+
+    def setUp(self,debug=False,profile=True):
+        super().setUp(debug=debug, profile=profile)
+        self.testWikiId = getattr(TestSMW.getWikiUser("orfixed"), "wikiId")
 
     def test_TibkatCommandline(self):
         """
@@ -73,7 +78,7 @@ class TestTibkat(DataSourceTest):
         with NamedTemporaryFile() as fp:
             fp.write(data.encode())
             fp.seek(0)
-            args = ["-t", "orfixed", "-f", fp.name]
+            args = ["-t", self.testWikiId, "-f", fp.name]
             main(args)
 
     def test_addPpnIdToWiki(self):
@@ -87,13 +92,13 @@ class TestTibkat(DataSourceTest):
             "ppn": "02205460X"
         }
         tibkat = Tibkat()
-        tibkat.addPpnIdToWiki("orfixed", record)
+        tibkat.addPpnIdToWiki(self.testWikiId, record)
 
     def test_getMatchingEventFromWiki(self):
         """
         tests the retrieval of event pages based on the series acronym and ordinal
         """
         tibkat = Tibkat()
-        res = tibkat.getMatchingEventFromWiki("orfixed", "AAAI", 1)
+        res = tibkat.getMatchingEventFromWiki(self.testWikiId, "AAAI", 1)
         self.assertIsInstance(res, WikiFile)
         self.assertEqual("AAAI 1980", res.getPageTitle())
