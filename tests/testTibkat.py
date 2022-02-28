@@ -98,6 +98,8 @@ class TestTibkat(DataSourceTest):
         """
         tests the retrieval of event pages based on the series acronym and ordinal
         """
+        if self.inCI():
+            return
         tibkat = Tibkat()
         res = tibkat.getMatchingEventFromWiki(self.testWikiId, "AAAI", 1)
         self.assertIsInstance(res, WikiFile)
