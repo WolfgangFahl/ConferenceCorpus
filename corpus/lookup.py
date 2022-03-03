@@ -349,7 +349,7 @@ def main(argv=None): # IGNORE:C0111
     program_license = '''%s
 
   Created by %s on %s.
-  Copyright 2020-2021 Wolfgang Fahl. All rights reserved.
+  Copyright 2020-2022 Wolfgang Fahl. All rights reserved.
 
   Licensed under the Apache License 2.0
   http://www.apache.org/licenses/LICENSE-2.0
