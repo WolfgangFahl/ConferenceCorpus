@@ -46,6 +46,10 @@ class TestSMW:
             if wikiId == "cr":
                 wikiDict = {"wikiId": wikiId, "email": "noreply@nouser.com", "url": "https://cr.bitplan.com",
                             "scriptPath": "/", "version": "MediaWiki 1.33.4"}
+            if wikiId == "orfixed":
+                wikiDict = {"wikiId": wikiId, "email": "noreply@nouser.com",
+                            "url": "https://confident.dbis.rwth-aachen.de", "scriptPath": "/orfixed/",
+                            "version": "MediaWiki 1.35.5"}
 
             if wikiDict is None:
                 raise Exception("wikiId %s is not known" % wikiId)
