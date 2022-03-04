@@ -117,9 +117,11 @@ class TibkatEvent(Event):
             titlematch=re.search(titlepattern,title)
             if titlematch:
                 result["acronym"]=titlematch.group("acronym")
+            else:
+                result["acronym"]=title.strip()
             loctime=parts[1]
             #8 (Vietri) : 1996.05.23-25
-            loctimepattern=r"\s?(?P<ordinal>[1-9][0-9]*)\s?\((?P<location>[^)]*)\)\s?:\s?(?P<daterange>[12][0-9][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\-[0-9][0-9])"
+            loctimepattern=r"\s?(?P<ordinal>[1-9][0-9]*)\s?\((?P<location>[^)]*)\)\s?:\s?(?P<daterange>[12][0-9][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\-([0-9][0-9]\.[0-9][0-9]|[0-9][0-9]))"
             loctimematch=re.search(loctimepattern,loctime)
             if loctimematch:
                 ordinalStr=loctimematch.group("ordinal")

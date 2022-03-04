@@ -4,6 +4,7 @@ from corpus.event import EventStorage
 from lodstorage.query import Query
 from corpus.datasources.tibkat import TibkatEvent
 import datetime
+from collections import Counter
 
 class TestTibkatEvents(DataSourceTest):
     '''
@@ -37,6 +38,14 @@ class TestTibkatEvents(DataSourceTest):
             'location': 'Vietri',
             'startDate':  datetime.date(1996, 5, 23),
             'endDate': datetime.date(1996, 5, 25)
+        },
+        {
+            'description': 'WALCOM ; 15 (Online) : 2021.02.28-03.02',
+            'acronym': 'WALCOM',
+            'ordinal': 15,
+            'location': 'Online',
+            'startDate':  datetime.date(2021, 2, 28),
+            'endDate': datetime.date(2021, 3, 2)
         }
         ]
         debug=True
@@ -48,20 +57,36 @@ class TestTibkatEvents(DataSourceTest):
             for key in testSet:
                 if key!="description":
                     self.assertEqual(testSet[key],parseResult[key])
-            pass
-            
+            pass   
     
-    def testAcronyms(self):
+    def testDescriptionParsing(self):
+        '''
+        test description parsing
+        '''
+        debug=self.debug
+        debug=True
         sqlDB=EventStorage.getSqlDB()
         sql="""select ppn,description from event_tibkat"""
         title="TIBKAT acronym handling"
         query=Query(title,sql,lang='sql')
         eventRecords=sqlDB.query(query.query)
+        keyCounter=Counter()
         for eventRecord in eventRecords:
             desc=eventRecord["description"]
             if desc is not None:
                 parts=desc.split(self.eventManager.listSeparator) # eventManager.listSepator
                 for part in parts:
                     parseResult=TibkatEvent.parseDescription(part)
-                pass
+                    #if (debug):
+                    #    print(parseResult)
+                    for key in parseResult:
+                        keyCounter[key]+=1
+                    if "startDate" in parseResult and "endDate" in parseResult:
+                        startDate=parseResult["startDate"] 
+                        endDate=parseResult["endDate"]
+                        if startDate>endDate:
+                            keyCounter["invalidDateRange"]+=1   
+        
+        if (debug):
+            print(keyCounter.most_common())
     

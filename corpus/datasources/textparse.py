@@ -55,6 +55,7 @@ class Textparse(object):
         08.01.2019-11.01.2019
         2019
         1996.05.23-25
+        2021.02.28-03.02
         '''
         result={}
         if date is not None:
@@ -77,15 +78,21 @@ class Textparse(object):
                         startDate=Textparse.strToDate(fromTo.group(1))
                         endDate=Textparse.strToDate(fromTo.group(2))
                     else:
-                        fromToSimple=re.search(r"^(?P<year>"+yearPattern+")\.(?P<month>"+monthPattern+")\.(?P<fromday>"+dayPattern+")[-](?P<untilday>"+dayPattern+")$",date)
+                        fromToSimple=re.search(r"^(?P<year>"+yearPattern+")\.(?P<month>"+monthPattern+")\.(?P<fromday>"+dayPattern+")[-]"+
+                                               "((?P<untilmonth>"+monthPattern+")\.(?P<untildayWithMonth>"+dayPattern+")|(?P<untilday>"+dayPattern+"))$",date)
                         if fromToSimple:
                             year=fromToSimple.group("year")
                             month=fromToSimple.group("month")
+                            untilmonth=fromToSimple.group("untilmonth")
+                            if untilmonth is None:
+                                untilmonth=month
+                                untilday=fromToSimple.group("untilday")
+                            else:
+                                untilday=fromToSimple.group("untildayWithMonth")
                             fromday=fromToSimple.group("fromday")
-                            untilday=fromToSimple.group("untilday")
                             dateFormat="%Y-%m-%d"
                             startDate=Textparse.strToDate(f"{year}-{month}-{fromday}",dateFormat=dateFormat)
-                            endDate=Textparse.strToDate(f"{year}-{month}-{untilday}",dateFormat=dateFormat)
+                            endDate=Textparse.strToDate(f"{year}-{untilmonth}-{untilday}",dateFormat=dateFormat)
                             pass
             if startDate:
                 result['startDate']=startDate
