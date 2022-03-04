@@ -49,6 +49,15 @@ class XmlEntity(object):
             text=f"{text}{prop}:{getattr(self,prop)}\n"
         return text
     
+    def asDict(self):
+        '''
+        return me as a dictionary
+        '''
+        d={}
+        for prop in self._props:
+            d[prop]=getattr(self,prop)
+        return d
+    
 class XMLEntityParser():
     '''
     a parser for XML Entities

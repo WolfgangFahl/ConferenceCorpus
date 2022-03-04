@@ -10,6 +10,7 @@ from corpus.datasources.confref import Confref
 from corpus.datasources.crossref import Crossref
 from corpus.datasources.dblp import Dblp
 from corpus.datasources.gnd import GND
+from corpus.datasources.tibkat import Tibkat
 from corpus.datasources.wikidata import Wikidata
 from corpus.datasources.openresearch import OR
 from corpus.datasources.wikicfp import WikiCfp
@@ -62,7 +63,7 @@ class CorpusLookup(object):
     '''
     search and lookup for different EventCorpora
     '''
-    lookupIds=["confref","crossref","dblp","gnd","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
+    lookupIds=["confref","crossref","dblp","gnd","tibkat","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
     
 
     def __init__(self,lookupIds:list=None,
@@ -89,6 +90,8 @@ class CorpusLookup(object):
             self.eventCorpus.addDataSource(Dblp())
         if "gnd" in lookupIds:
             self.eventCorpus.addDataSource(GND())
+        if "tibkat" in lookupIds:
+            self.eventCorpus.addDataSource(Tibkat())
         if "wikidata" in lookupIds: 
             self.eventCorpus.addDataSource(Wikidata())
         if "wikicfp" in lookupIds:    

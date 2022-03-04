@@ -5,9 +5,8 @@ Created on 04.03.2022
 '''
 from tests.datasourcetoolbox import DataSourceTest
 import getpass
-from corpus.datasources.tibkat import FTXParser
+from corpus.datasources.tibkatftx import FTXParser
 from corpus.xml.xmlparser import XmlEntity
-import sys
 
 class TestFTXParser(DataSourceTest):
     '''
@@ -24,7 +23,7 @@ class TestFTXParser(DataSourceTest):
         if self.ftxroot is not None:
             self.ftxParser=FTXParser(self.ftxroot)
         self.sampleBase="tib-intern-ftx_2021-12-20_"
-        self.samples=["T184133_3056","T201424_5766","T184335_3113","T182353_2562"]
+        self.samples=["T184133_3056","T201424_5766","T184335_3113","T182353_2562","T191138_3961"]
         self.sampleFtxs=[]
         for sample in self.samples:
             self.sampleFtxs.append(f"{self.sampleBase}{sample}.xml")
@@ -49,9 +48,9 @@ class TestFTXParser(DataSourceTest):
         test parsing documents out of the FTX xml file
         '''
         debug=self.debug
-        #debug=True
-        #show=True
-        show=False
+        debug=True
+        show=True
+        #show=False
         XmlEntity.debug=debug
         if self.ftxParser is not None:
             documents={}
@@ -70,7 +69,8 @@ class TestFTXParser(DataSourceTest):
                 #"578841517" # SoftVis  2008
                 #"1662974825" # SafeAI 2019
                 "1677843861", # AAAI 2018
-                "668314257" #
+                "668314257", #
+                "1745369562"
             ]
             for ppn in ppns:
                 self.assertTrue(ppn in documents)

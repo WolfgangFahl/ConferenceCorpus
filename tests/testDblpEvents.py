@@ -27,7 +27,6 @@ class TestDblpEvents(DataSourceTest):
         '''
         setup 
         '''
-       
         DataSourceTest.setUp(self)
         self.lookup=TestDblpEvents.lookup
         self.dblp=TestDblpEvents.dblp
@@ -43,7 +42,6 @@ class TestDblpEvents(DataSourceTest):
         dblpDataSource.eventManager.dblpXml=dblpXml
         dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         
-    
     def testDblp(self):
         '''
         test getting the conference series and events from dblp xml dump
@@ -72,7 +70,6 @@ class TestDblpEvents(DataSourceTest):
             dateRange=Dblp.getDateRange(dateString)
             print(dateRange)
         
-
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

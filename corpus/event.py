@@ -337,7 +337,7 @@ class EventBaseManager(EntityManager):
             tableName=sourceConfig.getTableName(entityName)
         else:
             tableName=entityName
-        super().__init__(name, entityName, entityPluralName, listName, clazz, tableName, primaryKey, config, handleInvalidListTypes, filterInvalidListTypes, debug)
+        super().__init__(name, entityName, entityPluralName, listName, clazz, tableName, primaryKey, config, handleInvalidListTypes, filterInvalidListTypes, listSeparator='⇹',debug=debug)
    
         
     def configure(self):
