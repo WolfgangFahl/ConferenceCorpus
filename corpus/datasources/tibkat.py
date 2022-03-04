@@ -42,18 +42,26 @@ class FTXParser(object):
             xmlPath: the file to process
         '''    
         recordTag="{http://www.openarchives.org/OAI/2.0/}document"
-        namespaces={'ns0':'http://www.openarchives.org/OAI/2.0/'}
+        namespaces={'ns0':'http://www.openarchives.org/OAI/2.0/',
+                    'ns2':'http://purl.org/dc/elements/1.1/'
+        }
         xmlPropertyMap= {
             "databaseDate": './ns0:systemInfo/ns0:databaseDate',
             "changeDate": './ns0:systemInfo/ns0:changeDate',
             "ftxCreationDate": './ns0:systemInfo/ns0:ftxCreationDate',
-            "documentId": './ns0:systemInfo/ns0:documentId',
+            "documentID": './ns0:systemInfo/ns0:documentID',
             "ppn": './/ns0:identifier[@type="ppn"]',
             "firstid": './/ns0:identifier[@type="firstid"]',
             "isbn": './/ns0:identifier[@type="isbn"]',
             "isbn13": './/ns0:identifier[@type="isbn13"]',
             "ean": './/ns0:identifier[@type="ean"]',
             "doi": './/ns0:identifier[@type="doi"]',
+            "title": './ns0:bibliographicInfo/ns2:title',
+            # conferenceInfo
+            "event":  './ns0:bibliographicInfo/ns0:conferenceInfo/ns0:name',
+            #"pubyear": './{http://www.openarchives.org/OAI/2.0/}document/{http://www.openarchives.org/OAI/2.0/}bibliographicInfo/{http://www.openarchives.org/OAI/2.0/}publicationInfo/{http://purl.org/dc/terms/}issued'
+            # classification Info
+            "bk": "./ns0:classificationInfo/ns0:classifications/ns0:classification[@classificationName='bk']/ns0:code"
         }        
         if os.path.exists(xmlPath):
             xmlParser=XMLEntityParser(xmlPath,recordTag)

@@ -21,7 +21,7 @@ class TestFTXParser(DataSourceTest):
             self.ftxroot="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20"
         if self.ftxroot is not None:
             self.ftxParser=FTXParser(self.ftxroot)
-        self.sampleFtx="tib-intern-ftx_2021-12-20_T212141_7658.xml"
+        self.sampleFtx="tib-intern-ftx_2021-12-20_T201424_5766.xml"
             
     def testFtxXmlFiles(self):
         '''
@@ -41,10 +41,22 @@ class TestFTXParser(DataSourceTest):
         '''
         debug=self.debug
         debug=True
-        #XmlEntity.debug=debug
+        XmlEntity.debug=debug
         if self.ftxParser is not None:
             xmlPath=f"{self.ftxroot}/{self.sampleFtx}"
+            documents={}
             for document in self.ftxParser.parse(xmlPath):
-                print(document)
-            
+                if debug:
+                    print(document)
+                documents[document.ppn]=document
+            if debug:
+                print (f"found {len(documents)} documents")    
+            self.assertEqual(100,len(documents))
+            iswc2008ppn="579171965"
+            self.assertTrue(iswc2008ppn in documents)
+            iswc2008=documents[iswc2008ppn]
+            if debug:
+                
+                print(iswc2008.rawxml)
+                print(iswc2008)
         

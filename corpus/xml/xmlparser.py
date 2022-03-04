@@ -27,10 +27,18 @@ class XmlEntity(object):
         if XmlEntity.debug:
             xml=ElementTree.tostring(element).decode(XmlEntity.encoding)
             print(xml)
+            setattr(self,"rawxml",xml)
         for prop, xpath in xmlPropertyMap.items():
-            valueElement = element.find(xpath,namespaces)
-            if valueElement is not None:
-                setattr(self,prop,valueElement.text)
+            valueElements = element.findall(xpath,namespaces)
+            if valueElements is not None and len(valueElements)>0:
+                # single or multi?
+                if len(valueElements)==1:
+                    value=valueElements[0].text 
+                else:
+                    value=[]
+                    for valueElement in valueElements:
+                        value.append(valueElement.text)
+                setattr(self,prop,value)
                 self._props.append(prop)
         pass        
     
