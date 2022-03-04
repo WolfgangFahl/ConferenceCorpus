@@ -8,10 +8,12 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
 from corpus.datasources.gnd import GND
+from corpus.datasources.textparse import Textparse
 from collections import Counter
 from lodstorage.query import Query
 import getpass
 import subprocess, platform
+
     
 class TestGnd(DataSourceTest):
     '''
@@ -103,7 +105,7 @@ where title like '%Italian Research Conference on Digital Libraries%'"""
         minTotal=len(events)
         invalid=0
         for i,event in enumerate(events):
-            dateRange=(GND.getDateRange(event.date))
+            dateRange=(Textparse.getDateRange(event.date))
             if (len(dateRange)==0 and event.date is not None):
                 invalid+=1
                 if debug:

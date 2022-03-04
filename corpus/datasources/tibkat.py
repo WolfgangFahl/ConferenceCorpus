@@ -7,6 +7,8 @@ from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from corpus.event import EventSeriesManager,EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 from corpus.datasources.tibkatftx import FTXParser
+from corpus.datasources.textparse import Textparse
+import re
 
 class Tibkat(EventDataSource):
     '''
@@ -98,6 +100,41 @@ class TibkatEvent(Event):
         '''constructor '''
         super().__init__()
         pass
+    
+    @classmethod
+    def parseDescription(cls,description:str)->dict:
+        '''
+        parse the given description
+        
+        Args:
+            description(str): an event description
+        '''
+        result={}
+        parts=description.split(";")
+        if len(parts)>1:
+            title=parts[0]
+            titlepattern=r"\((?P<acronym>[^)]*)\)"
+            titlematch=re.search(titlepattern,title)
+            if titlematch:
+                result["acronym"]=titlematch.group("acronym")
+            loctime=parts[1]
+            #8 (Vietri) : 1996.05.23-25
+            loctimepattern=r"\s?(?P<ordinal>[1-9][0-9]*)\s?\((?P<location>[^)]*)\)\s?:\s?(?P<daterange>[12][0-9][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\-[0-9][0-9])"
+            loctimematch=re.search(loctimepattern,loctime)
+            if loctimematch:
+                ordinalStr=loctimematch.group("ordinal")
+                if ordinalStr is not None:
+                    result["ordinal"]=int(ordinalStr)
+                locationStr=loctimematch.group("location")
+                if locationStr is not None:
+                    result['location']=locationStr
+                dateRangeStr=loctimematch.group("daterange")
+                dateResult=Textparse.getDateRange(dateRangeStr)
+                # merge with result
+                result={**result, **dateResult}
+            pass
+            
+        return result    
     
 class TibkatEventSeriesManager(EventSeriesManager):
     '''

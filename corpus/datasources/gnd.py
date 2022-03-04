@@ -7,7 +7,7 @@ from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from corpus.event import EventStorage,EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 import re
-import datetime
+from corpus.datasources.textparse import Textparse
 
 class GND(EventDataSource):
     '''
@@ -26,71 +26,6 @@ class GND(EventDataSource):
         '''
         super().__init__(GndEventManager(), GndEventSeriesManager(), GND.sourceConfig)
         self.debug=debug
-        
-    @staticmethod
-    def strToDate(dateStr,debug:bool=False):
-        '''
-        convert the given string to a date
-        
-        Args:
-            dateStr(str): the date string to convert
-            debug(bool): if True show debug information
-            
-        Return:
-            Date: - the converted data but None if there is a ValueError on conversion
-        '''
-        result=None
-        try:
-            result=datetime.datetime.strptime(
-                        dateStr, "%d.%m.%Y").date()
-        except ValueError as ve:
-            # TODO year might be ok but not garbage such as
-            if debug:
-                print(f"{dateStr}:{str(ve)}")
-            pass
-        return result
-        
-    @staticmethod
-    def getDateRange(date):
-        '''
-        given a GND date string create a date range
-        
-        Args:
-            date(str): the date string to analyze
-            
-        Returns:
-            dict: containing year, startDate, endDate
-        examples:
-        2018-2019
-        08.01.2019-11.01.2019
-        2019
-        '''
-        result={}
-        if date is not None:
-            startDate=None
-            endDate=None
-            yearPattern="[12][0-9]{3}"
-            datePattern="[0-9]{2}[.][0-9]{2}[.]"+yearPattern
-            yearOnly=re.search(r"^("+yearPattern+")[-]?("+yearPattern+")?$",date)
-            if yearOnly:
-                result['year']=int(yearOnly.group(1))
-            else:
-                fromOnly=re.search(r"^("+datePattern+")[-]?$",date)
-                if fromOnly:
-                    startDate=GND.strToDate(fromOnly.group(1))
-                else:
-                    fromTo=re.search(r"^("+datePattern+")[-]("+datePattern+")$",date)
-                    if fromTo:
-                        startDate=GND.strToDate(fromTo.group(1))
-                        endDate=GND.strToDate(fromTo.group(2))
-            if startDate:
-                result['startDate']=startDate
-            if endDate:
-                result['endDate']=endDate
-        if 'startDate' in result:
-                result['year']=result['startDate'].year
-        return result
-
         
 class GndEvent(Event):
     '''
