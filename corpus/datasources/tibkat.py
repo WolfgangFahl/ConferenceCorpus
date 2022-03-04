@@ -18,6 +18,47 @@ import sys
 DEBUG = 0
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
+from corpus.xml.xmlparser import XMLEntityParser
+
+class FTXParser(object):
+    
+    
+    def __init__(self,basepath):
+        '''
+        constructor
+        '''
+        self.basepath=basepath
+        
+    def ftxXmlFiles(self):
+        files = os.listdir(self.basepath)
+        files = [f for f in files if f.endswith(".xml")]
+        return files
+    
+    def parse(self,xmlPath):
+        '''
+          parse the xml data of  volume with the given collectionId
+          
+          Args:
+            xmlPath: the file to process
+        '''    
+        recordTag="{http://www.openarchives.org/OAI/2.0/}document"
+        namespaces={'ns0':'http://www.openarchives.org/OAI/2.0/'}
+        xmlPropertyMap= {
+            "databaseDate": './ns0:systemInfo/ns0:databaseDate',
+            "changeDate": './ns0:systemInfo/ns0:changeDate',
+            "ftxCreationDate": './ns0:systemInfo/ns0:ftxCreationDate',
+            "documentId": './ns0:systemInfo/ns0:documentId',
+            "ppn": './/ns0:identifier[@type="ppn"]',
+            "firstid": './/ns0:identifier[@type="firstid"]',
+            "isbn": './/ns0:identifier[@type="isbn"]',
+            "isbn13": './/ns0:identifier[@type="isbn13"]',
+            "ean": './/ns0:identifier[@type="ean"]',
+            "doi": './/ns0:identifier[@type="doi"]',
+        }        
+        if os.path.exists(xmlPath):
+            xmlParser=XMLEntityParser(xmlPath,recordTag)
+            for xmlEntity in xmlParser.parse(xmlPropertyMap,namespaces):
+                yield(xmlEntity)
 
 class Tibkat:
     '''

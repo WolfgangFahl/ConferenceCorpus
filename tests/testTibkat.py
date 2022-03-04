@@ -10,7 +10,7 @@ from tests.testSMW import TestSMW
 
 class TestTibkat(DataSourceTest):
     """
-    tests Tibkat
+    test for TIBkat
     """
 
     def setUp(self,debug=False,profile=True):

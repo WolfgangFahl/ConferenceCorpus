@@ -1,0 +1,91 @@
+'''
+Created on 2022-03-04
+
+@author: wf
+'''
+from xml.etree.ElementTree import Element
+from xml.etree import cElementTree as ElementTree
+from xml.etree.ElementTree import ParseError
+from typing import Iterator
+import sys
+
+class XmlEntity(object):
+    '''
+    an entity based on an XML object
+    '''
+    debug=False
+    encoding="utf-8"
+    
+    def __init__(self,element:Element,xmlPropertyMap:dict,namespaces:dict):
+        ''' 
+        constructor
+        
+        Args:
+            element: the element to construct me from
+        '''
+        self._props=[]
+        if XmlEntity.debug:
+            xml=ElementTree.tostring(element).decode(XmlEntity.encoding)
+            print(xml)
+        for prop, xpath in xmlPropertyMap.items():
+            valueElement = element.find(xpath,namespaces)
+            if valueElement is not None:
+                setattr(self,prop,valueElement.text)
+                self._props.append(prop)
+        pass        
+    
+    def __str__(self):
+        text=""
+        for prop in self._props:
+            text=f"{text}{prop}:{getattr(self,prop)}\n"
+        return text
+    
+class XMLEntityParser():
+    '''
+    a parser for XML Entities
+    '''
+    def __init__(self,filePath:str,recordsTag:str):
+        '''
+        Constructor
+        
+        Args:
+            filePath(str): the path to the xml file to parse
+            recordsTag(str): the name of the tag to parse
+        '''
+        self.filePath=filePath
+        self.recordsTag=recordsTag
+        
+    def readXmlFile(self) -> Iterator[Element]:
+        '''
+           Reads an XML file element by element and returns an iterator XML elements
+           see https://github.com/sopherapps/xml_stream/blob/master/xml_stream/__init__.py 
+        '''
+        with open(self.filePath, 'rb') as xml_file:
+            context = ElementTree.iterparse(xml_file, events=('start', 'end',))
+            context = iter(context)
+            root = None
+    
+            for event, element in context:
+                if root is None:
+                    root = element
+    
+                if event == 'end' and element.tag == self.recordsTag:
+                    yield element
+                    # clear the root element to leave it empty and use less memory
+                    if root != element:
+                        root.clear()
+        
+    def parse(self,xmlPropertyMap:dict,namespaces:dict)-> Iterator[XmlEntity]:
+        '''
+        parse my file
+        
+        Args:
+            xmlPropertyMap(dict): attribute/xpath expression dict
+            namespaces(dict): namespace / namespace path dict 
+        '''
+        try:
+            for element in self.readXmlFile():
+                yield XmlEntity(element,xmlPropertyMap,namespaces)
+        except ParseError as parseError:
+            print (f"parse error in {self.filePath}:{parseError}", file=sys.stderr)
+            pass
