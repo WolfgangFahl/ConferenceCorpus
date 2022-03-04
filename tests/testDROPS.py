@@ -6,7 +6,7 @@ Created on 2022-03-03
 import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.datasources.drops import DROPS
-from corpus.datasources.drops import XmlEntity
+
 
 class TestDROPS(DataSourceTest):
     '''

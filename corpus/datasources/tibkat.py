@@ -50,6 +50,7 @@ class FTXParser(object):
             "databaseDate": './ns0:systemInfo/ns0:databaseDate',
             "changeDate": './ns0:systemInfo/ns0:changeDate',
             "ftxCreationDate": './ns0:systemInfo/ns0:ftxCreationDate',
+            # identifiers
             "documentID": './ns0:systemInfo/ns0:documentID',
             "ppn": './/ns0:identifier[@type="ppn"]',
             "firstid": './/ns0:identifier[@type="firstid"]',
@@ -57,13 +58,22 @@ class FTXParser(object):
             "isbn13": './/ns0:identifier[@type="isbn13"]',
             "ean": './/ns0:identifier[@type="ean"]',
             "doi": './/ns0:identifier[@type="doi"]',
+            # from corporate creators
+            "gnd": './/ns0:corporateIDs/ns0:corporateID[@type="gnd"]',
             # bibliographic info
             "title": './ns0:bibliographicInfo/dc:title',
             "alternativeTitles": './ns0:bibliographicInfo/ns0:alternativeTitles/ns2:alternative',
             # conferenceInfo
             "event":  './/ns0:conferenceInfo/ns0:name',
+            "location": './/ns0:conferenceInfo/ns0:places/ns0:place',
             "dates":  './/ns0:conferenceInfo/ns0:dates/dc:date',
-            #"pubyear": './{http://www.openarchives.org/OAI/2.0/}document/{http://www.openarchives.org/OAI/2.0/}bibliographicInfo/{http://www.openarchives.org/OAI/2.0/}publicationInfo/{http://purl.org/dc/terms/}issued'
+            "description": './/ns0:conferenceInfo/dc:description',
+            "pubyear": './ns0:bibliographicInfo/ns0:publicationInfo/ns2:issued',
+            "pubplace": './ns0:bibliographicInfo/ns0:publicationInfo/ns0:publicationPlaces/ns0:publicationPlace',
+            "publisher": './ns0:bibliographicInfo/ns0:publicationInfo/dc:publisher',
+            # journalInfo
+            "journalTitle": './/ns0:journalInfo/dc:title',
+            "journalVolumeNumber": './/ns0:journalInfo/ns0:volumeNumber',
             # classification Info
             "bk": "./ns0:classificationInfo/ns0:classifications/ns0:classification[@classificationName='bk']/ns0:code"
         }        
