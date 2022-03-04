@@ -26,6 +26,7 @@ class XmlEntity(object):
         self._props=[]
         if XmlEntity.debug:
             xml=ElementTree.tostring(element).decode(XmlEntity.encoding)
+            # debug e.g. with http://xpather.com/
             print(xml)
             setattr(self,"rawxml",xml)
         for prop, xpath in xmlPropertyMap.items():

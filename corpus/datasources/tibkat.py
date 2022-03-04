@@ -43,7 +43,8 @@ class FTXParser(object):
         '''    
         recordTag="{http://www.openarchives.org/OAI/2.0/}document"
         namespaces={'ns0':'http://www.openarchives.org/OAI/2.0/',
-                    'ns2':'http://purl.org/dc/elements/1.1/'
+                    'ns2': 'http://purl.org/dc/terms/',
+                    'dc':'http://purl.org/dc/elements/1.1/'
         }
         xmlPropertyMap= {
             "databaseDate": './ns0:systemInfo/ns0:databaseDate',
@@ -56,9 +57,12 @@ class FTXParser(object):
             "isbn13": './/ns0:identifier[@type="isbn13"]',
             "ean": './/ns0:identifier[@type="ean"]',
             "doi": './/ns0:identifier[@type="doi"]',
-            "title": './ns0:bibliographicInfo/ns2:title',
+            # bibliographic info
+            "title": './ns0:bibliographicInfo/dc:title',
+            "alternativeTitles": './ns0:bibliographicInfo/ns0:alternativeTitles/ns2:alternative',
             # conferenceInfo
-            "event":  './ns0:bibliographicInfo/ns0:conferenceInfo/ns0:name',
+            "event":  './/ns0:conferenceInfo/ns0:name',
+            "dates":  './/ns0:conferenceInfo/ns0:dates/dc:date',
             #"pubyear": './{http://www.openarchives.org/OAI/2.0/}document/{http://www.openarchives.org/OAI/2.0/}bibliographicInfo/{http://www.openarchives.org/OAI/2.0/}publicationInfo/{http://purl.org/dc/terms/}issued'
             # classification Info
             "bk": "./ns0:classificationInfo/ns0:classifications/ns0:classification[@classificationName='bk']/ns0:code"

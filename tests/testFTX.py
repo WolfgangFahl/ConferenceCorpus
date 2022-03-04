@@ -17,6 +17,7 @@ class TestFTXParser(DataSourceTest):
         super().setUp(debug=debug, profile=profile)
         user=getpass.getuser()
         self.ftxroot=None
+        self.ftxParser=None
         if user=="wf":
             self.ftxroot="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20"
         if self.ftxroot is not None:
@@ -28,7 +29,7 @@ class TestFTXParser(DataSourceTest):
         check listing the FTX xml files
         '''
         debug=self.debug
-        debug=True
+        #debug=True
         if self.ftxParser is not None:
             self.xmlFiles=self.ftxParser.ftxXmlFiles()
             if debug:
@@ -41,6 +42,7 @@ class TestFTXParser(DataSourceTest):
         '''
         debug=self.debug
         debug=True
+        show=True
         XmlEntity.debug=debug
         if self.ftxParser is not None:
             xmlPath=f"{self.ftxroot}/{self.sampleFtx}"
@@ -52,11 +54,15 @@ class TestFTXParser(DataSourceTest):
             if debug:
                 print (f"found {len(documents)} documents")    
             self.assertEqual(100,len(documents))
-            iswc2008ppn="579171965"
-            self.assertTrue(iswc2008ppn in documents)
-            iswc2008=documents[iswc2008ppn]
+            ppns=[
+                "579171965", # ISWC 2008
+                "578841517" # SoftVis  2008
+            ]
+            for ppn in ppns:
+                self.assertTrue(ppn in documents)
+                document=documents[ppn]
             if debug:
-                
-                print(iswc2008.rawxml)
-                print(iswc2008)
+                print(document.rawxml)
+            if show:
+                print(document)
         
