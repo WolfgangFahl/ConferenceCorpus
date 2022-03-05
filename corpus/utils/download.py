@@ -83,7 +83,7 @@ class Profiler:
     '''
     simple profiler
     '''
-    def __init__(self,msg,profile=True):
+    def __init__(self,msg:str=None,profile=True):
         '''
         construct me with the given msg and profile active flag
         
@@ -91,7 +91,10 @@ class Profiler:
             msg(str): the message to show if profiling is active
             profile(bool): True if messages should be shown
         '''
-        self.msg=msg
+        if msg is not None:
+            self.msg=msg
+        else:
+            self.msg=""
         self.profile=profile
         self.starttime=time.time()
         if profile:
