@@ -18,6 +18,7 @@ from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from corpus.xml.xmlparser import XMLEntityParser, XmlEntity
 from typing import Iterator, Union
+from corpus.utils.progress import Progress
 
 
 class FTXParser(object):
@@ -54,7 +55,7 @@ class FTXParser(object):
         files = [f for f in files if f.endswith(".xml")]
         return files
     
-    def parse(self,xmlFile,local:bool=True)->Iterator[XmlEntity]:
+    def parse(self,xmlFile,local:bool=True,progress:Progress=None)->Iterator[XmlEntity]:
         '''
           parse the xml data of  volume with the given collectionId
           
@@ -108,6 +109,8 @@ class FTXParser(object):
             xmlParser=XMLEntityParser(xmlPath,recordTag)
             for xmlEntity in xmlParser.parse(xmlPropertyMap,namespaces):
                 yield(xmlEntity)
+                if progress is not None:
+                    progress.next()
                 
 class TibkatCmdLine:
     '''

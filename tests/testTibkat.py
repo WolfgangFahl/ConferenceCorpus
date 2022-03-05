@@ -19,7 +19,7 @@ class TestTibkatEvents(DataSourceTest):
         user=getpass.getuser()
         if user=="wf":
             forceUpdate=True
-            Tibkat.limitFiles=100
+            #Tibkat.limitFiles=100
             self.lookup= lookup=CorpusLookup(lookupIds=["tibkat"])
             self.lookup.load(forceUpdate=forceUpdate)
             self.tibkatDataSource=lookup.getDataSource("tibkat")

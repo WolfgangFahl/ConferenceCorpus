@@ -8,6 +8,7 @@ from xml.etree import cElementTree as ElementTree
 from xml.etree.ElementTree import ParseError
 from typing import Iterator
 import sys
+from corpus.utils.progress import Progress
 
 class XmlEntity(object):
     '''
@@ -62,16 +63,18 @@ class XMLEntityParser():
     '''
     a parser for XML Entities
     '''
-    def __init__(self,filePath:str,recordsTag:str):
+    def __init__(self,filePath:str,recordsTag:str,progress:Progress):
         '''
         Constructor
         
         Args:
             filePath(str): the path to the xml file to parse
             recordsTag(str): the name of the tag to parse
+            progressSteps(int): how often to show the progress of the parser
         '''
         self.filePath=filePath
         self.recordsTag=recordsTag
+        self.progress=progress
         
     def readXmlFile(self) -> Iterator[Element]:
         '''
@@ -104,6 +107,8 @@ class XMLEntityParser():
         try:
             for element in self.readXmlFile():
                 yield XmlEntity(element,xmlPropertyMap,namespaces)
+                if self.progress is not None:
+                    self.progress.next()
         except ParseError as parseError:
             print (f"parse error in {self.filePath}:{parseError}", file=sys.stderr)
             pass

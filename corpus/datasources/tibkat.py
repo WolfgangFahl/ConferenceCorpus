@@ -7,9 +7,10 @@ from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from corpus.event import EventSeriesManager,EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 from corpus.datasources.tibkatftx import FTXParser
-from corpus.datasources.textparse import Textparse
+from corpus.utils.textparse import Textparse
 import re
-from future.utils import lrange
+from corpus.utils.progress import Progress
+
 
 class Tibkat(EventDataSource):
     '''
@@ -86,12 +87,14 @@ class TibkatEventManager(EventManager):
         self.ftxParser=FTXParser(Tibkat.ftxroot)
         xmlFiles=self.ftxParser.ftxXmlFiles()
         xmlFiles=xmlFiles[:Tibkat.limitFiles]
+        progress=Progress(1000)
         for xmlFile in xmlFiles:
             for document in self.ftxParser.parse(xmlFile,local=True):
                 if self.isInWantedBkDocuments(document):
                     rawEvent=document.asDict()
                     TibkatEvent.postProcessLodRecord(rawEvent)
                     lod.append(rawEvent)
+                    progress.next()
         return lod
 
 class TibkatEvent(Event):

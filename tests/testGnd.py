@@ -8,7 +8,7 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
 from corpus.datasources.gnd import GND
-from corpus.datasources.textparse import Textparse
+from corpus.utils.textparse import Textparse
 from collections import Counter
 from lodstorage.query import Query
 import getpass

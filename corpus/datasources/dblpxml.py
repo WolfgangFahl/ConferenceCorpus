@@ -12,6 +12,7 @@ from collections import Counter
 from xml.dom import minidom
 from lodstorage.sql import SQLDB
 from lodstorage.schema import Schema
+from corpus.utils.progress import Progress
 import os
 import re
 import time
@@ -112,14 +113,9 @@ class DblpXml(object):
         root = etree.Element('dblp')
         counter=Counter()
         level=0
-        count=0
+        showProgress=Progress(progress)
         for event, element in self.iterParser():
-            count+=1
-            if progress is not None:
-                if count%progress==0:
-                    print(".",flush=True,end='')
-                if count%(progress*80)==0:
-                    print("\n",flush=True)
+            showProgress.next()
             if event == 'start': 
                 level += 1;
                 if level==2:
