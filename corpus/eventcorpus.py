@@ -6,7 +6,7 @@ Created on 2021-04-16
 from corpus.event import EventManager, EventSeriesManager, EventStorage
 from corpus.config import EventDataSourceConfig            
 from corpus.quality.rating import RatingManager
-from corpus.datasources.download import Download
+from corpus.utils.download import Download
 from corpus.utils.download import Profiler
 
 class EventDataSource(object):
