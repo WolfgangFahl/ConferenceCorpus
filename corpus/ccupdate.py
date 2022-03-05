@@ -65,6 +65,8 @@ class TibkatUpdater(ConferenceCorpusUpdate):
             Tibkat.limitFiles=args.limitFiles
             Tibkat.ftxroot=args.ftxroot
             Tibkat.wantedbks=args.wantedBks
+            if Tibkat.wantedbks==["all"]:
+                Tibkat.wantedbks=[]
             super().updateDataSource(source=f"TIBKAT FTX dump \nftxroot:{args.ftxroot}\nlimitFiles:{args.limitFiles}\nBasisklassifikationen: {args.wantedBks}",sampleId=args.sample)
         
 
@@ -136,7 +138,7 @@ USAGE
         parser.add_argument("--limitFiles",type=int,default=10000,help="limit the number of file to be parsed [default: %(default)s]")
         parser.add_argument("--ftxroot",default="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20",help="path to root directory of ftx xml files [default: %(default)s]")
         parser.add_argument("--sample",default="ISWC 2008",help="sample event ID [default: %(default)s]")
-        parser.add_argument("--wantedBks",nargs="+",default=["54"],help="wanted Basisklassifikationen [default: %(default)s]")
+        parser.add_argument("--wantedBks",nargs="+",default=["54"],help="wanted Basisklassifikationen [default: %(default)s] use 'all' for no filter")
         parser.add_argument("-uxml","--updateXml", dest="updateXml",   action="store_true", help="update the dblp xml file and eventcorpus database")
         parser.add_argument("-ucc","--updateConferenceCorpus", dest="updateConferenceCorpus",   action="store_true", help="update the dblp xml file and eventcorpus database")
         parser.add_argument("-uall","--updateAll", dest="updateAll",   action="store_true", help="update the dblp xml file and eventcorpus database")

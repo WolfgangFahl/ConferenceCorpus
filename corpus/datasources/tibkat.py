@@ -54,8 +54,13 @@ class TibkatEventManager(EventManager):
     
     def isWantedBk(self,bk):
         '''
-        check whether the given basis klassifikation is in the list of wanted ones
+        check whether the given basisklassifikation bk is in the list of wanted ones
+        
+        Args:
+            bk(str): the basisklassifkation to check
         '''
+        if len(Tibkat.wantedbks)==0:
+            return True
         for wantedbk in Tibkat.wantedbks:
             if bk.startswith(wantedbk):
                 return True
