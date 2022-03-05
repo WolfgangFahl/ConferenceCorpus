@@ -16,7 +16,6 @@ class TestBibParser(DataSourceTest):
         DataSourceTest.setUp(self)
         pass
 
-
     def testBibParser(self):
         '''
         test Bibtex parser
@@ -24,7 +23,8 @@ class TestBibParser(DataSourceTest):
         bp=BibParser()
         url="https://jens-lehmann.org/files/cv.bib"
         bibData=bp.parseUrl(url)
-        debug=True
+        debug=self.debug
+        #debug=True
         if debug:
             print(bibData)
         pass
