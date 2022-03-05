@@ -3,7 +3,7 @@ Created on 2022-03-03
 
 @author: wf
 '''
-from corpus.datasources.download import Download
+from corpus.utils.download import Download
 from os import path
 import os
 import urllib

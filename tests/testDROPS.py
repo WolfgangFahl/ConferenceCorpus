@@ -24,20 +24,25 @@ class TestDROPS(DataSourceTest):
         
         '''
         drops=DROPS(self.maxCollectionId)
+        progress=Progress(progressSteps=1,expectedTotal=drops.maxCollectionId,showDots=True,msg="caching DROPS XML files",showMemory=True)
         for cid in range(1,drops.maxCollectionId+1):
             drops.cache(cid)
+            progress.next()
+        progress.done()
        
     def testParsing(self):   
-        #debug=self.debug
-        debug=True
+        debug=self.debug
+        #debug=True
         #XmlEntity.debug=debug
         drops=DROPS(self.maxCollectionId)
         volumes={}
-        progress=Progress(1)
+        progress=Progress(progressSteps=1,expectedTotal=drops.maxCollectionId,showDots=True,msg="parsing DROPS XML files",showMemory=True)
         for cid in range(1,drops.maxCollectionId+1):  
-            for volume in drops.parse(cid,progress=progress):
+            for volume in drops.parse(cid):
                 volumes[volume.shortTitle]=volume
+                progress.next()
             pass
+        progress.done()
         if debug:
             print(f"found {len(volumes)} volumes")
         expected=321
