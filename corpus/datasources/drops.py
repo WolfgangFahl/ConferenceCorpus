@@ -8,7 +8,7 @@ from os import path
 import os
 import urllib
 from corpus.xml.xmlparser import XMLEntityParser
-
+from corpus.utils.progress import Progress
 
 class DROPS(object):
     '''
@@ -38,16 +38,8 @@ class DROPS(object):
         '''
         xmlp=f"{self.cachedir}/{collectionId}.xml"
         return xmlp
-    
-    def showProgress(self,collectionId,showStep=20):
-        if showStep>0:
-            print('.', end='')
-            if collectionId % showStep ==0:
-                print(f"{collectionId}",end='')  
-            if collectionId % 80 ==0:
-                print()    
         
-    def cache(self,collectionId,baseurl="https://submission.dagstuhl.de/services/metadata/xml/collections",force:bool=False,progressStep=20):
+    def cache(self,collectionId,baseurl="https://submission.dagstuhl.de/services/metadata/xml/collections",force:bool=False,progress:Progress=None):
         '''
         cache the XML file for the given collectionId
         
@@ -65,16 +57,14 @@ class DROPS(object):
                 xml=Download.getURLContent(url)
                 with open(cfilepath, "w") as xmlfile:
                     xmlfile.write(xml)
+                    if progress is not None:
+                        progress.next()
             except urllib.error.HTTPError as err:
                 if not "HTTP Error 404: Not Found" in str(err):
                     raise err
-                 
                 pass
-            
-        self.showProgress(collectionId,progressStep)
-       
                 
-    def parse(self,collectionId:int,progressStep:int=200):
+    def parse(self,collectionId:int,progress:Progress=None):
         '''
           parse the xml data of  volume with the given collectionId
           
@@ -99,4 +89,5 @@ class DROPS(object):
             xmlParser=XMLEntityParser(xmlPath,recordTag)
             for xmlEntity in xmlParser.parse(xmlPropertyMap,namespaces):
                 yield(xmlEntity)
-            self.showProgress(collectionId,progressStep)
+                if progress is not None:
+                    progress.next()

@@ -6,7 +6,7 @@ Created on 2022-03-03
 import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.datasources.drops import DROPS
-
+from corpus.utils.progress import Progress
 
 class TestDROPS(DataSourceTest):
     '''
@@ -33,15 +33,15 @@ class TestDROPS(DataSourceTest):
         #XmlEntity.debug=debug
         drops=DROPS(self.maxCollectionId)
         volumes={}
+        progress=Progress(1)
         for cid in range(1,drops.maxCollectionId+1):  
-            for volume in drops.parse(cid):
+            for volume in drops.parse(cid,progress=progress):
                 volumes[volume.shortTitle]=volume
             pass
         if debug:
             print(f"found {len(volumes)} volumes")
         expected=321
         self.assertTrue(len(volumes)>=expected)
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
