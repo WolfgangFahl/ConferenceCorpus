@@ -2,7 +2,7 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
 from lodstorage.query import Query
-from corpus.datasources.tibkat import TibkatEvent
+from corpus.datasources.tibkat import Tibkat,TibkatEvent
 import datetime
 from collections import Counter
 import getpass
@@ -19,6 +19,7 @@ class TestTibkatEvents(DataSourceTest):
         user=getpass.getuser()
         if user=="wf":
             forceUpdate=True
+            Tibkat.limitFiles=100
             self.lookup= lookup=CorpusLookup(lookupIds=["tibkat"])
             self.lookup.load(forceUpdate=forceUpdate)
             self.tibkatDataSource=lookup.getDataSource("tibkat")
@@ -32,7 +33,8 @@ class TestTibkatEvents(DataSourceTest):
         if self.lookup is None:
             print("testTibkat not tested",file=sys.stderr)
             return
-        _eventSeriesList,_eventList=self.checkDataSource(self.tibkatDataSource,0,88000,eventSample="ISWC 2008")
+        expectedEvents=Tibkat.limitFiles*9
+        _eventSeriesList,_eventList=self.checkDataSource(self.tibkatDataSource,0,expectedEvents,eventSample="ISWC 2008")
     
     def testParseTibkatDescription(self):
         '''

@@ -6,7 +6,6 @@ Created on 2021-07-21
 from corpus.event import EventSeriesManager,EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 from corpus.eventcorpus import EventDataSource,EventDataSourceConfig
-import re
 
 class Wikidata(EventDataSource):
     '''

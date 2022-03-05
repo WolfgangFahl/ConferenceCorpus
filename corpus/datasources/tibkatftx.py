@@ -25,11 +25,26 @@ class FTXParser(object):
     an specialized XML parser for FTX dump files
     '''
     
-    def __init__(self,basepath):
+    def __init__(self,basepath:str):
         '''
         constructor
+        
+        Args:
+            basepath(str): the root of the FTX dump directory
         '''
         self.basepath=basepath
+        
+    def ftxXmlFile(self,xmlFile:str)->str:
+        '''
+        Args: 
+            xmlFile(str): the name of the FTX XML file 
+            
+        Returns:
+            str: the full path
+        
+        '''
+        path=f"{self.basepath}/{xmlFile}"
+        return path
         
     def ftxXmlFiles(self)->list:
         '''
@@ -39,12 +54,13 @@ class FTXParser(object):
         files = [f for f in files if f.endswith(".xml")]
         return files
     
-    def parse(self,xmlPath)->Iterator[XmlEntity]:
+    def parse(self,xmlFile,local:bool=True)->Iterator[XmlEntity]:
         '''
           parse the xml data of  volume with the given collectionId
           
           Args:
-            xmlPath: the file to process
+            xmlFile(str): the file to process
+            local(bool): True if the xmlFile name is a local file name
         '''    
         recordTag="{http://www.openarchives.org/OAI/2.0/}document"
         namespaces={'ns0':'http://www.openarchives.org/OAI/2.0/',
@@ -84,6 +100,10 @@ class FTXParser(object):
             # classification Info
             "bk": "./ns0:classificationInfo/ns0:classifications/ns0:classification[@classificationName='bk']/ns0:code"
         }        
+        if local:
+            xmlPath=self.ftxXmlFile(xmlFile)
+        else:
+            xmlPath=xmlFile
         if os.path.exists(xmlPath):
             xmlParser=XMLEntityParser(xmlPath,recordTag)
             for xmlEntity in xmlParser.parse(xmlPropertyMap,namespaces):

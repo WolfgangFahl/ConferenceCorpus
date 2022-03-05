@@ -9,6 +9,7 @@ from lodstorage.storageconfig import StorageConfig
 from corpus.datasources.tibkatftx import FTXParser
 from corpus.datasources.textparse import Textparse
 import re
+from future.utils import lrange
 
 class Tibkat(EventDataSource):
     '''
@@ -24,13 +25,17 @@ class Tibkat(EventDataSource):
     
     '''
     sourceConfig = EventDataSourceConfig(lookupId="tibkat", name="tib.eu", url="https://www.tib.eu", title="TIBKAT", tableSuffix="tibkat")
-    
+    # TODO proper configuration
+    ftxroot="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20"
+    wantedbks=["54"] # Informatik
+    limitFiles=10000
+  
     def __init__(self):
         '''
         construct me
         '''
         super().__init__(TibkatEventManager(),TibkatEventSeriesManager(),Tibkat.sourceConfig)
-
+  
 class TibkatEventManager(EventManager):
     '''
     manage TIBKAT derived scientific events
@@ -46,15 +51,12 @@ class TibkatEventManager(EventManager):
         '''
         configure me
         '''
-        self.ftxroot="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20"
-        self.wantedbks=["54"] # Informatik
-        self.limitFiles=10000
     
     def isWantedBk(self,bk):
         '''
         check whether the given basis klassifikation is in the list of wanted ones
         '''
-        for wantedbk in self.wantedbks:
+        for wantedbk in Tibkat.wantedbks:
             if bk.startswith(wantedbk):
                 return True
         return False
@@ -81,14 +83,15 @@ class TibkatEventManager(EventManager):
         get my list of dicts
         '''
         lod=[]
-        self.ftxParser=FTXParser(self.ftxroot)
+        self.ftxParser=FTXParser(Tibkat.ftxroot)
         xmlFiles=self.ftxParser.ftxXmlFiles()
-        xmlFiles=xmlFiles[:self.limitFiles]
+        xmlFiles=xmlFiles[:Tibkat.limitFiles]
         for xmlFile in xmlFiles:
-            xmlPath=f"{self.ftxroot}/{xmlFile}"
-            for document in self.ftxParser.parse(xmlPath):
+            for document in self.ftxParser.parse(xmlFile,local=True):
                 if self.isInWantedBkDocuments(document):
-                    lod.append(document.asDict())
+                    rawEvent=document.asDict()
+                    TibkatEvent.postProcessLodRecord(rawEvent)
+                    lod.append(rawEvent)
         return lod
 
 class TibkatEvent(Event):
@@ -101,6 +104,41 @@ class TibkatEvent(Event):
         super().__init__()
         pass
     
+    @staticmethod
+    def postProcessLodRecord(rawEvent:dict):
+        '''
+        fix the given raw Event
+        
+        Args:
+            rawEvent(dict): the raw event record to fix
+        '''
+        if "description" in rawEvent:
+            description=rawEvent["description"]
+            if isinstance(description,list):
+                parseResults=[]
+                # find shortes Acronym
+                for descEntry in description:
+                    parseResult=TibkatEvent.parseDescription(descEntry)
+                    if 'acronym' in parseResult and 'ordinal' in parseResult:
+                        parseResults.append(parseResult)   
+                parseResultsByAcronymLen = sorted(parseResults, key=lambda rawEvent: len(rawEvent['acronym']))             
+                if len(parseResultsByAcronymLen)>0:
+                    shortestAcronymDescriptionResult=parseResultsByAcronymLen[0]
+                    TibkatEvent.mergeDict(rawEvent, shortestAcronymDescriptionResult)
+            else:
+                TibkatEvent.mergeDescription(description, rawEvent)
+        pass
+    
+    @classmethod
+    def mergeDict(cls,rawEvent:dict,more:dict):
+        for key in more:
+            rawEvent[key]=more[key]
+    
+    @classmethod
+    def mergeDescription(cls,description:str,rawEvent:dict):
+        parseResult=TibkatEvent.parseDescription(description)
+        TibkatEvent.mergeDict(rawEvent, parseResult)
+        
     @classmethod
     def parseDescription(cls,description:str)->dict:
         '''
@@ -126,7 +164,12 @@ class TibkatEvent(Event):
             if loctimematch:
                 ordinalStr=loctimematch.group("ordinal")
                 if ordinalStr is not None:
-                    result["ordinal"]=int(ordinalStr)
+                    ordinal=int(ordinalStr)
+                    # check for "year" ordinals
+                    if ordinal>1000:
+                        # completely ignore description 
+                        return {}
+                    result["ordinal"]=ordinal
                 locationStr=loctimematch.group("location")
                 if locationStr is not None:
                     result['location']=locationStr

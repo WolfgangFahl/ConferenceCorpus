@@ -55,8 +55,7 @@ class TestFTXParser(DataSourceTest):
         if self.ftxParser is not None:
             documents={}
             for sampleFtx in self.sampleFtxs:
-                xmlPath=f"{self.ftxroot}/{sampleFtx}"
-                for document in self.ftxParser.parse(xmlPath):
+                for document in self.ftxParser.parse(sampleFtx,local=True):
                     if debug:
                         print(document)
                     ppn=document.ppn
@@ -88,16 +87,11 @@ class TestFTXParser(DataSourceTest):
             self.getAllFtxXmlFiles()
             count=0
             for xmlFile in self.xmlFiles:
-                xmlPath=f"{self.ftxroot}/{xmlFile}"
-                for document in self.ftxParser.parse(xmlPath):
+                for document in self.ftxParser.parse(xmlFile,local=True):
                     count+=1
                     if count%1000==0:
                         print(".",end="")
                     if count%10000==0:
                         print(f"{count}",end="")
                     if count%80000==0:
-                        print()    
-                    
-                
-        
-            
+                        print()
