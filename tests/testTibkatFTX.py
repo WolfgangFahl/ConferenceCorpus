@@ -5,11 +5,10 @@ from wikifile.wikiFile import WikiFile
 from corpus.datasources.tibkatftx import TibkatCmdLine, main
 from tests.datasourcetoolbox import DataSourceTest
 from tests.testSMW import TestSMW
-from corpus.lookup import CorpusLookup
 
 class TestTibkatFTX(DataSourceTest):
     """
-    test for TIBkat
+    test for TIBkat FTX CommandLine handling
     """
 
     def setUp(self,debug=False,profile=True):

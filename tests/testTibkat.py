@@ -5,6 +5,8 @@ from lodstorage.query import Query
 from corpus.datasources.tibkat import TibkatEvent
 import datetime
 from collections import Counter
+import getpass
+import sys
 
 class TestTibkatEvents(DataSourceTest):
     '''
@@ -13,19 +15,24 @@ class TestTibkatEvents(DataSourceTest):
     
     def setUp(self):
         super().setUp()
-        self.lookup= lookup=CorpusLookup(lookupIds=["tibkat"])
-        self.lookup.load(forceUpdate=False)
-        self.tibkatDataSource=lookup.getDataSource("tibkat")
-        self.eventManager=self.tibkatDataSource.eventManager
-        self.eventSeriesManager=self.tibkatDataSource.eventSeriesManager
+        self.lookup=None
+        user=getpass.getuser()
+        if user=="wf":
+            forceUpdate=True
+            self.lookup= lookup=CorpusLookup(lookupIds=["tibkat"])
+            self.lookup.load(forceUpdate=forceUpdate)
+            self.tibkatDataSource=lookup.getDataSource("tibkat")
+            self.eventManager=self.tibkatDataSource.eventManager
+            self.eventSeriesManager=self.tibkatDataSource.eventSeriesManager
       
     def testTibkat(self):
         '''
         test CrossRef as an event data source
         '''
-       
+        if self.lookup is None:
+            print("testTibkat not tested",file=sys.stderr)
+            return
         _eventSeriesList,_eventList=self.checkDataSource(self.tibkatDataSource,0,88000,eventSample="ISWC 2008")
-        pass
     
     def testParseTibkatDescription(self):
         '''
@@ -63,6 +70,9 @@ class TestTibkatEvents(DataSourceTest):
         '''
         test description parsing
         '''
+        if self.lookup is None:
+            print("testDescriptionParsing not tested",file=sys.stderr)
+            return
         debug=self.debug
         debug=True
         sqlDB=EventStorage.getSqlDB()

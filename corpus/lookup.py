@@ -27,12 +27,16 @@ import re
 from os import path
 import sqlite3
 import sys
+import getpass
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from lodstorage.query import QueryManager
 
 class CorpusLookupConfigure:
+    '''
+    Configuration of the Corpus Lookup
+    '''
     @staticmethod
     def configureCorpusLookup(lookup,debug=False):
         '''
@@ -63,7 +67,7 @@ class CorpusLookup(object):
     '''
     search and lookup for different EventCorpora
     '''
-    lookupIds=["confref","crossref","dblp","gnd","tibkat","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
+    lookupIds=["confref","crossref","dblp","gnd","wikidata","wikicfp","or","or-backup","orclone","orclone-backup"]
     
 
     def __init__(self,lookupIds:list=None,
@@ -80,6 +84,10 @@ class CorpusLookup(object):
         self.eventCorpus=EventCorpus()
         if lookupIds is None:
             lookupIds=CorpusLookup.lookupIds
+            user=getpass.getuser()
+            # TODO enable generally
+            if user=="wf":
+                lookupIds.append("tibkat") 
         if "acm" in lookupIds:
             self.eventCorpus.addDataSource(ACM())
         if "confref" in lookupIds:
