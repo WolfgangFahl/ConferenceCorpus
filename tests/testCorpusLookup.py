@@ -49,7 +49,6 @@ class TestCorpusLookup(DataSourceTest):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
         self.assertEqual(10,len(lookup.eventCorpus.eventDataSources))
-        
                 
     def testViewDDL(self):
         '''
@@ -57,7 +56,7 @@ class TestCorpusLookup(DataSourceTest):
         '''
         viewDDLs=EventStorage.getCommonViewDDLs()
         debug=self.debug
-        debug=True
+        #debug=True
         
         if debug:
             for viewDDL in viewDDLs.values():
