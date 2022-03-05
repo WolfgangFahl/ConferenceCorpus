@@ -195,38 +195,7 @@ class DblpXml(object):
         """
         element.clear()
         while element.getprevious() is not None:
-            del element.getparent()[0]           
-
-    def printProgressBar (self,iteration, total, prefix = '', suffix = '', decimals = 1, length = 72, fill = '█', printEnd = "\r",startTime=None):
-        """
-        Call in a loop to create terminal progress bar
-        
-        see https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
-        
-        Args:
-            iteration   - Required  : current iteration (Int)
-            total       - Required  : total iterations (Int)
-            prefix      - Optional  : prefix string (Str)
-            suffix      - Optional  : suffix string (Str)
-            decimals    - Optional  : positive number of decimals in percent complete (Int)
-            length      - Optional  : character length of bar (Int)
-            fill        - Optional  : bar fill character (Str)
-            printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
-        """
-        percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-        filledLength = int(length * iteration // total)
-        bar = fill * filledLength + '-' * (length - filledLength)
-        if startTime is None:
-            print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
-        else:
-            elapsed=time.time()-startTime
-            totalTime=elapsed*float(total)/iteration
-            print(f'\r{prefix} |{bar}| {percent}% {elapsed:3.0f}/{totalTime:3.0f}s {suffix}', end = printEnd)
-            
-            
-        # Print New Line on Complete
-        if iteration == total: 
-            print()
+            del element.getparent()[0]
         
     def checkRow(self,kind:str,index,row:dict):
         '''
@@ -326,7 +295,7 @@ class DblpXml(object):
             sqlDB.execute(viewDDL)
         return sqlDB
             
-    def asDictOfLod(self,limit:int=1000,delim:str=',',progress:int=None,expectedTotal:int=None):
+    def asDictOfLod(self,limit:int=1000,delim:str=',',progressSteps:int=None,expectedTotal:int=None):
         '''
         get the dblp data as a dict of list of dicts - effectively separating the content
         into table structures
@@ -334,15 +303,14 @@ class DblpXml(object):
         Args:
             limit(int): maximum amount of records to process
             delim(str): the delimiter to use for splitting attributes with multiple values (e.g. author)
-            progress(int): if set the interval at which to print a progress dot 
+            progressSteps(int): if set the interval at which to print a progress dot 
             expectedTotal(int): the expected Total number 
         '''
         index=0
-        count=0
+        progress=Progress(progressSteps,expectedTotal)
         level=0
         dictOfLod={}
         current={}
-        startTime=time.time()
         levelCount=Counter()
         for event, elem in self.iterParser():
             if event == 'start': 
@@ -377,17 +345,11 @@ class DblpXml(object):
             elif event == 'end':
                 if level==2:
                     lod.append(current)
-                    count+=1
+                    progress.next()
                     kind=elem.tag
-                    self.checkRow(kind,count,current)
+                    self.checkRow(kind,progress.count,current)
                     current={} 
-                    if progress is not None:
-                        self.printProgressBar(count, expectedTotal,startTime=startTime)        
-                        #if count%progress==0:
-                        #    print(".",flush=True,end='')
-                        #if count%(progress*80)==0:
-                        #    print("\n",flush=True)
-                    if count>=limit:
+                    if progress.count>=limit:
                         break
                 level -= 1;
                 self.clear_element(elem)
@@ -395,5 +357,5 @@ class DblpXml(object):
         if self.debug:
             pass
         if progress is not None:
-            self.printProgressBar(expectedTotal, expectedTotal,startTime=startTime)     
+            progress.done()
         return dictOfLod
