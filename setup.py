@@ -43,7 +43,7 @@ setup(name='ConferenceCorpus',
          'console_scripts': [
              'aelookup = corpus.lookup:main',
              'ccTibkat = corpus.datasources.tibkatftx:main',
-             'ccDblp   = corpus.dblpmain:main'
+             'ccUpdate = corpus.ccupdate:main'
       ],
     },
       zip_safe=False)
