@@ -16,7 +16,6 @@ class Dblp(EventDataSource):
     '''
     sourceConfig = EventDataSourceConfig(lookupId="dblp", name="dblp", url='https://dblp.org/', title='dblp computer science bibliography', tableSuffix="dblp")
     
-    
     def __init__(self):
         '''
         constructor
@@ -266,3 +265,4 @@ class DblpEventSeriesManager(EventSeriesManager):
         self.setAllAttr(listOfDicts, "source", "dblp")
         self.postProcessLodRecords(listOfDicts)
         return listOfDicts
+

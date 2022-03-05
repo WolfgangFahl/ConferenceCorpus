@@ -7,7 +7,7 @@ from corpus.event import EventManager, EventSeriesManager, EventStorage
 from corpus.config import EventDataSourceConfig            
 from corpus.quality.rating import RatingManager
 from corpus.datasources.download import Download
-from geograpy.utils import Profiler
+from corpus.utils.download import Profiler
 
 class EventDataSource(object):
     '''

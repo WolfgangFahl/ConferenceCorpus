@@ -11,7 +11,6 @@ from corpus.utils.textparse import Textparse
 import re
 from corpus.utils.progress import Progress
 
-
 class Tibkat(EventDataSource):
     '''
     TIBKAT event meta data access

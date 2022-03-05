@@ -37,12 +37,13 @@ setup(name='ConferenceCorpus',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9'
       ],
-      packages=['corpus','corpus.smw','corpus.datasources','corpus.quality'],
+      packages=['corpus','corpus.datasources','corpus.smw','corpus.utils','corpus.quality','corpus.xml'],
       install_requires=requirements,
       entry_points={
          'console_scripts': [
              'aelookup = corpus.lookup:main',
-             'ccTibkat = corpus.datasources.tibkatftx:main'
+             'ccTibkat = corpus.datasources.tibkatftx:main',
+             'ccDblp   = corpus.dblpmain:main'
       ],
     },
       zip_safe=False)
