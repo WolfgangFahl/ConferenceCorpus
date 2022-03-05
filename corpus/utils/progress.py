@@ -4,13 +4,14 @@ Created on 2022-03-05
 @author: wf
 '''
 import time
+from corpus.utils.download import Profiler
 
 class Progress(object):
     '''
     Progress Display
     '''
 
-    def __init__(self,progressSteps:int=None,expectedTotal:int=None,showDots:bool=False):
+    def __init__(self,progressSteps:int=None,expectedTotal:int=None,showDots:bool=False,msg:str=None):
         '''
         Constructor
         
@@ -18,11 +19,13 @@ class Progress(object):
             progressSteps(int): show progress after each number of the given number steps
             expectedTotal(int): expectedTotal
             showDots(boolean): if True show dots (e.g. for log files) else show a proper progress bar
+            msg(str): message to display (if any)
         '''
         self.count=0
         self.progressSteps=progressSteps
         self.expectedTotal=expectedTotal
-        self.startTime=time.time()
+        self.profiler=Profiler(msg=msg)
+        self.startTime=self.profiler.starttime
         self.showDots=showDots
   
     def printProgressBar (self,iteration, total, prefix = '', suffix = '', decimals = 1, length = 72, fill = '█', printEnd = "\r",startTime=None):
@@ -62,6 +65,7 @@ class Progress(object):
                 print("!")
             else:
                 self.printProgressBar(self.expectedTotal, self.expectedTotal,startTime=self.startTime)
+        self.profiler.time()
         
     def next(self):
         '''
