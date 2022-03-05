@@ -63,7 +63,7 @@ class XMLEntityParser():
     '''
     a parser for XML Entities
     '''
-    def __init__(self,filePath:str,recordsTag:str,progress:Progress):
+    def __init__(self,filePath:str,recordsTag:str,progress:Progress=None):
         '''
         Constructor
         
