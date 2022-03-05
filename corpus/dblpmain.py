@@ -3,10 +3,11 @@ Created on 2022-03-05
 
 @author: wf
 '''
+import os
 import sys
+import traceback
 from corpus.version import Version
 from corpus.lookup import CorpusLookup
-import os
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 
@@ -55,6 +56,8 @@ USAGE
         indent = len(program_name) * " "
         sys.stderr.write(program_name + ": " + repr(e) + "\n")
         sys.stderr.write(indent + "  for help use --help")
+        if args.debug:
+            print(traceback.format_exc())
         return 2     
         
 DEBUG = 0
