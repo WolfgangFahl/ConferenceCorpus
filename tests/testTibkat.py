@@ -14,11 +14,14 @@ class TestTibkatEvents(DataSourceTest):
     '''
     
     def setUp(self):
+        '''
+        setUp the test environment
+        '''
         super().setUp()
         self.lookup=None
         user=getpass.getuser()
         if user=="wf":
-            forceUpdate=True
+            forceUpdate=False
             #Tibkat.limitFiles=100
             self.lookup= lookup=CorpusLookup(lookupIds=["tibkat"])
             self.lookup.load(forceUpdate=forceUpdate)
@@ -76,9 +79,10 @@ class TestTibkatEvents(DataSourceTest):
             print("testDescriptionParsing not tested",file=sys.stderr)
             return
         debug=self.debug
-        debug=True
+        #debug=True
         sqlDB=EventStorage.getSqlDB()
-        sql="""select ppn,description from event_tibkat"""
+        limit="LIMIT 50"
+        sql=f"""select ppn,description from event_tibkat {limit}"""
         title="TIBKAT acronym handling"
         query=Query(title,sql,lang='sql')
         eventRecords=sqlDB.query(query.query)
