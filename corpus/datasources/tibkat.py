@@ -86,7 +86,7 @@ class TibkatEventManager(EventManager):
         self.ftxParser=FTXParser(Tibkat.ftxroot)
         xmlFiles=self.ftxParser.ftxXmlFiles()
         xmlFiles=xmlFiles[:Tibkat.limitFiles]
-        progress=Progress(1000)
+        progress=Progress(1000,expectedTotal=len(xmlFiles))
         for xmlFile in xmlFiles:
             for document in self.ftxParser.parse(xmlFile,local=True):
                 if self.isInWantedBkDocuments(document):

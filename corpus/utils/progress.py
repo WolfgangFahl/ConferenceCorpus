@@ -5,6 +5,8 @@ Created on 2022-03-05
 '''
 import time
 from corpus.utils.download import Profiler
+import getpass
+import os
 
 class Progress(object):
     '''
@@ -26,7 +28,15 @@ class Progress(object):
         self.expectedTotal=expectedTotal
         self.profiler=Profiler(msg=msg)
         self.startTime=self.profiler.starttime
-        self.showDots=showDots
+        self.showDots=showDots or self.inCI()
+        
+    def inCI(self):
+        '''
+        are we running in a Continuous Integration Environment?
+        '''
+        publicCI=getpass.getuser() in ["travis", "runner"] 
+        jenkins= "JENKINS_HOME" in os.environ
+        return publicCI or jenkins
   
     def printProgressBar (self,iteration, total, prefix = '', suffix = '', decimals = 1, length = 72, fill = '█', printEnd = "\r",startTime=None):
         """
@@ -53,7 +63,6 @@ class Progress(object):
             elapsed=time.time()-startTime
             totalTime=elapsed*float(total)/iteration
             print(f'\r{prefix} |{bar}| {percent}% {elapsed:3.0f}/{totalTime:3.0f}s {suffix}', end = printEnd)
-            
             
         # Print New Line on Complete
         if iteration == total: 
