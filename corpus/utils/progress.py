@@ -74,7 +74,7 @@ class Progress(object):
             totalTime=elapsed*float(total)/iteration
             if self.showMemory:
                 mbytes=self.usedMemory()
-                suffix=f"{mbytes} MB"
+                suffix=f"{mbytes:.0f} MB"
             print(f'\r{prefix} |{bar}| {percent}% {elapsed:3.0f}/{totalTime:3.0f}s {suffix}', end = printEnd)
             
         # Print New Line on Complete

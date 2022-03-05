@@ -10,7 +10,7 @@ from corpus.datasources.tibkatftx import FTXParser
 from corpus.utils.textparse import Textparse
 import re
 from corpus.utils.progress import Progress
-
+from pathlib import Path
 class Tibkat(EventDataSource):
     '''
     TIBKAT event meta data access
@@ -25,8 +25,9 @@ class Tibkat(EventDataSource):
     
     '''
     sourceConfig = EventDataSourceConfig(lookupId="tibkat", name="tib.eu", url="https://www.tib.eu", title="TIBKAT", tableSuffix="tibkat")
-    # TODO proper configuration
-    ftxroot="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20"
+    home = str(Path.home())
+    # use a symbolic link if you want a different location
+    ftxroot=f"{home}/.conferencecorpus/tibkat/ftx"
     wantedbks=["54"] # Informatik
     limitFiles=10000
   
