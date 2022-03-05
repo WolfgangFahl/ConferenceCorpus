@@ -80,6 +80,7 @@ class DataSourceTest(TestCase):
         eventsByAcronym,_dup=LOD.getLookup(el, "acronym")
         if eventSample is not None:
             event=eventsByAcronym[eventSample]
+            print (f"Sample event for {eventDataSource.name}: {len(el)} events {len(esl)} eventseries")
             print (event.toJSON())
         return esl,el
 

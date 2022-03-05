@@ -16,9 +16,11 @@ class TestCrossRef(DataSourceTest):
     '''
 
     def setUp(self):
+        '''
+        setUp the test environment
+        '''
         DataSourceTest.setUp(self)
         pass
-
 
     def testCrossRef(self):
         '''
@@ -38,10 +40,9 @@ class TestCrossRef(DataSourceTest):
         Crossref.fixEncodings(eventInfo,debug=self.debug)
         self.assertEqual(eventInfo['location'],"Münster, Germany")
         
-        
     def prettyJson(self,d):
         '''
-        prettry print the given jsonStr
+        pretty print the given jsonStr
         '''
         jsonStr=json.dumps(d,indent=2,sort_keys=True)
         print(jsonStr)
@@ -91,8 +92,6 @@ class TestCrossRef(DataSourceTest):
             expected=expectedList[index]
             for key in expected:
                 self.assertEqual(expected[key],getattr(event,key))
-    
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
