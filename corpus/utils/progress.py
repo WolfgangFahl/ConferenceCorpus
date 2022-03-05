@@ -7,13 +7,14 @@ import time
 from corpus.utils.download import Profiler
 import getpass
 import os
+import psutil
 
 class Progress(object):
     '''
     Progress Display
     '''
 
-    def __init__(self,progressSteps:int=None,expectedTotal:int=None,showDots:bool=False,msg:str=None):
+    def __init__(self,progressSteps:int=None,expectedTotal:int=None,showDots:bool=False,msg:str=None,showMemory=False):
         '''
         Constructor
         
@@ -22,12 +23,14 @@ class Progress(object):
             expectedTotal(int): expectedTotal
             showDots(boolean): if True show dots (e.g. for log files) else show a proper progress bar
             msg(str): message to display (if any)
+            showMemory(bool): show memory usage
         '''
         self.count=0
         self.progressSteps=progressSteps
         self.expectedTotal=expectedTotal
         self.profiler=Profiler(msg=msg)
         self.startTime=self.profiler.starttime
+        self.showMemory=showMemory
         self.showDots=showDots or self.inCI()
         
     def inCI(self):
@@ -37,6 +40,13 @@ class Progress(object):
         publicCI=getpass.getuser() in ["travis", "runner"] 
         jenkins= "JENKINS_HOME" in os.environ
         return publicCI or jenkins
+    
+
+    def usedMemory(self):
+        process = psutil.Process(os.getpid())
+        mBytes=(process.memory_info().rss)/1024/1024  # in mbytes 
+        return mBytes
+
   
     def printProgressBar (self,iteration, total, prefix = '', suffix = '', decimals = 1, length = 72, fill = '█', printEnd = "\r",startTime=None):
         """
@@ -62,6 +72,9 @@ class Progress(object):
         else:
             elapsed=time.time()-startTime
             totalTime=elapsed*float(total)/iteration
+            if self.showMemory:
+                mbytes=self.usedMemory()
+                suffix=f"{mbytes} MB"
             print(f'\r{prefix} |{bar}| {percent}% {elapsed:3.0f}/{totalTime:3.0f}s {suffix}', end = printEnd)
             
         # Print New Line on Complete
