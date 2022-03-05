@@ -37,7 +37,7 @@ class TestTibkatEvents(DataSourceTest):
             print("testTibkat not tested",file=sys.stderr)
             return
         expectedEvents=Tibkat.limitFiles*9
-        _eventSeriesList,_eventList=self.checkDataSource(self.tibkatDataSource,0,expectedEvents,eventSample="ISWC 2008")
+        _eventSeriesList,_eventList=self.checkDataSource(self.tibkatDataSource,0,expectedEvents,eventSample="FSE 2003")
     
     def testParseTibkatDescription(self):
         '''
