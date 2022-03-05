@@ -22,25 +22,32 @@ class DblpUpdater:
         constructor
         '''
             
-    def update(self,debug=False):
+    def update(self,args):
         '''
         update
         
         Args:
-            debug(bool): if true switch on debugging
+            args: command line arguments
         '''
-        dblpXml=DblpXml(debug=debug)
-        xmlfile=dblpXml.getXmlFile()
-        sizeMB=dblpXml.getSize()/1024/1024
-        print(f"dblp xml dump file is  {xmlfile} with size {sizeMB:5.1f} MB" )
-        showProgress=True
-        recreate=True
-        limit=10000000
-        sample=5
-        _sqlDB=dblpXml.getSqlDB(limit, sample=sample, debug=debug,recreate=recreate,postProcess=dblpXml.postProcess,showProgress=showProgress)
-    
-        lookup=CorpusLookup(lookupIds=["dblp"])
-        lookup.load(forceUpdate=True)
+        debug=args.debug
+        if args.updateXml or args.updateAll:
+            dblpXml=DblpXml(debug=debug)
+            xmlfile=dblpXml.getXmlFile()
+            sizeMB=dblpXml.getSize()/1024/1024
+            print(f"dblp xml dump file is  {xmlfile} with size {sizeMB:5.1f} MB" )
+            showProgress=True
+            recreate=True
+            limit=10000000
+            sample=5
+            _sqlDB=dblpXml.getSqlDB(limit, sample=sample, debug=debug,recreate=recreate,postProcess=dblpXml.postProcess,showProgress=showProgress)
+        if args.updateConferenceCorpus or args.updateAll:
+            lookup=CorpusLookup(lookupIds=["dblp"])
+            lookup.load(forceUpdate=True)
+            dblpDataSource=lookup.getDataSource("dblp")
+            el=dblpDataSource.eventManager.getList()
+            esl=dblpDataSource.eventSeriesManager.getList()
+            msg=f"{dblpDataSource.name}: {len(el)} events {len(esl)} eventseries"
+            print(msg)
         
 
 def main(argv=None): # IGNORE:C0111
@@ -72,13 +79,15 @@ USAGE
     try:
         # Setup argument parser
         parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
-        parser.add_argument("-d", "--debug", dest="debug",   action="store_true", help="set debug [default: %(default)s]")
-        parser.add_argument("-u", "--update", dest="update",   action="store_true", help="update the dblp xml file and eventcorpus database")
+        parser.add_argument("-d",   "--debug", dest="debug",   action="store_true", help="set debug [default: %(default)s]")
+        parser.add_argument("-uxml","--updateXml", dest="updateXml",   action="store_true", help="update the dblp xml file and eventcorpus database")
+        parser.add_argument("-ucc","--updateConferenceCorpus", dest="updateConferenceCorpus",   action="store_true", help="update the dblp xml file and eventcorpus database")
+        parser.add_argument("-uall","--updateAll", dest="updateAll",   action="store_true", help="update the dblp xml file and eventcorpus database")
         parser.add_argument('-V', '--version', action='version', version=program_version_message)
         args = parser.parse_args(argv)
         if args.update:
             dblpUpdater=DblpUpdater()
-            dblpUpdater.update(debug=args.debug)
+            dblpUpdater.update(args)
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
         return 1
