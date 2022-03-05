@@ -12,6 +12,7 @@ from geograpy.locator import City,Locator
 from lodstorage.query import Query
 from lodstorage.tabulateCounter import TabulateCounter
 from corpus.event import EventStorage
+from corpus.utils.progress import Progress
 import getpass
 import os
 
@@ -125,6 +126,14 @@ limit 20"""),
         return counter,tabCounter
     
     def fixLocations(self,eventManager,locationAttribute,addLocationInfo=False,limit=100,show=True):
+        '''
+        fix locations
+        
+        Args:
+            eventManager: the eventmanager to use
+            locationAttribute(str): the name of the location attribute
+            addLocationInfo(bool): if True add the location information
+        '''
         events=eventManager.events
         pCount,_pCountTab=self.getCounter(events,locationAttribute)
         eventsByLocation=eventManager.getLookup(locationAttribute,withDuplicates=True)
@@ -132,6 +141,7 @@ limit 20"""),
         total=sum(pCount.values())
         rsum=0
         problems=[]
+        progress=Progress(100)
         for i,locationTuple in enumerate(pCount.most_common(limit)):
             locationText,locationCount=locationTuple
             rsum+=locationCount
@@ -143,7 +153,10 @@ limit 20"""),
                 print(str(ex))
             if city is not None and isinstance(city,City):
                 if show:
-                    print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
+                    if self.inCI():
+                        progress.next()
+                    else:
+                        print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
                 events=eventsByLocation[locationText]
                 # loop over all events
                 for event in events:
