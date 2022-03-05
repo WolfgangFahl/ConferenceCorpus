@@ -55,12 +55,11 @@ class TestACM(DataSourceTest):
         qlod=wd.queryAsListOfDicts(queryString,fixNone=True)
         query=Query(name="ACM DL Events",query=queryString,lang='sparql')
         show=self.debug
-        show=True
+        #show=True
         for tablefmt in ["github","mediawiki","latex"]:
             qdoc=query.documentQueryResult(qlod,tablefmt=tablefmt)
             if show:
                 print (qdoc)
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
