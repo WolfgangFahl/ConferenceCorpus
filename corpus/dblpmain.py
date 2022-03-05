@@ -30,17 +30,19 @@ class DblpUpdater:
             args: command line arguments
         '''
         debug=args.debug
+        dblpXml=DblpXml(debug=debug)
+        reload=args.updateXml or args.updateAll
+        xmlfile=dblpXml.getXmlFile(reload=reload)
+        sizeMB=dblpXml.getSize()/1024/1024
+        print(f"dblp xml dump file is  {xmlfile} with size {sizeMB:5.1f} MB" )
         if args.updateXml or args.updateAll:
-            dblpXml=DblpXml(debug=debug)
-            xmlfile=dblpXml.getXmlFile()
-            sizeMB=dblpXml.getSize()/1024/1024
-            print(f"dblp xml dump file is  {xmlfile} with size {sizeMB:5.1f} MB" )
             showProgress=True
             recreate=True
             limit=10000000
             sample=5
             _sqlDB=dblpXml.getSqlDB(limit, sample=sample, debug=debug,recreate=recreate,postProcess=dblpXml.postProcess,showProgress=showProgress)
         if args.updateConferenceCorpus or args.updateAll:
+            print("updating conference corpus database from dblp xml dump")
             lookup=CorpusLookup(lookupIds=["dblp"])
             lookup.load(forceUpdate=True)
             dblpDataSource=lookup.getDataSource("dblp")
@@ -85,9 +87,8 @@ USAGE
         parser.add_argument("-uall","--updateAll", dest="updateAll",   action="store_true", help="update the dblp xml file and eventcorpus database")
         parser.add_argument('-V', '--version', action='version', version=program_version_message)
         args = parser.parse_args(argv)
-        if args.update:
-            dblpUpdater=DblpUpdater()
-            dblpUpdater.update(args)
+        dblpUpdater=DblpUpdater()
+        dblpUpdater.update(args)
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
         return 1
