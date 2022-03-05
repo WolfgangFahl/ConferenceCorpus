@@ -56,7 +56,7 @@ class TestCrossRef(DataSourceTest):
             {'title':'Tenth International Symposium on Avian Influenza'},
             {'title':'Proceedings of the 7th International Workshop on Feature-Oriented Software Development'}
         ]
-        debug=True
+        debug=self.debug
         for index,doi in enumerate(dois):
             doimeta=cr.doiMetaData(doi)
             if debug:
