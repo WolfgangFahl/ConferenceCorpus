@@ -307,7 +307,7 @@ class DblpXml(object):
             expectedTotal(int): the expected Total number 
         '''
         index=0
-        progress=Progress(progressSteps,expectedTotal)
+        progress=Progress(progressSteps,expectedTotal,msg="Parsing dblp xml dump",showMemory=True)
         level=0
         dictOfLod={}
         current={}
