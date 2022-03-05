@@ -1,6 +1,8 @@
 #!/bin/bash
 # WF 2020-06-03
 python="python3"
+backgound=""
+log=""
 while [  "$1" != ""  ]
 do
   option="$1"
@@ -13,6 +15,15 @@ do
       shift
       python="$1"
       ;;
+    -b|--background)
+      background="nohup " 
+      logdir="/var/log/cctest"
+      sudo mkdir -p $logdir
+      me=$(whoami)
+      sudo chown $me $logdir
+      timestamp=$(date "+%Y-%m-%d-%H_%M_%S")
+      nohup $python -m unittest discover 2>&1 >$logdir/${timestamp}.log&
+      exit 0
   esac
   shift
 done

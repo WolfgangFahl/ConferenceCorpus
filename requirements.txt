@@ -26,6 +26,6 @@ num2words~=0.5.9
 # Google Operation Research Tools
 # https://pypi.org/project/ortools/
 # e.g. SAT Solver
-ortools~=9.3
+ortools
 # https://pypi.org/project/psutil/
 psutil~=5.9.0
