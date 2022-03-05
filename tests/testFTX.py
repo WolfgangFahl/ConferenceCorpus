@@ -48,7 +48,7 @@ class TestFTXParser(DataSourceTest):
         test parsing documents out of the FTX xml file
         '''
         debug=self.debug
-        debug=True
+        #debug=True
         show=True
         #show=False
         XmlEntity.debug=debug
