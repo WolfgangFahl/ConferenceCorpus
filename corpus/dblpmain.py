@@ -8,8 +8,40 @@ import sys
 import traceback
 from corpus.version import Version
 from corpus.lookup import CorpusLookup
+from corpus.datasources.dblpxml import DblpXml
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
+
+class DblpUpdater:
+    '''
+    updater for Dblp data from XML dump
+    '''
+    
+    def __init__(self):
+        '''
+        constructor
+        '''
+            
+    def update(self,debug=False):
+        '''
+        update
+        
+        Args:
+            debug(bool): if true switch on debugging
+        '''
+        dblpXml=DblpXml(debug=debug)
+        xmlfile=dblpXml.getXmlFile()
+        sizeMB=dblpXml.getSize()/1024/1024
+        print(f"dblp xml dump file is  {xmlfile} with size {sizeMB:5.1f} MB" )
+        showProgress=True
+        recreate=True
+        limit=10000000
+        sample=5
+        _sqlDB=dblpXml.getSqlDB(limit, sample=sample, debug=debug,recreate=recreate,postProcess=dblpXml.postProcess,showProgress=showProgress)
+    
+        lookup=CorpusLookup(lookupIds=["dblp"])
+        lookup.load(forceUpdate=True)
+        
 
 def main(argv=None): # IGNORE:C0111
     '''main program.'''
@@ -45,8 +77,8 @@ USAGE
         parser.add_argument('-V', '--version', action='version', version=program_version_message)
         args = parser.parse_args(argv)
         if args.update:
-            lookup=CorpusLookup(lookupIds=["dblp"])
-            lookup.load(forceUpdate=True)
+            dblpUpdater=DblpUpdater()
+            dblpUpdater.update(debug=args.debug)
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
         return 1

@@ -397,5 +397,3 @@ class DblpXml(object):
         if progress is not None:
             self.printProgressBar(expectedTotal, expectedTotal,startTime=startTime)     
         return dictOfLod
-            
-    
