@@ -1,0 +1,15 @@
+#
+# Pre-configured Queries for Conference Corpus Scientific Event lookup database
+#
+# TIBKAT examples
+#
+# WF 2022-03-06
+'ACISP':
+    title: TIBKAT Acronym and ordinal example ACISP
+    formats:
+        - ppn:tibkat
+    sql: |
+      SELECT ppn,year,ordinal,acronym,title
+      FROM event_tibkat
+      WHERE acronym is not null and ordinal is not null and acronym like "ACISP%"
+      ORDER BY ordinal,acronym
