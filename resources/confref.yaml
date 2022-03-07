@@ -1,0 +1,39 @@
+#
+# Pre-configured Queries for Conference Corpus Scientific Event lookup database
+#
+# confref examples
+#
+# WF 2022-03-07
+'ConfrefSeries':
+    title: ConfrefSeries with count and year-span
+    sql: |
+      SELECT
+        dblpSeriesId as eventSeriesId,
+        acronym,
+        count(*) AS count,
+        MIN(year) AS minYear,
+        MAX(year) AS maxYear,
+        seriesTitle as title
+      FROM event_confref
+      WHERE dblpSeriesId IS NOT NULL
+      GROUP BY dblpSeriesId
+      ORDER BY count DESC
+'ConfrefSeries50':
+    title: Top 50 ConfrefSeries by  count with year-span
+    formats:
+        - eventSeriesId:dblpseries
+    sql: |
+      SELECT
+      SUBSTR(dblpSeriesId,6) as eventSeriesId,
+        acronym,
+        count(*) AS count,
+        MIN(year) AS minYear,
+        MAX(year) AS maxYear,
+        seriesTitle as title
+      FROM event_confref
+      WHERE
+      dblpSeriesId IS NOT NULL
+      AND dblpSeriesId like "conf/%"
+      GROUP BY dblpSeriesId
+      ORDER BY count DESC
+      LIMIT 50

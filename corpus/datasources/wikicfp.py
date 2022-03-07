@@ -16,7 +16,7 @@ class WikiCfp(EventDataSource):
     '''
     scientific event from http://www.wikicfp.com
     '''
-    sourceConfig = EventDataSourceConfig(lookupId="wikicfp", name="WikiCFP", url='http://www.wikicfp.com', title='WikiCFP', tableSuffix="wikicfp")
+    sourceConfig = EventDataSourceConfig(lookupId="wikicfp", name="WikiCFP", url='http://www.wikicfp.com', title='WikiCFP', tableSuffix="wikicfp",locationAttribute="locality")
     
     def __init__(self,debug=False):
         '''

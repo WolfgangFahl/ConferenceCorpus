@@ -14,7 +14,7 @@ class Dblp(EventDataSource):
     '''
     scientific events from https://dblp.org
     '''
-    sourceConfig = EventDataSourceConfig(lookupId="dblp", name="dblp", url='https://dblp.org/', title='dblp computer science bibliography', tableSuffix="dblp")
+    sourceConfig = EventDataSourceConfig(lookupId="dblp", name="dblp", url='https://dblp.org/', title='dblp computer science bibliography', tableSuffix="dblp",locationAttribute="location")
     
     def __init__(self):
         '''
@@ -216,7 +216,15 @@ class DblpEventManager(EventManager):
         self.setAllAttr(listOfDicts, "source", "dblp")
         self.postProcessLodRecords(listOfDicts)
         return listOfDicts
-
+    
+    def addLocations(self):
+        # extract locations
+        for dblpEvent in self.events:
+            title=dblpEvent.title
+            if title is not None:
+                parts=title.split(",")
+                if len(parts)>3:
+                    dblpEvent.location=f"{parts[2].strip()}, {parts[3].strip()}"
 
 class DblpEventSeriesManager(EventSeriesManager):
     '''

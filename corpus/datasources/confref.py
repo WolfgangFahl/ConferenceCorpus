@@ -13,7 +13,7 @@ import json
 from corpus.eventcorpus import EventDataSourceConfig,EventDataSource
 
 class Confref(EventDataSource):
-    sourceConfig=EventDataSourceConfig(lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tableSuffix="confref")
+    sourceConfig=EventDataSourceConfig(lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tableSuffix="confref",locationAttribute="location")
     
     '''
     ConfRef platform

@@ -72,6 +72,8 @@ class FTXParser(object):
             "databaseDate": './ns0:systemInfo/ns0:databaseDate',
             "changeDate": './ns0:systemInfo/ns0:changeDate',
             "ftxCreationDate": './ns0:systemInfo/ns0:ftxCreationDate',
+            # formalInfo
+            "documentGenreCode": './ns0:formalInfo//ns0:documentGenreCode',
             # identifiers
             "documentId": './ns0:systemInfo/ns0:documentID',
             "ppn": './/ns0:identifiers/ns0:identifier[@type="ppn"]',

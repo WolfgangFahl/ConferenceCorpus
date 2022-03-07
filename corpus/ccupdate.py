@@ -9,6 +9,7 @@ import traceback
 from lodstorage.lod import LOD
 from corpus.version import Version
 from corpus.lookup import CorpusLookup
+from corpus.locationfixer import LocationFixer
 from corpus.datasources.dblpxml import DblpXml
 from corpus.datasources.tibkat import Tibkat
 from argparse import ArgumentParser
@@ -135,6 +136,7 @@ USAGE
         parser.add_argument("-d",   "--debug", dest="debug", action="store_true", help="set debug [default: %(default)s]")
         parser.add_argument("-dblp","--dblp", dest="dblp",   action="store_true", help="update dblp")
         parser.add_argument("--tibkat", action="store_true",help="update tibkat from ftx")
+        parser.add_argument("--fixlocations",nargs="+",help="fix the locations for the given lookup Ids d")
         parser.add_argument("--limitFiles",type=int,default=10000,help="limit the number of file to be parsed [default: %(default)s]")
         parser.add_argument("--ftxroot",default="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20",help="path to root directory of ftx xml files [default: %(default)s]")
         parser.add_argument("--sample",default="ISWC 2008",help="sample event ID [default: %(default)s]")
@@ -151,6 +153,10 @@ USAGE
         if args.tibkat:
             tibkatUpdater=TibkatUpdater()
             tibkatUpdater.update(args)
+        if args.fixlocations:
+            locationFixer=LocationFixer()
+            locationFixer.fixLocations4LookupId(args.fixlocations)
+            
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
         return 1

@@ -81,13 +81,19 @@ class Progress(object):
         if iteration == total: 
             print()
             
-    def done(self):
+    def done(self,msg=None):
+        '''
+        progress is done
+        
+        Args:
+            msg(str): an extra message to display
+        '''
         if self.progressSteps is not None:
             if self.showDots:
                 print("!")
             else:
                 self.printProgressBar(self.expectedTotal, self.expectedTotal,startTime=self.startTime)
-        self.profiler.time()
+        self.profiler.time(extraMsg=msg)
         
     def next(self):
         '''

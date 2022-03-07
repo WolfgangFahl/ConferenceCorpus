@@ -6,13 +6,12 @@ Created on 2021-08-06
 import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
-from corpus.location import LocationLookup
+
 from collections import Counter
-from geograpy.locator import City,Locator
-from lodstorage.query import Query
-from lodstorage.tabulateCounter import TabulateCounter
 from corpus.event import EventStorage
-from corpus.utils.progress import Progress
+from corpus.locationfixer import LocationFixer
+
+from lodstorage.query import Query
 import getpass
 import os
 
@@ -23,21 +22,15 @@ class TestLocationFixing(DataSourceTest):
 
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()
-        # makes sure the geograpy3 data is available
-        Locator.resetInstance()
-        locator=Locator.getInstance()
-        locator.downloadDB()
-        
-        cls.locationLookup=LocationLookup()
+        super().setUpClass()      
+        cls.locationFixer=LocationFixer()
         lookupIds=["crossref","confref","dblp","gnd","wikidata","wikicfp","orclone"]
         cls.lookup=CorpusLookup(lookupIds=lookupIds)
         cls.lookup.load(forceUpdate=False)
         
-        
     def setUp(self):
         DataSourceTest.setUp(self)
-        self.locationLookup=TestLocationFixing.locationLookup
+        self.locationFixer=TestLocationFixing.locationFixer
         self.lookup
         pass
     
@@ -110,75 +103,7 @@ limit 20"""),
         if self.debug:
             print (partCount.most_common())
         self.assertEqual(6,len(partCount))
-        pass
-    
-    def getCounter(self,events:list,propertyName:str):
-        '''
-        get a counter for the given propertyName
-        '''
-        counter=Counter()
-        for event in events:
-            if hasattr(event,propertyName):
-                value=getattr(event,propertyName)
-                if value is not None:
-                    counter[value]+=1
-        tabCounter=TabulateCounter(counter)
-        return counter,tabCounter
-    
-    def fixLocations(self,eventManager,locationAttribute,addLocationInfo=False,limit=100,show=True):
-        '''
-        fix locations
-        
-        Args:
-            eventManager: the eventmanager to use
-            locationAttribute(str): the name of the location attribute
-            addLocationInfo(bool): if True add the location information
-        '''
-        events=eventManager.events
-        pCount,_pCountTab=self.getCounter(events,locationAttribute)
-        eventsByLocation=eventManager.getLookup(locationAttribute,withDuplicates=True)
-        count=len(pCount.items())
-        total=sum(pCount.values())
-        rsum=0
-        problems=[]
-        progress=Progress(100)
-        for i,locationTuple in enumerate(pCount.most_common(limit)):
-            locationText,locationCount=locationTuple
-            rsum+=locationCount
-            percent=rsum/total*100
-            city=None
-            try:
-                city=self.locationLookup.lookup(locationText)
-            except Exception as ex:
-                print(str(ex))
-            if city is not None and isinstance(city,City):
-                if show:
-                    if self.inCI():
-                        progress.next()
-                    else:
-                        print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})")
-                events=eventsByLocation[locationText]
-                # loop over all events
-                for event in events:
-                    event.city=city.name
-                    event.cityWikidataid=city.wikidataid
-                    
-                    event.region=city.region.name
-                    event.regionIso=city.region.iso
-                    event.regionWikidataid=city.region.wikidataid
-                    event.country=city.country.name
-                    event.countryIso=city.country.iso
-                    event.countryWikidataid=city.country.wikidataid
-            else:
-                if show:
-                    print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})")
-                problems.append(locationText)
-        for i,problem in enumerate(problems):
-            if show:
-                print(f"{i:4d}:{problem}")        
-        print(f"found {len(problems)} problems")      
-        if addLocationInfo:
-            eventManager.store()       
+        pass    
     
     def testConfRefLocationFix(self):
         '''
@@ -190,7 +115,7 @@ limit 20"""),
         addLocationInfo=limit>=2000
         for event in confrefDataSource.eventManager.events:
             event.location=f"{event.city}, {event.country}"
-        self.fixLocations(confrefDataSource.eventManager,locationAttribute="location",limit=limit,show=show,addLocationInfo=addLocationInfo)
+        self.locationFixer.fixLocations(confrefDataSource.eventManager,locationAttribute="location",limit=limit,show=show,addLocationInfo=addLocationInfo)
         
     def testCrossRefLocationFix(self):
         '''
@@ -203,7 +128,7 @@ limit 20"""),
         limit=50 if self.inCI() else 200
         show=not self.inCI()
         addLocationInfo=limit>=2000
-        self.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=limit,show=show,addLocationInfo=addLocationInfo)
+        self.locationFixer.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=limit,show=show,addLocationInfo=addLocationInfo)
        
     def testWikiCFPLocationFix(self):
         '''
@@ -217,25 +142,21 @@ limit 20"""),
         limit=50 if self.inCI() else 175  
         show=not self.inCI()
         addLocationInfo=limit>=1000
-        self.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,show=show,addLocationInfo=addLocationInfo) 
+        self.locationFixer.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,show=show,addLocationInfo=addLocationInfo) 
             
     def testDblpLocationFix(self):
         '''
         test dblp Location fixing
         '''
         dblpDataSource=self.lookup.getDataSource("dblp")
-        for dblpEvent in dblpDataSource.eventManager.events:
-            title=dblpEvent.title
-            if title is not None:
-                parts=title.split(",")
-                if len(parts)>3:
-                    dblpEvent.location=f"{parts[2].strip()}, {parts[3].strip()}"
-                    #print(dblpEvent.location)
+        # make sure locations are available
+        dblpDataSource.eventManager.addLocations()
+        #print(dblpEvent.location)
         # 48517 as of 2021-12-27
         limit=50 if self.inCI() else 1500
         show=not self.inCI()
         addLocationInfo=limit>=1000
-        self.fixLocations(dblpDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
+        self.locationFixer.fixLocations(dblpDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
  
     def testGNDLocationFix(self):
         '''
@@ -246,7 +167,7 @@ limit 20"""),
         limit=50 if self.inCI() else 300
         show=not self.inCI()
         addLocationInfo=limit>=1000
-        self.fixLocations(gndDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo) 
+        self.locationFixer.fixLocations(gndDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo) 
      
     def testORLocationFix(self):
         '''
@@ -273,8 +194,7 @@ limit 20"""),
         limit=50 if self.inCI() else 200
         show=not self.inCI()
         addLocationInfo=limit>=1200
-        self.fixLocations(orDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
-        
+        self.loocationFixer.fixLocations(orDataSource.eventManager, "location",limit=limit,show=show,addLocationInfo=addLocationInfo)
         
     def testStats(self):
         '''

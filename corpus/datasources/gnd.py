@@ -18,7 +18,7 @@ class GND(EventDataSource):
     host="confident.dbis.rwth-aachen.de"
     endpoint=f"https://{host}/jena/gnd/sparql"
     limit=1000000
-    sourceConfig = EventDataSourceConfig(lookupId="gnd", name="GND", url='https://d-nb.info/standards/elementset/gnd', title='Gemeinsame Normdatei', tableSuffix="gnd")
+    sourceConfig = EventDataSourceConfig(lookupId="gnd", name="GND", url='https://d-nb.info/standards/elementset/gnd', title='Gemeinsame Normdatei', tableSuffix="gnd",locationAttribute="location")
     
     def __init__(self,debug=False):
         '''

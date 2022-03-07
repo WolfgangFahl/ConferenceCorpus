@@ -6,7 +6,7 @@ Created on 2021-08-11
 #from lodstorage.entity import EntityManager
 from geograpy.locator import LocationContext
 from corpus.nominatim import NominatimWrapper
-
+import sys
 class LocationLookup:
     '''
     lookup locations
@@ -176,7 +176,14 @@ class LocationLookup:
             location=self.getCityByWikiDataId(wikidataId)
         return location
         
-    def lookup(self,locationText:str):
+    def lookup(self,locationText:str,logFile=sys.stdout):
+        '''
+        lookup a location based on the given locationText
+        
+        Args:
+            locationText(str): the location to lookup
+            logFile: the logFile to use - default is sys.stdout
+        '''
         if locationText in LocationLookup.preDefinedLocations:
             locationId=LocationLookup.preDefinedLocations[locationText]
             if locationId is None:
@@ -184,12 +191,12 @@ class LocationLookup:
             else:
                 location=self.getCityByWikiDataId(locationId)
                 if location is None:
-                    print(f"❌❌-predefinedLocation {locationText}→{locationId} wikidataId not resolved")
+                    print(f"❌❌-predefinedLocation {locationText}→{locationId} wikidataId not resolved",file=logFile)
                 return location
         lg=self.lookupGeograpy(locationText)
         ln=self.lookupNominatim(locationText)
         if ln is not None and lg is not None and not ln.wikidataid==lg.wikidataid:
-            print(f"❌❌{locationText}→{lg}!={ln}")
+            print(f"❌❌{locationText}→{lg}!={ln}",file=logFile)
             return None
         return lg
         

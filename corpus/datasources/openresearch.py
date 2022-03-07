@@ -38,7 +38,7 @@ class OR(EventDataSource):
             url=wikiUser.getWikiUrl()
         else:
             url='https://www.openresearch.org/wiki/Main_Page' if wikiId=="or" else "https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page"
-        sourceConfig=EventDataSourceConfig(lookupId=lookupId,name=name,url=url,title=title,tableSuffix=tableSuffix)
+        sourceConfig=EventDataSourceConfig(lookupId=lookupId,name=name,url=url,title=title,tableSuffix=tableSuffix,locationAttribute='location')
         super().__init__(OREventManager(sourceConfig=sourceConfig),OREventSeriesManager(sourceConfig=sourceConfig),sourceConfig)
 
 class OREventManager(EventManager):

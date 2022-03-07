@@ -21,7 +21,7 @@ class Crossref(EventDataSource):
     '''
         Access to Crossref's search api see https://github.com/CrossRef/rest-api-doc
     '''
-    sourceConfig = EventDataSourceConfig(lookupId="crossref", name="crossref.org", url="https://www.crossref.org/", title="CrossRef", tableSuffix="crossref")
+    sourceConfig = EventDataSourceConfig(lookupId="crossref", name="crossref.org", url="https://www.crossref.org/", title="CrossRef", tableSuffix="crossref",locationAttribute="location")
     cr = habanero.Crossref()  
        
     def __init__(self):

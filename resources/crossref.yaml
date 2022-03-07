@@ -1,0 +1,58 @@
+#
+# Pre-configured Queries for Conference Corpus Scientific Event lookup database
+#
+# Crossref examples
+#
+# WF 2022-03-06
+'CrossRefNumberHistogramm':
+    title: CrossRef number attribute histogramm
+    sql: |
+      select count(*),number
+      from event_crossref
+      group by number
+      order by 2
+'CrossRefAcronyms':
+    sql: |
+      select acronym,doi from
+      event_crossref
+      where acronym is not null order by acronym
+'CrossRefDblpMatches':
+    sql: |
+      SELECT
+         c.acronym,
+         c.location,
+         STRFTIME('%Y-%m-%d', c.startDate) as startDate,
+         STRFTIME('%Y-%m-%d', c.endDate) as endDate,
+         c.doi,
+         c.year,
+         d.series,
+         d.eventId,
+         d.isbn,
+         d.title
+      FROM event_crossref c
+      JOIN event_dblp d on c.doi=d.doi
+      ORDER by c.startDate DESC
+'WikiDataCrossRefMatches':
+    formats:
+       - wId:wikidata
+       - wCountryId:wikidata
+       - wCityId:wikidata
+       - doi:doi
+    sql: |
+      select distinct
+      w.eventId as wId,
+      w.countryId as wCountryId,
+      c.cityWikidataid as wCityId,
+      c.city,
+      strftime('%Y-%m-%d',w.startDate) as startDate,
+      strftime('%Y-%m-%d',w.endDate) as endDate,
+      substr(c.name,1,40) as crossref,
+      c.doi,
+      substr(w.title,1,40) as wikidata
+      from event_wikidata w
+      join event_crossref c
+      on strftime('%Y-%m-%d',w.startDate)=strftime('%Y-%m-%d',c.startDate)
+      and strftime('%Y-%m-%d',w.endDate)=strftime('%Y-%m-%d',c.endDate)
+      and w.cityId="http://www.wikidata.org/entity/"||c.cityWikidataid
+      where w.startDate is not null and c.country is not null and w.countryId is not null
+      order by strftime('%Y-%m-%d',w.startDate) desc

@@ -1,0 +1,4 @@
+# format templates
+# WF 2022-06-03
+dblpseries:
+  format: https://dblp.org/db/conf/{value}/index.html
