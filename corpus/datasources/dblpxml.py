@@ -262,7 +262,7 @@ class DblpXml(object):
                 os.remove(dbname)
             sqlDB=SQLDB(dbname=dbname,debug=debug,errorDebug=True,check_same_thread=check_same_thread)
             starttime=time.time()
-            dictOfLod=self.asDictOfLod(limit,progress=progress,expectedTotal=expectedTotal)
+            dictOfLod=self.asDictOfLod(limit,progressSteps=progress,expectedTotal=expectedTotal)
             elapsed=time.time()-starttime
             executeMany=True;
             if showProgress:
