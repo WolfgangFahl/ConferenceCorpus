@@ -37,3 +37,9 @@
       GROUP BY dblpSeriesId
       ORDER BY count DESC
       LIMIT 50
+'ConfrefCountryHistogramm':
+  sql: |
+    select count(*),country 
+    from event_confref
+    group by country
+    order by 1 desc

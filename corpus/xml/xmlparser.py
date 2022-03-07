@@ -6,6 +6,7 @@ Created on 2022-03-04
 from xml.etree.ElementTree import Element
 from xml.etree import cElementTree as ElementTree
 from xml.etree.ElementTree import ParseError
+#from lxml.etree.ElementTree import ElementTree
 from typing import Iterator
 import sys
 from corpus.utils.progress import Progress
@@ -31,18 +32,40 @@ class XmlEntity(object):
             print(xml)
             setattr(self,"rawxml",xml)
         for prop, xpath in xmlPropertyMap.items():
+            attr=None
+            if "@"in prop:
+                propparts=prop.split("@")
+                prop=propparts[0]
+                attr=propparts[1]
             valueElements = element.findall(xpath,namespaces)
             if valueElements is not None and len(valueElements)>0:
                 # single or multi?
                 if len(valueElements)==1:
-                    value=valueElements[0].text 
+                    value=self.getValue(valueElements[0],attr) 
                 else:
                     value=[]
                     for valueElement in valueElements:
-                        value.append(valueElement.text)
+                        value.append(self.getValue(valueElement,attr))
                 setattr(self,prop,value)
                 self._props.append(prop)
         pass        
+    
+    def getValue(self,element,attr:str=None):
+        '''
+        get the value from the element
+        
+        Args:
+            element: the XML Node
+            attr: the attribute to get the value for - if None get the text
+        '''
+        if attr is None:
+            value=element.text
+        else:
+            if attr in element.attrib:
+                value=element.attrib[attr]
+            else:
+                value=None
+        return value
     
     def __str__(self):
         text=""

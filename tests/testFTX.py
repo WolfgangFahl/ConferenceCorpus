@@ -23,7 +23,7 @@ class TestFTXParser(DataSourceTest):
         if self.ftxroot is not None:
             self.ftxParser=FTXParser(self.ftxroot)
         self.sampleBase="tib-intern-ftx_2021-12-20_"
-        self.samples=["T184133_3056","T201424_5766","T184335_3113","T182353_2562","T191138_3961"]
+        self.samples=["T184133_3056","T201424_5766","T184335_3113","T182353_2562","T191138_3961","T200655_5543"]
         self.sampleFtxs=[]
         for sample in self.samples:
             self.sampleFtxs.append(f"{self.sampleBase}{sample}.xml")
@@ -51,7 +51,7 @@ class TestFTXParser(DataSourceTest):
         #debug=True
         show=True
         #show=False
-        XmlEntity.debug=debug
+        #XmlEntity.debug=debug
         if self.ftxParser is not None:
             documents={}
             for sampleFtx in self.sampleFtxs:
@@ -65,11 +65,10 @@ class TestFTXParser(DataSourceTest):
             self.assertEqual(100*len(self.sampleFtxs),len(documents))
             ppns=[
                 "579171965", # ISWC 2008
-                #"578841517" # SoftVis  2008
-                #"1662974825" # SafeAI 2019
                 "1677843861", # AAAI 2018
-                "668314257", #
-                "1745369562"
+                "668314257", # ACII 2011
+                "1745369562", # A Computational Framework Towards Medical Image Explanation DocumentGenreCode CA
+                "535028881", # ACISP 2007 GND 6065791-1
             ]
             for ppn in ppns:
                 self.assertTrue(ppn in documents)
@@ -78,6 +77,11 @@ class TestFTXParser(DataSourceTest):
                     print(document.rawxml)
                 if show:
                     print(document)
+            paper=documents["1745369562"]
+            self.assertEqual(paper.documentGenreCode,"CA")
+            ACISP2007=documents["535028881"]
+            self.assertTrue(hasattr(ACISP2007,"gndIds"))
+            self.assertEqual("6065791-1",ACISP2007.gndIds)
                     
     def testParseAll(self):
         '''

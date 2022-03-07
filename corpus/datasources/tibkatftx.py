@@ -74,6 +74,7 @@ class FTXParser(object):
             "ftxCreationDate": './ns0:systemInfo/ns0:ftxCreationDate',
             # formalInfo
             "documentGenreCode": './ns0:formalInfo//ns0:documentGenreCode',
+            "documentTypeCode": './ns0:formalInfo//ns0:documentTypeCode',
             # identifiers
             "documentId": './ns0:systemInfo/ns0:documentID',
             "ppn": './/ns0:identifiers/ns0:identifier[@type="ppn"]',
@@ -83,6 +84,11 @@ class FTXParser(object):
             "ean": './/ns0:identifiers/ns0:identifier[@type="ean"]',
             "doi": './/ns0:identifiers/ns0:identifier[@type="doi"]',
             # from corporate creators
+            # check for type not existing to get gnd ID
+            # https://stackoverflow.com/a/13807791/1497139
+            "corporateCreatorTypes@type": './/ns0:corporateCreator',
+            "corporateCreatorNames": './/ns0:corporateCreator//ns0:name',
+            "gndIds": './/ns0:corporateCreator/ns0:corporateIDs/ns0:corporateID[@type="gnd"]',
             "authorGndId": './/ns0:corporateCreator[@type="author"]/ns0:corporateIDs/ns0:corporateID[@type="gnd"]',
             "sponsorGndId": './/ns0:corporateCreator[@type="sponsor"]/ns0:corporateIDs/ns0:corporateID[@type="gnd"]',
             # bibliographic info

@@ -1,0 +1,22 @@
+#
+# Pre-configured Queries for Conference Corpus Scientific Event lookup database
+#
+# WikiCFP examples
+#
+# WF 2022-03-07
+'WikiCFPSeriesWithEvents':
+    title: Series with events in WikiCFP
+    sql: |
+      select
+        s.acronym,s.seriesId,e.acronym,e.eventId from  eventseries_wdc s
+      join
+        event_wikicfp e on s.seriesId = e.seriesId
+      order by e.acronym
+'WikiCFPEventsWithNegativeDuration':
+  title: wikiCFP Events that have a negative duration
+  sql: |
+    select url,acronym,endDate-startdate+1 as duration from
+    event_wikicfp
+    where endDate is not Null and startDate is not Null
+    and duration<0
+    order by duration

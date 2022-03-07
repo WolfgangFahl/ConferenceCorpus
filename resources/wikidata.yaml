@@ -1,0 +1,12 @@
+#
+# Pre-configured Queries for Conference Corpus Scientific Event lookup database
+#
+# wikidata examples
+#
+# WF 2022-03-07
+'WikidataCountryHistogramm':
+  sql: |
+    select count(*),country,countryId
+    from event_wikidata
+    group by country
+    order by 1 desc
