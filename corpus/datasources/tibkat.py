@@ -122,6 +122,7 @@ class TibkatEvent(Event):
             rawEvent(dict): the raw event record to fix
         '''
         rawEvent["source"]="tibkat"
+        rawEvent["eventId"]=rawEvent["ppn"]
         if "description" in rawEvent:
             description=rawEvent["description"]
             if isinstance(description,list):
