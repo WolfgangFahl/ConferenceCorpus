@@ -13,3 +13,14 @@
       FROM event_tibkat
       WHERE acronym is not null and ordinal is not null and acronym like "ACISP%"
       ORDER BY ordinal,acronym
+
+'TibkatDocumentCodes':
+    title: usage of documentGenre and Type Codes
+    sql: |
+        SELECT 
+        count(*) AS count,
+        documentGenreCode,
+        documentTypeCode
+        FROM "event_tibkat"
+        GROUP by documentGenreCode,documentTypeCode
+        ORDER by 1 DESC
