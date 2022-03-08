@@ -6,8 +6,7 @@ Created on 27.07.2021
 from functools import partial
 from tests.testSMW import TestSMW
 from tests.datasourcetoolbox import DataSourceTest
-from corpus.lookup import CorpusLookup
-from build.lib.corpus.lookup import CorpusLookupConfigure
+from corpus.lookup import CorpusLookup,CorpusLookupConfigure
 import os
 class TestOpenResearch(DataSourceTest):
     '''

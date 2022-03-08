@@ -11,7 +11,6 @@ from collections import Counter
 from geograpy.locator import Locator
 from corpus.location import LocationLookup
 from corpus.lookup import CorpusLookup
-from _codecs import lookup
 
 class LocationFixer(object):
     '''

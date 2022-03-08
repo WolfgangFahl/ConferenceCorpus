@@ -78,7 +78,7 @@ limit 20"""),
         failures=[]
         show=self.debug
         for locationText,expectedLocationId in examples:
-            location=self.locationLookup.lookup(locationText)
+            location=self.locationFixer.locationLookup.lookup(locationText)
             if show:
                 print(location)
             if not location.wikidataid == expectedLocationId:
@@ -204,7 +204,7 @@ limit 20"""),
             dataSource=self.lookup.getDataSource(lookupId)
             events=dataSource.eventManager.events
             for propertyName in ["locality","location","country","region","city"]:
-                pCount,pCountTab=self.getCounter(events,propertyName)
+                pCount,pCountTab=self.locationFixer.getCounter(events,propertyName)
                 if len(pCount)>0:
                     if show:
                         print(f"=={dataSource.sourceConfig.title}:{propertyName}==")
