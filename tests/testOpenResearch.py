@@ -38,11 +38,15 @@ class TestOpenResearch(DataSourceTest):
         for lookupId in ["or","orclone"]:
             orDataSource=lookup.getDataSource(lookupId)
             if orDataSource:
+                orDataSource.profile=True
+                orDataSource.debug=self.debug
                 wikiUser=TestSMW.getSMW_WikiUser(lookupId)
                 self.setWikiUserAndOptions(orDataSource.eventManager, wikiUser, self.debug)
                 self.setWikiUserAndOptions(orDataSource.eventSeriesManager, wikiUser, self.debug)
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
             if orDataSource:
+                orDataSource.profile=True
+                orDataSource.debug=self.debug
                 wikiFileManager = TestSMW.getWikiFileManager(wikiId=lookupId)
                 self.setWikiFileManagerAndOptions(orDataSource.eventManager, wikiFileManager, self.debug)
                 self.setWikiFileManagerAndOptions(orDataSource.eventSeriesManager,wikiFileManager, self.debug)
