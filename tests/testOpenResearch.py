@@ -7,7 +7,8 @@ from functools import partial
 from tests.testSMW import TestSMW
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
-
+from build.lib.corpus.lookup import CorpusLookupConfigure
+import os
 class TestOpenResearch(DataSourceTest):
     '''
     test the access to OpenResearch
@@ -18,7 +19,15 @@ class TestOpenResearch(DataSourceTest):
         DataSourceTest.setUp(self)
         # by convention the lookupId "or" is for the OpenResearch via API / WikiUser access
         # the lookupId "orclone" is for for the access via API on the OpenResearch clone
-        self.lookup = CorpusLookup(lookupIds=["or", "or-backup", "orclone", "orclone-backup"],configure=self.configureCorpusLookup)
+        lookupIds=[]
+        for wikiId in "or","orclone":
+            wikiTextPath=CorpusLookupConfigure.getWikiTextPath(wikiId)
+            if not os.path.exists(wikiTextPath):
+                msg="wikibackup for {wikiId} missing you might want to run scripts/getbackup"
+                raise Exception(msg)
+            lookupIds.append(wikiId)
+            lookupIds.append(f"{wikiId}-backup")
+        self.lookup = CorpusLookup(lookupIds=lookupIds,configure=self.configureCorpusLookup)
         self.lookup.load(forceUpdate=True)   # forceUpdate=True to test the filling of the cache
 
     def setWikiUserAndOptions(self,manager,wikiUser,debug,profile=True):

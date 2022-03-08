@@ -188,7 +188,7 @@ limit 20"""),
         # 1500 -> > 90%
         limit=50 if self.inCI() else 200
         addLocationInfo=limit>=1200
-        self.loocationFixer.fixLocations(orDataSource.eventManager, "location",limit=limit,addLocationInfo=addLocationInfo)
+        self.locationFixer.fixLocations(orDataSource.eventManager, "location",limit=limit,addLocationInfo=addLocationInfo)
         
     def testStats(self):
         '''
