@@ -24,7 +24,7 @@ class DataSourceTest(TestCase):
     test for EventDataSources
     '''
     @classmethod
-    def main():
+    def main(cls):
         # python, unittest: is there a way to pass command line options to the app
         # https://stackoverflow.com/a/8660290/1497139
         description="EventCorpus DataSource Test"
@@ -38,14 +38,14 @@ class DataSourceTest(TestCase):
         parser.add_argument('unittest_args', nargs='*')
 
         args = parser.parse_args()
-        DataSourceTest.optionalDebug(args)
+        cls.optionalDebug(args)
         
         # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
         sys.argv[1:] = args.unittest_args
         unittest.main()
         
-    @staticmethod    
-    def optionalDebug(args):   
+    @classmethod    
+    def optionalDebug(cls,args):   
         '''
         start the remote debugger if the arguments specify so
         
