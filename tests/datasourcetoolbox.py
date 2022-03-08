@@ -29,6 +29,7 @@ class DataSourceTest(TestCase):
         # https://stackoverflow.com/a/8660290/1497139
         description="EventCorpus DataSource Test"
         parser = argparse.ArgumentParser(description=description)
+        parser.add_argument('--debug'),
         parser.add_argument('--debugServer',
                                      help="remote debug Server")
         parser.add_argument('--debugPort',type=int,
@@ -38,6 +39,7 @@ class DataSourceTest(TestCase):
         parser.add_argument('unittest_args', nargs='*')
 
         args = parser.parse_args()
+        cls.debug=args.debug
         cls.optionalDebug(args)
         
         # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
@@ -71,7 +73,7 @@ class DataSourceTest(TestCase):
         setUp test environment
         '''
         TestCase.setUp(self)
-        self.debug=debug
+        self.debug=debug or DataSourceTest.debug
         msg=(f"test {self._testMethodName} ... with debug={self.debug}")
         # make sure there is an EventCorpus.db to speed up tests
         EventCorpus.download()

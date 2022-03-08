@@ -201,6 +201,14 @@ class SMWEntityList(object):
         return records
 
     def getLoDfromWiki(self, wikiuser:WikiUser, askExtra="", profile=False):
+        '''
+        get the List of Dicts for the given wikiUser
+        
+        Args:
+            wikiuser(WikiUser): the wikiuser to access the target wiki with
+            askExtra(str): any addition to the default ask query
+            profile(bool): if True show the timing for the operation
+        '''
         if self.wikiClient is None:
             self.wikiClient = WikiClient.ofWikiUser(wikiuser)
             self.wikiPush = WikiPush(fromWikiId=wikiuser.wikiId)
