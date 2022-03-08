@@ -24,11 +24,13 @@ class TestOpenResearch(DataSourceTest):
     def setWikiUserAndOptions(self,manager,wikiUser,debug,profile=True):
         manager.wikiUser=wikiUser
         manager.debug=debug
+        manager.config.withShowProgress=profile
         manager.profile=profile
     
     def setWikiFileManagerAndOptions(self,manager,fileManager,debug,profile=True):
         manager.wikiFileManager=fileManager
         manager.debug=debug
+        manager.config.withShowProgress=profile
         manager.profile=profile
         
     def configureCorpusLookup(self,lookup:CorpusLookup):
