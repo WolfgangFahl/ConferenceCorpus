@@ -29,7 +29,8 @@ class DataSourceTest(TestCase):
         # https://stackoverflow.com/a/8660290/1497139
         description="EventCorpus DataSource Test"
         parser = argparse.ArgumentParser(description=description)
-        parser.add_argument('--debug'),
+        parser.add_argument("-d", "--debug", dest="debug",   action="store_true", help="set debug [default: %(default)s]")
+  
         parser.add_argument('--debugServer',
                                      help="remote debug Server")
         parser.add_argument('--debugPort',type=int,
