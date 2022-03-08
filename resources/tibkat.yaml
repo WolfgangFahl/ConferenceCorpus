@@ -24,3 +24,17 @@
         FROM "event_tibkat"
         GROUP by documentGenreCode,documentTypeCode
         ORDER by 1 DESC
+        
+'TibkatCorporateCreatorTypes':
+    title: usage of CorporateCreatorTypes
+    sql: |
+        SELECT 
+        count(*),ccT
+        FROM (
+          SELECT
+            SUBSTR(corporateCreatorTypes, 1, INSTR(corporateCreatorTypes, '⇹')-1) as cCT
+          FROM event_tibkat  
+        )
+        GROUP by cCT
+        ORDER by 1 DESC
+
