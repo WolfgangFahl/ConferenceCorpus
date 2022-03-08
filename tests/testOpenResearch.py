@@ -21,21 +21,31 @@ class TestOpenResearch(DataSourceTest):
         self.lookup = CorpusLookup(lookupIds=["or", "or-backup", "orclone", "orclone-backup"],configure=self.configureCorpusLookup)
         self.lookup.load(forceUpdate=True)   # forceUpdate=True to test the filling of the cache
 
+    def setWikiUserAndOptions(self,manager,wikiUser,debug,profile=True):
+        manager.wikiUser=wikiUser
+        manager.debug=debug
+        manager.profile=profile
+    
+    def setWikiFileManagerAndOptions(self,manager,fileManager,debug,profile=True):
+        manager.wikiFileManager=fileManager
+        manager.debug=debug
+        manager.profile=profile
+        
     def configureCorpusLookup(self,lookup:CorpusLookup):
         '''
         callback to configure the corpus lookup
-        '''        
+        '''
         for lookupId in ["or","orclone"]:
             orDataSource=lookup.getDataSource(lookupId)
             if orDataSource:
                 wikiUser=TestSMW.getSMW_WikiUser(lookupId)
-                orDataSource.eventManager.wikiUser=wikiUser
-                orDataSource.eventSeriesManager.wikiUser=wikiUser
+                self.setWikiUserAndOptions(orDataSource.eventManager, wikiUser, self.debug)
+                self.setWikiUserAndOptions(orDataSource.eventSeriesManager, wikiUser, self.debug)
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
             if orDataSource:
                 wikiFileManager = TestSMW.getWikiFileManager(wikiId=lookupId)
-                orDataSource.eventManager.wikiFileManager = wikiFileManager
-                orDataSource.eventSeriesManager.wikiFileManager = wikiFileManager
+                self.setWikiFileManagerAndOptions(orDataSource.eventManager, wikiFileManager, self.debug)
+                self.setWikiFileManagerAndOptions(orDataSource.eventSeriesManager,wikiFileManager, self.debug)
 
     def testORDataSourceFromWikiFileManager(self):
         '''
