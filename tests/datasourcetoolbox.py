@@ -3,6 +3,7 @@ Created on 2021-07-29
 
 @author: wf
 '''
+import unittest
 from unittest import TestCase
 from corpus.eventcorpus import EventDataSource,EventCorpus
 from corpus.datasources.dblp import DblpEventManager
@@ -11,6 +12,9 @@ from lodstorage.lod import LOD
 from geograpy.utils import Profiler
 import getpass
 import os
+import sys
+import argparse
+from pydevd_file_utils import setup_client_server_paths
 
 from corpus.lookup import CorpusLookup
 
@@ -19,6 +23,48 @@ class DataSourceTest(TestCase):
     '''
     test for EventDataSources
     '''
+    @classmethod
+    def main():
+        # python, unittest: is there a way to pass command line options to the app
+        # https://stackoverflow.com/a/8660290/1497139
+        description="EventCorpus DataSource Test"
+        parser = argparse.ArgumentParser(description=description)
+        parser.add_argument('--debugServer',
+                                     help="remote debug Server")
+        parser.add_argument('--debugPort',type=int,
+                                     help="remote debug Port",default=5678)
+        parser.add_argument('--debugRemotePath',help="remote debug Server path mapping - remotePath") 
+        parser.add_argument('--debugLocalPath',help="remote debug Server path mapping - localPath")
+        parser.add_argument('unittest_args', nargs='*')
+
+        args = parser.parse_args()
+        DataSourceTest.optionalDebug(args)
+        
+        # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
+        sys.argv[1:] = args.unittest_args
+        unittest.main()
+        
+    @staticmethod    
+    def optionalDebug(args):   
+        '''
+        start the remote debugger if the arguments specify so
+        
+        Args:
+            args(): The command line arguments
+        '''
+        if args.debugServer:
+            import pydevd
+            print (f"remotePath: {args.debugRemotePath} localPath:{args.debugLocalPath}",flush=True)
+            if args.debugRemotePath and args.debugLocalPath:
+                MY_PATHS_FROM_ECLIPSE_TO_PYTHON = [
+                    (args.debugRemotePath, args.debugLocalPath),
+                ]
+                setup_client_server_paths(MY_PATHS_FROM_ECLIPSE_TO_PYTHON)
+                    #os.environ["PATHS_FROM_ECLIPSE_TO_PYTHON"]='[["%s", "%s"]]' % (remotePath,localPath)
+                    #print("trying to debug with PATHS_FROM_ECLIPSE_TO_PYTHON=%s" % os.environ["PATHS_FROM_ECLIPSE_TO_PYTHON"]);
+         
+            pydevd.settrace(args.debugServer, port=args.debugPort,stdoutToServer=True, stderrToServer=True)
+            print(f"command line args are: {str(sys.argv)}")
  
     def setUp(self,debug=False,profile=True):
         '''

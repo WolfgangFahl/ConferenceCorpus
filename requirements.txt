@@ -31,3 +31,6 @@ ortools
 psutil~=5.9.0
 # lxml
 lxml
+#https://pypi.org/project/pydevd/
+# remote debugging
+pydevd

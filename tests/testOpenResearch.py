@@ -3,7 +3,6 @@ Created on 27.07.2021
 
 @author: wf
 '''
-import unittest
 from functools import partial
 from tests.testSMW import TestSMW
 from tests.datasourcetoolbox import DataSourceTest
@@ -71,4 +70,4 @@ class TestOpenResearch(DataSourceTest):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()
