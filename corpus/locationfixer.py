@@ -60,7 +60,7 @@ class LocationFixer(object):
             locationAttribute=dataSource.sourceConfig.locationAttribute
             limit=len(eventManager.getList())
             addLocationInfo=True
-            show=True
+            showProgress=True
             logFile=None
             if logFileRoot is not None:
                 timestamp=self.timeStamp()
@@ -68,8 +68,7 @@ class LocationFixer(object):
                 logFile = open(logFilePath,'w')
             if lookupId=="dblp":
                 eventManager.addLocations()
-            self.fixLocations(eventManager, locationAttribute, addLocationInfo, limit, show,logFile=logFile)
-
+            self.fixLocations(eventManager, locationAttribute, addLocationInfo, limit, showProgress=showProgress,logFile=logFile)
 
     def fixLocations(self,eventManager,locationAttribute,addLocationInfo=False,limit=100,showProgress=True,logFile=None):
         '''
