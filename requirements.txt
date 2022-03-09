@@ -30,7 +30,7 @@ ortools
 # https://pypi.org/project/psutil/
 psutil~=5.9.0
 # lxml
-lxml
+lxml~=4.7
 #https://pypi.org/project/pydevd/
 # remote debugging
 pydevd
