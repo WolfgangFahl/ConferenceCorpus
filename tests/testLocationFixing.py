@@ -3,7 +3,6 @@ Created on 2021-08-06
 
 @author: wf
 '''
-import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 
@@ -221,4 +220,4 @@ limit 20"""),
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()

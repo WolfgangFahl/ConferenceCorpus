@@ -267,4 +267,4 @@ see also [[https://github.com/WolfgangFahl/dblpconf dblp conf open source projec
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()

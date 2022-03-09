@@ -92,89 +92,93 @@ class WikidataEventManager(EventManager):
            https://github.com/TIBHannover/confiDent-dataimports/blob/master/wip/wikidata_academic_conferences.rq
            https://confident.dbis.rwth-aachen.de/or/index.php?title=Iteration1_Property_Mapping
         '''
-        query="""PREFIX wd: <http://www.wikidata.org/entity/>
+        query="""PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wikibase: <http://wikiba.se/ontology#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT DISTINCT 
-  (?event as ?eventId)
-  (?event as ?url)
-  ?acronym
-  ?ordinal
-  ?title
-  ?location
-  ?locationId 
-  ?city
-  ?cityId
-  ?country
-  ?countryId
-  ?eventInSeries
-  ?eventInSeriesId
-  ?followedById
-  ?startDate
-  ?endDate
-  ?homepage 
-  ?describedAtUrl
-  ?wikiCfpId
-  ?gndId
-  ?mainSubject
-  ?language
- 
+SELECT DISTINCT
+    (?event as ?eventId)
+    (?event as ?url)
+    ?acronym
+    ?ordinal
+    ?title
+    ?proceedings
+    ?proceedingsLabel
+    ?ppn
+    ?location
+    ?locationId
+    ?city
+    ?cityId
+    ?country
+    ?countryId
+    ?eventInSeries
+    ?eventInSeriesId
+    ?followedById
+    ?startDate
+    ?endDate
+    ?homepage
+    ?describedAtUrl
+    ?wikiCfpId
+    ?gndId
+    ?mainSubject
+    ?language
 WHERE
-{  
- 
-  # wdt:P31 (instance of)  wd:Q52260246 (scientific event)
+{
+  # wdt:P31 (instance of) wd:Q52260246 (scientific event)
   # Q2020153 (academic conference)
   ?event wdt:P31 wd:Q2020153 .
   # acronym
   OPTIONAL { ?event wdt:P1813 ?acronym }
- 
+  # is proceedings from
+  OPTIONAL {
+    ?event ^wdt:P4745 ?proceedings .
+                      OPTIONAL {
+                        ?proceedings wdt:P6721 ?ppn
+                      }
+    ?proceedings rdfs:label ?proceedingsLabel.
+                            filter(lang(?proceedingsLabel) = "en")
+  }
   # properties with type:literal # requiring label
-  OPTIONAL { 
-      ?event wdt:P17 ?countryId . 
-      ?countryId rdfs:label ?country filter (lang(?country)   = "en").
+  OPTIONAL {
+    ?event wdt:P17 ?countryId .
+                   ?countryId rdfs:label ?country filter (lang(?country) = "en").
   }
   OPTIONAL {
-      ?event wdt:P276 ?locationId.
-      ?locationId rdfs:label ?location filter (lang(?location)   = "en").
+    ?event wdt:P276 ?locationId.
+                    ?locationId rdfs:label ?location filter (lang(?location) = "en").
   }
   OPTIONAL {
-      ?event wdt:P276* ?cityId.
-      # instance of city
-      ?cityId wdt:P31 wd:Q515.
-      ?cityId rdfs:label ?city filter (lang(?city)   = "en").
+    ?event wdt:P276* ?cityId.
+                     # instance of city
+                     ?cityId wdt:P31 wd:Q515.
+                     ?cityId rdfs:label ?city filter (lang(?city) = "en").
   }
-  OPTIONAL { 
-    ?event wdt:P179 ?eventInSeriesId . 
-    ?eventInSeriesId rdfs:label ?eventInSeries filter (lang(?eventInSeries)   = "en").
-    ?event p:P179 ?inSeries.
-    OPTIONAL { ?inSeries   pq:P1545 ?ordinal}.
-    OPTIONAL { ?inSeries   pq:P156 ?followedById}.
+  OPTIONAL {
+    ?event wdt:P179 ?eventInSeriesId .
+                    ?eventInSeriesId rdfs:label ?eventInSeries.
+                    filter (lang(?eventInSeries) = "en").
+                    ?event p:P179 ?inSeries.
+                    OPTIONAL { ?inSeries pq:P1545 ?ordinal}.
+    OPTIONAL { ?inSeries pq:P156 ?followedById}.
   }
-  OPTIONAL { 
+  OPTIONAL {
     ?event wdt:P2936 ?languageId .
-    ?languageId rdfs:label ?language filter (lang(?language)   = "en").
+                     ?languageId rdfs:label ?language filter (lang(?language) = "en").
   }
-  OPTIONAL { 
+  OPTIONAL {
     ?event wdt:P921 ?mainSubjectId .
-    ?mainSubjectId rdfs:label ?mainSubject filter (lang(?mainSubject)   = "en").
+                    ?mainSubjectId rdfs:label ?mainSubject filter (lang(?mainSubject) = "en").
   }
   OPTIONAL { ?event wdt:P580 ?startDate . }
   OPTIONAL { ?event wdt:P582 ?endDate . }
-  
   OPTIONAL { ?event wdt:P856 ?homepage . }
-  OPTIONAL { ?event wdt:P973 ?describedAtUrl . } 
+  OPTIONAL { ?event wdt:P973 ?describedAtUrl . }
   OPTIONAL { ?event wdt:P5124 ?wikiCfpId . }
   OPTIONAL { ?event wdt:P227 ?gndId. }
   OPTIONAL { ?event wdt:P214 ?viafId. }
-  # labels 
-  # works only with WikiData Query Service / blazegraph
-  # SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } # provide Label in EN        
-  ?event rdfs:label ?title filter (lang(?title)   = "en").
-  
-}
-"""
+}"""
         return query
     
 class WikidataEventSeriesManager(EventSeriesManager):

@@ -16,6 +16,13 @@
       select acronym,doi from
       event_crossref
       where acronym is not null order by acronym
+'CrossRefLocationHistogramm':
+    sql: |
+      select count(*),location
+      from event_crossref
+      where location is not null
+      group by location
+      order by  1 desc
 'CrossRefDblpMatches':
     sql: |
       SELECT
