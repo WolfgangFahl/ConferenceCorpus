@@ -40,7 +40,7 @@ class DataSourceTest(TestCase):
         parser.add_argument('unittest_args', nargs='*')
 
         args = parser.parse_args()
-        cls.debug=args.debug
+        cls.args=args
         cls.optionalDebug(args)
         
         # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
@@ -74,7 +74,10 @@ class DataSourceTest(TestCase):
         setUp test environment
         '''
         TestCase.setUp(self)
-        self.debug=debug or DataSourceTest.debug
+        self.debug=debug 
+        # are there command line arguments?
+        if hasattr(DataSourceTest,"args"):
+            self.debug=DataSourceTest.args.debug
         msg=(f"test {self._testMethodName} ... with debug={self.debug}")
         # make sure there is an EventCorpus.db to speed up tests
         EventCorpus.download()

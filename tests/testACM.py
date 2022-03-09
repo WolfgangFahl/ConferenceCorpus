@@ -3,11 +3,9 @@ Created on 04.11.2021
 
 @author: wf
 '''
-import unittest
 from lodstorage.query import Query
 from corpus.lookup import CorpusLookup
-from corpus.datasources.acm import ACM,AcmEvent,AcmEventSeries
-import copy
+from corpus.datasources.acm import ACM
 from corpus.datasources.wikidata import Wikidata
 from tests.datasourcetoolbox import DataSourceTest
 
@@ -63,4 +61,4 @@ class TestACM(DataSourceTest):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()
