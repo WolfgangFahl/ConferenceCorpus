@@ -94,6 +94,8 @@ class Progress(object):
                 print("!")
             else:
                 self.printProgressBar(self.expectedTotal, self.expectedTotal,startTime=self.startTime)
+        if msg is None:
+            msg=""
         self.profiler.time(extraMsg=msg)
         
     def next(self):
