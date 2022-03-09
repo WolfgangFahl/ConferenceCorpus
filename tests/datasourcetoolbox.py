@@ -80,7 +80,8 @@ class DataSourceTest(TestCase):
         self.timeLimitPerTest=timeLimitPerTest
         if hasattr(DataSourceTest,"args"):
             self.debug=DataSourceTest.args.debug
-            self.timeLimitPerTest=DataSourceTest.args.timeLimitPerTest
+            if DataSourceTest.args.timeLimitPerTest is not None:
+                self.timeLimitPerTest=DataSourceTest.args.timeLimitPerTest
         msg=(f"test {self._testMethodName} ... with debug={self.debug}")
         # make sure there is an EventCorpus.db to speed up tests
         EventCorpus.download()
