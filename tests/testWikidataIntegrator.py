@@ -3,17 +3,18 @@ Created on 2021-10-24
 
 @author: wf
 '''
-import unittest
+from tests.datasourcetoolbox import DataSourceTest
 from wikibaseintegrator import wbi_core, wbi_login, wbi_datatype,wbi_functions
 import json
 
-class TestWikiBaseIntegrator(unittest.TestCase):
+class TestWikiBaseIntegrator(DataSourceTest):
     '''
     test access to Wikidata
     '''
     def prettyJson(self,jsonStr):
         parsed = json.loads(jsonStr)
-        print(json.dumps(parsed, indent=2, sort_keys=True))
+        if self.debug:
+            print(json.dumps(parsed, indent=2, sort_keys=True))
 
     def testQ5(self):
         '''
@@ -31,4 +32,4 @@ class TestWikiBaseIntegrator(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()

@@ -3,7 +3,6 @@ Created on 27.07.2021
 
 @author: wf
 '''
-import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 
@@ -27,4 +26,4 @@ class TestWikiData(DataSourceTest):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()
