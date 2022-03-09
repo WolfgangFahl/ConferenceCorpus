@@ -22,7 +22,9 @@ do
       me=$(whoami)
       sudo chown $me $logdir
       timestamp=$(date "+%Y-%m-%d-%H_%M_%S")
-      nohup $python -m unittest discover 2>&1 >$logdir/${timestamp}.log&
+			log=$logdir/${timestamp}.log
+			echo "test started $timestamp" >$log
+      nohup $python -m unittest discover 2>&1 >>$log&
       exit 0
   esac
   shift
