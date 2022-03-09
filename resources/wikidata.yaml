@@ -29,92 +29,107 @@
 'Events':
   title: Academic events with details for EventCorpus
   sparql: |
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX p: <http://www.wikidata.org/prop/>
     PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wikibase: <http://wikiba.se/ontology#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
     SELECT DISTINCT
-    (?event as ?eventId)
-    (?event as ?url)
-    ?acronym
-    ?ordinal
-    ?title
-    ?proceedings
-    ?proceedingsLabel
-    ?ppn
-    ?location
-    ?locationId
-    ?city
-    ?cityId
-    ?country
-    ?countryId
-    ?eventInSeries
-    ?eventInSeriesId
-    ?followedById
-    ?startDate
-    ?endDate
-    ?homepage
-    ?describedAtUrl
-    ?wikiCfpId
-    ?gndId
-    ?mainSubject
-    ?language
+        (?event as ?eventId)
+        (?event as ?url)
+        ?acronym
+        ?ordinal
+        ?title
+        ?proceedings
+        ?proceedingsLabel
+        ?dblpId
+        ?doi
+        ?ppn
+        ?proceedingsGndId
+        ?location
+        ?locationId
+        ?city
+        ?cityId
+        ?country
+        ?countryId
+        ?eventInSeries
+        ?eventInSeriesId
+        ?followedById
+        ?startDate
+        ?endDate
+        ?homepage
+        ?describedAtUrl
+        ?wikiCfpId
+        ?gndId
+        ?mainSubject
+        ?language
     WHERE
     {
-        # wdt:P31 (instance of)  wd:Q52260246 (scientific event)
-        # Q2020153 (academic conference)
-        ?event wdt:P31 wd:Q2020153 .
-        # acronym
-        OPTIONAL { ?event wdt:P1813 ?acronym }
-
-        # is proceedings from
+      # wdt:P31 (instance of) wd:Q52260246 (scientific event)
+      # Q2020153 (academic conference)
+      ?event wdt:P31 wd:Q2020153 .
+      # acronym
+      OPTIONAL { ?event wdt:P1813 ?acronym }
+      # is proceedings from
+      OPTIONAL {
+        ?event ^wdt:P4745 ?proceedings .  
+        ?proceedings rdfs:label ?proceedingsLabel.
+        FILTER(LANG(?proceedingsLabel) = "en")
         OPTIONAL {
-          ?event ^wdt:P4745 ?proceedings .
-          OPTIONAL {
-            ?proceedings wdt:P6721 ?ppn
-          }
-          ?proceedings rdfs:label ?proceedingsLabel.
-          filter(lang(?proceedingsLabel) = "en")
-        }
-
-        # properties with type:literal # requiring label
-        OPTIONAL {
-            ?event wdt:P17 ?countryId .
-            ?countryId rdfs:label ?country filter (lang(?country)   = "en").
+           ?proceedings wdt:P8978 ?dblpId
         }
         OPTIONAL {
-            ?event wdt:P276 ?locationId.
-            ?locationId rdfs:label ?location filter (lang(?location)   = "en").
+           ?proceedings wdt:P356 ?doi
         }
         OPTIONAL {
-            ?event wdt:P276* ?cityId.
-            # instance of city
-            ?cityId wdt:P31 wd:Q515.
-            ?cityId rdfs:label ?city filter (lang(?city)   = "en").
+           ?proceedings wdt:P6721 ?ppn
         }
         OPTIONAL {
-          ?event wdt:P179 ?eventInSeriesId .
-          ?eventInSeriesId rdfs:label ?eventInSeries.
-          filter (lang(?eventInSeries)   = "en").
-          ?event p:P179 ?inSeries.
-          OPTIONAL { ?inSeries   pq:P1545 ?ordinal}.
-          OPTIONAL { ?inSeries   pq:P156 ?followedById}.
+           ?proceedings wdt:P227 ?proceedingsGndId
         }
-        OPTIONAL {
-          ?event wdt:P2936 ?languageId .
-          ?languageId rdfs:label ?language filter (lang(?language)   = "en").
-        }
-        OPTIONAL {
-          ?event wdt:P921 ?mainSubjectId .
-          ?mainSubjectId rdfs:label ?mainSubject filter (lang(?mainSubject)   = "en").
-        }
-        OPTIONAL { ?event wdt:P580 ?startDate . }
-        OPTIONAL { ?event wdt:P582 ?endDate . }
-
-        OPTIONAL { ?event wdt:P856 ?homepage . }
-        OPTIONAL { ?event wdt:P973 ?describedAtUrl . }
-        OPTIONAL { ?event wdt:P5124 ?wikiCfpId . }
-        OPTIONAL { ?event wdt:P227 ?gndId. }
-        OPTIONAL { ?event wdt:P214 ?viafId. }
       }
+      # properties with type:literal # requiring label
+      OPTIONAL {
+        ?event wdt:P17 ?countryId .
+        ?countryId rdfs:label ?country. 
+        filter (lang(?country) = "en").
+      }
+      OPTIONAL {
+        ?event wdt:P276 ?locationId.
+        ?locationId rdfs:label ?location.
+        filter (lang(?location) = "en")
+      }
+      OPTIONAL {
+        ?event wdt:P276+ ?cityId.
+        # instance of city
+        ?cityId wdt:P31 wd:Q515.
+        ?cityId rdfs:label ?city.
+        filter (lang(?city) = "en").
+      }
+      OPTIONAL {
+        ?event wdt:P179 ?eventInSeriesId .
+        ?eventInSeriesId rdfs:label ?eventInSeries.
+        filter (lang(?eventInSeries) = "en").
+        ?event p:P179 ?inSeries.
+        OPTIONAL { ?inSeries pq:P1545 ?ordinal}.
+        OPTIONAL { ?inSeries pq:P156 ?followedById}.
+      }
+      OPTIONAL {
+        ?event wdt:P2936 ?languageId .
+        ?languageId rdfs:label ?language.
+        filter (lang(?language) = "en").
+      }
+      OPTIONAL {
+        ?event wdt:P921 ?mainSubjectId .
+        ?mainSubjectId rdfs:label ?mainSubject.
+        filter (lang(?mainSubject) = "en").
+      }
+      OPTIONAL { ?event wdt:P580 ?startDate . }
+      OPTIONAL { ?event wdt:P582 ?endDate . }
+      OPTIONAL { ?event wdt:P856 ?homepage . }
+      OPTIONAL { ?event wdt:P973 ?describedAtUrl . }
+      OPTIONAL { ?event wdt:P5124 ?wikiCfpId . }
+      OPTIONAL { ?event wdt:P227 ?gndId. }
+      OPTIONAL { ?event wdt:P214 ?viafId. }
+    }

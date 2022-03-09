@@ -106,7 +106,10 @@ SELECT DISTINCT
     ?title
     ?proceedings
     ?proceedingsLabel
+    ?dblpId
+    ?doi
     ?ppn
+    ?proceedingsGndId
     ?location
     ?locationId
     ?city
@@ -133,43 +136,57 @@ WHERE
   OPTIONAL { ?event wdt:P1813 ?acronym }
   # is proceedings from
   OPTIONAL {
-    ?event ^wdt:P4745 ?proceedings .
-                      OPTIONAL {
-                        ?proceedings wdt:P6721 ?ppn
-                      }
+    ?event ^wdt:P4745 ?proceedings .  
     ?proceedings rdfs:label ?proceedingsLabel.
-                            filter(lang(?proceedingsLabel) = "en")
+    FILTER(LANG(?proceedingsLabel) = "en")
+    OPTIONAL {
+       ?proceedings wdt:P8978 ?dblpId
+    }
+    OPTIONAL {
+       ?proceedings wdt:P356 ?doi
+    }
+    OPTIONAL {
+       ?proceedings wdt:P6721 ?ppn
+    }
+    OPTIONAL {
+       ?proceedings wdt:P227 ?proceedingsGndId
+    }
   }
   # properties with type:literal # requiring label
   OPTIONAL {
     ?event wdt:P17 ?countryId .
-                   ?countryId rdfs:label ?country filter (lang(?country) = "en").
+    ?countryId rdfs:label ?country. 
+    filter (lang(?country) = "en").
   }
   OPTIONAL {
     ?event wdt:P276 ?locationId.
-                    ?locationId rdfs:label ?location filter (lang(?location) = "en").
+    ?locationId rdfs:label ?location.
+    filter (lang(?location) = "en")
   }
   OPTIONAL {
-    ?event wdt:P276* ?cityId.
-                     # instance of city
-                     ?cityId wdt:P31 wd:Q515.
-                     ?cityId rdfs:label ?city filter (lang(?city) = "en").
+    ?event wdt:P276+ ?cityId.
+    # instance of city
+    ?cityId wdt:P31 wd:Q515.
+    ?cityId rdfs:label ?city.
+    filter (lang(?city) = "en").
   }
   OPTIONAL {
     ?event wdt:P179 ?eventInSeriesId .
-                    ?eventInSeriesId rdfs:label ?eventInSeries.
-                    filter (lang(?eventInSeries) = "en").
-                    ?event p:P179 ?inSeries.
-                    OPTIONAL { ?inSeries pq:P1545 ?ordinal}.
+    ?eventInSeriesId rdfs:label ?eventInSeries.
+    filter (lang(?eventInSeries) = "en").
+    ?event p:P179 ?inSeries.
+    OPTIONAL { ?inSeries pq:P1545 ?ordinal}.
     OPTIONAL { ?inSeries pq:P156 ?followedById}.
   }
   OPTIONAL {
     ?event wdt:P2936 ?languageId .
-                     ?languageId rdfs:label ?language filter (lang(?language) = "en").
+    ?languageId rdfs:label ?language.
+    filter (lang(?language) = "en").
   }
   OPTIONAL {
     ?event wdt:P921 ?mainSubjectId .
-                    ?mainSubjectId rdfs:label ?mainSubject filter (lang(?mainSubject) = "en").
+    ?mainSubjectId rdfs:label ?mainSubject.
+    filter (lang(?mainSubject) = "en").
   }
   OPTIONAL { ?event wdt:P580 ?startDate . }
   OPTIONAL { ?event wdt:P582 ?endDate . }
