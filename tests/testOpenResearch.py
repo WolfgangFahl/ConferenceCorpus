@@ -22,7 +22,7 @@ class TestOpenResearch(DataSourceTest):
         for wikiId in "or","orclone":
             wikiTextPath=CorpusLookupConfigure.getWikiTextPath(wikiId)
             if not os.path.exists(wikiTextPath):
-                msg="wikibackup for {wikiId} missing you might want to run scripts/getbackup"
+                msg=f"wikibackup for {wikiId} missing you might want to run scripts/getbackup"
                 raise Exception(msg)
             lookupIds.append(wikiId)
             lookupIds.append(f"{wikiId}-backup")
