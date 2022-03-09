@@ -6,7 +6,6 @@ Created on 04.03.2022
 from tests.datasourcetoolbox import DataSourceTest
 import getpass
 from corpus.datasources.tibkatftx import FTXParser
-from corpus.xml.xmlparser import XmlEntity
 
 class TestFTXParser(DataSourceTest):
     '''
@@ -102,3 +101,7 @@ class TestFTXParser(DataSourceTest):
                         print(f"{count}",end="")
                     if count%80000==0:
                         print()
+                        
+if __name__ == "__main__":
+    #import sys;sys.argv = ['', 'Test.testName']
+    DataSourceTest.main()
