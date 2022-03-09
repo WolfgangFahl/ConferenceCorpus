@@ -109,8 +109,9 @@ limit 20"""),
         test fixing confref locations
         '''
         confrefDataSource=self.lookup.getDataSource("confref")
-        limit=50 if self.inCI() else 200
-        addLocationInfo=limit>=2000
+        locsPerSec=300/70.5
+        limit=self.timeLimitPerTest*locsPerSec
+        addLocationInfo=False
         for event in confrefDataSource.eventManager.events:
             event.location=f"{event.city}, {event.country}"
         self.locationFixer.fixLocations(confrefDataSource.eventManager,locationAttribute="location",limit=limit,addLocationInfo=addLocationInfo)
@@ -123,8 +124,9 @@ limit 20"""),
         # 40%   at  270 locations
         # 60%   at  692 locations
         # 79.7% at 2000 locations 
-        limit=50 if self.inCI() else 200
-        addLocationInfo=limit>=2000
+        locsPerSec=300/70.5
+        limit=self.timeLimitPerTest*locsPerSec
+        addLocationInfo=False
         self.locationFixer.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=limit,addLocationInfo=addLocationInfo)
        
     def testWikiCFPLocationFix(self):
@@ -136,8 +138,9 @@ limit 20"""),
         # 40% at  172 locations ( 67 per location)
         # 60% at  634 locations ( 19 per location)
         # 80% at 3144 locations (  3 per location) - 1166 secs
-        limit=50 if self.inCI() else 175  
-        addLocationInfo=limit>=1000
+        locsPerSec=300/70.5
+        limit=self.timeLimitPerTest*locsPerSec
+        addLocationInfo=False
         self.locationFixer.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,addLocationInfo=addLocationInfo) 
             
     def testDblpLocationFix(self):
@@ -149,8 +152,9 @@ limit 20"""),
         dblpDataSource.eventManager.addLocations()
         #print(dblpEvent.location)
         # 48517 as of 2021-12-27
-        limit=50 if self.inCI() else 1500
-        addLocationInfo=limit>=1000
+        locsPerSec=300/70.5
+        limit=self.timeLimitPerTest*locsPerSec
+        addLocationInfo=False
         self.locationFixer.fixLocations(dblpDataSource.eventManager, "location",limit=limit,addLocationInfo=addLocationInfo)
  
     def testGNDLocationFix(self):
@@ -159,8 +163,9 @@ limit 20"""),
         '''
         gndDataSource=self.lookup.getDataSource("gnd")
         # 87% at 3500 locations (  16 per location) - 2100 secs
-        limit=50 if self.inCI() else 300
-        addLocationInfo=limit>=1000
+        locsPerSec=300/70.5
+        limit=self.timeLimitPerTest*locsPerSec
+        addLocationInfo=False
         self.locationFixer.fixLocations(gndDataSource.eventManager, "location",limit=limit,addLocationInfo=addLocationInfo) 
      
     def testORLocationFix(self):
@@ -185,8 +190,9 @@ limit 20"""),
             orEvent.location=loc
             pass
         # 1500 -> > 90%
-        limit=50 if self.inCI() else 200
-        addLocationInfo=limit>=1200
+        locsPerSec=300/70.5
+        limit=self.timeLimitPerTest*locsPerSec
+        addLocationInfo=False
         self.locationFixer.fixLocations(orDataSource.eventManager, "location",limit=limit,addLocationInfo=addLocationInfo)
         
     def testStats(self):
