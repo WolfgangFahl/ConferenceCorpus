@@ -70,7 +70,7 @@ class DataSourceTest(TestCase):
             pydevd.settrace(args.debugServer, port=args.debugPort,stdoutToServer=True, stderrToServer=True)
             print(f"command line args are: {str(sys.argv)}")
  
-    def setUp(self,debug=False,profile=True,timeLimitPerTest=10):
+    def setUp(self,debug=False,profile=True,timeLimitPerTest=10.0):
         '''
         setUp test environment
         '''

@@ -3,7 +3,7 @@ Created on 2021-01-25
 
 @author: wf
 '''
-import unittest
+
 
 from corpus.datasources.dblpxml import DblpXml
 from lodstorage.schema import SchemaManager
@@ -13,8 +13,9 @@ import time
 #import logging
 from lodstorage.uml import UML
 import getpass
+from tests.datasourcetoolbox import DataSourceTest
 
-class TestDblp(unittest.TestCase):
+class TestDblp(DataSourceTest):
     '''
     test the dblp xml parser and pylodstorage extraction for it
     '''

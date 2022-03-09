@@ -13,6 +13,9 @@ class TestFTXParser(DataSourceTest):
     '''
     
     def setUp(self,debug=False,profile=True):
+        '''
+        set the environment
+        '''
         super().setUp(debug=debug, profile=profile)
         user=getpass.getuser()
         self.ftxroot=None
@@ -48,8 +51,8 @@ class TestFTXParser(DataSourceTest):
         '''
         debug=self.debug
         #debug=True
-        show=True
-        #show=False
+        #show=True
+        show=self.debug
         #XmlEntity.debug=debug
         if self.ftxParser is not None:
             documents={}
