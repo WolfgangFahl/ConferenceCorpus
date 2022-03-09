@@ -38,6 +38,21 @@ class CorpusLookupConfigure:
     Configuration of the Corpus Lookup
     '''
     @staticmethod
+    def getWikiTextPath(wikiId:str):
+        ''' 
+        get the WikiText (Backup) path for the given wikiId
+        
+        Args:
+            wikiId(str): the wikiId (e.g. "or", "orclone"
+            
+        Return:
+            the path to the backup files as created by the wikibackup script
+        '''
+        home = path.expanduser("~")
+        wikiTextPath = f"{home}/.or/wikibackup/{wikiId}"
+        return wikiTextPath
+            
+    @staticmethod
     def configureCorpusLookup(lookup,debug=False):
         '''
         callback to configure the corpus lookup
@@ -47,8 +62,7 @@ class CorpusLookupConfigure:
         for lookupId in ["or","orclone"]:
             wikiId=lookupId
             wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
-            home = path.expanduser("~")
-            wikiTextPath = f"{home}/.or/wikibackup/{wikiUser.wikiId}"
+            wikiTextPath = self.getWikiTextPath(wikiUser.wikiId)
             wikiFileManager = WikiFileManager(wikiId, wikiTextPath, login=False, debug=debug)
      
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
