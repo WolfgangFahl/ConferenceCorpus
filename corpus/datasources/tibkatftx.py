@@ -107,7 +107,8 @@ class FTXParser(object):
             "journalTitle": './/ns0:journalInfo/dc:title',
             "journalVolumeNumber": './/ns0:journalInfo/ns0:volumeNumber',
             # classification Info
-            "bk": "./ns0:classificationInfo/ns0:classifications/ns0:classification[@classificationName='bk']/ns0:code"
+            "bk": "./ns0:classificationInfo/ns0:classifications/ns0:classification[@classificationName='bk']/ns0:code",
+            "ddc": "./ns0:classificationInfo/ns0:classifications/ns0:classification[@classificationName='ddc']/ns0:code"
         }        
         if local:
             xmlPath=self.ftxXmlFile(xmlFile)

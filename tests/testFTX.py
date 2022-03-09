@@ -25,7 +25,9 @@ class TestFTXParser(DataSourceTest):
         if self.ftxroot is not None:
             self.ftxParser=FTXParser(self.ftxroot)
         self.sampleBase="tib-intern-ftx_2021-12-20_"
-        self.samples=["T184133_3056","T201424_5766","T184335_3113","T182353_2562","T191138_3961","T200655_5543"]
+        self.samples=["T184133_3056","T201424_5766","T184335_3113",
+                      "T182353_2562","T191138_3961","T200655_5543",
+                      "T184253_3094"]
         self.sampleFtxs=[]
         for sample in self.samples:
             self.sampleFtxs.append(f"{self.sampleBase}{sample}.xml")
@@ -51,8 +53,8 @@ class TestFTXParser(DataSourceTest):
         '''
         debug=self.debug
         #debug=True
-        #show=True
         show=self.debug
+        show=True
         #XmlEntity.debug=debug
         if self.ftxParser is not None:
             documents={}
@@ -71,6 +73,7 @@ class TestFTXParser(DataSourceTest):
                 "668314257", # ACII 2011
                 "1745369562", # A Computational Framework Towards Medical Image Explanation DocumentGenreCode CA
                 "535028881", # ACISP 2007 GND 6065791-1
+                "167029224X"
             ]
             for ppn in ppns:
                 self.assertTrue(ppn in documents)

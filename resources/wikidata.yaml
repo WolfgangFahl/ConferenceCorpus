@@ -95,8 +95,8 @@
         }
         OPTIONAL {
           ?event wdt:P179 ?eventInSeriesId .
-          ?eventInSeriesId rdfs:label. 
-          ?eventInSeries filter (lang(?eventInSeries)   = "en").
+          ?eventInSeriesId rdfs:label ?eventInSeries.
+          filter (lang(?eventInSeries)   = "en").
           ?event p:P179 ?inSeries.
           OPTIONAL { ?inSeries   pq:P1545 ?ordinal}.
           OPTIONAL { ?inSeries   pq:P156 ?followedById}.
