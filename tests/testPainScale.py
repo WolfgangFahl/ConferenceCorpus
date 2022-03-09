@@ -3,24 +3,17 @@ Created on 06.08.2021
 
 @author: wf
 '''
-import unittest
 from corpus.quality.painscale import PainScale
 from urllib.request import urlopen
+from tests.datasourcetoolbox import DataSourceTest
 
-
-class TestPainScale(unittest.TestCase):
+class TestPainScale(DataSourceTest):
     '''
     test the PainScale see
     '''
 
     def setUp(self):
-        self.debug=False
-        pass
-
-
-    def tearDown(self):
-        pass
-
+        super().setUp()
 
     def testPainImages(self):
         '''
@@ -48,4 +41,4 @@ class TestPainScale(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()

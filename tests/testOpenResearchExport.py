@@ -4,12 +4,9 @@ Created on 2021-08-07
 @author: wf
 '''
 
-import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.eventtransfer import EventExporter
-
-import getpass
-            
+import getpass            
 
 class TestOpenResearchExport(DataSourceTest):
     '''
@@ -51,4 +48,4 @@ class TestOpenResearchExport(DataSourceTest):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()

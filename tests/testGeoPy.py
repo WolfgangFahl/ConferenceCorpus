@@ -3,7 +3,7 @@ Created on 2021-08-20
 
 @author: wf
 '''
-import unittest
+
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.nominatim import NominatimWrapper
 class TestGeopy(DataSourceTest):
@@ -71,4 +71,4 @@ class TestGeopy(DataSourceTest):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    DataSourceTest.main()
