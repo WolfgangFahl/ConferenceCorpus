@@ -136,7 +136,8 @@ USAGE
         parser.add_argument("-d",   "--debug", dest="debug", action="store_true", help="set debug [default: %(default)s]")
         parser.add_argument("-dblp","--dblp", dest="dblp",   action="store_true", help="update dblp")
         parser.add_argument("--tibkat", action="store_true",help="update tibkat from ftx")
-        parser.add_argument("--fixlocations",nargs="+",help="fix the locations for the given lookup Ids d")
+        parser.add_argument("--fixlocations",nargs="+",help="fix the locations for the given lookup Ids")
+        parser.add_argument("--updateSource",nargs="+",help="update the sources for the given lookup Ids")
         parser.add_argument("--limitFiles",type=int,default=10000,help="limit the number of file to be parsed [default: %(default)s]")
         parser.add_argument("--ftxroot",default="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20",help="path to root directory of ftx xml files [default: %(default)s]")
         parser.add_argument("--sample",default="ISWC 2008",help="sample event ID [default: %(default)s]")
@@ -156,6 +157,10 @@ USAGE
         if args.fixlocations:
             locationFixer=LocationFixer()
             locationFixer.fixLocations4LookupId(args.fixlocations)
+        if args.updateSource:
+            for lookupId in args.updateSource:
+                updater=ConferenceCorpusUpdate(lookupId)
+                updater.updateDataSource(f"{lookupId} cache", args.sample)
             
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
