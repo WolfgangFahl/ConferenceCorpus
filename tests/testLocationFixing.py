@@ -110,7 +110,7 @@ limit 20"""),
         '''
         confrefDataSource=self.lookup.getDataSource("confref")
         locsPerSec=300/70.5
-        limit=self.timeLimitPerTest*locsPerSec
+        limit=int(self.timeLimitPerTest*locsPerSec)
         addLocationInfo=False
         for event in confrefDataSource.eventManager.events:
             event.location=f"{event.city}, {event.country}"
@@ -125,7 +125,7 @@ limit 20"""),
         # 60%   at  692 locations
         # 79.7% at 2000 locations 
         locsPerSec=300/70.5
-        limit=self.timeLimitPerTest*locsPerSec
+        limit=int(self.timeLimitPerTest*locsPerSec)
         addLocationInfo=False
         self.locationFixer.fixLocations(crossRefDataSource.eventManager,locationAttribute="location",limit=limit,addLocationInfo=addLocationInfo)
        
@@ -139,7 +139,7 @@ limit 20"""),
         # 60% at  634 locations ( 19 per location)
         # 80% at 3144 locations (  3 per location) - 1166 secs
         locsPerSec=300/70.5
-        limit=self.timeLimitPerTest*locsPerSec
+        limit=int(self.timeLimitPerTest*locsPerSec)
         addLocationInfo=False
         self.locationFixer.fixLocations(wikicfpDataSource.eventManager, "locality",limit=limit,addLocationInfo=addLocationInfo) 
             
@@ -153,7 +153,7 @@ limit 20"""),
         #print(dblpEvent.location)
         # 48517 as of 2021-12-27
         locsPerSec=300/70.5
-        limit=self.timeLimitPerTest*locsPerSec
+        limit=int(self.timeLimitPerTest*locsPerSec)
         addLocationInfo=False
         self.locationFixer.fixLocations(dblpDataSource.eventManager, "location",limit=limit,addLocationInfo=addLocationInfo)
  
@@ -164,7 +164,7 @@ limit 20"""),
         gndDataSource=self.lookup.getDataSource("gnd")
         # 87% at 3500 locations (  16 per location) - 2100 secs
         locsPerSec=300/70.5
-        limit=self.timeLimitPerTest*locsPerSec
+        limit=int(self.timeLimitPerTest*locsPerSec)
         addLocationInfo=False
         self.locationFixer.fixLocations(gndDataSource.eventManager, "location",limit=limit,addLocationInfo=addLocationInfo) 
      
@@ -191,7 +191,7 @@ limit 20"""),
             pass
         # 1500 -> > 90%
         locsPerSec=300/70.5
-        limit=self.timeLimitPerTest*locsPerSec
+        limit=int(self.timeLimitPerTest*locsPerSec)
         addLocationInfo=False
         self.locationFixer.fixLocations(orDataSource.eventManager, "location",limit=limit,addLocationInfo=addLocationInfo)
         
