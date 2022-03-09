@@ -60,8 +60,6 @@ class TibkatEventManager(EventManager):
         Args:
             bk(str): the basisklassifkation to check
         '''
-        if len(Tibkat.wantedbks)==0:
-            return True
         for wantedbk in Tibkat.wantedbks:
             if bk.startswith(wantedbk):
                 return True
@@ -74,6 +72,8 @@ class TibkatEventManager(EventManager):
         Args:
             document(XMLEntity): the document to check
         '''
+        if len(Tibkat.wantedbks)==0:
+            return True
         wanted=False
         if hasattr(document, "bk"):
             bk=document.bk
@@ -81,7 +81,7 @@ class TibkatEventManager(EventManager):
                 for bkvalue in bk:
                     wanted=wanted or self.isWantedBk(bkvalue) 
             else:
-                wanted=wanted or self.isWantedBk(bk)
+                wanted=self.isWantedBk(bk)
         return wanted
          
     def getListOfDicts(self)->list:
