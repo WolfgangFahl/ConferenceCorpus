@@ -7,6 +7,7 @@ import time
 from corpus.utils.download import Profiler
 import getpass
 import os
+import sys
 import psutil
 
 class Progress(object):
@@ -31,7 +32,9 @@ class Progress(object):
         self.profiler=Profiler(msg=msg)
         self.startTime=self.profiler.starttime
         self.showMemory=showMemory
-        self.showDots=showDots or self.inCI()
+        #https://stackoverflow.com/a/63742743/1497139
+        inUnitTest='unittest' in sys.modules
+        self.showDots=showDots or inUnitTest #self.inCI()
         
     def inCI(self):
         '''
@@ -40,13 +43,11 @@ class Progress(object):
         publicCI=getpass.getuser() in ["travis", "runner"] 
         jenkins= "JENKINS_HOME" in os.environ
         return publicCI or jenkins
-    
 
     def usedMemory(self):
         process = psutil.Process(os.getpid())
         mBytes=(process.memory_info().rss)/1024/1024  # in mbytes 
         return mBytes
-
   
     def printProgressBar (self,iteration, total, prefix = '', suffix = '', decimals = 1, length = 72, fill = '█', printEnd = "\r",startTime=None):
         """
