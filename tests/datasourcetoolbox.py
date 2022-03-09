@@ -30,6 +30,7 @@ class DataSourceTest(TestCase):
         description="EventCorpus DataSource Test"
         parser = argparse.ArgumentParser(description=description)
         parser.add_argument("-d", "--debug", dest="debug",   action="store_true", help="set debug [default: %(default)s]")
+        parser.add_argument("--timeLimitPerTest", type="float", help="set the timeLimitPerTest [default: %(default)s]")
   
         parser.add_argument('--debugServer',
                                      help="remote debug Server")
@@ -69,15 +70,17 @@ class DataSourceTest(TestCase):
             pydevd.settrace(args.debugServer, port=args.debugPort,stdoutToServer=True, stderrToServer=True)
             print(f"command line args are: {str(sys.argv)}")
  
-    def setUp(self,debug=False,profile=True):
+    def setUp(self,debug=False,profile=True,timeLimitPerTest=10):
         '''
         setUp test environment
         '''
         TestCase.setUp(self)
         self.debug=debug 
         # are there command line arguments?
+        self.timeLimitPerTest=timeLimitPerTest
         if hasattr(DataSourceTest,"args"):
             self.debug=DataSourceTest.args.debug
+            self.timeLimitPerTest=DataSourceTest.args.timeLimitPerTest
         msg=(f"test {self._testMethodName} ... with debug={self.debug}")
         # make sure there is an EventCorpus.db to speed up tests
         EventCorpus.download()

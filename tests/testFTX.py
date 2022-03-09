@@ -88,10 +88,13 @@ class TestFTXParser(DataSourceTest):
         test parse all ftx files
         '''
         if self.ftxParser is not None:
+            timePerFile=7860/559.8
+            limit=int(self.timeLimitPerTest/timePerFile)
             self.getAllFtxXmlFiles()
             count=0
-            for xmlFile in self.xmlFiles:
-                for document in self.ftxParser.parse(xmlFile,local=True):
+            xmlFiles=self.xmlFiles
+            for xmlFile in xmlFiles[:limit]:
+                for _document in self.ftxParser.parse(xmlFile,local=True):
                     count+=1
                     if count%1000==0:
                         print(".",end="")
