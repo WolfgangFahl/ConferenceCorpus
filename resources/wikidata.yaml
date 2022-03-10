@@ -102,8 +102,9 @@
       }
       OPTIONAL {
         ?event wdt:P276+ ?cityId.
-        # instance of city
-        ?cityId wdt:P31 wd:Q515.
+        # instance of city (or subclass of it)
+        ?cityId wdt:P31 ?cityType.
+        ?cityType wdt:P279+ wd:Q515.
         ?cityId rdfs:label ?city.
         filter (lang(?city) = "en").
       }
