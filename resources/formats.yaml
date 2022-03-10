@@ -3,6 +3,12 @@
 dblpseries:
   format: https://dblp.org/db/conf/{value}/index.html
 
+dblprec:
+  format: https://dblp.org/rec/{value}
+
+dblpevent:
+  format: https://dblp.org/db/conf/{value}
+
 # Deutsche Nationalbibliothek DNB
 # https://d-nb.info/standards/elementset/
 dnbelement:

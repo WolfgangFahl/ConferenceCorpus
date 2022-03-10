@@ -10,6 +10,18 @@
     from event_wikidata
     group by country
     order by 1 desc
+'WikidataDblpIdDuplicates':
+  title: Wikidata Events with duplicate dblp event identifiers
+  description: events with duplicate dblp event identifiers
+  formats:
+    - dblpId:dblprec
+  sql: |
+    SELECT count(*) as count, dblpId
+    FROM "event_wikidata"
+    WHERE dblpId is not null
+    GROUP by dblpId
+    HAVING count(*)>1
+    ORDER BY 1 desc
 'EventProceedingsPairs':
   sparql: |
     # Event / Proceedings pairs
