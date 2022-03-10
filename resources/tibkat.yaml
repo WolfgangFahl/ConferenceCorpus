@@ -9,11 +9,25 @@
     formats:
         - ppn:tibkat
     sql: |
-      SELECT ppn,year,ordinal,acronym,title
-      FROM event_tibkat
-      WHERE acronym is not null and ordinal is not null and acronym like "ACISP%"
-      ORDER BY ordinal,acronym
-
+      SELECT 
+        Row_Number() OVER ( ORDER BY ordinal,acronym) AS '#',
+        ppn,year,ordinal,acronym,title
+      FROM 
+        event_tibkat t
+      WHERE 
+        acronym is not null and ordinal is not null and acronym like "ACISP%"
+      ORDER 
+        BY ordinal,acronym 
+'TibkatBkHistogramm':
+    title: usage of Basisklassifkation
+    sql: |
+        SELECT
+        ROW_NUMBER() OVER ( ORDER BY COUNT(*) DESC) AS '#',
+        COUNT(*) AS COUNT,SUBSTR(bk,1,2) as BK
+              FROM event_tibkat t
+        GROUP BY SUBSTR(bk,1,2)
+        HAVING COUNT(*) >=1000
+        ORDER BY 2 DESC
 'TibkatDocumentCodes':
     title: usage of documentGenre and Type Codes
     sql: |
