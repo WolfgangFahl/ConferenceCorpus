@@ -19,7 +19,7 @@
       ORDER 
         BY ordinal,acronym 
 'TibkatBkHistogramm':
-    title: usage of Basisklassifkation
+    title: usage of Basisklassifikation
     sql: |
         SELECT
         ROW_NUMBER() OVER ( ORDER BY COUNT(*) DESC) AS '#',
