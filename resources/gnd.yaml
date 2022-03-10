@@ -17,3 +17,73 @@
         GROUP BY ?property
         HAVING (?propTotal >1000)
         ORDER BY DESC(?propTotal)
+
+'GND-Events':
+  title: Scientific Events from GND RDF dump
+  sparql: |
+        # performance optimized query of GND event details
+        # with aggregated properties as single, count and | separated list column
+        # WF 2021-12-05
+        PREFIX gndi:  <https://d-nb.info/gnd>
+        PREFIX gnd:  <https://d-nb.info/standards/elementset/gnd#>
+        PREFIX gndo: <https://d-nb.info/standards/vocab/gnd/>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        PREFIX dc: <http://purl.org/dc/terms/>
+        PREFIX wdrs: <http://www.w3.org/2007/05/powder-s#>
+
+        SELECT  
+           ?event 
+           ?eventId  
+           (MIN(?eventTitle) as ?title)
+
+           (COUNT (DISTINCT ?eventDate) as ?dateCount)
+           (MIN(?eventDate) as ?date)
+
+           (MIN(?eventAcronym) as ?acronym)
+           (COUNT (DISTINCT ?eventAcronym) as ?acronymCount)
+           (GROUP_CONCAT(DISTINCT ?eventAcronym; SEPARATOR="| ") AS ?acronyms)
+
+           (MIN(?eventVariant) as ?variant)
+           (COUNT (DISTINCT ?eventVariant) as ?variantCount)
+           (GROUP_CONCAT(DISTINCT ?eventVariant; SEPARATOR="| ") AS ?variants) 
+
+           (MIN(?eventPlace) as ?place)
+           (COUNT (DISTINCT ?eventPlace) as ?placeCount)
+           (GROUP_CONCAT(DISTINCT ?eventPlace; SEPARATOR="| ") AS ?places) 
+
+           (MIN(?eventHomepage) as ?homepage)
+        WHERE {
+          ?event a gnd:ConferenceOrEvent.
+          ?event gnd:gndIdentifier ?eventId.
+          ?event gnd:preferredNameForTheConferenceOrEvent ?eventTitle.
+          OPTIONAL { ?event gnd:abbreviatedNameForTheConferenceOrEvent ?eventAcronym. }
+          OPTIONAL { ?event gnd:homepage ?eventHomepage. }
+          OPTIONAL { ?event gnd:variantNameForTheConferenceOrEvent ?eventVariant. }
+          OPTIONAL { ?event gnd:dateOfConferenceOrEvent ?eventDate. }
+          OPTIONAL { ?event gnd:placeOfConferenceOrEvent ?eventPlace }
+          # only available 3520 times 2021-12
+          # ?event gnd:topic ?topic.
+          # only available 12106 times 2021-12
+          # ?event gnd:precedingConferenceOrEvent ?prec
+          # only available 11929 times 2021-12
+          #?event gnd:succeedingConferenceOrEvent ?succ
+        }
+        GROUP BY ?event ?eventId
+
+'GND-Entity-Usage-Histogramm':
+  formats:
+        - c:dnbelement
+  sparql: |
+        # get histogramm data of entities by
+        # usage frequency
+        # WF 2020-06-27
+        PREFIX gnd: <https://d-nb.info/standards/elementset/gnd#>
+
+        SELECT ?c  (COUNT(?c) AS ?count)
+        WHERE {
+          ?subject a  ?c
+        }
+        GROUP BY ?c
+        HAVING (?count >100)
+        ORDER BY DESC(?count)
