@@ -7,7 +7,6 @@ from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from corpus.event import EventStorage,EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 import re
-from corpus.utils.textparse import Textparse
 
 class GND(EventDataSource):
     '''

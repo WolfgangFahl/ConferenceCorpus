@@ -12,6 +12,7 @@ from corpus.lookup import CorpusLookup
 from corpus.locationfixer import LocationFixer
 from corpus.datasources.dblpxml import DblpXml
 from corpus.datasources.tibkat import Tibkat
+from corpus.utils.download import Profiler
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 
@@ -26,14 +27,15 @@ class ConferenceCorpusUpdate():
         '''
         update the given DataSource
         '''
-        print(f"updating conference corpus database from {source}")
+        msg=f"update of conference corpus database from {source}"
+        profiler=Profiler(msg)
         lookup=CorpusLookup(lookupIds=[self.lookupId])
-        lookup.load(forceUpdate=True)
+        lookup.load(forceUpdate=True,showProgress=True)
         eventDataSource=lookup.getDataSource(self.lookupId)
         el=eventDataSource.eventManager.getList()
         esl=eventDataSource.eventSeriesManager.getList()
         msg=f"{eventDataSource.name}: {len(el)} events {len(esl)} eventseries"
-        print(msg)
+        profiler.time(msg)
         eventsByAcronym,_dup=LOD.getLookup(el, "acronym")
         if sampleId is not None:
             if sampleId in eventsByAcronym:
@@ -61,7 +63,6 @@ class TibkatUpdater(ConferenceCorpusUpdate):
         Args:
             args: command line arguments
         '''
-        debug=args.debug
         if args.updateConferenceCorpus or args.updateAll:
             Tibkat.limitFiles=args.limitFiles
             Tibkat.ftxroot=args.ftxroot
