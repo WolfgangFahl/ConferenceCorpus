@@ -1,0 +1,19 @@
+'PropertiesHistogramm':
+  title: Histogramm of properties of GND RDF dump used more than 1000 times
+  formats:
+        - property:dnbelement
+  sparql: |
+        # get histogramm data of properties by
+        # usage frequency
+        # WF 2020-07-12
+        PREFIX gnd: <https://d-nb.info/standards/elementset/gnd#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        PREFIX dc: <http://purl.org/dc/terms/>
+        PREFIX wdrs: <http://www.w3.org/2007/05/powder-s#>
+
+        SELECT ?property (COUNT(?property) AS ?propTotal)
+        WHERE { ?s ?property ?o . }
+        GROUP BY ?property
+        HAVING (?propTotal >1000)
+        ORDER BY DESC(?propTotal)
