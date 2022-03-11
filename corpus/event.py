@@ -16,6 +16,7 @@ from corpus.eventrating import EventRating,EventSeriesRating
 from lodstorage.sparql import SPARQL
 from lodstorage.schema import Schema
 import os
+import sys
 
 import re
 class EventStorage:
@@ -465,10 +466,18 @@ class EventBaseManager(EntityManager):
     def getLoDfromEndpoint(self)->list:
         '''
         get my content from my endpoint
+        
+        Returns:
+            list: the list of dicts derived from the given SPARQL query
         '''
         sparql=SPARQL(self.endpoint)
         query=self.getSparqlQuery()
-        listOfDicts=sparql.queryAsListOfDicts(query)
+        try:
+            listOfDicts=sparql.queryAsListOfDicts(query)
+        except Exception as ex:
+            msg=f"SPARQL query to {self.endpoint} failed"
+            print(msg,file=sys.stderr)
+            raise(ex)
         self.postProcessLodRecords(listOfDicts)
         self.setAllAttr(listOfDicts,"source",self.source)
         return listOfDicts
