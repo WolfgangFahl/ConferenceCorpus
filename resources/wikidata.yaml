@@ -53,6 +53,7 @@
             (?event as ?url)
             ?acronym
             ?ordinal
+            ?label
             ?title
             # proceedings elemnts
             ?proceedings
@@ -84,8 +85,9 @@
           # wdt:P31 (instance of) wd:Q52260246 (scientific event)
           # Q2020153 (academic conference)
           ?event wdt:P31 wd:Q2020153 .
-          ?event rdfs:label ?title.
+          ?event rdfs:label ?label.
           FILTER(LANG(?title) = "en")
+          OPTIONAL { ?event wdt:P1476 ?title }
           # acronym
           OPTIONAL { ?event wdt:P1813 ?acronym }
           # is proceedings from
