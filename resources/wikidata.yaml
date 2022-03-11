@@ -86,7 +86,7 @@
           # Q2020153 (academic conference)
           ?event wdt:P31 wd:Q2020153 .
           ?event rdfs:label ?label.
-          FILTER(LANG(?title) = "en")
+          FILTER(LANG(?label) = "en")
           OPTIONAL { ?event wdt:P1476 ?title }
           # acronym
           OPTIONAL { ?event wdt:P1813 ?acronym }
