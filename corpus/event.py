@@ -71,20 +71,20 @@ class EventStorage:
         return config
     
     @classmethod
-    def getQueryManager(cls,lang='sql',name="queries"):
+    def getQueryManager(cls,lang='sql',name="queries",debug=False):
         '''
         get the query manager for the given language and fileName
         
         Args:
             lang(str): the language of the queries to extract
             name(str): the name of the manager containing the query specifications
-            
+            debug(bool): if True set debugging on
         '''
         cachedir=EventStorage.getStorageConfig().getCachePath()
         for path in cachedir,os.path.dirname(__file__)+"/../resources":
             qYamlFile=f"{path}/{name}.yaml"
             if os.path.isfile(qYamlFile):
-                qm=QueryManager(lang=lang,debug=self.debug,queriesPath=qYamlFile)
+                qm=QueryManager(lang=lang,debug=debug,queriesPath=qYamlFile)
                 return qm
         return None
     
