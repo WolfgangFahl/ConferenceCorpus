@@ -16,7 +16,6 @@ class GND(EventDataSource):
     debug=False
     host="confident.dbis.rwth-aachen.de"
     endpoint=f"https://{host}/jena/gnd/sparql"
-    limit=1000000
     sourceConfig = EventDataSourceConfig(lookupId="gnd", name="GND", url='https://d-nb.info/standards/elementset/gnd', title='Gemeinsame Normdatei', tableSuffix="gnd",locationAttribute="location")
     
     def __init__(self,debug=False):
@@ -122,6 +121,7 @@ class GndEventManager(EventManager):
         '''
         self.source="gnd"
         self.endpoint=GND.endpoint
+        self.queryManager=EventStorage.getQueryManager(lang="sparql",name="wikidata")
         super().__init__(name="GndEvents", sourceConfig=GND.sourceConfig,clazz=GndEvent, config=config)
     
     def configure(self):
@@ -135,56 +135,8 @@ class GndEventManager(EventManager):
         '''
         get  the SPARQL query for this event manager
         '''
-        sparql="""# performance optimized query of GND event details
-# with aggregated properties as single, count and | separated list column
-# WF 2021-12-05
-PREFIX gndi:  <https://d-nb.info/gnd>
-PREFIX gnd:  <https://d-nb.info/standards/elementset/gnd#>
-PREFIX gndo: <https://d-nb.info/standards/vocab/gnd/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX dc: <http://purl.org/dc/terms/>
-PREFIX wdrs: <http://www.w3.org/2007/05/powder-s#>
-
-SELECT  
-   ?event 
-   ?eventId  
-   (MIN(?eventTitle) as ?title)
-
-   (COUNT (DISTINCT ?eventDate) as ?dateCount)
-   (MIN(?eventDate) as ?date)
-
-   (MIN(?eventAcronym) as ?acronym)
-   (COUNT (DISTINCT ?eventAcronym) as ?acronymCount)
-   (GROUP_CONCAT(DISTINCT ?eventAcronym; SEPARATOR="| ") AS ?acronyms)
-
-   (MIN(?eventVariant) as ?variant)
-   (COUNT (DISTINCT ?eventVariant) as ?variantCount)
-   (GROUP_CONCAT(DISTINCT ?eventVariant; SEPARATOR="| ") AS ?variants) 
-
-   (MIN(?eventPlace) as ?place)
-   (COUNT (DISTINCT ?eventPlace) as ?placeCount)
-   (GROUP_CONCAT(DISTINCT ?eventPlace; SEPARATOR="| ") AS ?places) 
-
-   (MIN(?eventHomepage) as ?homepage)
-WHERE {
-  ?event a gnd:ConferenceOrEvent.
-  ?event gnd:gndIdentifier ?eventId.
-  ?event gnd:preferredNameForTheConferenceOrEvent ?eventTitle.
-  OPTIONAL { ?event gnd:abbreviatedNameForTheConferenceOrEvent ?eventAcronym. }
-  OPTIONAL { ?event gnd:homepage ?eventHomepage. }
-  OPTIONAL { ?event gnd:variantNameForTheConferenceOrEvent ?eventVariant. }
-  OPTIONAL { ?event gnd:dateOfConferenceOrEvent ?eventDate. }
-  OPTIONAL { ?event gnd:placeOfConferenceOrEvent ?eventPlace }
-  # only available 3520 times 2021-12
-  # ?event gnd:topic ?topic.
-  # only available 12106 times 2021-12
-  # ?event gnd:precedingConferenceOrEvent ?prec
-  # only available 11929 times 2021-12
-  #?event gnd:succeedingConferenceOrEvent ?succ
-}
-GROUP BY ?event ?eventId
-LIMIT %d""" % (GND.limit)
+        gndquery=self.queryManager.queriesByName["GND-Events"]
+        sparql=gndquery.query
         return sparql
 
 class GndEventSeriesManager(EventSeriesManager):

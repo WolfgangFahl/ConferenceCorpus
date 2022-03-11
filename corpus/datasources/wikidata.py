@@ -108,6 +108,7 @@ class WikidataEventSeriesManager(EventSeriesManager):
         '''
         self.source="wikidata"
         self.endpoint=Wikidata.endpoint
+        self.queryManager=EventStorage.getQueryManager(lang="sparql",name="wikidata")
         super(WikidataEventSeriesManager,self).__init__(name="WikidataEventSeries", sourceConfig=Wikidata.sourceConfig,clazz=WikidataEventSeries,config=config)
         
     def configure(self):
@@ -121,58 +122,8 @@ class WikidataEventSeriesManager(EventSeriesManager):
         '''
         get  the SPARQL query for this series  manager
         '''
-        query="""
-        # Conference Series wikidata query
-        # see https://confident.dbis.rwth-aachen.de/dblpconf/wikidata
-        # WF 2021-01-30
-        PREFIX wd: <http://www.wikidata.org/entity/>
-        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT (?confSeries as ?eventSeriesId) ?acronym ?title ?homepage ?DBLP_pid ?WikiCFP_pid ?FreeBase_pid ?Microsoft_Academic_pid ?Publons_pid ?ACM_pid ?GND_pid
-        WHERE 
-        {
-          #  scientific conference series (Q47258130) 
-          ?confSeries wdt:P31 wd:Q47258130.
-          OPTIONAL { ?confSeries wdt:P1813 ?short_name . }
-          BIND (?confSeriesLabel AS ?title)
-          BIND (COALESCE(?short_name,?confSeriesLabel) AS ?acronym).
-          #  official website (P856) 
-          OPTIONAL {
-            ?confSeries wdt:P856 ?homepage
-          } 
-          # any item with a DBLP venue ID 
-          OPTIONAL {
-            ?confSeries wdt:P8926 ?DBLP_pid.
-          }
-          # WikiCFP pid 
-          optional {
-             ?confSeries wdt:P5127 ?WikiCFP_pid.
-          }
-          # FreeBase pid
-          optional {
-              ?confSeries wdt:P646 ?FreeBase_pid.
-          }
-          # Microsoft Academic ID
-          optional {
-              ?confSeries wdt:P6366 ?Microsoft_Academic_pid.
-          }
-          # Publons journals/conferences ID 
-          optional {
-              ?confSeries wdt:P7461 ?Publons_pid.
-          }
-          # ACM conference ID   
-          optional {
-            ?confSeries wdt:P7979 ?ACM_pid.
-          }
-          # GND pid
-          optional {
-            ?confSeries wdt:P227 ?GND_pid.
-          }
-          # label 
-          ?confSeries rdfs:label ?confSeriesLabel filter (lang(?confSeriesLabel) = "en").
-        }
-        ORDER BY (?acronym)
-"""
+        eventQuery=self.queryManager.queriesByName['Wikidata-Eventseries']
+        query=eventQuery.query
         return query
         
         

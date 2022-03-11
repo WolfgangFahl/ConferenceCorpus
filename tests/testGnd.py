@@ -56,12 +56,13 @@ class TestGnd(DataSourceTest):
         test getting conference information from Gemeinsame Normdatei
         '''
         gndDataSource=self.getGndDataSource(forceUpdate=False)
-        expected=min(GND.limit,700000)
+        expected=700000
         self.checkDataSource(gndDataSource,1,expected)
         pass
     
     def testQuery(self):
         '''
+        test queries on the GND dataset
         '''
         queryMap={"name":"dblp","lang":"sql","query":"""select event,eventId,title,date
 from event_gnd
