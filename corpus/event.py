@@ -475,8 +475,14 @@ class EventBaseManager(EntityManager):
         try:
             listOfDicts=sparql.queryAsListOfDicts(query)
         except Exception as ex:
+            # handle any Exception - e.g. there might be a syntax error in the query or the
+            # endpoint might not be able to handle it - the endpoint might not be available
+            # or there might be a timeout
             msg=f"SPARQL query to {self.endpoint} failed"
             print(msg,file=sys.stderr)
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            exmessage = template.format(type(ex).__name__, ex.args)
+            print(exmessage,file=sys.stderr)
             raise(ex)
         self.postProcessLodRecords(listOfDicts)
         self.setAllAttr(listOfDicts,"source",self.source)
