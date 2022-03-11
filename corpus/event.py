@@ -448,6 +448,21 @@ class EventBaseManager(EntityManager):
                     if updateEntitiesCallback is not None and callable(updateEntitiesCallback):
                         updateEntitiesCallback(originalEvent, overwrite=overwriteEvents)
 
+    def fromCache(self,force:bool=False,getListOfDicts=None,append=False,sampleRecordCount=-1):
+        '''
+        '''
+        needsUpdate=not self.isCached() or force
+        super().fromCache(force, getListOfDicts, append, sampleRecordCount)
+        if needsUpdate:
+            self.postProcessEntityList(debug=self.debug)
+            
+    def postProcessEntityList(self,debug:bool=False):
+        '''
+        postProcess my entities
+        '''
+        # override this method
+        pass
+        
     def asCsv(self, separator:str=',', selectorCallback:Callable=None):
         """
         Converts the events to csv format
@@ -481,7 +496,7 @@ class EventBaseManager(EntityManager):
         '''
         if hasattr(self.clazz,"postProcessLodRecord") and callable(self.clazz.postProcessLodRecord): 
             for rawEvent in listOfDicts:
-                self.clazz.postProcessLodRecord(rawEvent,**kwArgs)
+                self.clazz.postProcessLodRecord(rawEvent,**kwArgs)    
                 
     def getLoDfromEndpoint(self)->list:
         '''
@@ -528,8 +543,7 @@ class EventSeriesManager(EventBaseManager):
         '''
         constructor 
         '''
-        super().__init__(name=name,entityName="EventSeries",entityPluralName="EventSeries",primaryKey=primaryKey,listName="series",clazz=clazz,sourceConfig=sourceConfig,handleInvalidListTypes=True,config=config,debug=debug)
-        
+        super().__init__(name=name,entityName="EventSeries",entityPluralName="EventSeries",primaryKey=primaryKey,listName="series",clazz=clazz,sourceConfig=sourceConfig,handleInvalidListTypes=True,config=config,debug=debug) 
             
 class EventManager(EventBaseManager):
     '''

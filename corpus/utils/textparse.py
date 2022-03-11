@@ -41,6 +41,12 @@ class Textparse(object):
         return result
     
     @staticmethod
+    def setDateRange(event,dateRange):
+        for field in ["year","startDate","endDate"]:
+            if field in dateRange:
+                setattr(event,field,dateRange[field])
+                
+    @staticmethod
     def getDateRange(date):
         '''
         given a GND date string create a date range

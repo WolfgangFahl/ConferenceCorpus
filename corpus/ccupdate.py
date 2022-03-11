@@ -43,7 +43,6 @@ class ConferenceCorpusUpdate():
                 print (event.toJSON())
             else:
                 print(f"sample event id {sampleId} not found")
-       
     
 class TibkatUpdater(ConferenceCorpusUpdate):
     '''

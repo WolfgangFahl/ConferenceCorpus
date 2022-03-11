@@ -33,13 +33,14 @@ class EventDataSource(object):
         self.eventSeriesManager.dataSource=self
         pass
         
-    def load(self,forceUpdate=False,showProgress=False):
+    def load(self,forceUpdate=False,showProgress=False,debug=False):
         '''
         load this data source
         
         Args:
             forceUpdate(bool): if true force updating this datasource
             showProgress(bool): if true show the progress
+            debug(bool): if true show debug information
         '''
         msg=f"loading {self.sourceConfig.title}"
         profiler=Profiler(msg=msg,profile=showProgress)

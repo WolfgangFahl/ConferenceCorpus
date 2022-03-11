@@ -35,7 +35,7 @@
         SELECT  
            ?event 
            ?eventId  
-           (MIN(?eventTitle) as ?title)
+           (MIN(?eventTitle) as ?fulltitle)
 
            (COUNT (DISTINCT ?eventDate) as ?dateCount)
            (MIN(?eventDate) as ?date)

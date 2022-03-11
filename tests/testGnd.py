@@ -7,9 +7,8 @@ import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
-from corpus.datasources.gnd import GND
+from corpus.datasources.gnd import GND, GndTitleExtractor, ExtractStatistics
 from corpus.utils.textparse import Textparse
-from collections import Counter
 from lodstorage.query import Query
 import getpass
 import subprocess, platform
@@ -82,39 +81,40 @@ where title like '%Italian Research Conference on Digital Libraries%'"""
         '''
         test ordinal analysis
         '''
-        oldDebug=GND.debug
-        #GND.debug=True
-        gndDataSource=self.getGndDataSource()
-        events=gndDataSource.eventManager.events
-        counter=Counter()
-        for event in events:
-            event.titleExtract(counter)
-        print (counter.most_common())
-        GND.debug=oldDebug
-        storeToDatabase=False
-        if storeToDatabase:
-            gndDataSource.eventManager.store()
+        stats=ExtractStatistics()
+        #debug=self.debug
+        debug=True
+        extracts=[
+            {'fulltitle':'Symposium on Cognition (1 : 1965 : Pittsburgh, Pa.)',
+             'title':'Symposium on Cognition',
+             'year':1965,
+             'location': 'Pittsburgh, Pa.',
+             'ordinal':1
+            }
+        ]
+        for extract in extracts:
+            titleExtractor=GndTitleExtractor(extract["fulltitle"],stats)
+            titleExtractor.titleExtract()
+            if debug:
+                print(titleExtractor)
+            for field in titleExtractor._fields:
+                if field in extract:
+                    self.assertEqual(getattr(titleExtractor,field),extract[field])
+        if debug:
+            print(titleExtractor.stats.counter.most_common())
         
-    def testDateRanges(self):
+    def testPostProcessEvents(self):
         '''
-        test date range parsing
+        test parsing GND event details 
+        from fulltitle and date 
+        getting year, location, ordinal, organization and date range 
+        
         '''
         gndDataSource=self.getGndDataSource(forceUpdate=False)
-        events=gndDataSource.eventManager.events
         debug=self.debug
-        #debug=True
-        minTotal=len(events)
-        invalid=0
-        for i,event in enumerate(events):
-            dateRange=(Textparse.getDateRange(event.date))
-            if (len(dateRange)==0 and event.date is not None):
-                invalid+=1
-                if debug:
-                    print("%5d: %s: %s %s" % (i,event.eventId,event.date,dateRange))
-        if debug:
-            print("%d GND dates are invalid " % invalid)
-        self.assertTrue(invalid<minTotal/300)
-        
+        debug=True
+        stats=gndDataSource.eventManager.postProcessEntityList(debug)   
+        pass 
         
     def testStats(self):
         '''
