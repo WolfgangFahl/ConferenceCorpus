@@ -38,8 +38,9 @@
       ?proceedings rdfs:label ?proceedingsLabel.
       filter(lang(?proceedingsLabel) = "en")
     }
-'Events':
+'Wikidata-Events':
   title: Academic events with details for EventCorpus
+  description: Academic events with details for EventCorpus
   sparql: |
     PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
     PREFIX p: <http://www.wikidata.org/prop/>
@@ -85,7 +86,7 @@
       OPTIONAL { ?event wdt:P1813 ?acronym }
       # is proceedings from
       OPTIONAL {
-        ?event ^wdt:P4745 ?proceedings .  
+        ?event ^wdt:P4745 ?proceedings .
         ?proceedings rdfs:label ?proceedingsLabel.
         FILTER(LANG(?proceedingsLabel) = "en")
         OPTIONAL {
@@ -104,7 +105,7 @@
       # properties with type:literal # requiring label
       OPTIONAL {
         ?event wdt:P17 ?countryId .
-        ?countryId rdfs:label ?country. 
+        ?countryId rdfs:label ?country.
         filter (lang(?country) = "en").
       }
       OPTIONAL {

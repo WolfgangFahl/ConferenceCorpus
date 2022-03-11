@@ -12,6 +12,7 @@ import socket
 import sys
 import traceback
 from corpus.lookup import CorpusLookup
+from corpus.event import EventStorage
 from corpus.web.eventseriesblueprint import EventSeriesBlueprint
 from corpus.web.scholar import ScholarBlueprint
 
@@ -96,7 +97,7 @@ class WebServer(AppWrap):
         self.lookup=CorpusLookup()
         # TODO add lookupId handling for pre loaded data
         #lookup.load(forceUpdate=False,showProgress=True)
-        self.queryManager=self.lookup.getQueryManager()
+        self.queryManager=EventStorage.getQueryManager()
         
     def render_template(self,templateName:str,title:str,activeItem:str,**kwArgs):
         '''

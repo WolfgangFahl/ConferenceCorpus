@@ -12,10 +12,11 @@ from lodstorage.lod import LOD
 from lodstorage.sql import SQLDB
 from corpus.utils.download import Profiler
 from lodstorage.storageconfig import StorageConfig
-from corpus.quality.rating import RatingManager,Rating
+from corpus.quality.rating import RatingManager
 from corpus.eventrating import EventRating,EventSeriesRating
 from lodstorage.sparql import SPARQL
 from lodstorage.schema import Schema
+from lodstorage.query import QueryManager
 import os
 import sys
 
@@ -68,6 +69,24 @@ class EventStorage:
         if mode=='sql':
             config.cacheFile=f"{cachedir}/EventCorpus.db"
         return config
+    
+    @classmethod
+    def getQueryManager(cls,lang='sql',name="queries"):
+        '''
+        get the query manager for the given language and fileName
+        
+        Args:
+            lang(str): the language of the queries to extract
+            name(str): the name of the manager containing the query specifications
+            
+        '''
+        cachedir=EventStorage.getStorageConfig().getCachePath()
+        for path in cachedir,os.path.dirname(__file__)+"/../resources":
+            qYamlFile=f"{path}/{name}.yaml"
+            if os.path.isfile(qYamlFile):
+                qm=QueryManager(lang=lang,debug=self.debug,queriesPath=qYamlFile)
+                return qm
+        return None
     
     @classmethod
     def getDBFile(cls,cacheFileName="EventCorpus"):

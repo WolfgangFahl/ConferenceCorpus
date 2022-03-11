@@ -31,7 +31,7 @@ import getpass
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
-from lodstorage.query import QueryManager
+
 
 class CorpusLookupConfigure:
     '''
@@ -175,18 +175,6 @@ class CorpusLookup(object):
         self.eventCorpus.loadAll(forceUpdate=forceUpdate,showProgress=showProgress)
         if withCreateViews:
             EventStorage.createViews(exclude=EventStorage.viewTableExcludes)
-
-    def getQueryManager(self):
-        '''
-        get the query manager
-        '''
-        cachedir=EventStorage.getStorageConfig().getCachePath()
-        for path in cachedir,os.path.dirname(__file__)+"/../resources":
-            qYamlFile=f"{path}/queries.yaml"
-            if os.path.isfile(qYamlFile):
-                qm=QueryManager(lang='sql',debug=self.debug,queriesPath=qYamlFile)
-                return qm
-        return None
     
     def getDataSourceInfos(self,withInstanceCount:bool=True):
         '''

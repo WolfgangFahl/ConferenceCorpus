@@ -6,6 +6,7 @@ Created on 2021-07-31
 import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
+from corpus.event import EventStorage
 from lodstorage.query import Query
 import copy
 import json
@@ -66,7 +67,7 @@ order by duration"""
         test statistics
         '''
         lookup=self.lookup;
-        qm=self.lookup.getQueryManager()
+        qm=EventStorage.getQueryManager()
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)
         showMarkup=False
