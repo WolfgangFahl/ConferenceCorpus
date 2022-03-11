@@ -10,6 +10,7 @@ from lodstorage.entity import EntityManager
 from lodstorage.jsonable import JSONAble
 from lodstorage.lod import LOD
 from lodstorage.sql import SQLDB
+from corpus.utils.download import Profiler
 from lodstorage.storageconfig import StorageConfig
 from corpus.quality.rating import RatingManager,Rating
 from corpus.eventrating import EventRating,EventSeriesRating
@@ -473,12 +474,15 @@ class EventBaseManager(EntityManager):
         sparql=SPARQL(self.endpoint)
         query=self.getSparqlQuery()
         try:
+            profiler=Profiler(f"SPARQL query to {self.endpoint}",profile=False)
             listOfDicts=sparql.queryAsListOfDicts(query)
         except Exception as ex:
             # handle any Exception - e.g. there might be a syntax error in the query or the
             # endpoint might not be able to handle it - the endpoint might not be available
             # or there might be a timeout
-            msg=f"SPARQL query to {self.endpoint} failed"
+            msg=f"SPARQL query failed\nquery:\n{query}"
+            profiler.profile=True
+            profiler.time()
             print(msg,file=sys.stderr)
             template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             exmessage = template.format(type(ex).__name__, ex.args)
