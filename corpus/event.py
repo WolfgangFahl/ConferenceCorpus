@@ -450,11 +450,16 @@ class EventBaseManager(EntityManager):
 
     def fromCache(self,force:bool=False,getListOfDicts=None,append=False,sampleRecordCount=-1):
         '''
+        overwritten version of fromCache that calls postProcessEntityList
         '''
         needsUpdate=not self.isCached() or force
         super().fromCache(force, getListOfDicts, append, sampleRecordCount)
         if needsUpdate:
+            # TODO
+            # this is inefficient and uses 2x the memory 
+            # try postProcessing on lod instead
             self.postProcessEntityList(debug=self.debug)
+            self.store()
             
     def postProcessEntityList(self,debug:bool=False):
         '''
