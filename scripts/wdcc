@@ -1,0 +1,53 @@
+#!/bin/bash
+# WF 2022-03-12
+# Wikidata Conference Corpus test
+
+#
+# check that the wikidata command line interface is installed
+#
+checkWdCliInstalled() {
+  which wd > /dev/null
+  if [ $? -ne 0 ]
+  then
+    echo "wikibase-cli is not installed ... please install using"
+    echo "npm install -g wikibase-cli"
+    exit 1
+  fi
+}
+
+# test Creating an event Series item
+testCreateEventSeries() {
+  wb config instance https://test.wikidata.org
+  wb create-entity eventseries.js "International Semantic Web Conference" "International Semantic Web Conference Series" "ISWC" "2002"
+}
+
+# test Creating an event
+testCreateEvent() {
+  wb config instance https://test.wikidata.org
+}
+
+testGetSeriesData() {
+  wb config lang en
+  wb config instance https://www.wikidata.org
+  for series in Q6053150
+  do
+    wb data $series | jq .
+  done
+}
+
+testGNDUpdate() {
+  local l_page="$1"
+  json=/tmp/wd$$
+  wikiquery -s orclone --entityName EventSeries \
+   -q "{{#ask:[[$l_page]]|mainlabel=series|?DblpSeries=DblpSeries|?Wikidataid=WikidataId|?WikiCfpSeries=WikiCfpSeries|?GND-ID=GND-ID}}">$json
+  seriesQid=$(cat $json | jq .EventSeries[].WikidataId)
+  wd claims $seriesQid
+  gndId=$(wd claims $seriesQid P227 -j | jq .[])
+  gndId=$(echo $gndId | sed 's/"//g')
+  echo $gndId
+  wikiedit -t test -p $l_page --search "[{]{2}Event series" --replace "{{Event series\n|GND-ID=$gndId" -d
+  rm $json
+}
+
+#testCreateEventSeries
+testGNDUpdate ACL
