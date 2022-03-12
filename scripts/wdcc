@@ -35,19 +35,41 @@ testGetSeriesData() {
   done
 }
 
+#
+# test updating GND series info from wikidata
+#
 testGNDUpdate() {
   local l_page="$1"
   json=/tmp/wd$$
-  wikiquery -s orclone --entityName EventSeries \
-   -q "{{#ask:[[$l_page]]|mainlabel=series|?DblpSeries=DblpSeries|?Wikidataid=WikidataId|?WikiCfpSeries=WikiCfpSeries|?GND-ID=GND-ID}}">$json
+  queryfile=/tmp/query$$
+cat << EOF > $queryfile
+{{#ask:[[$l_page]]
+|mainlabel=series
+|?DblpSeries=DblpSeries
+|?Wikidataid=WikidataId
+|?WikiCfpSeries=WikiCfpSeries
+|?GND-ID=GND-ID
+|?PageCreator=PageCreator
+|?PageEditor=PageEditor
+|?Last editor is=LastEditor
+}}
+EOF
+  wikiquery -s orclone --entityName EventSeries --queryFile $queryfile > $json
+  cat $json
   seriesQid=$(cat $json | jq .EventSeries[].WikidataId)
   wd claims $seriesQid
   gndId=$(wd claims $seriesQid P227 -j | jq .[])
   gndId=$(echo $gndId | sed 's/"//g')
-  echo $gndId
-  wikiedit -t test -p $l_page --search "[{]{2}Event series" --replace "{{Event series\n|GND-ID=$gndId" -d
+  if [ "$gndId" == "" ]
+  then
+    echo "no GND ID found for $l_page"
+  else
+    echo "found GND-ID:$gndId"
+    wikiedit -f -t orclone -p $l_page --search "[{]{2}Event series" --replace "{{Event series\n|GND-ID=$gndId\n|PageEditor=Wolfgang Fahl" -d
+  fi
   rm $json
+  rm $queryfile
 }
 
 #testCreateEventSeries
-testGNDUpdate ACL
+testGNDUpdate "$1"
