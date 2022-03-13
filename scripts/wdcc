@@ -2,6 +2,48 @@
 # WF 2022-03-12
 # Wikidata Conference Corpus test
 
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
+
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+  local l_msg="$2"
+  echo -e "${l_color}$l_msg${endColor}"
+}
+
+#
+# error
+#
+#   show an error message and exit
+#
+#   params:
+#     1: l_msg - the message to display
+error() {
+  local l_msg="$1"
+  # use ansi red for error
+  color_msg $red "Error: $l_msg" 1>&2
+  exit 1
+}
+
+#
+# show the usage
+#
+usage() {
+  echo "usage: $0 [-h|--help][--gnd pageTitle]"
+  echo "  -h|--help: show this usage"
+  echo "  --gnd pageTitle: update the GND ID for the OpenResearch page from wikidata"
+}
+
 #
 # check that the wikidata command line interface is installed
 #
@@ -36,9 +78,12 @@ testGetSeriesData() {
 }
 
 #
-# test updating GND series info from wikidata
+# update GND series info from wikidata
 #
-testGNDUpdate() {
+# params:
+#   #1: pagename in targetWiki
+#
+gndUpdate() {
   local l_page="$1"
   json=/tmp/wd$$
   queryfile=/tmp/query$$
@@ -71,5 +116,121 @@ EOF
   rm $queryfile
 }
 
+propertyCountQuery() {
+  local l_prop="$1"
+  cat << EOF
+# Academic Events in tabular fashion
+# property Counter
+# WF 2022-03-12
+  SELECT
+    (?event as ?eventId)
+    ?title
+
+    (COUNT (DISTINCT ?eventTitleValue) as ?eventTitleCount)
+    (GROUP_CONCAT(DISTINCT ?eventTitleValue; SEPARATOR="⇹") AS ?eventTitles)
+    (MIN(?eventTitleValue) AS $eventTitle)
+
+    (COUNT (DISTINCT ?acronymValue) as ?acronymCount)
+    (GROUP_CONCAT(DISTINCT ?acronymValue; SEPARATOR="⇹") AS ?acronyms)
+    (MIN(?acronymValue) AS $acronym)
+
+  WHERE
+  {
+    # wdt:P31 (instance of) wd:Q52260246 (scientific event)
+    # Q2020153 (academic conference)
+    ?event wdt:P31 wd:Q2020153 .
+    # the page label in english (should be always available)
+    ?event rdfs:label ?title.
+    FILTER(LANG(?title) = "en")
+
+    # the work title (mostly available)
+    OPTIONAL {
+      ?event wdt:P1476 ?eventTitleValue
+      FILTER(LANG(?eventTitleValue) = "en")
+    }
+    # acronym
+    OPTIONAL { ?event wdt:P1813 ?acronymValue }
+  }
+  GROUP BY ?event ?title
+  ORDER BY DESC(?eventTitleCount)
+EOF
+
+}
+
+#
+# get the wikidata properties
+#
+wdprops() {
+  cache=$HOME/.wikidata/wikidataprops.json
+  # if not cached or older than a day
+  if [[ ! -f $cache || $(find "$cache" -mtime +1 -print) ]]
+  then
+    wd config lang en
+    wd props > $cache
+  fi
+  cat $cache
+}
+
+#
+# get a property by it's name
+# param
+#   #1 the property name
+#
+propertyByName() {
+  local l_prop="$1"
+  wdprops | jq -r 'to_entries[] | select(."value"=="'$l_prop'").key'
+}
+
+#
+# run a sparql query from the given queryfile
+# params
+#  1: the queryfile
+#
+sparql() {
+  local l_queryfile="$1"
+  wb sparql $l_queryfile
+}
+
+#
+#
+#
+propertyCount() {
+  local l_propname="$1"
+  local l_prop=$(propertyByName $l_propname)
+  local l_queryfile=/tmp/wdccquery$$.rq
+cat << EOF > $l_queryfile
+  #Count all items with a property
+  SELECT (COUNT (DISTINCT ?item) AS ?count)
+  WHERE
+  {
+    ?item wdt:$l_prop ?value
+  }
+EOF
+  sparql $l_queryfile
+  rm $l_queryfile
+}
+
 #testCreateEventSeries
-testGNDUpdate "$1"
+
+# commandline option
+while [  "$1" != ""  ]
+do
+  option=$1
+  shift
+  case $option in
+    -h|--help)
+       usage;;
+    --gnd)
+      gndUpdate $1
+      ;;
+    --props)
+      wdprops
+      ;;
+    -p|--property)
+      propertyByName $1
+      ;;
+    -pc|--propertyCount)
+      propertyCount $1
+      ;;
+  esac
+done
