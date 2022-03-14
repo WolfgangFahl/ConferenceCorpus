@@ -179,7 +179,7 @@ wdprops() {
 #
 propertyByName() {
   local l_prop="$1"
-  wdprops | jq -r 'to_entries[] | select(."value"=="'$l_prop'").key'
+  wdprops | jq -r 'to_entries[] | select(."value"=="'"$l_prop"'").key'
 }
 
 #
@@ -208,12 +208,12 @@ sparql() {
 # count the number of instances for the propery with the given name
 #
 # params
-#   1: property name
-#   2: type itemId
+#   1: type itemId
+#   2: property name
 propertyCount() {
-  local l_propname="$1"
-  local l_itemId="$2"
-  local l_prop=$(propertyByName $l_propname)
+  local l_itemId="$1"
+  local l_propname="$2"
+  local l_prop=$(propertyByName "$l_propname")
   local l_queryfile=/tmp/wdccquery$$.rq
 cat << EOF > $l_queryfile
 #Count all items with the given property and type
@@ -225,6 +225,7 @@ WHERE
   ?item wdt:$l_prop ?value.
 }
 EOF
+  echo "$l_propname(https://www.wikidata.org/wiki/Property:$l_prop):"
   sparql $l_queryfile
   rm $l_queryfile
 }
@@ -264,7 +265,14 @@ do
     -pc|--propertyCount)
       if [ $# -ge 2 ]
       then
-        propertyCount $1 $2
+        item=$1
+        shift
+        wd label $item
+        while [  "$1" != ""  ]
+        do
+          propertyCount $item "$1"
+          shift
+        done
       else
         usage
       fi
