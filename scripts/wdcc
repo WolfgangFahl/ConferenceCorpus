@@ -39,8 +39,9 @@ error() {
 # show the usage
 #
 usage() {
-  echo "usage: $0 [-h|--help][--gnd pageTitle]"
+  echo "usage: $0 [-h|--help][--gnd pageTitle][-p|--property propertyName]"
   echo "  -h|--help: show this usage"
+  echo "  -p|--property: get a property by it's name"
   echo "  --gnd pageTitle: update the GND ID for the OpenResearch page from wikidata"
 }
 
@@ -182,7 +183,19 @@ propertyByName() {
 }
 
 #
+# search for an item
+#
+# params
+#  1: the name of the item
+#
+itemSearch() {
+  local l_item="$1"
+  wd search "$l_item"
+}
+
+#
 # run a sparql query from the given queryfile
+#
 # params
 #  1: the queryfile
 #
@@ -192,19 +205,25 @@ sparql() {
 }
 
 #
+# count the number of instances for the propery with the given name
 #
-#
+# params
+#   1: property name
+#   2: type itemId
 propertyCount() {
   local l_propname="$1"
+  local l_itemId="$2"
   local l_prop=$(propertyByName $l_propname)
   local l_queryfile=/tmp/wdccquery$$.rq
 cat << EOF > $l_queryfile
-  #Count all items with a property
-  SELECT (COUNT (DISTINCT ?item) AS ?count)
-  WHERE
-  {
-    ?item wdt:$l_prop ?value
-  }
+#Count all items with the given property and type
+SELECT (COUNT (DISTINCT ?item) AS ?count)
+WHERE
+{
+  ?item wdt:P31 wd:$l_itemId.
+  # $l_propname
+  ?item wdt:$l_prop ?value.
+}
 EOF
   sparql $l_queryfile
   rm $l_queryfile
@@ -226,11 +245,29 @@ do
     --props)
       wdprops
       ;;
+    -i|--item)
+      if [ $# -ge 1 ]
+      then
+        itemSearch "$1"
+      else
+        usage
+      fi
+      ;;
     -p|--property)
-      propertyByName $1
+      if [ $# -ge 1 ]
+      then
+        propertyByName "$1"
+      else
+        usage
+      fi
       ;;
     -pc|--propertyCount)
-      propertyCount $1
+      if [ $# -ge 2 ]
+      then
+        propertyCount $1 $2
+      else
+        usage
+      fi
       ;;
   esac
 done
