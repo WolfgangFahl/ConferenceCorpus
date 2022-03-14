@@ -209,29 +209,50 @@ sparql() {
 #
 # params
 #   1: type itemId
+#   2: itemLabel
 #   2: property name
 propertyCount() {
   local l_itemId="$1"
-  local l_propname="$2"
-  local l_prop=$(propertyByName "$l_propname")
+  local l_itemLabel="$2"
+  if [ $# -ge 3 ]
+  then
+    local l_propname="$3"
+    local l_prop=$(propertyByName "$l_propname")
+    local l_propdesc="$l_propname ( https://www.wikidata.org/wiki/Property:$l_prop ):"
+    echo -n "# $l_propdesc"
+  else
+    local l_propdesc=""
+  fi
   local l_queryfile=/tmp/wdccquery$$.rq
 cat << EOF > $l_queryfile
-#Count all items with the given property and type
+# Count all items with the given $l_propdesc
+# and type $l_itemLabel($l_itemId):https://www.wikidata.org/wiki/$l_itemId
 SELECT (COUNT (DISTINCT ?item) AS ?count)
 WHERE
 {
+  # instance of $l_itemLabel
   ?item wdt:P31 wd:$l_itemId.
+EOF
+if [ $# -ge 3 ]
+then
+cat << EOF >> $l_queryfile
   # $l_propname
   ?item wdt:$l_prop ?value.
+EOF
+fi
+cat << EOF >> $l_queryfile
 }
 EOF
-  echo "$l_propname(https://www.wikidata.org/wiki/Property:$l_prop):"
   sparql $l_queryfile
+  if [ "$debug" == "true" ]
+  then
+     cat $l_queryfile
+  fi
   rm $l_queryfile
 }
 
 #testCreateEventSeries
-
+debug="false"
 # commandline option
 while [  "$1" != ""  ]
 do
@@ -262,15 +283,20 @@ do
         usage
       fi
       ;;
+    -d|--debug)
+      debug="true"
+      ;;
     -pc|--propertyCount)
       if [ $# -ge 2 ]
       then
         item=$1
+        itemLabel=$(wd label "$1")
+        echo "$itemLabel($item):https://www.wikidata.org/wiki/$item"
+        propertyCount "$item" "$itemLabel"
         shift
-        wd label $item
         while [  "$1" != ""  ]
         do
-          propertyCount $item "$1"
+          propertyCount "$item" "$itemLabel" "$1"
           shift
         done
       else
