@@ -4,15 +4,83 @@ Created on 2022-04-14
 @author: wf
 '''
 from lodstorage.sparql import SPARQL
-from lodstorage.query import QueryManager
+from lodstorage.query import Query,QueryManager
 import os
+import re
+from pickle import NONE
+
+class WikidataProperty():
+    '''
+    a WikidataProperty
+    '''
+    
+    def __init__(self,pid:str):
+        '''
+        construct me with the given property id
+        
+        Args:
+            pid(str): the property Id
+        '''
+        self.pid=pid
+        self.reverse=False
+    
+    def getPredicate(self):
+        '''
+        get me as a Predicate
+        '''
+        reverseToken="^" if self.reverse else ""
+        pLabel=f"{reverseToken}wdt:{self.pid}"
+        return pLabel
+    
+    def __str__(self):
+        text=self.pid
+        if hasattr(self, "label"):
+            text=f"{self.label} ({self.pid})"
+        return text
+      
+    @classmethod
+    def getPropertiesByLabels(cls,sparql,propertyLabels:list,lang:str="en"):
+        '''
+        get a list of Wikidata properties by the given label list
+        
+        Args:
+            sparql(SPARQL): the SPARQL endpoint to use
+            propertyLabels(list): a list of labels of the property
+            lang(str): the language of the label
+        '''
+        # the result dict
+        wdProperties={}
+        valueClause=""
+        for propertyLabel in propertyLabels:
+            valueClause+=f'   "{propertyLabel}"@{lang}\n'
+        query="""
+# get the property for the given labels
+SELECT ?property ?propertyLabel WHERE {
+  VALUES ?propertyLabel {
+%s
+  }
+  ?property rdf:type wikibase:Property;
+  rdfs:label ?propertyLabel.
+  FILTER((LANG(?propertyLabel)) = "en")
+}""" % valueClause
+        qLod=sparql.queryAsListOfDicts(query)
+        for record in qLod:
+            url=record["property"]
+            pid=re.sub(r"http://www.wikidata.org/entity/(.*)",r"\1",url)
+            prop=WikidataProperty(pid)
+            prop.pLabel=record["propertyLabel"]
+            prop.url=url
+            wdProperties[prop.pLabel]=prop
+            pass
+        return wdProperties
+        
 
 class TrulyTabular(object):
     '''
     truly tabular RDF analysis
     '''
 
-    def __init__(self, itemQid, endpoint="https://query.wikidata.org/sparql",debug=False):
+    def __init__(self, itemQid, propertyLabels:list=[], endpoint="https://query.wikidata.org/sparql",lang="en",debug=False):
         '''
         Constructor
         
@@ -23,8 +91,10 @@ class TrulyTabular(object):
         self.debug=debug
         self.endpoint=endpoint
         self.sparql=SPARQL(endpoint)
-        self.label=self.getLabel(itemQid)
+        self.lang=lang
+        self.label=self.getLabel(itemQid,lang=self.lang)
         self.queryManager=TrulyTabular.getQueryManager(debug=self.debug)
+        self.properties=WikidataProperty.getPropertiesByLabels(self.sparql, propertyLabels, lang)
         
     def __str__(self):
         return self.asText(long=False)
@@ -74,12 +144,12 @@ class TrulyTabular(object):
             return qLod[0][attr]
         raise Exception(f"getFirst for attribute {attr} failed for {qLod}")
         
-    def getLabel(self,itemQid:str,lang:str="en"):
+    def getLabel(self,itemId:str,lang:str="en"):
         '''
         get  the label for the given item
         
         Args:
-            itemQid(str): the wikidata Q id
+            itemId(str): the wikidata Q/P id
             lang(str): the language of the label
         '''
         query="""
@@ -92,7 +162,7 @@ WHERE
   }
   ?item rdfs:label ?itemLabel.
   filter (lang(?itemLabel) = "%s").
-}""" % (itemQid,lang)
+}""" % (itemId,lang)
         return self.getValue(query, "itemLabel")
         
     def count(self):
@@ -118,34 +188,60 @@ WHERE
         query.query=query.query % self.itemQid
         return query
     
-    def noneTabular(self,propertyId:str,propertyLabel:str,reverse:bool=False):
+    def noneTabularQuery(self,wdProperty:WikidataProperty,asFrequency:bool=True):
         '''
         get the none tabular entries for the given property
         
         Args:
-            propertyId(str): the property id e.g. P276
-            propertyLabel(str): the property label e.g. location
+            wdProperty(WikidataProperty): the property to analyze
+            asFrequency(bool): if true do a frequency analysis
         '''
-        if reverse: 
-            reverse="^" 
-        else: 
-            reverse=""
-        query=f"""
+        propertyLabel=wdProperty.pLabel
+        propertyId=wdProperty.pid
+        # work around https://github.com/RDFLib/sparqlwrapper/issues/211
+        if "described at" in propertyLabel:
+            propertyLabel=propertyLabel.replace("described at","describ'd at")
+        sparql=f"""
 # Count all {self.asText(long=True)} items
 # with the given {propertyLabel}({propertyId}) https://www.wikidata.org/wiki/Property:{propertyId} 
-SELECT ?item (COUNT (?value) AS ?count)
+SELECT ?item ?itemLabel (COUNT (?value) AS ?count)
 WHERE
 {{
   # instance of {self.label}
   ?item wdt:P31 wd:{self.itemQid}.
+  ?item rdfs:label ?itemLabel.
+  filter (lang(?itemLabel) = "en").
   # {propertyLabel}
-  ?item {reverse}wdt:{propertyId} ?value.
-}} GROUP by ?item
+  ?item {wdProperty.getPredicate()} ?value.
+}} GROUP by ?item ?itemLabel
+"""
+        if asFrequency:
+            freqDesc="frequencies"
+            sparql=f"""SELECT ?count (COUNT(?count) AS ?frequency) WHERE {{
+{sparql}
+}}
+GROUP BY ?count
+ORDER BY DESC (?frequency)"""
+        else:
+            freqDesc="records"
+            sparql=f"""{sparql}
 HAVING (COUNT (?value) > 1)
 ORDER BY DESC(?count)"""
-        if self.debug:
-            print(query)
-        qlod=self.sparql.queryAsListOfDicts(query)
-        return qlod
+        query=Query(query=sparql,name=f"NonTabular {self.label}/{propertyLabel}:{freqDesc}",title=f"non tabular entries for {self.label}/{propertyLabel}:{freqDesc}")
+        return query
+
+        def noneTabular(self,wdProperty:WikidataProperty):
+            '''
+            get the none tabular result for the given Wikidata property
+            
+            Args:
+                wdProperty(WikidataProperty): the Wikidata property
+            '''
+            query=self.noneTabularQuery(wdProperty)
+            if self.debug:
+                print(query.query)
+            qlod=self.sparql.queryAsListOfDicts(query)
+            return qlod
+    
 
         
