@@ -72,14 +72,21 @@ class TestTrulyTabular(unittest.TestCase):
         if debug:
             print (tt.properties)
 
-    def testConferenceTables(self):
+    def testTrulyTabularTables(self):
         '''
         test Truly Tabular for academic conferences
         '''
-        debug=False
+        debug=self.debug
+        debug=True
         show=False
         showStats=["mediawiki","github","latex"]
         tables=[ 
+            {
+               "qid":"Q5", # human
+               "where": "?item wdt:P106 wd:Q82594.", # computer scientist only
+               "propertyLabels": ["sex or gender","date of birth","ORCID iD","GND ID","DBLP author ID","Google Scholar author ID"],
+               "expected": 10  
+            },
             {
                "qid": "Q2020153",# academic conference
                "propertyLabels":["title","country","location","short name","start time",
@@ -100,7 +107,10 @@ class TestTrulyTabular(unittest.TestCase):
         errors=0
         for table in tables:
             # academic conference
-            tt=TrulyTabular(table["qid"],table["propertyLabels"],debug=debug)
+            where=None
+            if "where" in table:
+                where=table["where"]
+            tt=TrulyTabular(table["qid"],table["propertyLabels"],where=where,debug=debug)
             if "is proceedings from" in tt.properties:
                 tt.properties["is proceedings from"].reverse=True
             count=tt.count()
@@ -108,6 +118,7 @@ class TestTrulyTabular(unittest.TestCase):
                 print(count)
             self.assertTrue(count>table["expected"])
             stats=tt.getPropertyStatics()
+            stats = sorted(stats, key=lambda row: row['total%']) 
             for tablefmt in showStats:
                 print(tabulate(stats,headers="keys",tablefmt=tablefmt))
             if show:

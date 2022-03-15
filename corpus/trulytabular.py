@@ -80,17 +80,21 @@ class TrulyTabular(object):
     truly tabular RDF analysis
     '''
 
-    def __init__(self, itemQid, propertyLabels:list=[], endpoint="https://query.wikidata.org/sparql",lang="en",debug=False):
+    def __init__(self, itemQid, propertyLabels:list=[],where:str=None,endpoint="https://query.wikidata.org/sparql",lang="en",debug=False):
         '''
         Constructor
         
         Args:
-            itemQid: wikidata id of the type to analyze 
+            itemQid(str): wikidata id of the type to analyze 
+            popertyLabels(list) the list of labels of properties to be considered
+            where(str): extra where clause for instance selection (if any)
+            endpoint(str): the url of the SPARQL endpoint to be used
         '''
         self.itemQid=itemQid
         self.debug=debug
         self.endpoint=endpoint
         self.sparql=SPARQL(endpoint)
+        self.where=f"\n  {where}" if where is not None else ""
         self.lang=lang
         self.label=self.getLabel(itemQid,lang=self.lang)
         self.queryManager=TrulyTabular.getQueryManager(debug=self.debug)
@@ -175,7 +179,7 @@ SELECT (COUNT (DISTINCT ?item) AS ?count)
 WHERE
 {{
   # instance of {self.label}
-  ?item wdt:P31 wd:{self.itemQid}.
+  ?item wdt:P31 wd:{self.itemQid}.{self.where}
 }}"""
         return self.getValue(query, "count")
     
@@ -208,7 +212,7 @@ SELECT ?item ?itemLabel (COUNT (?value) AS ?count)
 WHERE
 {{
   # instance of {self.label}
-  ?item wdt:P31 wd:{self.itemQid}.
+  ?item wdt:P31 wd:{self.itemQid}.{self.where}
   ?item rdfs:label ?itemLabel.
   filter (lang(?itemLabel) = "en").
   # {propertyLabel}
@@ -264,15 +268,21 @@ ORDER BY DESC(?count)"""
             statsRow={"property":wdProperty.pLabel}
             total=0
             nttotal=0
+            maxCount=0
             for record in ntlod:
                 f=record["frequency"]
                 count=record["count"]
-                statsRow[f"f{count}"]=f
+                #statsRow[f"f{count}"]=f
                 if count>1:
                     nttotal+=f
+                else:
+                    statsRow["1"]=f
+                if count>maxCount:
+                    maxCount=count     
                 total+=f
-                self.addStatsColWithPercent(statsRow,"total",total,itemCount)
-                self.addStatsColWithPercent(statsRow,"non tabular",nttotal,total)
+            statsRow["max"]=maxCount
+            self.addStatsColWithPercent(statsRow,"total",total,itemCount)
+            self.addStatsColWithPercent(statsRow,"non tabular",nttotal,total)
             lod.append(statsRow)
         return lod
     
