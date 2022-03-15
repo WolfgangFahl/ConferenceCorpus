@@ -7,7 +7,7 @@ from lodstorage.sparql import SPARQL
 from lodstorage.query import Query,QueryManager
 import os
 import re
-from pickle import NONE
+
 
 class WikidataProperty():
     '''
@@ -230,18 +230,51 @@ ORDER BY DESC(?count)"""
         query=Query(query=sparql,name=f"NonTabular {self.label}/{propertyLabel}:{freqDesc}",title=f"non tabular entries for {self.label}/{propertyLabel}:{freqDesc}")
         return query
 
-        def noneTabular(self,wdProperty:WikidataProperty):
-            '''
-            get the none tabular result for the given Wikidata property
-            
-            Args:
-                wdProperty(WikidataProperty): the Wikidata property
-            '''
-            query=self.noneTabularQuery(wdProperty)
-            if self.debug:
-                print(query.query)
-            qlod=self.sparql.queryAsListOfDicts(query)
-            return qlod
+    def noneTabular(self,wdProperty:WikidataProperty):
+        '''
+        get the none tabular result for the given Wikidata property
+        
+        Args:
+            wdProperty(WikidataProperty): the Wikidata property
+        '''
+        query=self.noneTabularQuery(wdProperty)
+        if self.debug:
+            print(query.query)
+        qlod=self.sparql.queryAsListOfDicts(query.query)
+        return qlod
+    
+    def addStatsColWithPercent(self,m,col,value,total): 
+        '''
+        add a statistics Column
+        '''
+        m[col]=value
+        m[f"{col}%"]=f"{value/total*100:.1f}"
+    
+    def getPropertyStatics(self):
+        '''
+        get the property Statistics
+        '''
+        itemCount=self.count()
+        lod=[{
+            "property": "∑",
+            "total": itemCount
+        }]
+        for wdProperty in self.properties.values():
+            ntlod=self.noneTabular(wdProperty)
+            statsRow={"property":wdProperty.pLabel}
+            total=0
+            nttotal=0
+            for record in ntlod:
+                f=record["frequency"]
+                count=record["count"]
+                statsRow[f"f{count}"]=f
+                if count>1:
+                    nttotal+=f
+                total+=f
+                self.addStatsColWithPercent(statsRow,"total",total,itemCount)
+                self.addStatsColWithPercent(statsRow,"non tabular",nttotal,total)
+            lod.append(statsRow)
+        return lod
     
 
         

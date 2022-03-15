@@ -4,8 +4,8 @@ Created on 2022-03-4
 @author: wf
 '''
 import unittest
-from corpus.trulytabular import TrulyTabular, WikidataProperty
-
+from corpus.trulytabular import TrulyTabular
+from tabulate import tabulate
 
 class TestTrulyTabular(unittest.TestCase):
     '''
@@ -76,7 +76,9 @@ class TestTrulyTabular(unittest.TestCase):
         '''
         test Truly Tabular for academic conferences
         '''
-        debug=True
+        debug=False
+        show=False
+        showStats=["mediawiki","github","latex"]
         tables=[ 
             {
                "qid": "Q2020153",# academic conference
@@ -89,12 +91,14 @@ class TestTrulyTabular(unittest.TestCase):
             },
             {
                 "qid": "Q47258130", # scientific conference series
-                "propertyLabels":["title","short name","inception","GND ID"],
+                "propertyLabels":["title","short name","inception","official website","DBLP venue ID","GND ID",
+                    "Microsoft Academic ID","Freebase ID","WikiCFP conference series ID",
+                    "Publons journals/conferences ID","ACM conference ID"],
                 "expected": 4200
             }
         ]
         errors=0
-        for table in tables[1:]:
+        for table in tables:
             # academic conference
             tt=TrulyTabular(table["qid"],table["propertyLabels"],debug=debug)
             if "is proceedings from" in tt.properties:
@@ -103,15 +107,20 @@ class TestTrulyTabular(unittest.TestCase):
             if (debug):
                 print(count)
             self.assertTrue(count>table["expected"])
-            for wdProperty in tt.properties.values():
-                for asFrequency in [True,False]:
-                    query=tt.noneTabularQuery(wdProperty,asFrequency=asFrequency)
-                    try:
-                        self.documentQuery(tt, query)
-                    except Exception as ex:
-                        print(f"query for {wdProperty} failed\n{str(ex)}")
-                        errors+=1
-        self.assertEqual(0,errors)
+            stats=tt.getPropertyStatics()
+            for tablefmt in showStats:
+                print(tabulate(stats,headers="keys",tablefmt=tablefmt))
+            if show:
+                for wdProperty in tt.properties.values():
+                    for asFrequency in [True,False]:
+                        query=tt.noneTabularQuery(wdProperty,asFrequency=asFrequency)
+                        try:
+                            self.documentQuery(tt, query)
+                        except Exception as ex:
+                            print(f"query for {wdProperty} failed\n{str(ex)}")
+                            errors+=1
+                self.assertEqual(0,errors)
+            
                 
     def testMostFrequentIdentifiers(self):
         '''
