@@ -45,14 +45,14 @@ class WikidataProperty():
         
         Args:
             sparql(SPARQL): the SPARQL endpoint to use
-            propertyLabels(list): a list of labels of the property
+            propertyLabels(list): a list of labels of the properties 
             lang(str): the language of the label
         '''
         # the result dict
         wdProperties={}
-        valueClause=""
+        valuesClause=""
         for propertyLabel in propertyLabels:
-            valueClause+=f'   "{propertyLabel}"@{lang}\n'
+            valuesClause+=f'   "{propertyLabel}"@{lang}\n'
         query="""
 # get the property for the given labels
 SELECT ?property ?propertyLabel WHERE {
@@ -62,7 +62,7 @@ SELECT ?property ?propertyLabel WHERE {
   ?property rdf:type wikibase:Property;
   rdfs:label ?propertyLabel.
   FILTER((LANG(?propertyLabel)) = "en")
-}""" % valueClause
+}""" % valuesClause
         qLod=sparql.queryAsListOfDicts(query)
         for record in qLod:
             url=record["property"]
@@ -73,14 +73,67 @@ SELECT ?property ?propertyLabel WHERE {
             wdProperties[prop.pLabel]=prop
             pass
         return wdProperties
+    
+class WikidataItem:
+    def __init__(self,qid:str):
+        '''
+        construct me with the given item id
         
+        Args:
+            qid(str): the item Id
+        '''
+        self.qid=qid
+        
+        
+    def __str__(self):
+        text=self.qid
+        if hasattr(self, "qlabel"):
+            text=f"{self.qlabel} ({self.qid})"
+        return text
+        
+    @classmethod
+    def getItemsByLabel(cls,sparql,itemLabels:list,lang:str="en"):
+        '''
+        get a list of Wikidata items by the given label list
+        
+        Args:
+            sparql(SPARQL): the SPARQL endpoint to use
+            itemLabels(list): a list of labels of items
+            lang(str): the language of the label
+        '''
+        items={}
+        valuesClause=""
+        for itemLabel in itemLabels:
+            valuesClause+=f'   "{itemLabel}"@{lang}\n'
+        query="""# get the lowest item that has the given label 
+# e.g. we'll find human=Q5 instead of the newer human entries in wikidata
+SELECT (MIN(?itemValue) as ?item) ?itemLabel
+WHERE { 
+  VALUES ?itemLabel {
+%s
+  }
+  ?itemValue rdfs:label ?itemLabel. 
+} GROUP BY ?itemLabel""" % valuesClause
 
+        qLod=sparql.queryAsListOfDicts(query)
+        for record in qLod:
+            url=record["item"] 
+            qid=re.sub(r"http://www.wikidata.org/entity/(.*)",r"\1",url)
+            item=WikidataItem(qid)
+            item.url=url
+            item.qlabel=record["itemLabel"]
+            items[item.qlabel]=item
+        return items
+        
 class TrulyTabular(object):
     '''
-    truly tabular RDF analysis
+    truly tabular SPARQL/RDF analysis
+    
+    checks "how tabular" a query based on a list of properties of an itemclass is
     '''
+    endpoint="https://query.wikidata.org/sparql"
 
-    def __init__(self, itemQid, propertyLabels:list=[],where:str=None,endpoint="https://query.wikidata.org/sparql",lang="en",debug=False):
+    def __init__(self, itemQid, propertyLabels:list=[],where:str=None,endpoint=None,method="POST",lang="en",debug=False):
         '''
         Constructor
         
@@ -92,8 +145,10 @@ class TrulyTabular(object):
         '''
         self.itemQid=itemQid
         self.debug=debug
+        if endpoint is None:
+            endpoint=TrulyTabular.endpoint
         self.endpoint=endpoint
-        self.sparql=SPARQL(endpoint)
+        self.sparql=SPARQL(endpoint,method=method)
         self.where=f"\n  {where}" if where is not None else ""
         self.lang=lang
         self.label=self.getLabel(itemQid,lang=self.lang)
@@ -101,7 +156,26 @@ class TrulyTabular(object):
         self.properties=WikidataProperty.getPropertiesByLabels(self.sparql, propertyLabels, lang)
         
     def __str__(self):
+        '''
+        Returns:
+            str: my text representation
+        '''
         return self.asText(long=False)
+    
+    def asText(self,long:bool=True):
+        '''
+        returns my content as a text representation
+        
+        Args:
+            long(bool): True if a long format including url is wished
+            
+        Returns:
+            str: a text representation of my content
+        '''
+        if long:
+            return f"{self.label}({self.itemQid}) https://www.wikidata.org/wiki/{self.itemQid}"
+        else:
+            return f"{self.label}({self.itemQid})"
     
     @classmethod
     def getQueryManager(cls,lang='sparql',name="trulytabular",debug=False):
@@ -121,31 +195,34 @@ class TrulyTabular(object):
                 return qm
         return None
     
-    def asText(self,long:bool=True):
-        if long:
-            return f"{self.label}({self.itemQid}) https://www.wikidata.org/wiki/{self.itemQid}"
-        else:
-            return f"{self.label}({self.itemQid})"
         
-    def getValue(self,query:str,attr:str):
+    def getValue(self,sparqlQuery:str,attr:str):
         '''
-        get the value for the given Query using the given attr
+        get the value for the given SPARQL query using the given attr
         
         Args:
-            query(str): the SPARQL query to run
+            sparqlQuery(str): the SPARQL query to run
             attr(str): the attribute to get
         '''
         if self.debug:
-            print(query)
-        qLod=self.sparql.queryAsListOfDicts(query)
+            print(sparqlQuery)
+        qLod=self.sparql.queryAsListOfDicts(sparqlQuery)
         return self.getFirst(qLod, attr)
         
     def getFirst(self,qLod:list,attr:str):
         '''
-        get the 
+        get the column attr of the first row of the given qLod list
+        
+        Args:
+            qLod(list): the list of dicts (returned by a query)
+            attr(str): the attribute to retrieve
+            
+        Returns:
+            object: the value
         '''
         if len(qLod)==1 and attr in qLod[0]:
-            return qLod[0][attr]
+            value=qLod[0][attr]
+            return value
         raise Exception(f"getFirst for attribute {attr} failed for {qLod}")
         
     def getLabel(self,itemId:str,lang:str="en"):
@@ -154,15 +231,18 @@ class TrulyTabular(object):
         
         Args:
             itemId(str): the wikidata Q/P id
-            lang(str): the language of the label
+            lang(str): the language of the label 
+            
+        Returns:
+            str: the label
         '''
         query="""
 # get the label for the given item
 SELECT ?itemLabel
 WHERE
 {
-  VALUES (?item) {
-    (wd:%s)
+  VALUES ?item {
+    wd:%s
   }
   ?item rdfs:label ?itemLabel.
   filter (lang(?itemLabel) = "%s").
@@ -221,9 +301,9 @@ WHERE
 """
         if asFrequency:
             freqDesc="frequencies"
-            sparql=f"""SELECT ?count (COUNT(?count) AS ?frequency) WHERE {{
+            sparql=f"""SELECT ?count (COUNT(?count) AS ?frequency) WHERE {{{{
 {sparql}
-}}
+}}}}
 GROUP BY ?count
 ORDER BY DESC (?frequency)"""
         else:
@@ -252,7 +332,7 @@ ORDER BY DESC(?count)"""
         add a statistics Column
         '''
         m[col]=value
-        m[f"{col}%"]=f"{value/total*100:.1f}"
+        m[f"{col}%"]=float(f"{value/total*100:.1f}")
     
     def getPropertyStatics(self):
         '''
@@ -261,7 +341,8 @@ ORDER BY DESC(?count)"""
         itemCount=self.count()
         lod=[{
             "property": "∑",
-            "total": itemCount
+            "total": itemCount,
+            "total%": 100.0
         }]
         for wdProperty in self.properties.values():
             ntlod=self.noneTabular(wdProperty)

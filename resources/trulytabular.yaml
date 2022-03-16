@@ -1,8 +1,26 @@
 # Named Queries for truly tabular analysis
 # WF 2022-03-14
+"mostFrequentProperties":
+    title: most frequently used  properties
+    description: most frequently used  properties
+    sparql: |
+        SELECT ?prop ?propLabel ?count WHERE {
+          {
+            SELECT ?prop (COUNT(DISTINCT ?item) AS ?count) WHERE {
+              hint:Query hint:optimizer "None".
+              ?item wdt:P31 wd:Q1143604;
+                ?p ?id.
+              ?prop wikibase:directClaim ?p.
+            }
+            GROUP BY ?prop ?propLabel
+          }
+          ?prop rdfs:label ?propLabel
+          filter(lang(?propLabel) = "en")      
+        }
+        ORDER BY DESC (?count)
 "mostFrequentIdentifiers":
     title: most frequently used identifier properties
-    description: 
+    description: most frequently used identifier properties
     sparql: |
         SELECT ?prop ?propLabel ?count WHERE {
         {
