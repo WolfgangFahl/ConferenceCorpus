@@ -7,16 +7,17 @@ from tests.datasourcetoolbox import DataSourceTest
 import getpass
 from corpus.datasources.tibkatftx import FTXParser
 
+
 class TestFTXParser(DataSourceTest):
     '''
     test FTX parsing
     '''
     
-    def setUp(self,debug=False,profile=True):
+    def setUp(self,debug=False,profile=True, **kwargs):
         '''
         set the environment
         '''
-        super().setUp(debug=debug, profile=profile)
+        super().setUp(debug=debug, profile=profile, **kwargs)
         user=getpass.getuser()
         self.ftxroot=None
         self.ftxParser=None
@@ -54,7 +55,7 @@ class TestFTXParser(DataSourceTest):
         debug=self.debug
         #debug=True
         show=self.debug
-        show=True
+        # show=True
         #XmlEntity.debug=debug
         if self.ftxParser is not None:
             documents={}

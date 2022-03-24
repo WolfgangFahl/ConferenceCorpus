@@ -8,6 +8,7 @@ from corpus.datasources.webscrape import WebScrape
 from corpus.datasources.wikicfpscrape import CrawlType
 from tests.datasourcetoolbox import DataSourceTest
 
+
 class TestWebScrape(DataSourceTest):
     '''
     test getting rdfA based triples from Webpages

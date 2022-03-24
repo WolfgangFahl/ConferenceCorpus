@@ -1,16 +1,13 @@
 from datetime import datetime
 from functools import partial
 from unittest import TestCase
-
-from corpus.event import EventManager, Event, EventSeries, EventSeriesManager
+from corpus.event import EventManager, Event, EventSeries, EventSeriesManager, EventStorage
 
 
 class TestEvent(TestCase):
     '''
     test general features of Event
     '''
-
-
 
     def testFromCsv(self):
         """
@@ -160,6 +157,6 @@ class TestEvent(TestCase):
             eventDicts.append(event.__dict__)
         wikison=EventManager.asWikiSon(eventDicts)    
         if self.debug:
-            print (wikison)
+            print(wikison)
         self.assertTrue('{{Event' in wikison)
         self.assertTrue('|event=AAMAS 2015' in wikison)

@@ -7,13 +7,15 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
 import re
+
+
 class TestWikiData(DataSourceTest):
     '''
     test wiki data access
     '''
         
-    def setUp(self):
-        DataSourceTest.setUp(self)
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         self.lookup=CorpusLookup(lookupIds=["wikidata"])
         self.lookup.load(forceUpdate=False)
         self.wikidataDataSource=self.lookup.getDataSource("wikidata")
@@ -29,7 +31,7 @@ class TestWikiData(DataSourceTest):
         queryManager=EventStorage.getQueryManager(lang="sparql",name="wikidata")
         self.assertTrue(queryManager is not None)
         wikiDataEventsQuery=queryManager.queriesByName["Wikidata-Events"]
-        debug= self.debug
+        debug = self.debug
         #debug=True
         if debug:
             print(wikiDataEventsQuery)

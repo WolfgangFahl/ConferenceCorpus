@@ -4,16 +4,16 @@ Created on 13.12.2021
 @author: wf
 '''
 import unittest
-import json
 from tests.datasourcetoolbox import DataSourceTest
 import warnings
 from corpus.web.webserver import WebServer
 
+
 class TestWebServer(DataSourceTest):
     """Test the WebServers RESTful interface"""
     
-    def setUp(self) -> None:
-        DataSourceTest.setUp(self)
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs) -> None:
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         self.ws,self.app, self.client=TestWebServer.getApp()
         pass
     

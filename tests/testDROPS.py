@@ -8,15 +8,16 @@ from tests.datasourcetoolbox import DataSourceTest
 from corpus.datasources.drops import DROPS
 from corpus.utils.progress import Progress
 
+
 class TestDROPS(DataSourceTest):
     '''
     Dagstuhl Research Online Publication Server Volumes
     https://github.com/WolfgangFahl/ConferenceCorpus/issues/38
     '''
 
-    def setUp(self):
-        super().setUp()
-        self.maxCollectionId=812 
+    def setUp(self, debug:bool=False, **kwargs):
+        super().setUp(debug=debug, **kwargs)
+        self.maxCollectionId=812 if not self.inCI() else 10
         
     def testCaching(self):
         '''
@@ -47,6 +48,7 @@ class TestDROPS(DataSourceTest):
             print(f"found {len(volumes)} volumes")
         expected=321
         self.assertTrue(len(volumes)>=expected)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

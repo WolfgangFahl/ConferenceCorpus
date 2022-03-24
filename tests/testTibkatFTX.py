@@ -1,18 +1,17 @@
 from tempfile import NamedTemporaryFile
-
 from wikifile.wikiFile import WikiFile
-
 from corpus.datasources.tibkatftx import TibkatCmdLine, main
 from tests.datasourcetoolbox import DataSourceTest
 from tests.testSMW import TestSMW
+
 
 class TestTibkatFTX(DataSourceTest):
     """
     test for TIBkat FTX CommandLine handling
     """
 
-    def setUp(self,debug=False,profile=True):
-        super().setUp(debug=debug, profile=profile)
+    def setUp(self,debug=False,profile=True, **kwargs):
+        super().setUp(debug=debug, profile=profile, **kwargs)
         self.testWikiId = getattr(TestSMW.getWikiUser("orfixed"), "wikiId")
         
 

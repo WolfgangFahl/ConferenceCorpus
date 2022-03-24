@@ -21,8 +21,8 @@ class TestStatistics(DataSourceTest):
         super().setUpClass()
         cls.lookup=CorpusLookup()
 
-    def setUp(self):
-        DataSourceTest.setUp(self)
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         self.lookup=TestStatistics.lookup
         pass
     
@@ -51,7 +51,7 @@ order by duration"""
         '''
         test MultiQuery
         '''
-        lookup=self.lookup;
+        lookup=self.lookup
         multiQuery="""SELECT count(*) AS count,ordinal 
         FROM {event}
         GROUP BY ordinal ORDER by 1"""
@@ -66,7 +66,7 @@ order by duration"""
         '''
         test statistics
         '''
-        lookup=self.lookup;
+        lookup=self.lookup
         qm=EventStorage.getQueryManager()
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)

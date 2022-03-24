@@ -12,8 +12,8 @@ class TestPainScale(DataSourceTest):
     test the PainScale see
     '''
 
-    def setUp(self):
-        super().setUp()
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
+        super().setUp(debug=debug, profile=profile, **kwargs)
 
     def testPainImages(self):
         '''

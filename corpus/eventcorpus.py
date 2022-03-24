@@ -9,6 +9,7 @@ from corpus.quality.rating import RatingManager
 from corpus.utils.download import Download
 from corpus.utils.download import Profiler
 
+
 class EventDataSource(object):
     '''
     a data source for events
@@ -98,9 +99,8 @@ class EventCorpus(object):
         '''
         for eventDataSource in self.eventDataSources.values():
             eventDataSource.load(forceUpdate=forceUpdate,showProgress=showProgress)
-   
-           
-    @staticmethod        
+
+    @staticmethod
     def download():
         '''
         download the EventCorpus.db if needed

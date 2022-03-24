@@ -24,6 +24,7 @@ class TestOpenResearch(DataSourceTest):
         # the lookupId "orclone" is for for the access via API on the OpenResearch clone
         lookupIds=[]
         self.testWikiId = "orclone"
+        TestSMW.getWikiUser(self.testWikiId)
         self.testLimit=5
         OR.limitFiles=self.testLimit
         for wikiId in "or","orclone":

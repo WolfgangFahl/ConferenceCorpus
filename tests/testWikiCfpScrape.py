@@ -13,13 +13,14 @@ from datetime import datetime
 import corpus.datasources.wikicfpscrape
 from tests.datasourcetoolbox import DataSourceTest
 
+
 class TestWikiCFP(DataSourceTest):
     '''
     test events from WikiCFP
     '''
 
-    def setUp(self):
-        DataSourceTest.setUp(self, debug=False, profile=True)
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         self.wikiCFPDown=False
         pass
 
@@ -134,7 +135,7 @@ class TestWikiCFP(DataSourceTest):
         '''
         test extracting the event series id from th event page
         '''
-        self.debug=True
+        # self.debug=True
         expectedSeriesId=['1769',None]
         eventIds=[1974,139964]
         event=WikiCfpEventFetcher(debug=self.debug,timeout=3.5)

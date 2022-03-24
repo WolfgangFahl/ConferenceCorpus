@@ -18,7 +18,8 @@ class TestEventSeriesBlueprint(TestWebServer):
         '''
         jsonStr=self.getResponse("/eventseries/WEBIST?format=json")
         res=json.loads(jsonStr)
-        print(res)
+        if self.debug:
+            print(res)
         self.assertTrue("confref" in res)
         self.assertTrue(len(res["confref"])>15)
 
@@ -29,7 +30,8 @@ class TestEventSeriesBlueprint(TestWebServer):
         lod = self.getEventSeries("ICEIS").get("wikicfp")
         jsonStr = self.client.post("/eventseries/complete", data=json.dumps({"wikicfp":lod}, default=str))
         res = json.loads(jsonStr.data.decode())
-        print(res)
+        if self.debug:
+            print(res)
         self.assertTrue("wikicfp" in res)
         self.assertTrue(len(lod) < 20)
         self.assertTrue(len(res["wikicfp"]) > 20)
@@ -129,7 +131,8 @@ class TestEventSeriesCompletion(DataSourceTest):
         # delete ordinals
         lod_without_ordinal=[ {k:v for k,v in d.items() if k != "ordinal"} for d in lod]
         lodCompleted=EventSeriesCompletion.completeSeries(lod_without_ordinal)
-        print(lodCompleted)
+        if self.debug:
+            print(lodCompleted)
 
         # lod_iceis = self.getEventSeries("ICEIS").get("wikidata")
         # lodCompleted_iceis  = EventSeriesCompletion.completeSeries(lod_iceis)
@@ -137,7 +140,8 @@ class TestEventSeriesCompletion(DataSourceTest):
 
         lod_webist = self.getEventSeries("WEBIST").get("dblp")
         lodCompleted_webist = EventSeriesCompletion.completeSeries(lod_webist)
-        print(lodCompleted_webist)
+        if self.debug:
+            print(lodCompleted_webist)
 
 
     def test_guessOrdinalBenchmark(self):
@@ -179,7 +183,8 @@ class TestEventSeriesCompletion(DataSourceTest):
                             stats["not_in_set"] += 1
                     else:
                         stats["no_guess"] += 1
-        print(stats)
+        if self.debug:
+            print(stats)
 
     def test_isOrdinalConsistent(self):
         """
@@ -218,8 +223,8 @@ class TestEventSeriesCompletion(DataSourceTest):
 
     def test_SeriesConsistencyBenchmark(self):
         """
-                tests the accuracy of the ordinal guessing by guessing the ordinal and than comparing it to the defined ordinal
-                """
+        tests the accuracy of the ordinal guessing by guessing the ordinal and than comparing it to the defined ordinal
+        """
         return
         if self.inCI():
             return
@@ -257,7 +262,8 @@ class TestEventSeriesCompletion(DataSourceTest):
                     stats["inconsistent"] += not isConsistent
                     stats["considerable"] += isConsistent and isConsiderable
                     print(f"{seriesRecord.acronym}: OrdinalConsistent[{isOrdinalConsistent}], OrdinalStyleConsistent[{isOrdinalStyleConsistent}], FrequencyConsistent[{isFrequencyConsistent}], Considerable[{isConsiderable}]")
-        print(stats)
+        if self.debug:
+            print(stats)
 
     def _assertLodEqual(self, expectedLod, actualLod):
         """

@@ -224,7 +224,7 @@ class GndEventManager(EventManager):
         '''
         stats=ExtractStatistics()
         for event in self.events:
-            titleExtractor=GndTitleExtractor(event.fulltitle,stats)
+            titleExtractor=GndTitleExtractor(getattr(event, "fulltitle", ""),stats)
             titleExtractor.titleExtract()
             titleExtractor.updateRawEvent(event.__dict__)
             dateRange=(Textparse.getDateRange(event.date))
@@ -244,6 +244,7 @@ class GndEventManager(EventManager):
         gndquery=self.queryManager.queriesByName["GND-Events"]
         sparql=gndquery.query
         return sparql
+
 
 class GndEventSeriesManager(EventSeriesManager):
     '''
