@@ -15,6 +15,8 @@ class OR(EventDataSource):
     '''
     scientific events from http://www.openresearch.org
     '''
+
+    limitFiles = None
     
     def __init__(self,wikiId='or',via='api'):
         '''
@@ -115,7 +117,7 @@ class OREventManager(EventManager):
         '''
         self.smwHandler.fromWikiFileManager(wikiFileManager)
 
-    def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False):
+    def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False, limit:int=None):
         '''
 
         Args:
@@ -123,20 +125,29 @@ class OREventManager(EventManager):
             askExtra(str):
             profile(bool):
         '''
+        if limit is None:
+            limit = OR.limitFiles
         if wikiuser is None and hasattr(self,'wikiUser'):
             wikiuser=self.wikiUser
-        lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
+        lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile, limit)
         self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
         self.postProcessLodRecords(lod,wikiUser=wikiuser)
         return lod
 
-    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
+    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None, limit:int=None):
         '''
         get my list of dicts from the given WikiFileManager
+
+        Args:
+            wikiFileManager(WikiFileManager): WikiFileManager from which the records should be loaded
+            limit(int): limit the amount on loaded records
         '''
+        if limit is None:
+            limit = OR.limitFiles
         if self.wikiFileManager:
             wikiFileManager=self.wikiFileManager
-        lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
+        lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager, limit=limit)
+        LOD.setNone4List(lod, LOD.getFields(self.clazz.getSamples()))
         # TODO set source more specific
         self.setAllAttr(lod,"source","or")
         wikiUser=None
@@ -199,14 +210,13 @@ class OREvent(Event):
     @classmethod
     def getSamples(cls):
         samplesLOD = [{
-            "pageTitle": "ICSME 2020",
-            "acronym": "ICSME 2020",
-            "ordinal": 36,
-            "eventType": "Conference",
-            "subject": "Software engineering",
-            "startDate": datetime.fromisoformat("2020-09-27"),
-            "endDate": datetime.fromisoformat("2020-09-27")
-        },
+                "pageTitle": "ICSME 2020",
+                "acronym": "ICSME 2020",
+                "ordinal": 36,
+                "eventType": "Conference",
+                "startDate": datetime.fromisoformat("2020-09-27"),
+                "endDate": datetime.fromisoformat("2020-09-27")
+            },
             {
                 "pageTitle": "WebSci 2019",
                 "acronym": "WebSci 2019",
@@ -225,6 +235,7 @@ class OREvent(Event):
                 "presence": "online",
                 "wikicfpId": 891,
                 "tibKatId":"1736060724",
+                "subject": "Software engineering",
                 "ISBN":"9781450370707"
             },
             {
@@ -420,7 +431,6 @@ class OREventSeriesManager(EventSeriesManager):
             lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
         return lookup
 
-
     def fromWikiUser(self, wikiuser:WikiUser, askExtra:str="", profile:bool=False):
         '''
         read me from a wiki using the given WikiUser configuration
@@ -441,30 +451,38 @@ class OREventSeriesManager(EventSeriesManager):
         '''
         self.smwHandler.fromWikiFileManager(wikiFileManager)
 
-    def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False):
+    def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False, limit:int=None):
         '''
 
         Args:
-            wikiuser(WikiUser):
-            askExtra(str):
+            wikiuser(WikiUser): wikiuser specifiying from which wiki to the records should be queried
+            askExtra(str): additional selector for the query e.g. '[[Modification date::>=2022]]'
             profile(bool):
+            limit(int): limit number of queried records
         '''
+        if limit is None:
+            limit = OR.limitFiles
         if wikiuser is None and hasattr(self,'wikiUser'):
             wikiuser=self.wikiUser
-        lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile)
+        lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile, limit=limit)
         self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
         self.postProcessLodRecords(lod, wikiUser=wikiuser)
         return lod
 
-    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None):
+    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None, limit:int=None):
         '''
         get my List of Dicts from the given WikiFileManager
         
-        
+        Args:
+            wikiFileManager(WikiFileManager): WikiFileManager from which the records should be loaded
+            limit(int): limit the amount on loaded records
         '''
+        if limit is None:
+            limit = OR.limitFiles
         if self.wikiFileManager:
             wikiFileManager=self.wikiFileManager
-        lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager)
+        lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager, limit=limit)
+        LOD.setNone4List(lod, LOD.getFields(self.clazz.getSamples()))
         self.setAllAttr(lod,"source",f"{wikiFileManager.wikiUser.wikiId}-backup")
         wikiUser=None
         if wikiFileManager.wikiPush.fromWiki:
@@ -524,7 +542,6 @@ class OREventSeries(EventSeries):
                 'pageTitle': 'AAAI',
                 'acronym': 'AAAI',
                 'title': 'Conference on Artificial Intelligence',
-                'subject': 'Artificial Intelligence',
                 'homepage': 'www.aaai.org/Conferences/AAAI/aaai.php',
                 'wikidataId': 'Q56682083',
                 'dblpSeries': 'aaai',
@@ -545,7 +562,8 @@ class OREventSeries(EventSeries):
                 "wikidataId": "Q105456162",
                 'url': 'https://confident.dbis.rwth-aachen.de/or/index.php?title=3DUI',
                 'WikiCfpSeries': 160,
-                'core2018Rank':'B'
+                'core2018Rank':'B',
+                'subject': 'User Interfaces',
             },
             ]
         return samplesLOD
