@@ -71,7 +71,7 @@ order by duration"""
         self.assertIsNotNone(qm)
         self.assertTrue(len(qm.queriesByName)>1)
         showMarkup=False
-        showMarkup=True
+        # showMarkup=True
         failCount=0
         for _name,query in qm.queriesByName.items():
             try:
@@ -81,7 +81,7 @@ order by duration"""
                     if showMarkup:
                         print(qdoc)
             except Exception as ex:
-                print (f"query: {query.query} failed:\n{ex}")
+                print(f"query: {query.query} failed:\n{ex}")
                 failCount+=1
         self.assertTrue(failCount<=3)
         pass
