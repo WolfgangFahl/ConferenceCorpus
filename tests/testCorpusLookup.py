@@ -49,7 +49,7 @@ class TestCorpusLookup(DataSourceTest):
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
-        self.assertEqual(11,len(lookup.eventCorpus.eventDataSources))
+        self.assertGreaterEqual(len(lookup.eventCorpus.eventDataSources), 10)
                 
     def testViewDDL(self):
         '''

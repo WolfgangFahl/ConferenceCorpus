@@ -5,7 +5,6 @@ Created on 27.07.2021
 '''
 import os
 from functools import partial
-from wikibot.wikiuser import WikiUser
 from corpus.datasources.openresearch import OREventSeries, OREventSeriesManager, OREventManager, OREvent, OR
 from tests.testSMW import TestSMW
 from tests.datasourcetoolbox import DataSourceTest
@@ -126,7 +125,7 @@ class TestOpenResearch(DataSourceTest):
         tests getLoDfromWikiUser from OREventSeries
         '''
         manager = OREventSeriesManager()
-        wikiUser = WikiUser.ofWikiId(self.testWikiId)
+        wikiUser = TestSMW.getWikiFileManager(self.testWikiId)
         lod = manager.getLoDfromWikiUser(wikiuser=wikiUser, limit=self.testLimit)
         self.checkEntityLoD(lod, OREventSeries, self.testLimit)
 
@@ -135,7 +134,7 @@ class TestOpenResearch(DataSourceTest):
         tests getLoDfromWikiUser from OREvent
         '''
         manager = OREventManager()
-        wikiUser = WikiUser.ofWikiId(self.testWikiId)
+        wikiUser = TestSMW.getWikiFileManager(self.testWikiId)
         lod = manager.getLoDfromWikiUser(wikiuser=wikiUser, limit=self.testLimit)
         self.checkEntityLoD(lod, OREvent, self.testLimit)
 
