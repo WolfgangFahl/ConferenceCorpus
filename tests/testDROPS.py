@@ -33,7 +33,7 @@ class TestDROPS(DataSourceTest):
        
     def testParsing(self):   
         debug=self.debug
-        #debug=True
+        debug=True
         #XmlEntity.debug=debug
         drops=DROPS(self.maxCollectionId)
         volumes={}
@@ -46,8 +46,8 @@ class TestDROPS(DataSourceTest):
         progress.done()
         if debug:
             print(f"found {len(volumes)} volumes")
-        expected=321
-        self.assertTrue(len(volumes)>=expected)
+        expected=321 if not self.inCI() else 10
+        self.assertGreaterEqual(len(volumes),expected)
 
 
 if __name__ == "__main__":
