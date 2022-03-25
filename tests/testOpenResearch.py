@@ -125,7 +125,7 @@ class TestOpenResearch(DataSourceTest):
         tests getLoDfromWikiUser from OREventSeries
         '''
         manager = OREventSeriesManager()
-        wikiUser = TestSMW.getWikiFileManager(self.testWikiId)
+        wikiUser = TestSMW.getWikiUser(self.testWikiId)
         lod = manager.getLoDfromWikiUser(wikiuser=wikiUser, limit=self.testLimit)
         self.checkEntityLoD(lod, OREventSeries, self.testLimit)
 
@@ -134,7 +134,7 @@ class TestOpenResearch(DataSourceTest):
         tests getLoDfromWikiUser from OREvent
         '''
         manager = OREventManager()
-        wikiUser = TestSMW.getWikiFileManager(self.testWikiId)
+        wikiUser = TestSMW.getWikiUser(self.testWikiId)
         lod = manager.getLoDfromWikiUser(wikiuser=wikiUser, limit=self.testLimit)
         self.checkEntityLoD(lod, OREvent, self.testLimit)
 
