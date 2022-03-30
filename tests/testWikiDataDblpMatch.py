@@ -88,10 +88,10 @@ order by year"""
             wdSeries=self.wdDblpSeries[dblpSeriesId]
             dblpSeriesId=dblpSeriesId.replace("conf/","")
             found=dblpSeriesId in self.dblpSeries
-            foundStr="✓" if found  else "❌"
+            foundStr="✓" if found else "❌"
             count[found]+=1
             if found and dblpSeriesId in samples:
-                print (f"{dblpSeriesId} {wdSeries.url}- {foundStr}")
+                print(f"{dblpSeriesId} {wdSeries.url}- {foundStr}")
                 self.checkSample(dblpSeriesId)
         print(msg)
         print(count.most_common())
