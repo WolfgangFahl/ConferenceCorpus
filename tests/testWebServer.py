@@ -7,7 +7,8 @@ import unittest
 from tests.datasourcetoolbox import DataSourceTest
 import warnings
 from corpus.web.webserver import WebServer
-
+from corpus.web.scholar import Scholar
+import json
 
 class TestWebServer(DataSourceTest):
     """Test the WebServers RESTful interface"""
@@ -61,9 +62,21 @@ class TestWebServer(DataSourceTest):
         '''
         jsonStr=self.getResponse("/eventseries/WEBIST?format=json")
         res=json.loads(jsonStr)
-        print(res)
+        debug=self.debug
+        if debug:
+            print(res)
         self.assertTrue("confref" in res)
         self.assertTrue(len(res["confref"])>15)
+        
+    def testScholarCompletion(self):
+        """
+        tests the completion of an scholar over wikidata
+        """
+        expectedScholars=Scholar.getSamples()
+        ws, app, client=self.getApp()
+        data=[{"wikiDataId":"Q54303353"}]
+        res=client.post('/scholar/complete', data=json.dumps(data))
+        self.assertDictEqual(expectedScholars[0], res.json[0])
 
 
 if __name__ == "__main__":
