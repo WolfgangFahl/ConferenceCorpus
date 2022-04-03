@@ -4,8 +4,9 @@ Created on 2021-10-24
 @author: wf
 '''
 from tests.datasourcetoolbox import DataSourceTest
-from wikibaseintegrator import wbi_core, wbi_login, wbi_datatype,wbi_functions
+from wikibaseintegrator import wbi_functions
 import json
+
 
 class TestWikiBaseIntegrator(DataSourceTest):
     '''

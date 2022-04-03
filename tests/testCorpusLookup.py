@@ -3,20 +3,21 @@ Created on 2021-07-26
 
 @author: wf
 '''
-import unittest
 from tests.testSMW import TestSMW
 from tests.testDblpXml import TestDblp
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
 from tests.datasourcetoolbox import DataSourceTest
 import json
+
+
 class TestCorpusLookup(DataSourceTest):
     '''
     test the event corpus
     '''
 
-    def setUp(self):
-        DataSourceTest.setUp(self)
+    def setUp(self, debug=False, profile=True, **kwargs):
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         pass
     
     def configureCorpusLookup(self,lookup:CorpusLookup):
@@ -48,7 +49,7 @@ class TestCorpusLookup(DataSourceTest):
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
-        self.assertEqual(11,len(lookup.eventCorpus.eventDataSources))
+        self.assertGreaterEqual(len(lookup.eventCorpus.eventDataSources), 10)
                 
     def testViewDDL(self):
         '''
@@ -71,8 +72,8 @@ class TestCorpusLookup(DataSourceTest):
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         infos=lookup.getDataSourceInfos()
-        debug=True
-        if debug:
+        # self.debug=True
+        if self.debug:
             print(infos)
         
     def testDataSource4Table(self):
@@ -82,7 +83,7 @@ class TestCorpusLookup(DataSourceTest):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         dataSource=lookup.getDataSource4TableName("event_confref")
         if self.debug:
-            print (f"{dataSource.name}")
+            print(f"{dataSource.name}")
         self.assertEqual("confref.org",dataSource.name)
         
     def testMultiQuery(self):
@@ -93,7 +94,7 @@ class TestCorpusLookup(DataSourceTest):
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         variable=lookup.getMultiQueryVariable(multiQuery)
         debug=self.debug
-        debug=True
+        # debug=True
         if debug:
             print(f"found '{variable}' as the variable in '{multiQuery}'")
         self.assertEqual("event",variable)
@@ -105,8 +106,7 @@ class TestCorpusLookup(DataSourceTest):
             print(jsonStr)
         for dataSourceName in ["confref","dblp","wikicfp"]:
             self.assertTrue(dataSourceName in dictOfLod)
-        
-        
+
     def testGetPlantUmlDiagram(self):
         '''
         test creating a plantuml diagram of the tables involved in the lookup
@@ -118,7 +118,7 @@ class TestCorpusLookup(DataSourceTest):
         for baseEntity in ["Event","EventSeries"]:
             plantUml=lookup.asPlantUml(baseEntity,exclude=EventStorage.viewTableExcludes)
             debug=self.debug
-            debug=True
+            # debug=True
             if debug:
                 print(plantUml)
             self.assertTrue(f"{baseEntity} <|-- {baseEntity.lower()}_dblp" in plantUml)

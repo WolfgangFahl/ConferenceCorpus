@@ -14,8 +14,8 @@ class TestRating(DataSourceTest):
     test the rating handling
     '''
 
-    def setUp(self):
-        DataSourceTest.setUp(self)
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         pass
 
     def testRating(self):

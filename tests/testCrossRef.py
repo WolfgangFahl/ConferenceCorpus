@@ -65,7 +65,7 @@ class TestCrossRef(DataSourceTest):
             self.assertTrue('title' in doimeta)
             title=doimeta['title'][0]
             if self.debug:
-                print (title)
+                print(title)
             self.assertEqual(expected[index]['title'],title)
         pass
     

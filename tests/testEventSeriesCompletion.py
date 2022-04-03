@@ -22,20 +22,29 @@ class TestEventSeriesCompletion(BaseTest):
         '''
         test guessing the ordinal
         '''
+        debug=self.debug
+        debug=True
         vldbSeriesLod=self.getSeriesLod("VLDB")
         for vldbEvent in vldbSeriesLod:
             pol=EventSeriesCompletion.guessOrdinal(vldbEvent)
             if len(pol)>0:
-                print(pol,vldbEvent)
+                if debug:
+                    print(pol,vldbEvent)
 
     def testMergingSeries(self):
         '''
+        test merging event series from different sources
         '''
         vldbSeriesLod=self.getSeriesLod("VLDB")
-        print (vldbSeriesLod)
-        print (len(vldbSeriesLod))
+        debug=self.debug
+        debug=True
+        if debug:
+            #print (vldbSeriesLod)
+            print (len(vldbSeriesLod))
+            
+        vldbSeriesLod=sorted(vldbSeriesLod,key=lambda event:event["year"])
         for vldbEvent in vldbSeriesLod:
-            if vldbEvent["ordinal"] is  not None:
-                print(f"""{vldbEvent["ordinal"]}""")
+            if vldbEvent["year"] is  not None:
+                print(f"""{vldbEvent["year"]}:{vldbEvent["source"]}""")
         
         

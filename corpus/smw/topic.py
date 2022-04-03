@@ -163,7 +163,7 @@ class SMWEntityList(object):
         else:
             raise Exception('identifier not found in entity given')
 
-    def getAskQuery(self, askExtra="", propertyLookupList=None):
+    def getAskQuery(self, askExtra:str="", propertyLookupList=None):
         '''
         get the query that will ask for all my events
 
@@ -176,12 +176,12 @@ class SMWEntityList(object):
         '''
         entityName = self.entityManager.entityName
         selector = "IsA::%s" % entityName
-        ask = """{{#ask:[[%s]]%s
+        ask = f"""{{{{#ask:[[{selector}]]{askExtra}
 |mainlabel=pageTitle
 |?Creation date=creationDate
 |?Modification date=modificationDate
 |?Last editor is=lastEditor
-""" % (selector, askExtra)
+"""
         if propertyLookupList is None:
             if self.entityManager is not None and hasattr(self.entityManager.clazz, 'propertyLookupList'):
                 propertyLookupList = getattr(self.entityManager.clazz, 'propertyLookupList')
@@ -200,7 +200,7 @@ class SMWEntityList(object):
         self.entityManager.fromLoD(records)
         return records
 
-    def getLoDfromWiki(self, wikiuser:WikiUser, askExtra="", profile=False):
+    def getLoDfromWiki(self, wikiuser:WikiUser, askExtra="", profile=False, limit:int=None):
         '''
         get the List of Dicts for the given wikiUser
         
@@ -208,6 +208,7 @@ class SMWEntityList(object):
             wikiuser(WikiUser): the wikiuser to access the target wiki with
             askExtra(str): any addition to the default ask query
             profile(bool): if True show the timing for the operation
+            limit(int): limit number of queried records
         '''
         if self.wikiClient is None:
             self.wikiClient = WikiClient.ofWikiUser(wikiuser)
@@ -217,24 +218,25 @@ class SMWEntityList(object):
             print(askQuery)
         startTime = time.time()
         entityName = self.entityManager.entityName
-        records = self.wikiPush.formatQueryResult(askQuery, self.wikiClient, entityName=entityName)
+        records = self.wikiPush.formatQueryResult(askQuery, self.wikiClient, entityName=entityName, limit=limit)
         elapsed = time.time() - startTime
         if profile:
             print("query of %d %s records took %5.1f s" % (len(records), entityName, elapsed))
         return records
 
-    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager):
+    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager, limit:int=None):
         '''
 
         Args:
             wikiFileManager(WikiFileManager):
+            limit(int): limits the number of loaded records
         Return:
             list of dicts
         '''
         if not self.wikiFileManager and wikiFileManager:
             self.wikiFileManager = wikiFileManager
         wikiFileDict = self.wikiFileManager.getAllWikiFiles()
-        lod=self.getLoDfromWikiFiles(wikiFileDict.values())
+        lod=self.getLoDfromWikiFiles(list(wikiFileDict.values()), limit=limit)
         for record in lod:
             pageTitle=record.get("pageTitle")
             wikiFile=wikiFileDict.get(pageTitle)
@@ -242,18 +244,19 @@ class SMWEntityList(object):
                 record["wikiMarkup"]=wikiFile.wikiText
         return lod
 
-    def getLoDfromWikiFiles(self, wikiFileList: list):
+    def getLoDfromWikiFiles(self, wikiFileList: list, limit:int=None):
         '''
         Convert given wikiFiles to LoD
 
         Args:
             wikiFileList(list):
+            limit(int): limits the number of loaded records
 
         Return:
             list of dicts
         '''
         templateName = self.entityManager.clazz.templateName
-        wikiSonLod = WikiFileManager.convertWikiFilesToLOD(wikiFileList, templateName)
+        wikiSonLod = WikiFileManager.convertWikiFilesToLOD(wikiFileList, templateName, limit=limit)
         lod = self.normalizeLodFromWikiSonToLod(wikiSonLod)
         return lod
 

@@ -8,16 +8,17 @@ from collections import Counter
 import getpass
 import sys
 
+
 class TestTibkatEvents(DataSourceTest):
     '''
     test for TIBKAT datasource
     '''
     
-    def setUp(self):
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
         '''
         setUp the test environment
         '''
-        super().setUp()
+        super().setUp(debug=debug, profile=True, **kwargs)
         self.lookup=None
         user=getpass.getuser()
         if user=="wf":
@@ -60,11 +61,10 @@ class TestTibkatEvents(DataSourceTest):
             'endDate': datetime.date(2021, 3, 2)
         }
         ]
-        debug=True
         for testSet in testSets:
             description=testSet["description"]
             parseResult=TibkatEvent.parseDescription(description)
-            if debug:
+            if self.debug:
                 print(parseResult)
             for key in testSet:
                 if key!="description":
@@ -101,8 +101,8 @@ class TestTibkatEvents(DataSourceTest):
                         startDate=parseResult["startDate"] 
                         endDate=parseResult["endDate"]
                         if startDate>endDate:
-                            keyCounter["invalidDateRange"]+=1   
-        
-        if (debug):
+                            keyCounter["invalidDateRange"]+=1
+
+        if debug:
             print(keyCounter.most_common())
     

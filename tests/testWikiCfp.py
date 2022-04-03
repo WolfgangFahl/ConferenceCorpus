@@ -7,16 +7,15 @@ import unittest
 from corpus.lookup import CorpusLookup
 from tests.datasourcetoolbox import DataSourceTest
 
+
 class TestWikiCFP(DataSourceTest):
     '''
     test WikiCFP data source
     '''
 
-    def setUp(self):
-        debug=False
-        DataSourceTest.setUp(self,debug=debug)
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
+        DataSourceTest.setUp(self,debug=debug, profile=profile, **kwargs)
         pass
-
 
     def testWikiCFP(self):
         '''

@@ -3,11 +3,12 @@ Created on 28.07.2021
 
 @author: wf
 '''
-import unittest
-import tests.testDblpXml 
+import tests.testDblpXml
+from datetime import datetime
 from corpus.datasources.dblp import Dblp
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
+
 
 class TestDblpEvents(DataSourceTest):
     '''
@@ -23,11 +24,11 @@ class TestDblpEvents(DataSourceTest):
         cls.lookup.load(forceUpdate=False)
         cls.dblp=Dblp()
  
-    def setUp(self):
+    def setUp(self, **kwargs):
         '''
         setup 
         '''
-        DataSourceTest.setUp(self)
+        DataSourceTest.setUp(self, **kwargs)
         self.lookup=TestDblpEvents.lookup
         self.dblp=TestDblpEvents.dblp
         pass
@@ -65,10 +66,26 @@ class TestDblpEvents(DataSourceTest):
         '''
         test date Range parsing
         '''
-        dateStrings=['18-21 September 2005','18-21st September 2005']
-        for dateString in dateStrings:
-            dateRange=Dblp.getDateRange(dateString)
-            print(dateRange)
+        testRecords=[
+            {
+                "rawDate": "18-21 September 2005",
+                "startDate": datetime(2005, 9, 18, 0, 0),
+                "endDate": datetime(2005, 9, 21, 0, 0),
+                "year": 2005
+            },
+            {
+                "rawDate": "18-21st September 2005",
+                "startDate": datetime(2005, 9, 18, 0, 0),
+                "endDate": datetime(2005, 9, 21, 0, 0),
+                "year": 2005
+            }
+        ]
+        for testRecord in testRecords:
+            dateRange=Dblp.getDateRange(testRecord["rawDate"])
+            if self.debug:
+                print(dateRange)
+            for key, dateValue in dateRange.items():
+                self.assertEqual(testRecord.get(key), dateValue)
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

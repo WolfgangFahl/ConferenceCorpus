@@ -3,12 +3,12 @@ Created on 04.12.2021
 
 @author: wf
 '''
-import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 from collections import Counter
 from lodstorage.query import Query
 import copy
+
 
 class TestWikiDataDblpMatch(DataSourceTest):
     '''
@@ -31,9 +31,9 @@ class TestWikiDataDblpMatch(DataSourceTest):
         cls.wdEvents=cls.wdEm.getLookup("eventInSeriesId",withDuplicates=True)
         cls.dblpEvents=cls.dblpEm.getLookup("series",withDuplicates=True)
         
-    def setUp(self):
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
         cls=self.__class__
-        DataSourceTest.setUp(self)
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         self.lookup=cls.lookup
         self.wikidataDataSource=cls.wikidataDataSource
         self.dblpDataSource=cls.dblpDataSource
@@ -65,10 +65,12 @@ class TestWikiDataDblpMatch(DataSourceTest):
         wdSeries=self.wdDblpSeries[f"conf/{dblpSeriesId}"]
         wdEvents=self.wdEvents[wdSeries.eventSeriesId]
         dblpEvents=self.dblpEvents[dblpSeriesId]
-        print(f"{wdSeries.eventSeriesId}:{len(wdEvents)} - {len(dblpEvents)}")
+        if self.debug:
+            print(f"{wdSeries.eventSeriesId}:{len(wdEvents)} - {len(dblpEvents)}")
         for wdEvent in sorted(wdEvents,key=lambda e:e.title):
             ordinal="??" if wdEvent.ordinal is None else f"{int(wdEvent.ordinal):2.0f}"
-            print (f"{ordinal}:{wdEvent.url} {wdEvent.title}")
+            if self.debug:
+                print (f"{ordinal}:{wdEvent.url} {wdEvent.title}")
         sqlQuery=f"""select ordinal,year,title,url from event_wikidata 
 where eventInSeriesId="{wdSeries.eventSeriesId}"
 order by year"""
@@ -86,13 +88,13 @@ order by year"""
             wdSeries=self.wdDblpSeries[dblpSeriesId]
             dblpSeriesId=dblpSeriesId.replace("conf/","")
             found=dblpSeriesId in self.dblpSeries
-            foundStr="✓" if found  else "❌"
+            foundStr="✓" if found else "❌"
             count[found]+=1
             if found and dblpSeriesId in samples:
-                print (f"{dblpSeriesId} {wdSeries.url}- {foundStr}")
+                print(f"{dblpSeriesId} {wdSeries.url}- {foundStr}")
                 self.checkSample(dblpSeriesId)
-        print (msg)
-        print (count.most_common())
+        print(msg)
+        print(count.most_common())
 
 
 if __name__ == "__main__":

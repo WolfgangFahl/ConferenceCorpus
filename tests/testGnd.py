@@ -19,8 +19,8 @@ class TestGnd(DataSourceTest):
     test getting conference information from Gemeinsame Normdatei
     '''
     
-    def setUp(self):
-        super().setUp(debug=False)
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
+        super().setUp(debug=debug, profile=profile, **kwargs)
         
     def pingTest(self,sHost=GND.host):
         # https://stackoverflow.com/a/34455969/1497139
@@ -38,8 +38,7 @@ class TestGnd(DataSourceTest):
         '''
         return False
         return getpass.getuser()=="wf" and self.pingTest();
-        
-        
+
     def getGndDataSource(self,forceUpdate=False):
         '''
         get the Gemeinsame Normdatei Datasource
@@ -82,8 +81,8 @@ where title like '%Italian Research Conference on Digital Libraries%'"""
         test ordinal analysis
         '''
         stats=ExtractStatistics()
-        #debug=self.debug
-        debug=True
+        debug=self.debug
+        # debug=True
         extracts=[
             {'fulltitle':'Symposium on Cognition (1 : 1965 : Pittsburgh, Pa.)',
              'title':'Symposium on Cognition',
@@ -112,7 +111,7 @@ where title like '%Italian Research Conference on Digital Libraries%'"""
         '''
         gndDataSource=self.getGndDataSource(forceUpdate=False)
         debug=self.debug
-        debug=True
+        # debug=True
         stats=gndDataSource.eventManager.postProcessEntityList(debug)   
         pass 
         

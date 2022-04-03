@@ -27,20 +27,11 @@ class TestLocationFixing(DataSourceTest):
         cls.lookup=CorpusLookup(lookupIds=lookupIds)
         cls.lookup.load(forceUpdate=False)
         
-    def setUp(self):
-        DataSourceTest.setUp(self)
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         self.locationFixer=TestLocationFixing.locationFixer
         self.lookup
         pass
-    
-    @staticmethod
-    def inCI():
-        '''
-        are we running in a Continuous Integration Environment?
-        '''
-        publicCI=getpass.getuser() in ["travis", "runner"] 
-        jenkins= "JENKINS_HOME" in os.environ;
-        return publicCI or jenkins
     
     def testQuery(self):
         '''
@@ -100,7 +91,7 @@ limit 20"""),
                 parts=event.location.split(",")
                 partCount[len(parts)]+=1
         if self.debug:
-            print (partCount.most_common())
+            print(partCount.most_common())
         self.assertEqual(6,len(partCount))
         pass    
     

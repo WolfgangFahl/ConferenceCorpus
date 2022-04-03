@@ -53,7 +53,7 @@ class TestGeopy(DataSourceTest):
         
         nw=NominatimWrapper()
         show=self.debug
-        show=True
+        # show=True
         if show:
             print(nw.cacheDir)
         for example in examples:

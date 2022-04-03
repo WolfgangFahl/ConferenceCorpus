@@ -3,17 +3,15 @@ Created on 2021-01-25
 
 @author: wf
 '''
-
-
+import getpass
+import os
+import time
 from corpus.datasources.dblpxml import DblpXml
 from lodstorage.schema import SchemaManager
 from datetime import datetime
-import os
-import time
-#import logging
 from lodstorage.uml import UML
-import getpass
 from tests.datasourcetoolbox import DataSourceTest
+
 
 class TestDblp(DataSourceTest):
     '''
@@ -21,14 +19,14 @@ class TestDblp(DataSourceTest):
     '''
     mock=True
     
-    def setUp(self):
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
         '''
         setUp the test environment 
         
-        especically the mocking parameter - if mock is  False a multi-Gigabyte download
+        especially the mocking parameter - if mock is  False a multi-Gigabyte download
         might be activated
         '''
-        self.debug=False
+        self.debug=debug
         self.verbose=True
         self.mock=TestDblp.mock
 #        if self.debug:
@@ -40,15 +38,6 @@ class TestDblp(DataSourceTest):
 
     def tearDown(self):
         pass
-    
-    @staticmethod
-    def inCI():
-        '''
-        are we running in a Continuous Integration Environment?
-        '''
-        publicCI=getpass.getuser() in ["travis", "runner"] 
-        jenkins= "JENKINS_HOME" in os.environ;
-        return publicCI or jenkins
     
     def log(self,msg):
         if self.debug:
@@ -74,7 +63,7 @@ class TestDblp(DataSourceTest):
         '''
         dblpXml=self.getMockedDblp(mock=mock)
         limit=10000 if mock else 10000000
-        showProgress=not mock  and not self.inCI()
+        showProgress=not mock and not self.inCI()
         sample=5
         sqlDB=dblpXml.getSqlDB(limit, sample=sample, debug=self.debug,recreate=recreate,postProcess=dblpXml.postProcess,showProgress=showProgress)
         return sqlDB

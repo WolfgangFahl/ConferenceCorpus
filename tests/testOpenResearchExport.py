@@ -13,12 +13,11 @@ class TestOpenResearchExport(DataSourceTest):
     test exporting series and events from the  dblp data source
     '''
  
-    def setUp(self):
+    def setUp(self, debug:bool=False, profile:bool=True, **kwargs):
         '''
         '''
-        DataSourceTest.setUp(self)
+        DataSourceTest.setUp(self, debug=debug, profile=profile, **kwargs)
         pass
-  
 
     def testSeriesExport(self):
         '''
@@ -27,7 +26,8 @@ class TestOpenResearchExport(DataSourceTest):
         # do not run this in CI
         if getpass.getuser()!="wf":
             return
-        debug=True
+        debug=self.debug
+        # debug=True
         exporter=EventExporter(debug=debug)
         for acronym in [#'dc'
                         #,'ds'
