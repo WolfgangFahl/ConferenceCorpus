@@ -1,0 +1,16 @@
+#!/bin/bash
+# WF 2022-04-03
+
+getSeries() {
+  esctestdata=$HOME/.conferencecorpus/esctestdata
+  if [ ! -d $esctestdata ]
+  then
+     mkdir - $esctestdata
+  fi
+  local l_series="$1"
+  curl -s -q https://conferencecorpus.bitplan.com/eventseries/$l_series -H "Accept: application/json"  \
+  | jq '[to_entries[] | .value[] |  { "source": .source, "year": .year, "ordinal": .ordinal, "title": .title, "eventId": .eventId, "region": .regionIso, "country": .countryIso, "city": .cityWikidataid, "cityLabel": .city, "url": .url }   ]' \
+  > $esctestdata/$l_series.json
+}
+
+getSeries VLDB

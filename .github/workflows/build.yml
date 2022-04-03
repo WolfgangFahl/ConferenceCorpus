@@ -36,6 +36,9 @@ jobs:
     - name: get offline data
       run: |
         scripts/getofflinedata --all
+    - name: get eventseriescompletion test data
+      run: |
+        scripts/getesctestdata
     - name: Run tests
       run: |
         scripts/test
