@@ -7,6 +7,7 @@ from corpus.event import EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 from corpus.datasources.dblpxml import DblpXml
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
+from ptp.ordinal import Ordinal
 import re
 from datetime import datetime
 
@@ -131,6 +132,8 @@ class DblpEvent(Event):
             dateRange=Dblp.getDateRangeFromTitle(title)
             for key, value in dateRange.items():
                 rawEvent[key]=value
+            Ordinal.addParsedOrdinal(rawEvent)
+                
         if "year" in rawEvent:
             # set year to integer value
             yearStr = rawEvent['year']
