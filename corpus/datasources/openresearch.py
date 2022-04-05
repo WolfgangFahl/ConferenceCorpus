@@ -9,7 +9,7 @@ from wikifile.wikiFileManager import WikiFileManager
 
 from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
 from corpus.eventcorpus import EventDataSource,EventDataSourceConfig
-from corpus.eventseriescompletion import EventSeriesCompletion
+from ptp.ordinal import Ordinal
 from corpus.smw.topic import SMWEntity, SMWEntityList
 import urllib
 
@@ -395,15 +395,7 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
                             rawEvent[dateProp] = None
                     else:
                         rawEvent[dateProp] = None
-        if 'ordinal' in rawEvent:
-            rawOrd = rawEvent.get('ordinal')
-            if isinstance(rawOrd, str):
-                if rawOrd.isnumeric():
-                    rawEvent['ordinal'] = int(rawOrd)
-                else:
-                    ords = Ordinal.parseOrdinals(rawOrd, None)
-                    if len(ords) == 1:
-                        rawEvent['ordinal'] = ords[0]
+        Ordinal.addParsedOrdinal(rawEvent)
 
 class OREventSeriesManager(EventSeriesManager):
     '''

@@ -11,6 +11,7 @@ from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from corpus.quality.rating import Rating, RatingType
 from datetime import datetime
 from corpus.datasources import wikicfpscrape
+from ptp.ordinal import Ordinal
 
 class WikiCfp(EventDataSource):
     '''
@@ -71,6 +72,7 @@ class WikiCfpEvent(Event):
             crawlType=wikicfpscrape.CrawlType.EVENT
             eventId=rawEvent["eventId"]
             rawEvent["url"]=f"{crawlType.urlPrefix}{eventId}"
+        Ordinal.addParsedOrdinal(rawEvent)
         
     
     def rate(self,rating:Rating):
