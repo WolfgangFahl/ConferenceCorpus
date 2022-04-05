@@ -13,6 +13,9 @@ from corpus.eventseriescompletion import EventSeriesCompletion
 from corpus.smw.topic import SMWEntity, SMWEntityList
 import urllib
 
+from ptp.ordinal import Ordinal
+
+
 class OR(EventDataSource):
     '''
     scientific events from http://www.openresearch.org
@@ -398,7 +401,7 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
                 if rawOrd.isnumeric():
                     rawEvent['ordinal'] = int(rawOrd)
                 else:
-                    ords = EventSeriesCompletion.guessOrdinal({'title':rawOrd})
+                    ords = Ordinal.parseOrdinals(rawOrd, None)
                     if len(ords) == 1:
                         rawEvent['ordinal'] = ords[0]
 
