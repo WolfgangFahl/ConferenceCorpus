@@ -640,6 +640,13 @@ class OREventSeries(EventSeries):
                 url = f"{baseUrl}/index.php?title={qPageTitle}"
                 rawEvent['url'] = url
         rawEvent['eventSeriesId'] = rawEvent['pageTitle']
+        period = rawEvent.get('period')
+        if period and isinstance(period, str):
+            if period.isnumeric():
+                rawEvent['period'] = int(period)
+            else:
+                del rawEvent['period']
+
 
     @classmethod
     def getPropertyLookup(cls, lookupId: str = 'prop') -> dict:
