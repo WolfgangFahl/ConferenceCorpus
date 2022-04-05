@@ -4,6 +4,7 @@ Created on 2020-07-05
 @author: wf
 '''
 import habanero
+from ptp.ordinal import Ordinal
 from corpus.event import Event, EventSeries, EventManager, EventSeriesManager
 from lodstorage.storageconfig import StorageConfig
 from lodstorage.lod import LOD
@@ -186,6 +187,7 @@ class CrossrefEventManager(EventManager):
         if 'title' in eventInfo:
             title = eventInfo["title"][0]
             rawEvent['title'] = title
+            Ordinal.addParsedOrdinal(rawEvent)
         if 'sponsor' in eventInfo:
             sponsor = eventInfo['sponsor'][0]
             rawEvent['sponsor'] = sponsor    
