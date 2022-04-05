@@ -109,12 +109,13 @@ class OrdinalCategory(EnumCategory):
         
     def prepareLookup(self):
         # https://stackoverflow.com/a/20007730/1497139
-        ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(n/10%10!=1)*(n%10<4)*n%10::4])
+        ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])
         for i in range(1,self.maxOrdinal):
             # standard decimal ordinal 1., 2., 3. 
             self.addLookup(f"{i}.",i)
             # text ordinal 1st, 2nd, 3rd
-            self.addLookup(f"{ordinal(i)}",i)
+            ordinalStr=f"{ordinal(i)}"
+            self.addLookup(ordinalStr,i)
             # roman
             self.addLookup(f"{self.toRoman(i)}.",i)
             # using num2words library

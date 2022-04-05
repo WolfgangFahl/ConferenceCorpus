@@ -18,6 +18,19 @@ class TestEventSeriesCompletion(BaseTest):
             seriesData = json.load(json_file)
             return seriesData
         
+    def testParseOrdinal(self):
+        '''
+        check the parsing of ordinals
+        '''
+        title='12th IEEE International Symposium on Wearable Computers (ISWC 2008), September 28 - October 1, 2008, Pittsburgh, PA, USA'
+        item="irrelevant"
+        pol=Ordinal.parseOrdinals(title, item)
+        debug=self.debug
+        #debug=True
+        if (debug):
+            print(pol)
+        self.assertEqual([12],pol)
+        
     def testGuessOrdinal(self):
         '''
         test guessing the ordinal
