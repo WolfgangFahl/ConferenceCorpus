@@ -99,7 +99,7 @@ class OrdinalCategory(EnumCategory):
     I am the category for ordinals
     '''
 
-    def __init__(self,maxOrdinal=150):
+    def __init__(self,maxOrdinal=250):
         '''
         Constructor
         '''
