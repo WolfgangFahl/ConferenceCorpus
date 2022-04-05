@@ -24,7 +24,7 @@ class TestOpenResearch(DataSourceTest):
         lookupIds=[]
         self.testWikiId = "orclone"
         TestSMW.getWikiUser(self.testWikiId)
-        self.testLimit=5
+        self.testLimit=10
         OR.limitFiles=self.testLimit
         for wikiId in "or","orclone":
             wikiTextPath=CorpusLookupConfigure.getWikiTextPath(wikiId)
@@ -78,7 +78,6 @@ class TestOpenResearch(DataSourceTest):
         self.checkDataSource(orDataSource,expectedSeries,expectedEvents)
         orDataSource=self.lookup.getDataSource("orclone-backup")
         self.checkDataSource(orDataSource,expectedSeries,expectedEvents)
-
 
     def testORDataSourceFromWikiUser(self):
         '''
@@ -148,12 +147,16 @@ class TestOpenResearch(DataSourceTest):
         if self.debug:
             print(lod)
         mandatoryFields = set(entity().getSamples()[0].keys())
+        expectedTypes = {k:type(v) for k,v in entity().getSamples()[0].items()}
         if expectedRecords is not None:
             self.assertEqual(len(lod), expectedRecords, "LoD does not contain expected number of records")
         for record in lod:
             fields = set(record.keys())
             self.assertTrue(mandatoryFields.issubset(fields), f"Mandatory fields {mandatoryFields - fields} are missing")
             self.assertIsNotNone(record["pageTitle"])
+            for key, value in record.items():
+                if key in expectedTypes and value is not None:
+                    self.assertEqual(expectedTypes[key], type(value), f"{key} has not the expected type ({record})")
 
 
 

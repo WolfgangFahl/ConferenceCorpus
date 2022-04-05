@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import dateutil.parser
 from lodstorage.lod import LOD
 from lodstorage.storageconfig import StorageConfig
 from wikibot.wikiuser import WikiUser
@@ -7,7 +8,8 @@ from wikifile.wikiFile import WikiFile
 from wikifile.wikiFileManager import WikiFileManager
 
 from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
-from corpus.eventcorpus import EventCorpus,EventDataSource,EventDataSourceConfig
+from corpus.eventcorpus import EventDataSource,EventDataSourceConfig
+from corpus.eventseriescompletion import EventSeriesCompletion
 from corpus.smw.topic import SMWEntity, SMWEntityList
 import urllib
 
@@ -376,6 +378,29 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
             except Exception as _ne:
                 pass
             rawEvent['year']=year
+        for dateProp in ['endDate', 'startDate']:
+            if dateProp in rawEvent:
+                rawDateValue = rawEvent.get(dateProp)
+                if isinstance(rawDateValue, str):
+                    if rawDateValue:
+                        try:
+                            dateValue = dateutil.parser.parse(rawEvent.get(dateProp))
+                            if dateValue:
+                                rawEvent[dateProp] = dateValue
+                        except Exception as e:
+                            print(f"{dateProp}: {rawDateValue} → Could not be converted to datetime (event record:{rawEvent})")
+                            rawEvent[dateProp] = None
+                    else:
+                        rawEvent[dateProp] = None
+        if 'ordinal' in rawEvent:
+            rawOrd = rawEvent.get('ordinal')
+            if isinstance(rawOrd, str):
+                if rawOrd.isnumeric():
+                    rawEvent['ordinal'] = int(rawOrd)
+                else:
+                    ords = EventSeriesCompletion.guessOrdinal({'title':rawOrd})
+                    if len(ords) == 1:
+                        rawEvent['ordinal'] = ords[0]
 
 class OREventSeriesManager(EventSeriesManager):
     '''
