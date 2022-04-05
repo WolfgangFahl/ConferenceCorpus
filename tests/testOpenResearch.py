@@ -5,6 +5,9 @@ Created on 27.07.2021
 '''
 import os
 from functools import partial
+
+from lodstorage.lod import LOD
+
 from corpus.datasources.openresearch import OREventSeries, OREventSeriesManager, OREventManager, OREvent, OR
 from tests.testSMW import TestSMW
 from tests.datasourcetoolbox import DataSourceTest
@@ -139,26 +142,24 @@ class TestOpenResearch(DataSourceTest):
 
     def checkEntityLoD(self, lod:dict, entity:type, expectedRecords:int=None):
         """
-        checks if the given lod contains the mandatory fields of the given entity
+        checks if the given lod contains fields from the samples
         Args:
             lod: list of entity records
-            entity: entity class containing the samples with the mandatory fields
+            entity: entity class containing the samples
         """
         if self.debug:
             print(lod)
-        mandatoryFields = set(entity().getSamples()[0].keys())
+        entityFields = set(LOD.getFields(lod))
         expectedTypes = {k:type(v) for k,v in entity().getSamples()[0].items()}
         if expectedRecords is not None:
             self.assertEqual(len(lod), expectedRecords, "LoD does not contain expected number of records")
         for record in lod:
             fields = set(record.keys())
-            self.assertTrue(mandatoryFields.issubset(fields), f"Mandatory fields {mandatoryFields - fields} are missing")
+            self.assertTrue(fields.issubset(entityFields), f"Unexpected fields found: {fields - entityFields} are nt in the samples")
             self.assertIsNotNone(record["pageTitle"])
             for key, value in record.items():
                 if key in expectedTypes and value is not None:
                     self.assertEqual(expectedTypes[key], type(value), f"{key} has not the expected type ({record})")
-
-
 
 
 if __name__ == "__main__":
