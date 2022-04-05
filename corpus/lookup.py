@@ -62,7 +62,7 @@ class CorpusLookupConfigure:
         for lookupId in ["or","orclone"]:
             wikiId=lookupId
             wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
-            wikiTextPath = self.getWikiTextPath(wikiUser.wikiId)
+            wikiTextPath = CorpusLookupConfigure.getWikiTextPath(wikiUser.wikiId)
             wikiFileManager = WikiFileManager(wikiId, wikiTextPath, login=False, debug=debug)
      
             orDataSource=lookup.getDataSource(f'{lookupId}-backup')
@@ -94,6 +94,8 @@ class CorpusLookup(object):
             configure(callable): Callback to configure the corpus lookup
         '''
         self.debug=debug
+        if configure is None:
+            configure = CorpusLookupConfigure.configureCorpusLookup
         self.configure=configure
         self.eventCorpus=EventCorpus()
         if lookupIds is None:
