@@ -13,6 +13,9 @@ from ptp.ordinal import Ordinal
 from corpus.smw.topic import SMWEntity, SMWEntityList
 import urllib
 
+from ptp.ordinal import Ordinal
+
+
 class OR(EventDataSource):
     '''
     scientific events from http://www.openresearch.org
