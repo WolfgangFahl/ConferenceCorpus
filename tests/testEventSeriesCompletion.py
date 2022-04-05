@@ -24,13 +24,31 @@ class TestEventSeriesCompletion(BaseTest):
         '''
         debug=self.debug
         debug=True
-        vldbSeriesLod=self.getSeriesLod("VLDB")
-        for vldbEvent in vldbSeriesLod:
-            pol=EventSeriesCompletion.guessOrdinal(vldbEvent)
-            if len(pol)>0:
+        seriesIds=["VLDB"]
+        for seriesId in seriesIds:
+            if debug:
+                print(f"Series {seriesId}")
+            seriesLod=self.getSeriesLod(seriesId)
+            for event in seriesLod:
+                pol=EventSeriesCompletion.guessOrdinal(event)
+                if "ordinal" in event:
+                    if event["ordinal"] is None:
+                        del(event["ordinal"])    
+                    else:
+                        event["ordinal"]=int(event["ordinal"]) 
+                if not "ordinal" in event:        
+                    if len(pol)==1:
+                        event["ordinal"]=pol[0]
                 if debug:
-                    print(pol,vldbEvent)
-
+                    print(pol,event)
+            if debug:
+                print(f"Series {seriesId} (sorted)")        
+            seriesLodByOrdinal=sorted(seriesLod,key=lambda event:event["ordinal"] if "ordinal" in event else 0) 
+            for event in seriesLodByOrdinal:
+                if debug:
+                    print(f"""{event.get("ordinal","?")}:{event.get("year","?")}-{event["source"]}{event}""")
+                
+       
     def testMergingSeries(self):
         '''
         test merging event series from different sources

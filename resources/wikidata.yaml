@@ -22,6 +22,17 @@
     GROUP by dblpId
     HAVING count(*)>1
     ORDER BY 1 desc
+'WikiDataEventSeries':
+  title: Wikidata EventSeries by max ordinal
+  description: event series grouped by max ordinal
+  sql: |
+    SELECT es.acronym,cast(max(ordinal) as int),eventInSeries
+    FROM "event_wikidata" e
+    join eventseries_wikidata es on e.eventInSeries = es.title
+    where ordinal is not null
+    group by eventInSeries
+    having max(cast(ordinal as int))
+    order by 2 desc
 'EventProceedingsPairs':
   sparql: |
     # Event / Proceedings pairs

@@ -1,0 +1,16 @@
+#
+# Pre-configured Queries for Conference Corpus Scientific Event lookup database
+#
+# Examplef for the whole conference corpus
+#
+# WF 2022-04-05
+'YearAndOrdinalColumns':
+    title: show all year and ordinal columns and types
+    description: select year and ordinal columns
+    sql: |
+        WITH tables AS (SELECT name tableName, sql 
+        FROM sqlite_master WHERE type = 'table' AND tableName NOT LIKE 'sqlite_%')
+        SELECT fields.name, fields.type, tableName
+        FROM tables CROSS JOIN pragma_table_info(tables.tableName) fields
+        where name in ("year","ordinal")
+        order by name
