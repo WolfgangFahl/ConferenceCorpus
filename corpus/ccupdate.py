@@ -8,7 +8,7 @@ import sys
 import traceback
 from lodstorage.lod import LOD
 from corpus.version import Version
-from corpus.lookup import CorpusLookup
+from corpus.lookup import CorpusLookup, CorpusLookupConfigure
 from corpus.locationfixer import LocationFixer
 from corpus.datasources.dblpxml import DblpXml
 from corpus.datasources.tibkat import Tibkat
@@ -29,7 +29,11 @@ class ConferenceCorpusUpdate():
         '''
         msg=f"update of conference corpus database from {source}"
         profiler=Profiler(msg)
-        lookup=CorpusLookup(lookupIds=[self.lookupId])
+        configure = None
+        if self.lookupId.startswith('or'):
+            # set configuration function of openresearch datasource
+            configure = CorpusLookupConfigure.configureCorpusLookup
+        lookup=CorpusLookup(lookupIds=[self.lookupId], configure=configure)
         lookup.load(forceUpdate=True,showProgress=True)
         eventDataSource=lookup.getDataSource(self.lookupId)
         el=eventDataSource.eventManager.getList()

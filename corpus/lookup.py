@@ -94,8 +94,6 @@ class CorpusLookup(object):
             configure(callable): Callback to configure the corpus lookup
         '''
         self.debug=debug
-        if configure is None:
-            configure = CorpusLookupConfigure.configureCorpusLookup
         self.configure=configure
         self.eventCorpus=EventCorpus()
         if lookupIds is None:
