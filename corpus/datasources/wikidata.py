@@ -64,6 +64,13 @@ class WikidataEvent(Event):
             if startDate:
                 rawEvent['year']=startDate.year
                 pass
+        if 'ordinal' in rawEvent:
+            try:
+                rawEvent['ordinal']=int(rawEvent["ordinal"])
+            except Exception as _ex:
+                # ignore the invalid ordinal
+                del(rawEvent['ordinal'])
+                
     
 class WikidataEventManager(EventManager):
     '''

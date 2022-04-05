@@ -10,6 +10,14 @@
     from event_wikidata
     group by country
     order by 1 desc
+'WikidataOrdinalHistogramm':
+  sql: |
+    SELECT ordinal,count(*)
+    FROM "event_wikidata"
+    where ordinal is not null
+    group by ordinal
+    order by cast(ordinal as int) desc
+
 'WikidataDblpIdDuplicates':
   title: Wikidata Events with duplicate dblp event identifiers
   description: events with duplicate dblp event identifiers
