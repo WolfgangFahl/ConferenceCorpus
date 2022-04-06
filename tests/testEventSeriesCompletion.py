@@ -44,7 +44,7 @@ class TestEventSeriesCompletion(BaseTest):
                 Ordinal.addParsedOrdinal(event)
             if debug:
                 print(f"Series {seriesId} (sorted)")        
-            seriesLodByOrdinal=sorted(seriesLod,key=lambda event:event["ordinal"] if "ordinal" in event else 0) 
+            seriesLodByOrdinal=sorted(seriesLod,key=lambda event:event["ordinal"] if event.get("ordinal") in event else 0)
             for event in seriesLodByOrdinal:
                 if debug:
                     print(f"""{event.get("ordinal","?")}:{event.get("year","?")}-{event["source"]}{event}""")
