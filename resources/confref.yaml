@@ -38,8 +38,15 @@
       ORDER BY count DESC
       LIMIT 50
 'ConfrefCountryHistogramm':
-  sql: |
-    select count(*),country 
-    from event_confref
-    group by country
-    order by 1 desc
+    title: country frequencies
+    sql: |
+        select count(*),country 
+        from event_confref
+        group by country
+        order by 1 desc
+'ConfrefOrdinals':
+    title: events with ordinals
+    sql: |
+        SELECT ordinal,title
+        FROM "event_confref" where ordinal is not null
+        ORDER BY 1 desc
