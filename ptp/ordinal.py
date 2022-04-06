@@ -15,20 +15,29 @@ class Ordinal(object):
     @classmethod   
     def addParsedOrdinal(cls,record:dict):
         '''
-        add a 
+        add an ordinal to the given event record by parsing the title entry
+        
+        Args:
+            record(dict): the event record to add the ordinal information to
+            
         '''
+        # get the title and ignore record if there is not tile
+        title = record.get('title', None)
+        if title is None:
+            return
+        # handle existing ordinal entries - e.g. remove invalid ones
         if "ordinal" in record:
             ordinal = record["ordinal"]
             if ordinal is None:
                 del(record["ordinal"])
             elif isinstance(ordinal, str):
+                # make sure ordinal is numeric
                 if ordinal.isnumeric():
                     record["ordinal"] = int(ordinal)
                 else:
+                    # ignore non numeric values
                     del record["ordinal"]
-        title = record.get('title', None)
-        if title is None:
-            return
+        # if there is no ordinal at this point try getting one by parsing the title            
         if not "ordinal" in record:
             # we always use "ordinal-parsing" as the item since we are not interested in stats
             item="ordinal-parsing"

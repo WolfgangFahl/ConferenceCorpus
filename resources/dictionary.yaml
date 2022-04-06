@@ -628,6 +628,9 @@ Uruguay:
 21st:
   type: enum
   value: 21
+21th:
+  type: enum
+  value: 21
 '22.':
   type: enum
   value: 22
@@ -700,6 +703,9 @@ Twenty-seventh:
 31st:
   type: enum
   value: 31
+31th:
+  type: enum
+  value: 31  
 '32.':
   type: enum
   value: 32
@@ -766,6 +772,9 @@ Twenty-seventh:
 41st:
   type: enum
   value: 41
+41th:
+  type: enum
+  value: 41
 '42.':
   type: enum
   value: 42
@@ -830,6 +839,9 @@ Twenty-seventh:
   type: enum
   value: 51
 51st:
+  type: enum
+  value: 51
+51th:
   type: enum
   value: 51
 '52.':

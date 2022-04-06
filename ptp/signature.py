@@ -46,6 +46,9 @@ class ParsingCategory(Category):
         
   
 class EnumCategory(Category):
+    '''
+    category defined by an enumeration specified in a lookup table
+    '''
     tokens=None
     
     @classmethod

@@ -15,3 +15,7 @@ dnbelement:
   regexps:
     - https://d-nb.info/standards/elementset/gnd#(?P<value>(.*))
   format: https://d-nb.info/standards/elementset/gnd#{value} 
+  
+wikicfpevent:
+  format: http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid={value}
+

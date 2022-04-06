@@ -33,6 +33,12 @@ class TokenSequence(object):
     '''
     
     def __init__(self,text,separator=' '):
+        '''
+        constructor
+        
+        Args:
+            separator(str): the separator for the tokens - default: blank
+        '''
         if text:
             self.words=text.split(separator)
         else:
@@ -40,7 +46,13 @@ class TokenSequence(object):
         self.pos=-1
         self.matchResults=[]
         
-    def next(self):
+    def next(self)->str:
+        '''
+        get the next token in this sequence
+        
+        Returns:
+            str: the string representation of the token
+        '''
         while self.pos+1<len(self.words):
             self.pos+=1
             yield self.words[self.pos]
@@ -48,6 +60,10 @@ class TokenSequence(object):
     def match(self,categories:list,item:object)->list:
         '''
         match me for the given categories
+        
+        Args:
+            categories(list): the list of categories to match for
+            item(object): the item this token sequence belongs to
         
         '''
         self.item=item
@@ -83,7 +99,8 @@ class Token(object):
         
 class Category(object):
     '''
-    I am a category
+    I am a category (a token type) representing an expected part of a signature
+    e.g. a date an ordinal, a frequency
     '''
 
     def __init__(self, name, itemFunc):

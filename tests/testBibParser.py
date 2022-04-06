@@ -3,7 +3,7 @@ Created on 2022-01-12
 
 @author: wf
 '''
-import unittest
+
 from bibtex.bibparser import BibParser
 from tests.datasourcetoolbox import DataSourceTest
 
