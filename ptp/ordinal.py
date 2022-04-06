@@ -17,8 +17,15 @@ class Ordinal(object):
         '''
         add a 
         '''
-        if "ordinal" in record and record["ordinal"] is None:
-            del(record["ordinal"])
+        if "ordinal" in record:
+            ordinal = record["ordinal"]
+            if ordinal is None:
+                del(record["ordinal"])
+            elif isinstance(ordinal, str):
+                if ordinal.isnumeric():
+                    record["ordinal"] = int(ordinal)
+                else:
+                    del record["ordinal"]
         title = record.get('title', None)
         if title is None:
             return

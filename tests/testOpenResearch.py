@@ -27,7 +27,7 @@ class TestOpenResearch(DataSourceTest):
         lookupIds=[]
         self.testWikiId = "orclone"
         TestSMW.getWikiUser(self.testWikiId)
-        self.testLimit=10
+        self.testLimit=100
         OR.limitFiles=self.testLimit
         for wikiId in "or","orclone":
             wikiTextPath=CorpusLookupConfigure.getWikiTextPath(wikiId)
