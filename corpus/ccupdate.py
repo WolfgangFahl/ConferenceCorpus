@@ -17,15 +17,28 @@ from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 
 class ConferenceCorpusUpdate():
-    def __init__(self,lookupId):
+    '''
+    updater for the Conference Corpus database
+    
+    allows updating single or multiple datasources of the conferencecorpus
+    e.g. via command line
+    '''
+    def __init__(self,lookupId:str):
         '''
         constructor
+        
+        Args:
+            lookupId(str): the lookupId of the dataSource to be used
         '''
         self.lookupId=lookupId
         
-    def updateDataSource(self,source,sampleId:str=None):
+    def updateDataSource(self,source:str,sampleId:str=None):
         '''
         update the given DataSource
+        
+        Args:
+            source(str): the name of the datasource to update
+            sampleId(str): the id of the sample record to display when done
         '''
         msg=f"update of conference corpus database from {source}"
         profiler=Profiler(msg)
@@ -50,7 +63,7 @@ class ConferenceCorpusUpdate():
     
 class TibkatUpdater(ConferenceCorpusUpdate):
     '''
-    update for Tikbat data from FTX XML dump
+    update for Tibkat data from FTX XML dump
     '''
     
     def __init__(self):
@@ -118,7 +131,7 @@ def main(argv=None): # IGNORE:C0111
     program_version = "v%s" % Version.version
     program_build_date = str(Version.updated)
     program_version_message = '%%(prog)s %s (%s)' % (program_version, program_build_date)
-    program_shortdesc = "dblp xml handling from command line"
+    program_shortdesc = "Conference Corpus update from command line"
     user_name="Wolfgang Fahl/Tim Holzheim"
     program_license = '''%s
 

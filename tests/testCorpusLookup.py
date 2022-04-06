@@ -113,12 +113,14 @@ class TestCorpusLookup(DataSourceTest):
         '''
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         lookup.load()
+        debug=self.debug
+        debug=True
         storageTableList=EventStorage.getTableList()
+        if debug:
+            print(f"found {len(storageTableList)} storage Tables for the ConferenceCorpus")
         #self.assertEqual(22,len(storageTableList))
         for baseEntity in ["Event","EventSeries"]:
             plantUml=lookup.asPlantUml(baseEntity,exclude=EventStorage.viewTableExcludes)
-            debug=self.debug
-            # debug=True
             if debug:
                 print(plantUml)
             self.assertTrue(f"{baseEntity} <|-- {baseEntity.lower()}_dblp" in plantUml)

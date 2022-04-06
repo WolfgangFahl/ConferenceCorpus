@@ -3,21 +3,22 @@ Created on 2020-07-11
 
 @author: wf
 '''
-from corpus.event import Event,EventSeries,EventManager,EventSeriesManager
-from lodstorage.storageconfig import StorageConfig
-from lodstorage.sql import SQLDB
 import html
 import re
 import os
 import json
+from corpus.event import Event,EventSeries,EventManager,EventSeriesManager
 from corpus.eventcorpus import EventDataSourceConfig,EventDataSource
+from lodstorage.storageconfig import StorageConfig
+from lodstorage.sql import SQLDB
+from ptp.ordinal import Ordinal
 
 class Confref(EventDataSource):
-    sourceConfig=EventDataSourceConfig(lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tableSuffix="confref",locationAttribute="location")
-    
     '''
     ConfRef platform
     '''
+    sourceConfig=EventDataSourceConfig(lookupId="confref",name="confref.org",url="http://portal.confref.org",title="ConfRef",tableSuffix="confref",locationAttribute="location")
+    
     def __init__(self):
         '''
         construct me 
@@ -89,8 +90,8 @@ class ConfrefEvent(Event):
         rawEvent['url']=f'http://portal.confref.org/list/{eventId}'        
         rawEvent['title']=rawEvent.pop('name')
         rawEvent["source"]="confref"
+        Ordinal.addParsedOrdinal(rawEvent)
         pass
-    
     
     
     def fromDict(self,rawEvent:dict):
