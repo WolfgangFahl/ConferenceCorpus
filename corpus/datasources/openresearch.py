@@ -193,7 +193,8 @@ class OREvent(Event):
         {'prop':'DblpConferenceId','name':'DblpConferenceId','templateParam':'DblpConferenceId'},
         {'prop': 'TibKatId', 'name': 'TibKatId', 'templateParam': 'TibKatId'},
         {'prop': 'TIBKAT-ISBN', 'name': 'ISBN', 'templateParam': 'ISBN'},
-        {'prop': 'Wikidataid', 'name': 'wikidataId', 'templateParam': 'wikidataid'}
+        {'prop': 'Wikidataid', 'name': 'wikidataId', 'templateParam': 'wikidataid'},
+        {'prop': 'GND-ID', 'name': 'gndId', 'templateParam': 'gndId'}
     ]
 
     def __init__(self, wikiFile:WikiFile=None):
@@ -225,9 +226,9 @@ class OREvent(Event):
             {
                 "pageTitle": "WebSci 2019",
                 "acronym": "WebSci 2019",
-                "ordinal": 10,
+                "ordinal": 11,
                 "homepage": "http://websci19.webscience.org/",
-                "title": "10th ACM Conference on Web Science",
+                "title": "11th ACM Conference on Web Science",
                 "eventType": "Conference",
                 "startDate": datetime.fromisoformat("2019-06-30"),
                 "endDate": datetime.fromisoformat("2019-07-03"),
@@ -241,7 +242,8 @@ class OREvent(Event):
                 "wikicfpId": 891,
                 "tibKatId":"1736060724",
                 "subject": "Software engineering",
-                "ISBN":"9781450370707"
+                "ISBN":"9781450370707",
+                "gndId":"1221636014"
             },
             {
                 "acronym": "5GU 2017",
@@ -533,6 +535,7 @@ class OREventSeries(EventSeries):
         {'prop': 'Period', 'name': 'period', 'templateParam': 'Period'},
         {'prop': 'Unit', 'name': 'unit', 'templateParam': 'Unit'},
         {'prop': 'Has CORE Rank', 'name': 'core2018Rank', 'templateParam': 'has CORE2018 Rank'},
+        {'prop': 'GND-ID', 'name': 'gndId', 'templateParam': 'GND-ID'},
         # TODO add more fields according to
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
@@ -567,7 +570,8 @@ class OREventSeries(EventSeries):
                 'dblpSeries': 'aaai',
                 'period': 1,
                 'unit': 'year',
-                'logo':'Aaai-logo.jpg'
+                'logo':'Aaai-logo.jpg',
+                'GND-ID':'309155-7'
             },
             {
                 "acronym": "3DUI",
