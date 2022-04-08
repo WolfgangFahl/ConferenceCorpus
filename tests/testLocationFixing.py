@@ -11,8 +11,7 @@ from corpus.event import EventStorage
 from corpus.locationfixer import LocationFixer
 
 from lodstorage.query import Query
-import getpass
-import os
+
 
 class TestLocationFixing(DataSourceTest):
     '''
