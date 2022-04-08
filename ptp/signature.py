@@ -63,19 +63,23 @@ class EnumCategory(Category):
             https://github.com/WolfgangFahl/ProceedingsTitleParser/blob/7e52b4e3eae09269464669fe387425b9f6392952/ptp/titleparser.py#L456
         '''
         if yamlPath is None:
-            yamlPath=EnumCategory.getYamlPath()
+            yamlPath=cls.getYamlPath()
         with open(yamlPath, 'r') as stream:
             cls.tokens = yaml.safe_load(stream)
         pass
     
-    def __init__(self,name):
+    def __init__(self,name:str, tokenPath:str=None):
         '''
         construct me for the given name
+
+        Args:
+            name(str): name of the Category (type field in the yaml)
+            tokenPath(str): path to the yaml file containing the tokens/enum information
         '''
         super().__init__(name,itemFunc=lambda word:self.lookup(word))
         self.lookupByKey={}    
         if EnumCategory.tokens is None:
-            EnumCategory.read()
+            EnumCategory.read(tokenPath)
         for tokenKey in EnumCategory.tokens:
             token=EnumCategory.tokens[tokenKey]
             tokenType=token['type']
@@ -146,3 +150,21 @@ class OrdinalCategory(EnumCategory):
         if (number >= 5): return "V" + self.toRoman(number - 5)
         if (number >= 4): return "IV" + self.toRoman(number - 4)
         if (number >= 1): return "I" + self.toRoman(number - 1)
+
+
+class CountryCategory(EnumCategory):
+    '''
+    I am the category for countries
+    '''
+
+    def __init__(self):
+        '''
+        constructor
+        '''
+        super().__init__("country", tokenPath=self.getYamlPath())
+
+    @classmethod
+    def getYamlPath(cls):
+        path = os.path.dirname(__file__) + "/../resources"
+        path = f"{path}/countries.yaml"
+        return path
