@@ -169,6 +169,7 @@ class CorpusLookup(object):
         Args:
             forceUpdate(bool): if True the data should be fetched from the source instead of the cache
             showProgress(bool): if True the progress of the loading should be shown
+            withCreateViews(bool): if True recreate the common views
         '''
         if self.configure:
             self.configure(self)

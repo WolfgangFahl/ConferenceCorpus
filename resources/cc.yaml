@@ -24,3 +24,13 @@
         FROM tables CROSS JOIN pragma_table_info(tables.tableName) fields
         where name in ("city","country","region","cityWikidataid","countryWikidataid","regionWikidataid")
         order by name
+'CommonColumns':
+    title: show all common columns and types of the available event datasources
+    description: select the common columns
+    sql: |
+        WITH tables AS (SELECT name tableName, sql 
+        FROM sqlite_master WHERE type = 'table' AND tableName NOT LIKE 'sqlite_%')
+        SELECT fields.name, fields.type, tableName
+        FROM tables CROSS JOIN pragma_table_info(tables.tableName) fields
+        where name in ("title","year","ordinal","acronym","lookupAcronym","city","country","region")
+        order by name

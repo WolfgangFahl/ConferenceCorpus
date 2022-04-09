@@ -32,6 +32,25 @@ class ConferenceCorpusUpdate():
         '''
         self.lookupId=lookupId
         
+    def getEventDataSource(self,forceUpdate:bool=False):
+        '''
+        get my event data source
+        
+        Args:    
+            forceUpdate(bool): if True force updating the event data source
+        
+        Returns:
+            EventDataSource: the event data source for my lookup id
+        '''
+        configure = None
+        if self.lookupId.startswith('or'):
+            # set configuration function of openresearch datasource
+            configure = CorpusLookupConfigure.configureCorpusLookup
+        lookup=CorpusLookup(lookupIds=[self.lookupId], configure=configure)
+        lookup.load(forceUpdate=forceUpdate,showProgress=True)
+        eventDataSource=lookup.getDataSource(self.lookupId)
+        return eventDataSource
+        
     def updateDataSource(self,source:str,sampleId:str=None):
         '''
         update the given DataSource
@@ -42,13 +61,7 @@ class ConferenceCorpusUpdate():
         '''
         msg=f"update of conference corpus database from {source}"
         profiler=Profiler(msg)
-        configure = None
-        if self.lookupId.startswith('or'):
-            # set configuration function of openresearch datasource
-            configure = CorpusLookupConfigure.configureCorpusLookup
-        lookup=CorpusLookup(lookupIds=[self.lookupId], configure=configure)
-        lookup.load(forceUpdate=True,showProgress=True)
-        eventDataSource=lookup.getDataSource(self.lookupId)
+        eventDataSource=self.getEventDataSource(forceUpdate=True)
         el=eventDataSource.eventManager.getList()
         esl=eventDataSource.eventSeriesManager.getList()
         msg=f"{eventDataSource.name}: {len(el)} events {len(esl)} eventseries"
@@ -60,6 +73,21 @@ class ConferenceCorpusUpdate():
                 print (event.toJSON())
             else:
                 print(f"sample event id {sampleId} not found")
+                
+    def addLookupAcronyms(self):
+        '''
+        add lookup acronyms
+        '''
+        msg=f"adding lookup acronyms for {self.lookupId}"
+        profiler=Profiler(msg)
+        eventDataSource=self.getEventDataSource(forceUpdate=True)
+        el=eventDataSource.eventManager.getList()
+        for event in el:
+            event.getLookupAcronym()
+        eventDataSource.eventManager.store()
+        msg=f"{eventDataSource.name}: added lookupAcronym for {len(el)} events"
+        profiler.time(msg)
+        
     
 class TibkatUpdater(ConferenceCorpusUpdate):
     '''
@@ -154,6 +182,7 @@ USAGE
         parser.add_argument("-dblp","--dblp", dest="dblp",   action="store_true", help="update dblp")
         parser.add_argument("--tibkat", action="store_true",help="update tibkat from ftx")
         parser.add_argument("--fixlocations",nargs="+",help="fix the locations for the given lookup Ids")
+        parser.add_argument("--addLookupAcronym",nargs="+",help="add lookupAcronyms for the given lookup Ids")
         parser.add_argument("--updateSource",nargs="+",help="update the sources for the given lookup Ids")
         parser.add_argument("--limitFiles",type=int,default=10000,help="limit the number of file to be parsed [default: %(default)s]")
         parser.add_argument("--ftxroot",default="/Volumes/seel/tibkat-ftx/tib-intern-ftx_0/tib-2021-12-20",help="path to root directory of ftx xml files [default: %(default)s]")
@@ -178,6 +207,11 @@ USAGE
             for lookupId in args.updateSource:
                 updater=ConferenceCorpusUpdate(lookupId)
                 updater.updateDataSource(f"{lookupId} cache", args.sample)
+        if args.addLookupAcronym:
+            for lookupId in args.addLookupAcronym:
+                updater=ConferenceCorpusUpdate(lookupId)
+                updater.addLookupAcronyms()
+            
             
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
