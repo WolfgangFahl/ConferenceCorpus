@@ -60,7 +60,7 @@ class LocationFixer(object):
         '''
         return datetime.utcnow().strftime('%Y-%m-%d_%H%M%S')
     
-    def fixLocations4LookupId(self,lookupIds,logFileRoot="/tmp"):
+    def fixLocations4LookupIds(self,lookupIds,perCentLimit:float=60.0,logFileRoot="/tmp"):
         '''
         fix locations 4 the given lookup ids
         '''
@@ -81,9 +81,9 @@ class LocationFixer(object):
                 logFile = open(logFilePath,'w')
             if lookupId=="dblp":
                 eventManager.addLocations()
-            self.fixLocations(eventManager, locationAttribute, addLocationInfo, limit, showProgress=showProgress,logFile=logFile)
+            self.fixLocations(eventManager, locationAttribute, perCentLimit=perCentLimit,addLocationInfo=addLocationInfo, limit=limit, showProgress=showProgress,logFile=logFile)
 
-    def fixLocations(self,eventManager,locationAttribute,addLocationInfo=False,limit=100,showProgress=True,logFile=None):
+    def fixLocations(self,eventManager,locationAttribute,perCentLimit=60.0,addLocationInfo=False,limit=100,showProgress=True,logFile=None):
         '''
         fix locations
         
@@ -91,6 +91,7 @@ class LocationFixer(object):
             eventManager: the eventmanager to use
             locationAttribute(str): the name of the location attribute
             addLocationInfo(bool): if True add the location information
+            perCentLimit(float): percentage of Locations to cover (if less than 100% the fixing process will prematurely end at this limit)
         '''
         events=eventManager.events
         pCount,_pCountTab=self.getCounter(events,locationAttribute)
@@ -132,6 +133,8 @@ class LocationFixer(object):
                 if logFile:
                     print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)❌:{locationText}({locationCount})",file=logFile)
                 problems.append(locationText)
+            if percent>perCentLimit:
+                break
         problemMsg=f"found {len(problems)} problems"
         progress.done()
         for i,problem in enumerate(problems):

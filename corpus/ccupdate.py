@@ -182,6 +182,7 @@ USAGE
         parser.add_argument("-dblp","--dblp", dest="dblp",   action="store_true", help="update dblp")
         parser.add_argument("--tibkat", action="store_true",help="update tibkat from ftx")
         parser.add_argument("--fixlocations",nargs="+",help="fix the locations for the given lookup Ids")
+        parser.add_argument("--perCentLimit",type=float,default=60.0,help="limit the percentage of Locations to be covered [default: %(default)s]")
         parser.add_argument("--addLookupAcronym",nargs="+",help="add lookupAcronyms for the given lookup Ids")
         parser.add_argument("--updateSource",nargs="+",help="update the sources for the given lookup Ids")
         parser.add_argument("--limitFiles",type=int,default=10000,help="limit the number of file to be parsed [default: %(default)s]")
@@ -202,7 +203,7 @@ USAGE
             tibkatUpdater.update(args)
         if args.fixlocations:
             locationFixer=LocationFixer()
-            locationFixer.fixLocations4LookupId(args.fixlocations)
+            locationFixer.fixLocations4LookupIds(args.fixlocations,args.perCentLimit)
         if args.updateSource:
             for lookupId in args.updateSource:
                 updater=ConferenceCorpusUpdate(lookupId)
