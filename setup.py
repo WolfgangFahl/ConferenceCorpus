@@ -37,7 +37,7 @@ setup(name='ConferenceCorpus',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9'
       ],
-      packages=['resources','corpus','corpus.datasources','corpus.smw','corpus.utils','corpus.quality','corpus.xmlentity','ptp'],
+      packages=['resources','corpus','corpus.datasources','corpus.smw','corpus.utils','corpus.quality','corpus.xmlhandler','ptp'],
       package_data={'resources':['*.yaml']},
       install_requires=requirements,
       entry_points={
