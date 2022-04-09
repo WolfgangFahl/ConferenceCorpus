@@ -8,7 +8,6 @@ from ptp.parsing import Category
 from num2words import num2words
 import re
 import yaml
-import os
 import pathlib
 from pyparsing import ParseException
 
@@ -59,10 +58,8 @@ class EnumCategory(Category):
     '''
     category defined by an enumeration specified in a lookup table
     '''
-    tokens=None
-    
-    @classmethod
-    def getYamlPath(cls,filename:str="dictionary"):
+   
+    def getYamlPath(self,lookupName:str=None):
         '''
         get the YamlPath for the given filename prefix
         
@@ -72,23 +69,24 @@ class EnumCategory(Category):
         Returns:
             str: the string representation of the path
         '''
+        if lookupName is None:
+            lookupName="dictionary"
         grandParent = pathlib.Path(__file__).parent.parent.resolve()
-        filepath = (grandParent / f"resources/{filename}.yaml")
+        filepath = (grandParent / f"resources/{lookupName}.yaml")
         path=str(filepath)
         return path
-
-    @classmethod    
-    def read(cls, yamlPath=None):
+  
+    def read(self, yamlPath=None):
         ''' read the dictionary from the given yaml path
             https://github.com/WolfgangFahl/ProceedingsTitleParser/blob/7e52b4e3eae09269464669fe387425b9f6392952/ptp/titleparser.py#L456
         '''
         if yamlPath is None:
-            yamlPath=cls.getYamlPath()
+            yamlPath=self.getYamlPath()
         with open(yamlPath, 'r') as stream:
-            cls.tokens = yaml.safe_load(stream)
+            self.tokens = yaml.safe_load(stream)
         pass
     
-    def __init__(self,name:str, tokenPath:str=None):
+    def __init__(self,name:str, lookupName:str=None):
         '''
         construct me for the given name
 
@@ -97,11 +95,11 @@ class EnumCategory(Category):
             tokenPath(str): path to the yaml file containing the tokens/enum information
         '''
         super().__init__(name,itemFunc=lambda word:self.lookup(word))
-        self.lookupByKey={}    
-        if EnumCategory.tokens is None:
-            EnumCategory.read(tokenPath)
-        for tokenKey in EnumCategory.tokens:
-            token=EnumCategory.tokens[tokenKey]
+        self.lookupByKey={}   
+        lookupYamlPath=self.getYamlPath(lookupName) 
+        self.read(lookupYamlPath)
+        for tokenKey in self.tokens:
+            token=self.tokens[tokenKey]
             tokenType=token['type']
             if tokenType==name:
                 value=token['value'] if 'value' in token else tokenKey 
@@ -111,8 +109,11 @@ class EnumCategory(Category):
         return self.lookup(word) is not None
     
     def lookup(self,word):
+        '''
+        lookup the given word
+        '''
         if word in self.lookupByKey:
-                return self.lookupByKey[word]
+            return self.lookupByKey[word]
         return None
     
     def addLookup(self,key,value):
@@ -181,4 +182,15 @@ class CountryCategory(EnumCategory):
         '''
         constructor
         '''
-        super().__init__("country", tokenPath=EnumCategory.getYamlPath("countries"))
+        super().__init__("country", lookupName="countries")
+        
+class YearCategory(EnumCategory):
+    '''
+    I am the category for years
+    '''
+
+    def __init__(self):
+        '''
+        constructor
+        '''
+        super().__init__("year", lookupName="years")

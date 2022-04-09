@@ -56,12 +56,12 @@ class TestEventSeriesCompletion(BaseTest):
         '''
         vldbSeriesLod=self.getSeriesLod("VLDB")
         debug=self.debug
-        debug=True
+        #debug=True
         if debug:
             #print (vldbSeriesLod)
             print (len(vldbSeriesLod))
             
-        vldbSeriesLod=sorted(vldbSeriesLod,key=lambda event:event["year"])
+        vldbSeriesLod=sorted(vldbSeriesLod,key=lambda event:event["year"] if event.get("year") in event else 0)
         for vldbEvent in vldbSeriesLod:
             if vldbEvent["year"] is  not None:
                 print(f"""{vldbEvent["year"]}:{vldbEvent["source"]}""")

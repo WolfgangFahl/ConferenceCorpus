@@ -27,9 +27,3 @@ class TestEventStorage(BaseTest):
                 print(plantUml)
             self.assertTrue(f"{baseEntity} <|-- {baseEntity.lower()}_dblp" in plantUml)
             self.assertTrue(f"class {baseEntity} " in plantUml)
-
-
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
