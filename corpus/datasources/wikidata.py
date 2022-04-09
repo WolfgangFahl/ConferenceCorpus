@@ -15,7 +15,7 @@ class Wikidata(EventDataSource):
     our own copy of Wikidata which might run on Virtuoso or Jena instead of blazegraph
     '''
     endpoint="https://query.wikidata.org/sparql"
-    sourceConfig=EventDataSourceConfig(lookupId="wikidata",name="Wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata',tableSuffix="wikidata")
+    sourceConfig=EventDataSourceConfig(lookupId="wikidata",name="Wikidata",url='https://www.wikidata.org/wiki/Wikidata:Main_Page',title='Wikidata',tableSuffix="wikidata",locationAttribute="location")
     
     def __init__(self):
         '''
