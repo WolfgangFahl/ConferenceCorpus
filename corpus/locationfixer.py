@@ -81,9 +81,9 @@ class LocationFixer(object):
                 logFile = open(logFilePath,'w')
             if lookupId=="dblp":
                 eventManager.addLocations()
-            self.fixLocations(eventManager, locationAttribute, perCentLimit=perCentLimit,addLocationInfo=addLocationInfo, limit=limit, showProgress=showProgress,logFile=logFile)
+            self.fixLocations(eventManager, locationAttribute=locationAttribute, perCentLimit=perCentLimit,addLocationInfo=addLocationInfo, limit=limit, showProgress=showProgress,logFile=logFile)
 
-    def fixLocations(self,eventManager,locationAttribute,perCentLimit=60.0,addLocationInfo=False,limit=100,showProgress=True,logFile=None):
+    def fixLocations(self,eventManager,locationAttribute,perCentLimit=60.0,addLocationInfo=False,limit:int=100,showProgress=True,logFile=None):
         '''
         fix locations
         
@@ -102,7 +102,7 @@ class LocationFixer(object):
         problems=[]
         logHint=""
         if logFile:
-            logHint=f"\nlogging to {logFile}"
+            logHint=f"\nlogging to {logFile.name}"
         progress=Progress(progressSteps=1,expectedTotal=total,msg=f"Fixing {limit}/{total} locations for {eventManager.name} with perCentLimit {perCentLimit:.1f}%% using location attribute {locationAttribute}{logHint}",showMemory=True)
         for i,locationTuple in enumerate(pCount.most_common(limit)):
             locationText,locationCount=locationTuple

@@ -90,6 +90,10 @@ class ConfrefEvent(Event):
         rawEvent['url']=f'http://portal.confref.org/list/{eventId}'        
         rawEvent['title']=rawEvent.pop('name')
         rawEvent["source"]="confref"
+        location=None
+        if "city" in rawEvent and "country" in rawEvent:
+            location=f"""{rawEvent["city"]},{rawEvent["country"]}"""
+        rawEvent["location"]=location
         Ordinal.addParsedOrdinal(rawEvent)
         pass
     
