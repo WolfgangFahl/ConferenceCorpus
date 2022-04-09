@@ -63,7 +63,6 @@ class LocationLookup:
         "Phoenix, Arizona": "Q16556",
         "Phoenix AZ USA": "Q16556",
         "Phoenix, Arizona, USA": "Q16556",
-        "Phoenix, USA":  "Q16556",
         "Phoenix, USA": "Q16556",
         "Phoenix, AZ, USA": "Q16556",
         "Salamanca, Spain": "Q15695",
