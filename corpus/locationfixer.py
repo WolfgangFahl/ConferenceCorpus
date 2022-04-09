@@ -103,7 +103,7 @@ class LocationFixer(object):
         logHint=""
         if logFile:
             logHint=f"\nlogging to {logFile.name}"
-        progress=Progress(progressSteps=1,expectedTotal=total,msg=f"Fixing {limit}/{total} locations for {eventManager.name} with perCentLimit {perCentLimit:.1f}%% using location attribute {locationAttribute}{logHint}",showMemory=True)
+        progress=Progress(progressSteps=1,expectedTotal=total,msg=f"Fixing {limit}/{total} locations for {eventManager.name} with perCentLimit {perCentLimit:.1f}% using location attribute {locationAttribute}{logHint}",showMemory=True)
         for i,locationTuple in enumerate(pCount.most_common(limit)):
             locationText,locationCount=locationTuple
             rsum+=locationCount

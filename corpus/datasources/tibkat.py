@@ -24,7 +24,7 @@ class Tibkat(EventDataSource):
     https://tib.eu/data/rdf
     
     '''
-    sourceConfig = EventDataSourceConfig(lookupId="tibkat", name="tib.eu", url="https://www.tib.eu", title="TIBKAT", tableSuffix="tibkat")
+    sourceConfig = EventDataSourceConfig(lookupId="tibkat", name="tib.eu", url="https://www.tib.eu", title="TIBKAT", tableSuffix="tibkat",locationAttribute="location")
     home = str(Path.home())
     # use a symbolic link if you want a different location
     ftxroot=f"{home}/.conferencecorpus/tibkat/ftx"
