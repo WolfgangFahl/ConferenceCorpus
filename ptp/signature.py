@@ -9,6 +9,7 @@ from num2words import num2words
 import re
 import yaml
 import os
+import pathlib
 from pyparsing import ParseException
 
 class RegexpCategory(Category):
@@ -16,6 +17,14 @@ class RegexpCategory(Category):
     category defined by regular expression
     '''
     def __init__(self,name,itemFunc,pattern):
+        '''
+        constructor
+        
+        Args:
+            name(str): the name of this category
+            itemFunc(func): the function to use for getting values
+            pattern(str): the regular expression pattern to apply
+        '''
         self.pattern=pattern
         super().__init__(name,itemFunc=itemFunc)
         
@@ -40,7 +49,8 @@ class ParsingCategory(Category):
         try:
             self.parseResult=self.grammar.parseString(token)
             pass
-        except ParseException as pe:
+        except ParseException as _pe:
+            # ignore any parse exception
             pass
         return self.parseResult is not None
         
@@ -52,9 +62,19 @@ class EnumCategory(Category):
     tokens=None
     
     @classmethod
-    def getYamlPath(cls):
-        path=os.path.dirname(__file__)+"/../resources"
-        path=f"{path}/dictionary.yaml"
+    def getYamlPath(cls,filename:str="dictionary"):
+        '''
+        get the YamlPath for the given filename prefix
+        
+        Args:
+            filename(str): the prefix of the filename to get the Yaml path for
+            
+        Returns:
+            str: the string representation of the path
+        '''
+        grandParent = pathlib.Path(__file__).parent.parent.resolve()
+        filepath = (grandParent / f"resources/{filename}.yaml")
+        path=str(filepath)
         return path
 
     @classmethod    
@@ -161,10 +181,4 @@ class CountryCategory(EnumCategory):
         '''
         constructor
         '''
-        super().__init__("country", tokenPath=self.getYamlPath())
-
-    @classmethod
-    def getYamlPath(cls):
-        path = os.path.dirname(__file__) + "/../resources"
-        path = f"{path}/countries.yaml"
-        return path
+        super().__init__("country", tokenPath=EnumCategory.getYamlPath("countries"))
