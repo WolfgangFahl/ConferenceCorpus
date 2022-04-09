@@ -16,7 +16,7 @@ import sys
 DEBUG = 0
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
-from corpus.xml.xmlparser import XMLEntityParser, XmlEntity
+from corpus.xmlhandler.xmlparser import XMLEntityParser, XmlEntity
 from typing import Iterator, Union
 from corpus.utils.progress import Progress
 

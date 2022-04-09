@@ -3,7 +3,6 @@ Created on 2020-07-05
 
 @author: wf
 '''
-import habanero
 from ptp.ordinal import Ordinal
 from corpus.event import Event, EventSeries, EventManager, EventSeriesManager
 from lodstorage.storageconfig import StorageConfig
@@ -14,8 +13,8 @@ import glob
 import os
 import time
 from datetime import datetime
-
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
+import habanero
 
 
 class Crossref(EventDataSource):

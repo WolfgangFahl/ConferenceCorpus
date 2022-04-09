@@ -30,7 +30,7 @@ class EventStorage:
     viewTableExcludes={
             "event":
                 ["event_acm",
-                 "event_ceurws"
+                 "event_ceurws",
                  "event_orclonebackup",
                  "event_or",
                  "event_orbackup"],

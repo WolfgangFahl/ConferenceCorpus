@@ -3,8 +3,7 @@ Created on 2021-01-25
 
 @author: wf
 '''
-import getpass
-import os
+
 import time
 from corpus.datasources.dblpxml import DblpXml
 from lodstorage.schema import SchemaManager

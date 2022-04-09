@@ -7,7 +7,7 @@ from corpus.utils.download import Download
 from os import path
 import os
 import urllib
-from corpus.xml.xmlparser import XMLEntityParser
+from corpus.xmlhandler.xmlparser import XMLEntityParser
 from corpus.utils.progress import Progress
 
 class DROPS(object):
