@@ -100,7 +100,10 @@ class LocationFixer(object):
         total=sum(pCount.values())
         rsum=0
         problems=[]
-        progress=Progress(progressSteps=1,expectedTotal=total,msg=f"Fixing {limit}/{total} locations for {eventManager.name} using location attribute {locationAttribute}",showMemory=True)
+        logHint=""
+        if logFile:
+            logHint=f"\nlogging to {logFile}"
+        progress=Progress(progressSteps=1,expectedTotal=total,msg=f"Fixing {limit}/{total} locations for {eventManager.name} with perCentLimit {perCentLimit:.1f}%% using location attribute {locationAttribute}{logHint}",showMemory=True)
         for i,locationTuple in enumerate(pCount.most_common(limit)):
             locationText,locationCount=locationTuple
             rsum+=locationCount
