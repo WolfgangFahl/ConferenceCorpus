@@ -15,6 +15,7 @@ from corpus.datasources.tibkat import Tibkat
 from corpus.utils.download import Profiler
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
+from corpus.event import EventStorage
 
 class ConferenceCorpusUpdate():
     '''
@@ -179,6 +180,7 @@ USAGE
         # Setup argument parser
         parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
         parser.add_argument("-d",   "--debug", dest="debug", action="store_true", help="set debug [default: %(default)s]")
+        parser.add_argument("--createViews",action="store_true",help="create the common view for all datasources")
         parser.add_argument("-dblp","--dblp", dest="dblp",   action="store_true", help="update dblp")
         parser.add_argument("--tibkat", action="store_true",help="update tibkat from ftx")
         parser.add_argument("--fixlocations",nargs="+",help="fix the locations for the given lookup Ids")
@@ -212,6 +214,10 @@ USAGE
             for lookupId in args.addLookupAcronym:
                 updater=ConferenceCorpusUpdate(lookupId)
                 updater.addLookupAcronyms()
+        if args.createViews:
+            profiler=Profiler("Creating common views")
+            EventStorage.createViews(exclude=EventStorage.viewTableExcludes,show=True)
+            profiler.time()
             
             
     except KeyboardInterrupt:

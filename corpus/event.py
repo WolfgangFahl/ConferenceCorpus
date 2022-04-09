@@ -159,17 +159,20 @@ class EventStorage:
         return viewDDLs
         
     @classmethod
-    def createViews(cls,exclude=None):
+    def createViews(cls,exclude=None,show=False):
         ''' 
-          create the general Event view
+          create the general Event views
           
         Args:
-            cacheFileName(string): the path to the database
+            exclude(list): the list of table names to be excluded
+            show(bool): if True show the DDL
         '''
         sqlDB=EventStorage.getSqlDB()
         viewDDLs=EventStorage.getCommonViewDDLs(exclude=exclude)
         for viewName,viewDDL in viewDDLs.items():
             sqlDB.c.execute(f"DROP VIEW IF EXISTS {viewName}")
+            if show:
+                print(viewDDL)
             sqlDB.c.execute(viewDDL)
     
 
