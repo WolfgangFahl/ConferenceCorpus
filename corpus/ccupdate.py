@@ -80,7 +80,7 @@ class ConferenceCorpusUpdate():
         '''
         msg=f"adding lookup acronyms for {self.lookupId}"
         profiler=Profiler(msg)
-        eventDataSource=self.getEventDataSource(forceUpdate=True)
+        eventDataSource=self.getEventDataSource(forceUpdate=False)
         el=eventDataSource.eventManager.getList()
         for event in el:
             event.getLookupAcronym()
