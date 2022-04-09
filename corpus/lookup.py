@@ -15,19 +15,15 @@ from corpus.datasources.wikidata import Wikidata
 from corpus.datasources.openresearch import OR
 from corpus.datasources.wikicfp import WikiCfp
 
-from lodstorage.uml import UML
 from lodstorage.lod import LOD
 from wikibot.wikiuser import WikiUser
 from wikifile.wikiFileManager import WikiFileManager
-
-from datetime import datetime
 
 import os
 import re
 from os import path
 import sqlite3
 import sys
-import getpass
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
@@ -303,36 +299,6 @@ class CorpusLookup(object):
                         if not omitFailed:
                             raise ex
         return dictOfLod
-
-
-    def asPlantUml(self,baseEntity='Event',exclude=None):
-        '''
-        return me as a plantUml Diagram markup
-        '''
-        schemaManager=None
-        uml=UML()
-        now=datetime.now()
-        nowYMD=now.strftime("%Y-%m-%d")
-        viewName=f"{baseEntity.lower()}"
-        tableList=EventStorage.getViewTableList(viewName, exclude=exclude)
-        for table in tableList:
-            tableName=table['name']
-            if 'instances' in table:
-                instanceNote=""
-                dataSource=self.getDataSource4TableName(tableName)
-                if dataSource is not None:
-                    sourceConfig=dataSource.sourceConfig
-                    instanceNote=f"[[{sourceConfig.url} {sourceConfig.title}]]"
-                instanceCount=table['instances']
-                instanceNote=f"{instanceNote}\n{instanceCount} instances "
-                table['notes']=instanceNote
-        title=f"""ConfIDent  {baseEntity}
-{nowYMD}
-[[https://projects.tib.eu/en/confident/ © 2019-2022 ConfIDent project]]
-see also [[http://ptp.bitplan.com/settings Proceedings Title Parser]]
-"""
-        plantUml=uml.mergeSchema(schemaManager,tableList,title=title,packageName='DataSources',generalizeTo=baseEntity)
-        return plantUml
         
         
 __version__ = "0.0.27"

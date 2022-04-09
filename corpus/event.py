@@ -16,9 +16,12 @@ from corpus.quality.rating import RatingManager
 from corpus.eventrating import EventRating,EventSeriesRating
 from lodstorage.sparql import SPARQL
 from lodstorage.schema import Schema
+from lodstorage.uml import UML
 from lodstorage.query import QueryManager
 import os
 import sys
+from datetime import datetime
+
 
 import re
 class EventStorage:
@@ -174,6 +177,36 @@ class EventStorage:
             if show:
                 print(viewDDL)
             sqlDB.c.execute(viewDDL)
+    
+    @classmethod        
+    def asPlantUml(cls,baseEntity='Event',exclude=None):
+        '''
+        return me as a plantUml Diagram markup
+        '''
+        schemaManager=None
+        uml=UML()
+        now=datetime.now()
+        nowYMD=now.strftime("%Y-%m-%d")
+        viewName=f"{baseEntity.lower()}"
+        tableList=EventStorage.getViewTableList(viewName, exclude=exclude)
+        for table in tableList:
+            tableName=table['name']
+            if 'instances' in table:
+                instanceNote=""
+                dataSource=self.getDataSource4TableName(tableName)
+                if dataSource is not None:
+                    sourceConfig=dataSource.sourceConfig
+                    instanceNote=f"[[{sourceConfig.url} {sourceConfig.title}]]"
+                instanceCount=table['instances']
+                instanceNote=f"{instanceNote}\n{instanceCount} instances "
+                table['notes']=instanceNote
+        title=f"""ConfIDent  {baseEntity}
+{nowYMD}
+[[https://projects.tib.eu/en/confident/ © 2019-2022 ConfIDent project and Wolfgang Fahl]]
+see also [[http://cc.bitplan.com Conference Corpus]]
+"""
+        plantUml=uml.mergeSchema(schemaManager,tableList,title=title,packageName='DataSources',generalizeTo=baseEntity)
+        return plantUml
     
 
 class Event(JSONAble):

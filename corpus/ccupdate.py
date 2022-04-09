@@ -217,6 +217,11 @@ USAGE
         if args.createViews:
             profiler=Profiler("Creating common views")
             EventStorage.createViews(exclude=EventStorage.viewTableExcludes,show=True)
+            storageTableList=EventStorage.getTableList()
+            print(f"found {len(storageTableList)} storage Tables for the ConferenceCorpus")
+            for baseEntity in ["Event","EventSeries"]:
+                plantUml=EventStorage.asPlantUml(baseEntity,exclude=EventStorage.viewTableExcludes)
+                print(plantUml)
             profiler.time()
             
             
