@@ -14,7 +14,11 @@ from corpus.lookup import CorpusLookup
 
 class LocationFixer(object):
     '''
-    fixer for locations
+    fixer for locations - based on natural language location references
+    such as 'Santa Fe, New Mexico, United States' the corresponding city, region
+    and country information is looked up as a reference to wikiData and then
+    added as the columns:
+    city, region country and cityWikidataid, regionWikidataid and countryWikidataid
     '''
     
     def __init__(self):
@@ -29,7 +33,14 @@ class LocationFixer(object):
     
     def getCounter(self,events:list,propertyName:str):
         '''
-        get a counter for the given propertyName
+        get a counter for the given event list and propertyName
+        
+        Args:
+            events(list): a list of events to get counters for
+            propertyName(str): the propertyname to count
+            
+        Returns:
+            tuple(Counter,TabulateCounter): two counter representations
         '''
         counter=Counter()
         for event in events:
@@ -43,8 +54,11 @@ class LocationFixer(object):
     def timeStamp(self):
         '''
         get a timestamp with second precision
+        
+        Returns:
+            str: an ISO-Date timestamp
         '''
-        return datetime.utcnow().strftime('%Y-%m-%d_%H:%M:%S')
+        return datetime.utcnow().strftime('%Y-%m-%d_%H%M%S')
     
     def fixLocations4LookupId(self,lookupIds,logFileRoot="/tmp"):
         '''
@@ -99,9 +113,10 @@ class LocationFixer(object):
                 if showProgress:
                     progress.next()
                 if logFile:
-                    print(f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})",file=logFile)
+                    statsLine=f"{i:4d}/{count:4d}{rsum:6d}/{total:5d}({percent:4.1f}%)✅:{locationText}({locationCount})→{city} ({city.pop})"
+                    print(statsLine,file=logFile,flush=True)
                 events=eventsByLocation[locationText]
-                # loop over all events
+                # loop over all events and add location details
                 for event in events:
                     event.city=city.name
                     event.cityWikidataid=city.wikidataid
@@ -109,6 +124,7 @@ class LocationFixer(object):
                     event.region=city.region.name
                     event.regionIso=city.region.iso
                     event.regionWikidataid=city.region.wikidataid
+                    
                     event.country=city.country.name
                     event.countryIso=city.country.iso
                     event.countryWikidataid=city.country.wikidataid
@@ -121,7 +137,8 @@ class LocationFixer(object):
         for i,problem in enumerate(problems):
             if logFile:
                 print(f"{i:4d}:{problem}",file=logFile)        
-        print(problemMsg,file=logFile)      
+        print(problemMsg,file=logFile,flush=True)      
         if addLocationInfo:
-            eventManager.store()   
+            eventManager.store()
+            print(f"{len(eventManager.events)} events stored",file=logFile,flush=True)
         
