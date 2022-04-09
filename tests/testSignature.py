@@ -56,4 +56,4 @@ class TestSignature(BaseTest):
         self.assertEqual('country', token.category.name)
         self.assertEqual("Switzerland", token.tokenStr)
         self.assertEqual(11, token.pos)
-        self.assertEqual("Switzerland", token.value)
+        self.assertEqual("Q39", token.value)

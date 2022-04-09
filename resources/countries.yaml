@@ -3,401 +3,487 @@
 #
 America:
   type: country
-Australia:
-  type: country
-Austria:
-  type: country
-Belgium:
-  type: country
-Britain:
-  type: country
-Brazil:
-  type: country
-Great Britain:
-  type: country
-Canada:
-  type: country
-China:
-  type: country
-Czech Republic:
-  type: country
-Denmark:
-  type: country
-Finland:
-  type: country
-France:
-  type: country
-Germany:
-  type: country
-Greece:
-  type: country
-India:
-  type: country
-Ireland:
-  type: country
-ireland:
-  type: country
-Italy:
-  type: country
-Japan:
-  type: country
-Netherlands:
-  type: country
-New Zealand:
-  type: country
-Österreich:
-  type: country
-Panama:
-  type: country
-Spain:
-  type: country
-Sweden:
-  type: country
-Switzerland:
-  type: country
-Turkey:
-  type: country
-United Kingdom:
-  type: country
-USA:
-  type: country
-Algeria:
-  type: country
-  isocode: DZ
-  population: 41318142
-  gpdPerCapita: 4055
+  value: Q30
 Argentina:
-  type: country
+  gpdPerCapita: 14398
   isocode: AR
   population: 44938712
-  gpdPerCapita: 14398
-Bulgaria:
   type: country
-  isocode: BG
-  population: 7000039
-  gpdPerCapita: 8228
-Chile:
+  value: Q414
+Australia:
   type: country
-  isocode: CL
-  population: 18054726
-  gpdPerCapita: 15346
-Croatia:
+  value: Q408
+Austria:
   type: country
-  isocode: HR
-  population: 4105493
-  gpdPerCapita: 13386
-Cyprus:
-  type: country
-  isocode: CY
-  population: 1141166
-  gpdPerCapita: 25658
-Estonia:
-  type: country
-  isocode: EE
-  population: 1324820
-  gpdPerCapita: 20200
-Hungary:
-  type: country
-  isocode: HU
-  population: 9769526
-  gpdPerCapita: 14278
-Iceland:
-  type: country
-  isocode: IS
-  population: 357050
-  gpdPerCapita: 71311
-Indonesia:
-  type: country
-  isocode: ID
-  population: 263991379
-  gpdPerCapita: 3846
-Israel:
-  type: country
-  isocode: IL
-  population: 9093000
-  gpdPerCapita: 40543
-Lithuania:
-  type: country
-  isocode: LT
-  population: 2790842
-  gpdPerCapita: 16809
-Luxembourg:
-  type: country
-  isocode: LU
-  population: 626108
-  gpdPerCapita: 101450
-Malaysia:
-  type: country
-  isocode: MY
-  population: 31624264
-  gpdPerCapita: 9951
-Malta:
-  type: country
-  isocode: MT
-  population: 465292
-  gpdPerCapita: 26748
-Mexico:
-  type: country
-  isocode: MX
-  population: 130526945
-  gpdPerCapita: 8910
-Montenegro:
-  type: country
-  isocode: ME
-  population: 622359
-  gpdPerCapita: 7784
-Morocco:
-  type: country
-  isocode: MA
-  population: 36029138
-  gpdPerCapita: 3022
-Norway:
-  type: country
-  isocode: false
-  population: 5367580
-  gpdPerCapita: 75704
-Peru:
-  type: country
-  isocode: PE
-  population: 29381884
-  gpdPerCapita: 6571
-Poland:
-  type: country
-  isocode: PL
-  population: 38382576
-  gpdPerCapita: 13863
-Portugal:
-  type: country
-  isocode: PT
-  population: 10600000
-  gpdPerCapita: 21291
-Romania:
-  type: country
-  isocode: RO
-  population: 19586539
-  gpdPerCapita: 10819
-Russia:
-  type: country
-  isocode: RU
-  population: 146804372
-  gpdPerCapita: 10749
-Serbia:
-  type: country
-  isocode: RS
-  population: 7022268
-  gpdPerCapita: 5901
-Singapore:
-  type: country
-  isocode: SG
-  population: 5888926
-  gpdPerCapita: 57714
-Slovakia:
-  type: country
-  isocode: SK
-  population: 5397036
-  gpdPerCapita: 17579
-Slovenia:
-  type: country
-  isocode: SI
-  population: 2066880
-  gpdPerCapita: 23601
-Thailand:
-  type: country
-  isocode: TH
-  population: 65931550
-  gpdPerCapita: 6595
-Tunisia:
-  type: country
-  isocode: TN
-  population: 11565204
-  gpdPerCapita: 3464
-Ukraine:
-  type: country
-  isocode: UA
-  population: 42558328
-  gpdPerCapita: 2639
-Vietnam:
-  type: country
-  isocode: VN
-  population: 94660000
-  gpdPerCapita: 2342
-Albania:
-  type: country
-  isocode: AL
-  population: 3020209
-  gpdPerCapita: 4537
+  value: Q40
 Bangladesh:
-  type: country
+  gpdPerCapita: 1516
   isocode: BD
   population: 164669751
-  gpdPerCapita: 1516
-Barbados:
   type: country
+  value: Q902
+Barbados:
+  gpdPerCapita: 16356
   isocode: BB
   population: 285719
-  gpdPerCapita: 16356
-Cambodia:
   type: country
+  value: Q244
+Belgium:
+  type: country
+  value: Q31
+Brazil:
+  type: country
+  value: Q155
+Britain:
+  type: country
+  value: Q145
+Bulgaria:
+  gpdPerCapita: 8228
+  isocode: BG
+  population: 7000039
+  type: country
+  value: Q219
+Cambodia:
+  gpdPerCapita: 1384
   isocode: KH
   population: 16005373
-  gpdPerCapita: 1384
-Cameroon:
   type: country
+  value: Q424
+Cameroon:
+  gpdPerCapita: 1451
   isocode: CM
   population: 24053727
-  gpdPerCapita: 1451
-Colombia:
   type: country
+  value: Q1009
+Canada:
+  type: country
+  value: Q16
+Chile:
+  gpdPerCapita: 15346
+  isocode: CL
+  population: 18054726
+  type: country
+  value: Q298
+China:
+  type: country
+  value: Q148
+Colombia:
+  gpdPerCapita: 6408
   isocode: CO
   population: 49065615
-  gpdPerCapita: 6408
-Cuba:
   type: country
+  value: Q739
+Croatia:
+  gpdPerCapita: 13386
+  isocode: HR
+  population: 4105493
+  type: country
+  value: Q224
+Cuba:
+  gpdPerCapita: 8433
   isocode: CU
   population: 11484636
-  gpdPerCapita: 8433
-Ecuador:
   type: country
+  value: Q241
+Cyprus:
+  gpdPerCapita: 25658
+  isocode: CY
+  population: 1141166
+  type: country
+  value: Q229
+Czech Republic:
+  type: country
+  value: Q213
+Denmark:
+  type: country
+  value: Q35
+Ecuador:
+  gpdPerCapita: 6273
   isocode: EC
   population: 16624858
-  gpdPerCapita: 6273
-Egypt:
   type: country
+  value: Q736
+Egypt:
+  gpdPerCapita: 2412
   isocode: EG
   population: 94798827
-  gpdPerCapita: 2412
-Ethiopia:
   type: country
+  value: Q79
+Estonia:
+  gpdPerCapita: 20200
+  isocode: EE
+  population: 1324820
+  type: country
+  value: Q191
+Ethiopia:
+  gpdPerCapita: 767
   isocode: ET
   population: 104957438
-  gpdPerCapita: 767
-Ghana:
   type: country
+  value: Q115
+Finland:
+  type: country
+  value: Q33
+France:
+  type: country
+  value: Q142
+Germany:
+  type: country
+  value: Q183
+Ghana:
+  gpdPerCapita: 2046
   isocode: GH
   population: 26908262
-  gpdPerCapita: 2046
-Guatemala:
   type: country
+  value: Q117
+Great Britain:
+  type: country
+  value: Q145
+Greece:
+  type: country
+  value: Q41
+Guatemala:
+  gpdPerCapita: 4470
   isocode: GT
   population: 17263239
-  gpdPerCapita: 4470
-Haiti:
   type: country
+  value: Q774
+Haiti:
+  gpdPerCapita: 765
   isocode: HT
   population: 10981229
-  gpdPerCapita: 765
-Iran:
   type: country
+  value: Q790
+Hungary:
+  gpdPerCapita: 14278
+  isocode: HU
+  population: 9769526
+  type: country
+  value: Q28
+Iceland:
+  gpdPerCapita: 71311
+  isocode: IS
+  population: 357050
+  type: country
+  value: Q189
+India:
+  type: country
+  value: Q668
+Indonesia:
+  gpdPerCapita: 3846
+  isocode: ID
+  population: 263991379
+  type: country
+  value: Q252
+Iran:
+  gpdPerCapita: 5593
   isocode: IR
   population: 79966230
-  gpdPerCapita: 5593
-Jamaica:
   type: country
+  value: Q794
+Ireland:
+  type: country
+  value: Q27
+Israel:
+  gpdPerCapita: 40543
+  isocode: IL
+  population: 9093000
+  type: country
+  value: Q801
+Italy:
+  type: country
+  value: Q38
+Jamaica:
+  gpdPerCapita: 5114
   isocode: JM
   population: 2890299
-  gpdPerCapita: 5114
-Jordan:
   type: country
+  value: Q766
+Japan:
+  type: country
+  value: Q17
+Jordan:
+  gpdPerCapita: 4129
   isocode: JO
   population: 10428241
-  gpdPerCapita: 4129
-Kenya:
   type: country
+  value: Q810
+Kenya:
+  gpdPerCapita: 1594
   isocode: KE
   population: 48468138
-  gpdPerCapita: 1594
-Kuwait:
   type: country
+  value: Q114
+Kuwait:
+  gpdPerCapita: 29040
   isocode: KW
   population: 4600000
-  gpdPerCapita: 29040
-Latvia:
   type: country
+  value: Q817
+Latvia:
+  gpdPerCapita: 15684
   isocode: LV
   population: 1909000
-  gpdPerCapita: 15684
-Lebanon:
   type: country
+  value: Q211
+Lebanon:
+  gpdPerCapita: 8808
   isocode: LB
   population: 6100075
-  gpdPerCapita: 8808
-Madagascar:
   type: country
+  value: Q822
+Lithuania:
+  gpdPerCapita: 16809
+  isocode: LT
+  population: 2790842
+  type: country
+  value: Q37
+Luxembourg:
+  gpdPerCapita: 101450
+  isocode: LU
+  population: 626108
+  type: country
+  value: Q32
+Madagascar:
+  gpdPerCapita: 449
   isocode: MG
   population: 25570895
-  gpdPerCapita: 449
-Mauritius:
   type: country
+  value: Q1019
+Malaysia:
+  gpdPerCapita: 9951
+  isocode: MY
+  population: 31624264
+  type: country
+  value: Q833
+Malta:
+  gpdPerCapita: 26748
+  isocode: MT
+  population: 465292
+  type: country
+  value: Q233
+Mauritius:
+  gpdPerCapita: 10490
   isocode: MU
   population: 1264613
-  gpdPerCapita: 10490
-Monaco:
   type: country
+  value: Q1027
+Mexico:
+  gpdPerCapita: 8910
+  isocode: MX
+  population: 130526945
+  type: country
+  value: Q96
+Monaco:
+  gpdPerCapita: 168010
   isocode: MC
   population: 38695
-  gpdPerCapita: 168010
-Myanmar:
   type: country
+  value: Q235
+Montenegro:
+  gpdPerCapita: 7784
+  isocode: ME
+  population: 622359
+  type: country
+  value: Q236
+Morocco:
+  gpdPerCapita: 3022
+  isocode: MA
+  population: 36029138
+  type: country
+  value: Q1028
+Myanmar:
+  gpdPerCapita: 1256
   isocode: MM
   population: 53370609
-  gpdPerCapita: 1256
-Nepal:
   type: country
+  value: Q836
+Nepal:
+  gpdPerCapita: 849
   isocode: NP
   population: 29400000
-  gpdPerCapita: 849
-Nigeria:
   type: country
+  value: Q837
+Netherlands:
+  type: country
+  value: Q55
+New Zealand:
+  type: country
+  value: Q664
+Nigeria:
+  gpdPerCapita: 1968
   isocode: NG
   population: 190886311
-  gpdPerCapita: 1968
-Pakistan:
   type: country
+  value: Q1033
+Norway:
+  gpdPerCapita: 75704
+  isocode: false
+  population: 5367580
+  type: country
+  value: Q20
+Pakistan:
+  gpdPerCapita: 1547
   isocode: PK
   population: 216565318
-  gpdPerCapita: 1547
-Paraguay:
   type: country
+  value: Q843
+Panama:
+  type: country
+  value: Q804
+Paraguay:
+  gpdPerCapita: 5823
   isocode: PY
   population: 6811297
-  gpdPerCapita: 5823
-Philippines:
   type: country
+  value: Q733
+Peru:
+  gpdPerCapita: 6571
+  isocode: PE
+  population: 29381884
+  type: country
+  value: Q419
+Philippines:
+  gpdPerCapita: 2988
   isocode: PH
   population: 104918090
-  gpdPerCapita: 2988
-Qatar:
   type: country
+  value: Q928
+Poland:
+  gpdPerCapita: 13863
+  isocode: PL
+  population: 38382576
+  type: country
+  value: Q36
+Portugal:
+  gpdPerCapita: 21291
+  isocode: PT
+  population: 10600000
+  type: country
+  value: Q45
+Qatar:
+  gpdPerCapita: 63249
   isocode: QA
   population: 2639211
-  gpdPerCapita: 63249
-Senegal:
   type: country
+  value: Q846
+Romania:
+  gpdPerCapita: 10819
+  isocode: RO
+  population: 19586539
+  type: country
+  value: Q218
+Russia:
+  gpdPerCapita: 10749
+  isocode: RU
+  population: 146804372
+  type: country
+  value: Q159
+Senegal:
+  gpdPerCapita: 1329
   isocode: SN
   population: 15850567
-  gpdPerCapita: 1329
-Seychelles:
   type: country
+  value: Q1041
+Serbia:
+  gpdPerCapita: 5901
+  isocode: RS
+  population: 7022268
+  type: country
+  value: Q403
+Seychelles:
+  gpdPerCapita: 15629
   isocode: SC
   population: 95843
-  gpdPerCapita: 15629
-Suriname:
   type: country
+  value: Q1042
+Singapore:
+  gpdPerCapita: 57714
+  isocode: SG
+  population: 5888926
+  type: country
+  value: Q334
+Slovakia:
+  gpdPerCapita: 17579
+  isocode: SK
+  population: 5397036
+  type: country
+  value: Q214
+Slovenia:
+  gpdPerCapita: 23601
+  isocode: SI
+  population: 2066880
+  type: country
+  value: Q215
+Spain:
+  type: country
+  value: Q29
+Suriname:
+  gpdPerCapita: 5317
   isocode: SR
   population: 563402
-  gpdPerCapita: 5317
-Tanzania:
   type: country
+  value: Q730
+Sweden:
+  type: country
+  value: Q34
+Switzerland:
+  type: country
+  value: Q39
+Tanzania:
+  gpdPerCapita: 958
   isocode: TZ
   population: 57310019
-  gpdPerCapita: 958
-Uganda:
   type: country
+  value: Q924
+Thailand:
+  gpdPerCapita: 6595
+  isocode: TH
+  population: 65931550
+  type: country
+  value: Q869
+Tunisia:
+  gpdPerCapita: 3464
+  isocode: TN
+  population: 11565204
+  type: country
+  value: Q948
+Turkey:
+  type: country
+  value: Q43
+USA:
+  type: country
+  value: Q30
+Uganda:
+  gpdPerCapita: 606
   isocode: UG
   population: 42862958
-  gpdPerCapita: 606
-Uruguay:
   type: country
+  value: Q1036
+Ukraine:
+  gpdPerCapita: 2639
+  isocode: UA
+  population: 42558328
+  type: country
+  value: Q212
+United Kingdom:
+  type: country
+  value: Q145
+Uruguay:
+  gpdPerCapita: 16245
   isocode: UY
   population: 3456750
-  gpdPerCapita: 16245
+  type: country
+  value: Q77
+Vietnam:
+  gpdPerCapita: 2342
+  isocode: VN
+  population: 94660000
+  type: country
+  value: Q881
+ireland:
+  type: country
+  value: Q27
+Österreich:
+  type: country
+  value: Q40
