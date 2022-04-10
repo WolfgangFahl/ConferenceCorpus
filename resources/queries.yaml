@@ -114,11 +114,94 @@
          FROM event_wikidata
          GROUP BY ordinal 
          ORDER by cast(ordinal as integer)
- 
-#'Ordinal distribution':
-# see 
-#    sql: |
-#        SELECT count(*),ordinal 
-#        FROM @event
-#        GROUP BY ordinal ORDER by 1
-
+'SignatureAvailability':
+    sql: |
+        SELECT source,total,
+          acronymCount,acronymCount*100/total AS 'acronym%',
+          yearCount,yearCount*100/total AS 'year%',
+          ordinalCount,ordinalCount*100/total AS 'ordinal%',
+          cityCount,cityCount*100/total AS 'city%',
+          cityWikidataIdCount,cityWikidataIdCount*100/total AS 'cityWikidataId%'
+        FROM(
+          SELECT source,
+              COUNT(*) AS total,
+              SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+              SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+              SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+              SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+              SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount
+            FROM event_confref
+            GROUP BY source  
+          UNION
+            SELECT source,
+              COUNT(*) AS total,
+              SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+              SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+              SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+              SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+              SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount
+            FROM event_crossref
+            GROUP BY source  
+          UNION
+            SELECT source,
+              COUNT(*) AS total,
+              SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+              SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+              SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+              SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+              SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount
+            FROM event_dblp
+            GROUP BY source  
+          UNION
+            SELECT source,
+              COUNT(*) AS total,
+              SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+              SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+              SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+              SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+              SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount
+            FROM event_gnd
+            GROUP BY source  
+          UNION
+            SELECT source,
+              COUNT(*) AS total,
+              SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+              SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+              SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+              SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+              SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount
+            FROM event_tibkat
+            GROUP BY source  
+          UNION
+            SELECT source,
+              COUNT(*) AS total,
+              SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+              SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+              SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+              SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+              SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount
+            FROM event_wikicfp
+            GROUP BY source  
+          UNION
+            SELECT source,
+              COUNT(*) AS total,
+              SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+              SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+              SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+              SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+              SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount
+            FROM event_wikidata
+            GROUP BY source
+        ) counters
+'Ordinal distribution':
+    sql: |
+        SELECT count(*),ordinal 
+        FROM event
+        GROUP BY ordinal 
+        ORDER by 2 
+'Year distribution':
+    sql: |
+        SELECT count(*),year 
+        FROM event
+        GROUP BY year 
+        ORDER by 2
