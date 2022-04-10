@@ -451,9 +451,6 @@ Tunisia:
 Turkey:
   type: country
   value: Q43
-USA:
-  type: country
-  value: Q30
 Uganda:
   gpdPerCapita: 606
   isocode: UG

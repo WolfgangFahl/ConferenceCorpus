@@ -1,0 +1,39 @@
+# regions
+Arizona:
+  type: province
+California:
+  type: province
+Carolina:
+  type: province
+Colorado:
+  type: province
+Florida:
+  type: province
+Georgia:
+  type: province
+Hawaii:
+  type: province
+Illinois:
+  type: province
+Louisiana:
+  type: province
+Maryland:
+  type: province
+Massachusetts:
+  type: province
+Michigan:
+  type: province
+Nevada:
+  type: province
+Ohio:
+  type: province
+Ontario:
+  type: province
+Pennsylvania:
+  type: province
+Québec:
+  type: province
+Texas:
+  type: province
+Virginia:
+  type: province

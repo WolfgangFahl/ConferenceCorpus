@@ -4,62 +4,51 @@ Created on 2022-04-09
 @author: wf
 '''
 from tests.basetest import BaseTest,Profiler
-from pyparsing import oneOf
-from ptp.parsing import Tokenizer
-from ptp.signature import ParsingCategory,RegexpCategory,OrdinalCategory, EnumCategory, CountryCategory,YearCategory
+from ptp.eventrefparser import EventReferenceParser
 from corpus.event import EventStorage
 
 class TestParsing(BaseTest):
-    
-    def getEventTitles(self):
-        '''
-        get all Events
-        '''
-        sqlDB=EventStorage.getSqlDB()
-        sqlQuery="select eventId,source,title from event"
-        titles=sqlDB.query(sqlQuery)
-        return titles
-        
     """
     tests Parsing EventReferences
     """
+    
+    def getEventTitles(self,limit=None):
+        '''
+        get all Events with titles directly from SQL
+        '''
+        sqlDB=EventStorage.getSqlDB()
+        if limit is None:
+            limit=""
+        else:
+            limit=f" LIMIT {limit}"
+        sqlQuery=f"select eventId,source,title from event{limit}"
+        titles=sqlDB.query(sqlQuery)
+        return titles
+        
+    def testCreateLookup(self):
+        '''
+        test creating a lookup dictionary
+        '''
+        eParser=EventReferenceParser()
+        tables=["dblp","wikidata","crossref","confref","crossref"]
+        yamlPath="/tmp"
+        for column,columnPlural in [("country","countries"),("city","cities"),("region","regions")]:
+            lookup=EventStorage.createLookup(column,tables)
+            eParser.lookupToYaml(lookup, columnPlural, tables, yamlPath,show=True)
+        
     def testMostCommonCategories(self):
         '''
         get the most common categories
         '''
-        categories=[
-            RegexpCategory("first Letter",lambda word:word[0] if word else '',r".*"),
-            RegexpCategory("word",lambda word:word,r".*"),
-            # TODO: region, city
-            OrdinalCategory(),
-            YearCategory(),
-            CountryCategory(),
-            EnumCategory('month'),
-            EnumCategory('delimiter'),
-            EnumCategory('eventType'),
-            EnumCategory('extract'),
-            EnumCategory('field'),
-            EnumCategory('frequency'),
-            EnumCategory('organization'),
-            EnumCategory('publish'),
-            EnumCategory('scope'),
-            EnumCategory('syntax'),
-            ParsingCategory('part',"Part"+oneOf("A B C 1 2 3 4 I II III IV")+".")
-        ]
-        tokenizer=Tokenizer(categories)
-        titleRows=self.getEventTitles()
-        limit=50
+        eParser=EventReferenceParser()
+        showLimit=50
+        titleRows=self.getEventTitles(limit=showLimit)
         count=0
         for titleRow in titleRows:
             title=titleRow["title"]
             event=f"""{titleRow["source"]}-{titleRow["eventId"]}"""
-            tokenSequence=tokenizer.tokenize(title,event)
             count+=1
-            if count<=limit:
-                for token in tokenSequence.matchResults:
-                    print(token)
+            eParser.parse(title,event,show=count<=showLimit)
         show=True
         if show:
-            for category in categories:
-                print(f"=== {category.name} ===")
-                print(category.mostCommonTable(tablefmt="mediawiki"))
+            eParser.showStatistics()
