@@ -81,10 +81,10 @@ class EventReferenceParser(object):
             d=lookup[entry]
             yamlstr+=f"""{d["name"]}:
     qid={d["qid"]}
-    frequency={d["frequency"]}"""
+    frequency={d["frequency"]}\n"""
             for table in tables:
                 if table in d:
-                    yamlstr+=f"\n    {table}={d[table]}"
+                    yamlstr+=f"    {table}={d[table]}\n"
         yamlFile=f"{yamlPath}/{name}.yaml"
         print(yamlstr,  file=open(yamlFile, 'w'))
         
