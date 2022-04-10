@@ -59,8 +59,7 @@ Turkey:
   type: country
 United Kingdom:
   type: country
-USA:
-  type: country
+
 Algeria:
   type: country
   isocode: DZ

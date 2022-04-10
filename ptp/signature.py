@@ -13,7 +13,7 @@ from pyparsing import ParseException
 
 class RegexpCategory(Category):
     '''
-    category defined by regular expression
+    category defined by a regular expression
     '''
     def __init__(self,name,itemFunc,pattern):
         '''
@@ -59,7 +59,7 @@ class EnumCategory(Category):
     category defined by an enumeration specified in a lookup table
     '''
    
-    def getYamlPath(self,lookupName:str=None):
+    def getYamlPath(self,lookupName:str):
         '''
         get the YamlPath for the given filename prefix
         
@@ -69,8 +69,6 @@ class EnumCategory(Category):
         Returns:
             str: the string representation of the path
         '''
-        if lookupName is None:
-            lookupName="dictionary"
         grandParent = pathlib.Path(__file__).parent.parent.resolve()
         filepath = (grandParent / f"resources/{lookupName}.yaml")
         path=str(filepath)
@@ -96,12 +94,23 @@ class EnumCategory(Category):
         '''
         super().__init__(name,itemFunc=lambda word:self.lookup(word))
         self.lookupByKey={}   
+        if lookupName is None:
+            multiType=True
+            lookupName="dictionary"
+        else:
+            multiType=False
         lookupYamlPath=self.getYamlPath(lookupName) 
         self.read(lookupYamlPath)
+        # loop over all tokens
         for tokenKey in self.tokens:
             token=self.tokens[tokenKey]
-            tokenType=token['type']
-            if tokenType==name:
+            # get the token
+            if multiType:
+                tokenType=token['type']
+                valid=tokenType==name
+            else:
+                valid=True
+            if valid:
                 value=token['value'] if 'value' in token else tokenKey 
                 self.lookupByKey[tokenKey]=value
     

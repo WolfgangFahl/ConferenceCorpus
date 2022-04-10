@@ -16,6 +16,7 @@ from corpus.utils.download import Profiler
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from corpus.event import EventStorage
+from ptp.eventrefparser import EventReferenceParser
 
 class ConferenceCorpusUpdate():
     '''
@@ -181,6 +182,8 @@ USAGE
         parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
         parser.add_argument("-d",   "--debug", dest="debug", action="store_true", help="set debug [default: %(default)s]")
         parser.add_argument("--createViews",action="store_true",help="create the common view for all datasources")
+        parser.add_argument("--createLookup",action="store_true",help="create lookup yaml files for city,country and region for the given table prefixes")
+        parser.add_argument("--lookupTables",nargs="+",default=["dblp","wikidata","crossref","confref","crossref"],help="tables to use for lookup Creation\n[default: %(default)s]")
         parser.add_argument("-dblp","--dblp", dest="dblp",   action="store_true", help="update dblp")
         parser.add_argument("--tibkat", action="store_true",help="update tibkat from ftx")
         parser.add_argument("--fixlocations",nargs="+",help="fix the locations for the given lookup Ids")
@@ -214,6 +217,14 @@ USAGE
             for lookupId in args.addLookupAcronym:
                 updater=ConferenceCorpusUpdate(lookupId)
                 updater.addLookupAcronyms()
+        if args.createLookup:
+            tables=args.lookupTables
+            eParser=EventReferenceParser()
+            yamlPath="/tmp"
+            for column,columnPlural in [("country","countries"),("city","cities"),("region","regions")]:
+                lookup=EventStorage.createLookup(column,tables)
+                eParser.lookupToYaml(lookup, columnPlural, tables, yamlPath,show=True)
+            
         if args.createViews:
             profiler=Profiler("Creating common views")
             EventStorage.createViews(exclude=EventStorage.viewTableExcludes,show=True)

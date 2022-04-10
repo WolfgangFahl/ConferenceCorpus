@@ -208,6 +208,45 @@ see also [[http://cc.bitplan.com Conference Corpus]]
         plantUml=uml.mergeSchema(schemaManager,tableList,title=title,packageName='DataSources',generalizeTo=baseEntity)
         return plantUml
     
+    @classmethod
+    def createLookup(cls,column:str,tables:list):
+        '''
+        create a lookup for a column for the given list of tables
+        
+        Args:
+            column(str): the column to create the lookup for
+            tables(str): the names of the tables to take into account
+        '''
+        sqlDB=EventStorage.getSqlDB()
+        idColumn=f"{column}Wikidataid"
+        total=0
+        lookup={}
+        for table in tables:
+            totalQuery=f"SELECT count(*) AS total from event_{table}"
+            totalRows=sqlDB.query(totalQuery)
+            tableTotal=int(totalRows[0]["total"])
+            total+=tableTotal
+            sqlQuery=f"""SELECT COUNT(*) AS count,{column},{idColumn}
+FROM event_{table}
+GROUP BY {column},{idColumn}
+ORDER BY 1 DESC"""
+            lookupRows=sqlDB.query(sqlQuery)
+            for lookupRow in lookupRows:
+                entry=lookupRow[column]
+                value=lookupRow["count"]
+                qid=lookupRow[idColumn]
+                if qid is not None:
+                    if entry in lookup:
+                        d=lookup[entry]
+                        d["count"]+=value
+                        d[table]=value
+                    else:
+                        lookup[entry]={"name":entry,"count":value,"qid":qid,f"{table}":value}   
+            for entry in lookup:
+                d=lookup[entry]
+                d["frequency"]=round(d["count"]*100/total,3)
+        return lookup 
+    
 
 class Event(JSONAble):
     '''
