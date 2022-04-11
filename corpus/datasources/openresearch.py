@@ -1,18 +1,19 @@
-from datetime import datetime
-
+import urllib
 import dateutil.parser
+from datetime import datetime
+from pathlib import Path
+from typing import List, Union, Type
 from lodstorage.lod import LOD
 from lodstorage.storageconfig import StorageConfig
+from wikibot.wikipush import WikiPush
 from wikibot.wikiuser import WikiUser
 from wikifile.wikiFile import WikiFile
 from wikifile.wikiFileManager import WikiFileManager
+from wikifile.wikiPage import WikiPage
 
 from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
 from corpus.eventcorpus import EventDataSource,EventDataSourceConfig
-from ptp.ordinal import Ordinal
-from corpus.smw.topic import SMWEntity, SMWEntityList
-import urllib
-
+from corpus.utils.download import Profiler
 from ptp.ordinal import Ordinal
 
 
@@ -32,7 +33,7 @@ class OR(EventDataSource):
             via(str): the access style api or backup
         '''
         lookupId=f"{wikiId}" if via=="api" else f"{wikiId}-{via}"
-        tableSuffix=f"{wikiId}" if via=="api" else f"{wikiId}{via}" 
+        tableSuffix=f"{wikiId}" if via=="api" else f"{wikiId}backup"
         name=f"{wikiId}-{via}"
         title=f"OPENRESEARCH ({wikiId}-{via})"   
         wikiUser=None 
@@ -44,9 +45,20 @@ class OR(EventDataSource):
         if wikiUser is not None:
             url=wikiUser.getWikiUrl()
         else:
-            url='https://www.openresearch.org/wiki/Main_Page' if wikiId=="or" else "https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page"
-        sourceConfig=EventDataSourceConfig(lookupId=lookupId,name=name,url=url,title=title,tableSuffix=tableSuffix,locationAttribute='location')
-        super().__init__(OREventManager(sourceConfig=sourceConfig),OREventSeriesManager(sourceConfig=sourceConfig),sourceConfig)
+            if wikiId == "or":
+                url = 'https://www.openresearch.org/wiki/Main_Page'
+            else:
+                url = "https://confident.dbis.rwth-aachen.de/or/index.php?title=Main_Page"
+        sourceConfig = EventDataSourceConfig(lookupId=lookupId,
+                                             name=name,
+                                             url=url,
+                                             title=title,
+                                             tableSuffix=tableSuffix,
+                                             locationAttribute='location')
+        eventManager = OREventManager(sourceConfig=sourceConfig, wikiId=wikiId, via=via)
+        seriesManager = OREventSeriesManager(sourceConfig=sourceConfig, wikiId=wikiId, via=via)
+        super().__init__(eventManager, seriesManager, sourceConfig)
+
 
 class OREventManager(EventManager):
     '''
@@ -55,16 +67,32 @@ class OREventManager(EventManager):
     see https://www.openresearch.org
     '''
 
-    def __init__(self,sourceConfig:EventDataSourceConfig=None,config:StorageConfig=None, verbose:bool=False, debug=False):
+    def __init__(self,
+                 sourceConfig:EventDataSourceConfig=None,
+                 config:StorageConfig=None,
+                 wikiId:str='orclone',
+                 via:str='api',
+                 verbose:bool=False,
+                 debug:bool=False):
         '''
         Constructor
+
+        Args:
+            sourceConfig(EventDataSourceConfig): event source configuration
+            config(StorageConfig): storage configuration
+            wikiId(str): wikiId of the event source wiki
+            via(str): method the data is retrieved from the api
+            verbose(bool):
+            debug(bool): If True show debug messages
         '''
         self.events=[]
-        super().__init__(name="OREvents",sourceConfig=sourceConfig,
-                                             clazz=OREvent,
-                                             primaryKey="pageTitle",
-                                             config=config)
-        self.smwHandler=SMWEntityList(self)
+        super().__init__(name="OREvents",
+                         sourceConfig=sourceConfig,
+                         clazz=OREvent,
+                         primaryKey="pageTitle",
+                         config=config)
+        self.wikiId = wikiId
+        self.via = via
         self.debug=debug
         self.verbose=verbose
         if self.debug:
@@ -75,18 +103,53 @@ class OREventManager(EventManager):
         configure me
         '''
         if not hasattr(self, "getListOfDicts"):
-            if self.wikiFileManager:
-                self.getListOfDicts=self.getLoDfromWikiFileManager
-            if hasattr(self,'wikiUser'):
-                self.getListOfDicts=self.getLoDfromWikiUser
+            if self.via == 'wikiMarkup':
+                self.getListOfDicts = self.getLodFromWikiMarkup
+            elif self.via == 'backup':
+                self.getListOfDicts = self.getLoDfromWikiFileManager
+            else:
+                self.getListOfDicts = self.getLoDfromWikiUser
 
-    @property
-    def wikiFileManager(self):
-        return self.smwHandler.wikiFileManager
+    def getLodFromWikiMarkup(self, limit:int=None) -> List[dict]:
+        """
+        Retrieves the event records from the WikiMarkup of the event pages.
 
-    @wikiFileManager.setter
-    def wikiFileManager(self, wikiFileManager:WikiFileManager):
-        self.smwHandler.wikiFileManager=wikiFileManager
+        Args:
+            limit(int): limit number of retrieved records. If None (default) retrieve all event records
+
+        Returns:
+            LoD List of event records
+        """
+        lod = OrSMW.getLodFromWikiMarkup(self.wikiId, OREvent, limit=limit)
+        self.setAllAttr(lod, "source", f"{self.wikiId}-wikiMarkup")
+        self.postProcessLodRecords(lod, wikiId=self.wikiId, debug=self.debug)
+        return lod
+
+    def getLoDfromWikiUser(self, askExtra:str="", profile:bool=False, limit:int=None):
+        '''
+
+        Args:
+            wikiuser(WikiUser):
+            askExtra(str):
+            profile(bool):
+        '''
+        lod = OrSMW.getLodFromWikiApi(self.wikiId, OREvent, askExtra=askExtra, limit=limit, profile=profile)
+        self.setAllAttr(lod,"source",f"{self.wikiId}-api")
+        self.postProcessLodRecords(lod,wikiId=self.wikiId, debug=self.debug)
+        return lod
+
+    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None, limit:int=None):
+        '''
+        get my list of dicts from the given WikiFileManager
+
+        Args:
+            wikiFileManager(WikiFileManager): WikiFileManager from which the records should be loaded
+            limit(int): limit the amount on loaded records
+        '''
+        lod = OrSMW.getLodFromWikiFiles(self.wikiId, OREvent, wikiFileManager=wikiFileManager, limit=limit)
+        self.setAllAttr(lod,"source",f"{self.wikiId}-backup")
+        self.postProcessLodRecords(lod,wikiId=self.wikiId, debug=self.debug)
+        return lod
 
     @classmethod
     def getPropertyLookup(cls) -> dict:
@@ -102,64 +165,29 @@ class OREventManager(EventManager):
             lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
         return lookup
 
-    def fromWikiUser(self, wikiuser: WikiUser, askExtra: str = "", profile: bool = False):
+    def fromWikiUser(self, askExtra: str = "", limit:int=None, profile: bool = False) -> List[dict]:
         '''
         read me from a wiki using the given WikiUser configuration
 
         Args:
-            wikiuser(wikiuser): wikiuser and thus the wiki that should be queried for the its EventSeries
             askExtra(string): Extra query selectors that should be included in the query
-            profile(bool): If true profile the query. Otherwise the query runs without tracking the time
+            limit(int): limit the amount on loaded records
+            profile(bool): If true profile the query. Otherwise, the query runs without tracking the time
         '''
-        self.smwHandler.fromWiki(wikiuser, askExtra, profile)
+        lod = self.getLoDfromWikiUser(askExtra, profile=profile, limit=limit)
+        self.fromLoD(lod)
+        return lod
 
-    def fromWikiFileManager(self, wikiFileManager: WikiFileManager):
+    def fromWikiFileManager(self, wikiFileManager: WikiFileManager=None, limit:int=None) -> List[dict]:
         '''
         read me from wiki markup files using the given WikiFileManager
 
         Args:
             wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
-        '''
-        self.smwHandler.fromWikiFileManager(wikiFileManager)
-
-    def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False, limit:int=None):
-        '''
-
-        Args:
-            wikiuser(WikiUser):
-            askExtra(str):
-            profile(bool):
-        '''
-        if limit is None:
-            limit = OR.limitFiles
-        if wikiuser is None and hasattr(self,'wikiUser'):
-            wikiuser=self.wikiUser
-        lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile, limit)
-        self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
-        self.postProcessLodRecords(lod,wikiUser=wikiuser)
-        return lod
-
-    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None, limit:int=None):
-        '''
-        get my list of dicts from the given WikiFileManager
-
-        Args:
-            wikiFileManager(WikiFileManager): WikiFileManager from which the records should be loaded
             limit(int): limit the amount on loaded records
         '''
-        if limit is None:
-            limit = OR.limitFiles
-        if self.wikiFileManager:
-            wikiFileManager=self.wikiFileManager
-        lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager, limit=limit)
-        LOD.setNone4List(lod, LOD.getFields(self.clazz.getSamples()))
-        # TODO set source more specific
-        self.setAllAttr(lod,"source","or")
-        wikiUser=None
-        if wikiFileManager.wikiPush.fromWiki:
-            if wikiFileManager.wikiPush.fromWiki.wikiUser:
-                wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser
-        self.postProcessLodRecords(lod,wikiUser=wikiUser)
+        lod = self.getLoDfromWikiFileManager(wikiFileManager, limit=limit)
+        self.fromLoD(lod)
         return lod
 
 
@@ -197,21 +225,11 @@ class OREvent(Event):
         {'prop': 'GND-ID', 'name': 'gndId', 'templateParam': 'gndId'}
     ]
 
-    def __init__(self, wikiFile:WikiFile=None):
+    def __init__(self):
         '''
         Constructor
         '''
         super().__init__()
-        self.smwHandler=SMWEntity(self, wikiFile)
-
-    @property
-    def wikiFile(self):
-        return self.smwHandler.wikiFile
-
-    @wikiFile.setter
-    def wikiFile(self, wikiFile: WikiFile):
-        self.smwHandler.wikiFile = wikiFile
-
 
     @classmethod
     def getSamples(cls):
@@ -359,19 +377,22 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
         return cls.getPropertyLookup("templateParam")
 
     @staticmethod
-    def postProcessLodRecord(rawEvent:dict,wikiUser=None):
+    def postProcessLodRecord(rawEvent:dict,wikiId=None, debug:bool=False):
         '''
         fix the given raw Event
         
         Args:
             rawEvent(dict): the raw event record to fix
+            wikiId: wiki id of the records origin
+            debug: If True display debug output
         '''
-        if wikiUser is not None:
+        if wikiId is not None:
+            wikiUser = WikiUser.ofWikiId(wikiId)
             baseUrl=wikiUser.getWikiUrl()
             if 'pageTitle' in rawEvent:
                 pageTitle=rawEvent["pageTitle"]
                 qPageTitle=urllib.parse.quote(pageTitle)
-                url=f"{baseUrl}/index.php?title={qPageTitle}"
+                url=f"{baseUrl}/index.php?title={qPageTitle}"  #ToDo: Switch to proper page url generation
                 rawEvent['url']=url
         rawEvent['eventId']=rawEvent['pageTitle']
         if 'year' in rawEvent:
@@ -393,18 +414,26 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
                             if dateValue:
                                 rawEvent[dateProp] = dateValue
                         except Exception as e:
-                            print(f"{dateProp}: {rawDateValue} → Could not be converted to datetime (event record:{rawEvent})")
+                            if self.debug:
+                                print(f"{dateProp}: {rawDateValue} → Could not be converted to datetime (event record:{rawEvent})")
                             rawEvent[dateProp] = None
                     else:
                         rawEvent[dateProp] = None
         Ordinal.addParsedOrdinal(rawEvent)
+
 
 class OREventSeriesManager(EventSeriesManager):
     '''
     i represent a list of EventSeries
     '''
 
-    def __init__(self,sourceConfig:EventDataSourceConfig=None,config:StorageConfig=None, verbose:bool=False, debug=False):
+    def __init__(self,
+                 sourceConfig:EventDataSourceConfig=None,
+                 config:StorageConfig=None,
+                 wikiId:str='orclone',
+                 via='api',
+                 verbose:bool=False,
+                 debug=False):
         '''
         construct me
         '''
@@ -414,8 +443,8 @@ class OREventSeriesManager(EventSeriesManager):
                                                    clazz=OREventSeries,
                                                    primaryKey="pageTitle",
                                                    config=config)
-        # delegate smw functionality
-        self.smwHandler=SMWEntityList(self)
+        self.wikiId = wikiId
+        self.via = via
         self.debug = debug
         if self.debug:
             self.profile = True
@@ -426,18 +455,55 @@ class OREventSeriesManager(EventSeriesManager):
         configure me
         '''
         if not hasattr(self, "getListOfDicts"):
-            if self.wikiFileManager:
-                self.getListOfDicts=self.getLoDfromWikiFileManager  
-            if hasattr(self,'wikiUser'):
-                self.getListOfDicts=self.getLoDfromWikiUser               
+            if self.via == 'wikiMarkup':
+                self.getListOfDicts = self.getLodFromWikiMarkup
+            elif self.via == 'backup':
+                self.getListOfDicts = self.getLoDfromWikiFileManager
+            else:
+                self.getListOfDicts = self.getLoDfromWikiUser
 
-    @property
-    def wikiFileManager(self):
-        return self.smwHandler.wikiFileManager
+    def getLodFromWikiMarkup(self, limit:int=None) -> List[dict]:
+        """
+        Retrieves the event records from the WikiMarkup of the event pages.
 
-    @wikiFileManager.setter
-    def wikiFileManager(self, wikiFileManager: WikiFileManager):
-        self.smwHandler.wikiFileManager = wikiFileManager
+        Args:
+            limit(int): limit number of retrieved records. If None (default) retrieve all event records
+
+        Returns:
+            LoD List of event records
+        """
+        lod = OrSMW.getLodFromWikiMarkup(self.wikiId, OREventSeries, limit=limit)
+        self.setAllAttr(lod, "source", f"{self.wikiId}-wikiMarkup")
+        self.postProcessLodRecords(lod, wikiId=self.wikiId, debug=self.debug)
+        return lod
+
+    def getLoDfromWikiUser(self,askExtra:str="", profile: bool=False, limit:int=None) -> List[dict]:
+        '''
+
+        Args:
+            wikiuser(WikiUser): wikiuser specifiying from which wiki to the records should be queried
+            askExtra(str): additional selector for the query e.g. '[[Modification date::>=2022]]'
+            profile(bool): Profile the retrieval of the records
+            limit(int): limit number of queried records
+        '''
+        lod = OrSMW.getLodFromWikiApi(self.wikiId, OREventSeries, askExtra=askExtra, limit=limit, profile=profile)
+        self.setAllAttr(lod, "source", f"{self.wikiId}-api")
+        self.postProcessLodRecords(lod, wikiId=self.wikiId, debug=self.debug)
+        return lod
+
+    def getLoDfromWikiFileManager(self, wikiFileManager: WikiFileManager = None, limit: int = None) -> List[dict]:
+        '''
+        get my List of Dicts from the given WikiFileManager
+
+        Args:
+            wikiFileManager(WikiFileManager): WikiFileManager from which the records should be loaded
+            limit(int): limit the amount on loaded records
+        '''
+        lod = OrSMW.getLodFromWikiFiles(self.wikiId, OREventSeries, wikiFileManager=wikiFileManager, limit=limit)
+        self.setAllAttr(lod, "source", f"{self.wikiId}-backup")
+        self.postProcessLodRecords(lod, wikiId=self.wikiId, debug=self.debug)
+        return lod
+
 
     @classmethod
     def getPropertyLookup(cls) -> dict:
@@ -453,65 +519,31 @@ class OREventSeriesManager(EventSeriesManager):
             lookup, _duplicates = LOD.getLookup(propertyLookupList, 'prop')
         return lookup
 
-    def fromWikiUser(self, wikiuser:WikiUser, askExtra:str="", profile:bool=False):
+    def fromWikiUser(self, askExtra:str="", limit:int=None, profile:bool=False):
         '''
         read me from a wiki using the given WikiUser configuration
 
         Args:
-            wikiuser(wikiuser): wikiuser and thus the wiki that should be queried for the its EventSeries
             askExtra(string): Extra query selectors that should be included in the query
+            limit(int): limit the amount on loaded records
             profile(bool): If true profile the query. Otherwise the query runs without tracking the time
         '''
-        self.smwHandler.fromWiki(wikiuser,askExtra,profile)
+        lod = self.getLoDfromWikiUser(askExtra, profile=profile, limit=limit)
+        self.fromLoD(lod)
+        return lod
 
-    def fromWikiFileManager(self, wikiFileManager:WikiFileManager):
+    def fromWikiFileManager(self, wikiFileManager:WikiFileManager=None, limit:int=None):
         '''
         read me from wiki markup files using the given WikiFileManager
 
         Args:
             wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
-        '''
-        self.smwHandler.fromWikiFileManager(wikiFileManager)
-
-    def getLoDfromWikiUser(self, wikiuser:WikiUser=None, askExtra:str="", profile:bool=False, limit:int=None):
-        '''
-
-        Args:
-            wikiuser(WikiUser): wikiuser specifiying from which wiki to the records should be queried
-            askExtra(str): additional selector for the query e.g. '[[Modification date::>=2022]]'
-            profile(bool):
-            limit(int): limit number of queried records
-        '''
-        if limit is None:
-            limit = OR.limitFiles
-        if wikiuser is None and hasattr(self,'wikiUser'):
-            wikiuser=self.wikiUser
-        lod=self.smwHandler.getLoDfromWiki(wikiuser,askExtra,profile, limit=limit)
-        self.setAllAttr(lod,"source",f"{wikiuser.wikiId}-api")
-        self.postProcessLodRecords(lod, wikiUser=wikiuser)
-        return lod
-
-    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None, limit:int=None):
-        '''
-        get my List of Dicts from the given WikiFileManager
-        
-        Args:
-            wikiFileManager(WikiFileManager): WikiFileManager from which the records should be loaded
             limit(int): limit the amount on loaded records
         '''
-        if limit is None:
-            limit = OR.limitFiles
-        if self.wikiFileManager:
-            wikiFileManager=self.wikiFileManager
-        lod=self.smwHandler.getLoDfromWikiFileManager(wikiFileManager, limit=limit)
-        LOD.setNone4List(lod, LOD.getFields(self.clazz.getSamples()))
-        self.setAllAttr(lod,"source",f"{wikiFileManager.wikiUser.wikiId}-backup")
-        wikiUser=None
-        if wikiFileManager.wikiPush.fromWiki:
-            if wikiFileManager.wikiPush.fromWiki.wikiUser:
-                wikiUser=wikiFileManager.wikiPush.fromWiki.wikiUser
-        self.postProcessLodRecords(lod, wikiUser=wikiUser)
+        lod = self.getLoDfromWikiFileManager(wikiFileManager, limit=limit)
+        self.fromLoD(lod)
         return lod
+
 
 class OREventSeries(EventSeries):
     '''
@@ -545,15 +577,6 @@ class OREventSeries(EventSeries):
         Constructor
         '''
         super().__init__()
-        self.smwHandler=SMWEntity(self, wikiFile)
-
-    @property
-    def wikiFile(self):
-        return self.smwHandler.wikiFile
-
-    @wikiFile.setter
-    def wikiFile(self, wikiFile:WikiFile):
-        self.smwHandler.wikiFile=wikiFile
 
     @classmethod
     def getSamples(self):
@@ -621,19 +644,22 @@ class OREventSeries(EventSeries):
         return samplesWikiSon
 
     @staticmethod
-    def postProcessLodRecord(rawEvent: dict, wikiUser=None):
+    def postProcessLodRecord(rawEvent: dict, wikiId=None, debug:bool=False):
         '''
         fix the given raw Event
 
         Args:
             rawEvent(dict): the raw event record to fix
+            wikiId: wiki id of the records origin
+            debug: If True display debug output
         '''
-        if wikiUser is not None:
+        if wikiId is not None:
+            wikiUser = WikiUser.ofWikiId(wikiId)
             baseUrl = wikiUser.getWikiUrl()
             if 'pageTitle' in rawEvent:
                 pageTitle = rawEvent["pageTitle"]
                 qPageTitle = urllib.parse.quote(pageTitle)
-                url = f"{baseUrl}/index.php?title={qPageTitle}"
+                url = f"{baseUrl}/index.php?title={qPageTitle}"   #ToDo: Switch to proper page url generation
                 rawEvent['url'] = url
         rawEvent['eventSeriesId'] = rawEvent['pageTitle']
         period = rawEvent.get('period')
@@ -642,7 +668,6 @@ class OREventSeries(EventSeries):
                 rawEvent['period'] = int(period)
             else:
                 del rawEvent['period']
-
 
     @classmethod
     def getPropertyLookup(cls, lookupId: str = 'prop') -> dict:
@@ -669,3 +694,212 @@ class OREventSeries(EventSeries):
             dict: my mapping from templateParam names to LoD attribute Names or None if no mapping is defined
         '''
         return cls.getPropertyLookup("templateParam")
+
+
+class OrSMW:
+    """
+    Provides different access methods to data in an openresearch wiki
+    """
+
+    @classmethod
+    def getAskQuery(cls,
+                    entityType:Union[Type[OREvent], Type[OREventSeries]],
+                    askExtra: str = "",
+                    propertyLookupList: List[dict] = None) -> str:
+        '''
+        get the query that will ask for all records of the given entityType and their properties
+
+        Args:
+            entityType(Union[Type[OREvent], Type[OREventSeries]]): entity type
+            askExtra(str): any additional SMW ask query constraints
+            propertyLookupList:  a list of dicts for propertyLookup
+
+        Return:
+            str: the SMW ask query
+        '''
+        if askExtra is None:
+            askExtra = ''
+        entityName = entityType.entityName
+        selector = "IsA::%s" % entityName
+        ask = f"""{{{{#ask:[[{selector}]]{askExtra}
+            |mainlabel=pageTitle
+            |?Creation date=creationDate
+            |?Modification date=modificationDate
+            |?Last editor is=lastEditor
+            """
+        if propertyLookupList is None:
+            if hasattr(entityType, 'propertyLookupList'):
+                propertyLookupList = getattr(entityType, 'propertyLookupList')
+        for propertyLookup in propertyLookupList:
+            propName = propertyLookup['prop']
+            name = propertyLookup['name']
+            ask += "|?%s=%s\n" % (propName, name)
+        ask += "}}"
+        return ask
+
+    @classmethod
+    def getAskQueryPageTitles(cls, entityType:Union[Type[OREvent], Type[OREventSeries]]) -> str:
+        """
+        get the query that will ask for all pageTitles of the given entityType. e.g. all event pageTitles
+        Args:
+            entityType(Union[Type[OREvent], Type[OREventSeries]]): entityType
+
+        Returns:
+            str: the SMW ask query
+        """
+        entityName = entityType.entityName
+        ask = f"""{{{{#ask:[[IsA::{entityName}]]|mainlabel=pageTitle}}}}"""
+        return ask
+
+    @classmethod
+    def getLodFromWikiMarkup(cls,
+                             wikiId: str,
+                             entityType:Union[Type[OREvent], Type[OREventSeries]],
+                             limit: int = None,
+                             profile:bool=False,
+                             showProgress:bool=True) -> List[dict]:
+        """
+        Retrieves the event records from the WikiMarkup of the event pages.
+
+        Args:
+            wikiId: id of the wiki
+            entityType: entity to retrieve
+            limit(int): limit number of retrieved records. If None (default) retrieve all event records
+            profile: If True measure and display the elapsed time
+            showProgress: If True display progress messages
+
+        Returns:
+            LoD List of entity records
+        """
+        wikiPush = WikiPush(fromWikiId=wikiId)
+        askQuery = cls.getAskQueryPageTitles(entityType=entityType)
+        queryDivision = 10 if limit is None or limit >= 1000 else 1
+        profiler = Profiler(msg=f"querying of {entityType.entityName} records from WikiMarkup", profile=profile)
+        pageTitles = wikiPush.query(askQuery=askQuery, limit=limit, queryDivision=queryDivision)
+        wikiPage = WikiPage(wikiId=wikiId)
+        lod = []
+        total = len(pageTitles)
+        for i, pageTitle in enumerate(pageTitles):
+            if showProgress:
+                print(f"({i+1}/{total}) Extracting {entityType.templateName} record from {pageTitle} ...", end=' ')
+            try:
+                record = wikiPage.getWikiSonFromPage(pageTitle, OREvent.templateName)
+                record = cls.normalizeProperties(record, entityType, force=False)
+                record['pageTitle'] = pageTitle
+                lod.append(record)
+                if showProgress:
+                    print('✅')
+            except Exception as e:
+                if showProgress:
+                    print('❌')
+        profiler.time()
+        return lod
+
+    @classmethod
+    def getLodFromWikiApi(cls,
+                          wikiId:str,
+                          entityType:Union[Type[OREvent], Type[OREventSeries]],
+                          askExtra:str=None,
+                          limit:int=None,
+                          profile:bool=False) -> List[dict]:
+        """
+        Retrieves the event records from the SMW api by querying it for all entity properties.
+
+        Args:
+            wikiId: id of the wiki
+            entityType: entity to retrieve
+            askExtra: extra ask query selector to include in the query
+            limit: limit number of retrieved records. If None (default) retrieve all event records
+            profile: If True measure and display the elapsed time
+
+        Returns:
+            LoD: List of entity records
+        """
+        wikiPush = WikiPush(fromWikiId=wikiId)
+        askQuery = cls.getAskQuery(entityType=entityType, askExtra=askExtra)
+        queryDivision = 10 if limit is None or limit >= 1000 else 1
+        profiler = Profiler(msg=f"querying of {entityType.entityName} records over SMW api", profile=profile)
+        records = wikiPush.formatQueryResult(askQuery, limit=limit, queryDivision=queryDivision)
+        profiler.time()
+        return records
+
+    @classmethod
+    def getLodFromWikiFiles(cls,
+                          wikiId: str,
+                          entityType: Union[Type[OREvent], Type[OREventSeries]],
+                          wikiFileManager: WikiFileManager = None,
+                          limit: int = None,
+                          profile: bool = False) -> List[dict]:
+        """
+        Retrieves the event records from the local wikiFiles. The entity records are parsed from the WikiMarkup in the
+        WikiFiles.
+
+        Args:
+            wikiId: id of the wiki
+            entityType: entity to retrieve
+            wikiFileManager: wikiFileManager to use. If None the default wikibackup location (~/.or/wikibackup/<wikiId>) will be used
+            limit: limit number of retrieved records. If None (default) retrieve all event records
+            profile: If True measure and display the elapsed time
+
+        Returns:
+            LoD: List of entity records
+        """
+        profiler = Profiler(msg=f"querying of {entityType.entityName} records over SMW api", profile=profile)
+        if wikiFileManager is None:
+            wikiTextPath = f"{Path.home()}/.or/wikibackup/{wikiId}"
+            wikiFileManager = WikiFileManager(sourceWikiId=wikiId, wikiTextPath=wikiTextPath)
+        wikiFileDict = wikiFileManager.getAllWikiFiles()
+        lod = wikiFileManager.convertWikiFilesToLOD(wikiFiles=list(wikiFileDict.values()),
+                                                    templateName=entityType.templateName,
+                                                    limit=limit)
+        for i, record in enumerate(lod):
+            pageTitle = record.get("pageTitle")
+            record = cls.normalizeProperties(record, entityType, force=False)
+            record['pageTitle'] = pageTitle
+            wikiFile = wikiFileDict.get(pageTitle)
+            if isinstance(wikiFile, WikiFile):
+                # ToDo: Decide whether the wikiMarkup is still required since it can now an event record can directly be queried from the wiki, sync problems should be neglectable
+                record["wikiMarkup"] = wikiFile.wikiText
+            lod[i]=record
+        profiler.time()
+        return lod
+
+    @staticmethod
+    def normalizeProperties(record: dict,
+                            entity: Union[Type[OREvent], Type[OREventSeries]],
+                            reverse: bool = False,
+                            force: bool = False,
+                            debug: bool = False) -> dict:
+        """
+        update the keys of the given record. If reverse is False normalize the given keys with the property map provided
+        by the given entity. If reverse is True denormalize the keys back to the template params.
+
+        Normalize: Acronym (template param) -> acronym (normalized param)
+        Denormalize: acronym (normalized param) -> Acronym (template param)
+
+        Args:
+            record(dict): record to normalize
+            entity: entity containing the template property mapping
+            reverse(bool): If False normalize. Otherwise, denormalize back to template property names
+            force(bool): If True include properties that are not present in the getTemplateParamLookup() of the given
+                         entity. Otherwise, exclude these properties and show a warning.
+            debug(bool): If True show debug messages.
+
+        Returns:
+            dict
+        """
+        propMap = entity.getTemplateParamLookup()
+        if reverse:
+            propMap = {v: k for k, v in propMap.items()}
+        res = {}
+        for key, value in record.items():
+            if key in propMap:
+                res[propMap[key]] = value
+            else:
+                if force:
+                    res[key] = value
+                else:
+                    msg = f"Property '{key}' will be excluded (not present in the getTemplateParamLookup() of {entity.__name__}). To include this property use force=True"
+                    if debug:
+                        print(msg)
+        return res

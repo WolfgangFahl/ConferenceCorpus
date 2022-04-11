@@ -113,11 +113,11 @@ class CorpusLookup(object):
         if "or" in lookupIds:    
             self.eventCorpus.addDataSource(OR(wikiId="or",via="api"))
         if "or-backup" in lookupIds:    
-            self.eventCorpus.addDataSource(OR(wikiId="or",via="backup"))
+            self.eventCorpus.addDataSource(OR(wikiId="or",via="wikiMarkup"))
         if "orclone" in lookupIds:    
             self.eventCorpus.addDataSource(OR(wikiId="orclone",via="api"))
         if "orclone-backup" in lookupIds:    
-            self.eventCorpus.addDataSource(OR(wikiId="orclone",via="backup"))
+            self.eventCorpus.addDataSource(OR(wikiId="orclone",via="wikiMarkup"))
         
     def getDataSource(self,lookupId:str)->EventDataSource:
         '''
