@@ -1,0 +1,842 @@
+# lookup for countries
+# created from 132 countries 
+# analyzed from the sources ['dblp', 'wikidata', 'crossref', 'confref', 'crossref']
+United States of America:
+    qid=Q30
+    frequency=22.86
+    dblp=13594
+    wikidata=1095
+    crossref=13275
+    confref=6104
+    crossref=13275
+Germany:
+    qid=Q183
+    frequency=2.812
+    dblp=2252
+    wikidata=276
+    crossref=921
+    confref=1453
+    crossref=921
+People's Republic of China:
+    qid=Q148
+    frequency=5.854
+    dblp=2243
+    wikidata=387
+    crossref=3955
+    confref=1584
+    crossref=3955
+France:
+    qid=Q142
+    frequency=2.799
+    dblp=2040
+    wikidata=279
+    crossref=1092
+    confref=1294
+    crossref=1092
+Italy:
+    qid=Q38
+    frequency=3.042
+    dblp=1719
+    wikidata=199
+    crossref=1686
+    confref=1011
+    crossref=1686
+Spain:
+    qid=Q29
+    frequency=2.061
+    dblp=1607
+    wikidata=258
+    crossref=867
+    confref=670
+    crossref=867
+Canada:
+    qid=Q16
+    frequency=2.519
+    dblp=1459
+    wikidata=138
+    crossref=1409
+    confref=801
+    crossref=1409
+United Kingdom:
+    qid=Q145
+    frequency=2.168
+    dblp=1412
+    wikidata=199
+    crossref=1052
+    confref=774
+    crossref=1052
+Japan:
+    qid=Q17
+    frequency=2.695
+    dblp=1357
+    wikidata=123
+    crossref=1702
+    confref=698
+    crossref=1702
+Australia:
+    qid=Q408
+    frequency=1.664
+    dblp=918
+    wikidata=177
+    crossref=836
+    confref=680
+    crossref=836
+India:
+    qid=Q668
+    frequency=2.13
+    dblp=786
+    wikidata=54
+    crossref=1629
+    confref=314
+    crossref=1629
+Portugal:
+    qid=Q45
+    frequency=1.099
+    dblp=746
+    wikidata=164
+    crossref=397
+    confref=572
+    crossref=397
+Austria:
+    qid=Q40
+    frequency=1.108
+    dblp=681
+    wikidata=109
+    crossref=434
+    confref=636
+    crossref=434
+Brazil:
+    qid=Q155
+    frequency=1.116
+    dblp=512
+    wikidata=71
+    crossref=810
+    confref=108
+    crossref=810
+South Korea:
+    qid=Q884
+    frequency=0.904
+    dblp=460
+    wikidata=78
+    crossref=546
+    confref=242
+    crossref=546
+Greece:
+    qid=Q41
+    frequency=0.698
+    dblp=452
+    wikidata=55
+    crossref=327
+    confref=284
+    crossref=327
+Switzerland:
+    qid=Q39
+    frequency=0.671
+    dblp=425
+    wikidata=45
+    crossref=306
+    confref=308
+    crossref=306
+Netherlands:
+    qid=Q55
+    frequency=0.511
+    dblp=413
+    wikidata=78
+    crossref=178
+    confref=211
+    crossref=178
+Belarus:
+    qid=Q184
+    frequency=0.208
+    dblp=399
+    crossref=16
+    crossref=16
+Romania:
+    qid=Q218
+    frequency=0.507
+    dblp=396
+    crossref=287
+    confref=81
+    crossref=287
+Poland:
+    qid=Q36
+    frequency=0.583
+    dblp=367
+    wikidata=22
+    crossref=274
+    confref=270
+    crossref=274
+Sweden:
+    qid=Q34
+    frequency=0.442
+    dblp=340
+    crossref=228
+    confref=120
+    crossref=228
+Singapore:
+    qid=Q334
+    frequency=0.91
+    dblp=336
+    wikidata=55
+    crossref=581
+    confref=331
+    crossref=581
+Czech Republic:
+    qid=Q213
+    frequency=0.631
+    dblp=327
+    wikidata=39
+    crossref=319
+    confref=303
+    crossref=319
+Taiwan:
+    qid=Q865
+    frequency=0.726
+    dblp=325
+    crossref=481
+    confref=217
+    crossref=481
+Belgium:
+    qid=Q31
+    frequency=0.414
+    dblp=291
+    crossref=233
+    confref=100
+    crossref=233
+Mexico:
+    qid=Q96
+    frequency=0.58
+    dblp=266
+    crossref=468
+    crossref=468
+Indonesia:
+    qid=Q252
+    frequency=0.807
+    dblp=251
+    crossref=710
+    crossref=710
+Russia:
+    qid=Q159
+    frequency=0.721
+    dblp=251
+    crossref=546
+    confref=150
+    crossref=546
+Finland:
+    qid=Q33
+    frequency=0.394
+    dblp=233
+    wikidata=28
+    crossref=187
+    confref=181
+    crossref=187
+New Zealand:
+    qid=Q664
+    frequency=0.273
+    dblp=188
+    wikidata=22
+    crossref=135
+    confref=86
+    crossref=135
+Norway:
+    qid=Q20
+    frequency=0.202
+    dblp=185
+    wikidata=20
+    crossref=72
+    confref=69
+    crossref=72
+Hungary:
+    qid=Q28
+    frequency=0.404
+    dblp=184
+    wikidata=45
+    crossref=220
+    confref=167
+    crossref=220
+Turkey:
+    qid=Q43
+    frequency=0.475
+    dblp=175
+    wikidata=30
+    crossref=322
+    confref=134
+    crossref=322
+Philippines:
+    qid=Q928
+    frequency=0.194
+    dblp=167
+    crossref=117
+    crossref=117
+Kingdom of the Netherlands:
+    qid=Q29999
+    frequency=0.265
+    dblp=166
+    wikidata=68
+    crossref=157
+    crossref=157
+Cuba:
+    qid=Q241
+    frequency=0.249
+    dblp=165
+    wikidata=25
+    crossref=115
+    confref=96
+    crossref=115
+Morocco:
+    qid=Q1028
+    frequency=0.268
+    dblp=152
+    wikidata=15
+    crossref=194
+    crossref=194
+Cyprus:
+    qid=Q229
+    frequency=0.224
+    dblp=149
+    wikidata=38
+    crossref=84
+    confref=109
+    crossref=84
+Syria:
+    qid=Q858
+    frequency=0.076
+    dblp=143
+    crossref=7
+    crossref=7
+Thailand:
+    qid=Q869
+    frequency=0.412
+    dblp=143
+    wikidata=24
+    crossref=305
+    confref=76
+    crossref=305
+Iran:
+    qid=Q794
+    frequency=0.322
+    dblp=119
+    crossref=274
+    crossref=274
+Denmark:
+    qid=Q35
+    frequency=0.169
+    dblp=118
+    wikidata=12
+    crossref=60
+    confref=99
+    crossref=60
+South Africa:
+    qid=Q258
+    frequency=0.21
+    dblp=108
+    crossref=163
+    crossref=163
+Estonia:
+    qid=Q191
+    frequency=0.187
+    dblp=104
+    wikidata=21
+    crossref=92
+    confref=79
+    crossref=92
+Malaysia:
+    qid=Q833
+    frequency=0.407
+    dblp=100
+    wikidata=14
+    crossref=333
+    confref=62
+    crossref=333
+Vietnam:
+    qid=Q881
+    frequency=0.228
+    dblp=100
+    wikidata=20
+    crossref=131
+    confref=90
+    crossref=131
+Bulgaria:
+    qid=Q219
+    frequency=0.181
+    dblp=96
+    crossref=118
+    confref=43
+    crossref=118
+Israel:
+    qid=Q801
+    frequency=0.158
+    dblp=88
+    crossref=99
+    confref=42
+    crossref=99
+Argentina:
+    qid=Q414
+    frequency=0.15
+    dblp=80
+    wikidata=12
+    crossref=89
+    confref=40
+    crossref=89
+Tunisia:
+    qid=Q948
+    frequency=0.193
+    dblp=79
+    crossref=143
+    confref=34
+    crossref=143
+Slovenia:
+    qid=Q215
+    frequency=0.113
+    dblp=78
+    wikidata=26
+    crossref=45
+    confref=41
+    crossref=45
+Croatia:
+    qid=Q224
+    frequency=0.165
+    dblp=77
+    crossref=132
+    crossref=132
+Chile:
+    qid=Q298
+    frequency=0.105
+    dblp=74
+    crossref=53
+    confref=37
+    crossref=53
+Slovakia:
+    qid=Q214
+    frequency=0.113
+    dblp=64
+    crossref=85
+    crossref=85
+Colombia:
+    qid=Q739
+    frequency=0.12
+    dblp=58
+    crossref=95
+    crossref=95
+United Arab Emirates:
+    qid=Q878
+    frequency=0.15
+    dblp=58
+    crossref=126
+    crossref=126
+Egypt:
+    qid=Q79
+    frequency=0.19
+    dblp=57
+    crossref=168
+    crossref=168
+Serbia:
+    qid=Q403
+    frequency=0.136
+    dblp=42
+    crossref=120
+    crossref=120
+Ukraine:
+    qid=Q212
+    frequency=0.173
+    dblp=41
+    crossref=159
+    crossref=159
+Iceland:
+    qid=Q189
+    frequency=0.043
+    dblp=40
+    crossref=7
+    confref=35
+    crossref=7
+Peru:
+    qid=Q419
+    frequency=0.056
+    dblp=37
+    crossref=40
+    crossref=40
+Venezuela:
+    qid=Q717
+    frequency=0.016
+    dblp=31
+    crossref=1
+    crossref=1
+Lithuania:
+    qid=Q37
+    frequency=0.051
+    dblp=26
+    crossref=40
+    crossref=40
+Latvia:
+    qid=Q211
+    frequency=0.042
+    dblp=23
+    crossref=32
+    crossref=32
+Qatar:
+    qid=Q846
+    frequency=0.036
+    dblp=23
+    crossref=26
+    crossref=26
+Bolivia:
+    qid=Q750
+    frequency=0.033
+    dblp=20
+    crossref=24
+    crossref=24
+Ecuador:
+    qid=Q736
+    frequency=0.028
+    dblp=20
+    crossref=19
+    crossref=19
+Algeria:
+    qid=Q262
+    frequency=0.055
+    dblp=18
+    crossref=48
+    crossref=48
+Pakistan:
+    qid=Q843
+    frequency=0.181
+    dblp=18
+    crossref=178
+    crossref=178
+Bangladesh:
+    qid=Q902
+    frequency=0.098
+    dblp=16
+    crossref=93
+    crossref=93
+Jordan:
+    qid=Q810
+    frequency=0.063
+    dblp=14
+    crossref=58
+    crossref=58
+Lebanon:
+    qid=Q822
+    frequency=0.05
+    dblp=14
+    crossref=45
+    crossref=45
+Burkina Faso:
+    qid=Q965
+    frequency=0.01
+    dblp=13
+    crossref=4
+    crossref=4
+Uruguay:
+    qid=Q77
+    frequency=0.027
+    dblp=13
+    crossref=21
+    crossref=21
+Nigeria:
+    qid=Q1033
+    frequency=0.02
+    dblp=12
+    crossref=15
+    crossref=15
+Bosnia and Herzegovina:
+    qid=Q225
+    frequency=0.029
+    dblp=11
+    crossref=25
+    crossref=25
+Cambodia:
+    qid=Q424
+    frequency=0.012
+    dblp=11
+    crossref=7
+    crossref=7
+Azerbaijan:
+    qid=Q227
+    frequency=0.004
+    dblp=9
+Georgia:
+    qid=Q230
+    frequency=0.018
+    dblp=9
+    crossref=14
+    crossref=14
+Ghana:
+    qid=Q117
+    frequency=0.015
+    dblp=8
+    crossref=12
+    crossref=12
+Oman:
+    qid=Q842
+    frequency=0.013
+    dblp=8
+    crossref=9
+    crossref=9
+Fiji:
+    qid=Q712
+    frequency=0.012
+    dblp=7
+    crossref=9
+    crossref=9
+North Macedonia:
+    qid=Q221
+    frequency=0.007
+    dblp=7
+    crossref=4
+    crossref=4
+Ethiopia:
+    qid=Q115
+    frequency=0.006
+    dblp=6
+    crossref=3
+    crossref=3
+Sri Lanka:
+    qid=Q854
+    frequency=0.052
+    dblp=6
+    crossref=51
+    crossref=51
+Kazakhstan:
+    qid=Q232
+    frequency=0.023
+    dblp=5
+    crossref=21
+    crossref=21
+Sierra Leone:
+    qid=Q1044
+    frequency=0.003
+    dblp=5
+    crossref=1
+    crossref=1
+Dominican Republic:
+    qid=Q786
+    frequency=0.021
+    dblp=4
+    crossref=20
+    crossref=20
+Guatemala:
+    qid=Q774
+    frequency=0.01
+    dblp=4
+    crossref=8
+    crossref=8
+Malta:
+    qid=Q233
+    frequency=0.014
+    dblp=4
+    crossref=13
+    crossref=13
+Namibia:
+    qid=Q1030
+    frequency=0.012
+    dblp=4
+    crossref=10
+    crossref=10
+Panama:
+    qid=Q804
+    frequency=0.006
+    dblp=4
+    crossref=4
+    crossref=4
+Tanzania:
+    qid=Q924
+    frequency=0.005
+    dblp=4
+    crossref=3
+    crossref=3
+Uzbekistan:
+    qid=Q265
+    frequency=0.018
+    dblp=4
+    crossref=17
+    crossref=17
+Albania:
+    qid=Q222
+    frequency=0.005
+    dblp=3
+    crossref=4
+    crossref=4
+Benin:
+    qid=Q962
+    frequency=0.005
+    dblp=3
+    crossref=4
+    crossref=4
+Brunei:
+    qid=Q921
+    frequency=0.001
+    dblp=3
+Kenya:
+    qid=Q114
+    frequency=0.008
+    dblp=3
+    crossref=7
+    crossref=7
+Myanmar:
+    qid=Q836
+    frequency=0.006
+    dblp=3
+    crossref=5
+    crossref=5
+Senegal:
+    qid=Q1041
+    frequency=0.001
+    dblp=3
+Armenia:
+    qid=Q399
+    frequency=0.009
+    dblp=2
+    crossref=8
+    crossref=8
+Botswana:
+    qid=Q963
+    frequency=0.003
+    dblp=2
+    crossref=2
+    crossref=2
+Moldova:
+    qid=Q217
+    frequency=0.003
+    dblp=2
+    crossref=2
+    crossref=2
+Montenegro:
+    qid=Q236
+    frequency=0.005
+    dblp=2
+    crossref=4
+    crossref=4
+Niger:
+    qid=Q1032
+    frequency=0.001
+    dblp=2
+Yemen:
+    qid=Q805
+    frequency=0.002
+    dblp=2
+    crossref=1
+    crossref=1
+Andorra:
+    qid=Q228
+    frequency=0.0
+    dblp=1
+Bahrain:
+    qid=Q398
+    frequency=0.01
+    dblp=1
+    crossref=10
+    crossref=10
+Barbados:
+    qid=Q244
+    frequency=0.0
+    dblp=1
+Belize:
+    qid=Q242
+    frequency=0.0
+    dblp=1
+Cameroon:
+    qid=Q1009
+    frequency=0.001
+    dblp=1
+    crossref=1
+    crossref=1
+Cape Verde:
+    qid=Q1011
+    frequency=0.0
+    dblp=1
+Costa Rica:
+    qid=Q800
+    frequency=0.002
+    dblp=1
+    crossref=2
+    crossref=2
+Dominica:
+    qid=Q784
+    frequency=0.0
+    dblp=1
+Greenland:
+    qid=Q223
+    frequency=0.0
+    dblp=1
+Iraq:
+    qid=Q796
+    frequency=0.028
+    dblp=1
+    crossref=29
+    crossref=29
+Liechtenstein:
+    qid=Q347
+    frequency=0.0
+    dblp=1
+Malawi:
+    qid=Q1020
+    frequency=0.001
+    dblp=1
+    crossref=1
+    crossref=1
+Rwanda:
+    qid=Q1037
+    frequency=0.002
+    dblp=1
+    crossref=2
+    crossref=2
+Saint Lucia:
+    qid=Q760
+    frequency=0.0
+    dblp=1
+Uganda:
+    qid=Q1036
+    frequency=0.0
+    dblp=1
+Sudan:
+    qid=Q1049
+    frequency=0.009
+    crossref=9
+    crossref=9
+Kyrgyzstan:
+    qid=Q813
+    frequency=0.003
+    crossref=3
+    crossref=3
+Laos:
+    qid=Q819
+    frequency=0.003
+    crossref=3
+    crossref=3
+Mauritius:
+    qid=Q1027
+    frequency=0.003
+    crossref=3
+    crossref=3
+Mongolia:
+    qid=Q711
+    frequency=0.003
+    crossref=3
+    crossref=3
+Zambia:
+    qid=Q953
+    frequency=0.003
+    crossref=3
+    crossref=3
+Guyana:
+    qid=Q734
+    frequency=0.001
+    crossref=1
+    crossref=1
+Honduras:
+    qid=Q783
+    frequency=0.001
+    crossref=1
+    crossref=1
+Nicaragua:
+    qid=Q811
+    frequency=0.001
+    crossref=1
+    crossref=1
+Togo:
+    qid=Q945
+    frequency=0.001
+    crossref=1
+    crossref=1
+

@@ -183,7 +183,7 @@ USAGE
         parser.add_argument("-d",   "--debug", dest="debug", action="store_true", help="set debug [default: %(default)s]")
         parser.add_argument("--createViews",action="store_true",help="create the common view for all datasources")
         parser.add_argument("--createLookup",action="store_true",help="create lookup yaml files for city,country and region for the given table prefixes")
-        parser.add_argument("--lookupTables",nargs="+",default=["dblp","wikidata","crossref","confref","crossref"],help="tables to use for lookup Creation\n[default: %(default)s]")
+        parser.add_argument("--lookupTables",nargs="+",default=["dblp","wikidata","crossref","confref"],help="tables to use for lookup Creation\n[default: %(default)s]")
         parser.add_argument("-dblp","--dblp", dest="dblp",   action="store_true", help="update dblp")
         parser.add_argument("--tibkat", action="store_true",help="update tibkat from ftx")
         parser.add_argument("--fixlocations",nargs="+",help="fix the locations for the given lookup Ids")
