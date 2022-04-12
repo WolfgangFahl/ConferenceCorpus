@@ -25,13 +25,15 @@ class ConferenceCorpusUpdate():
     allows updating single or multiple datasources of the conferencecorpus
     e.g. via command line
     '''
-    def __init__(self,lookupId:str):
+    def __init__(self,lookupId:str, debug:bool=False):
         '''
         constructor
         
         Args:
             lookupId(str): the lookupId of the dataSource to be used
+            debug(bool): If True show debug messages
         '''
+        self.debug=debug
         self.lookupId=lookupId
         
     def getEventDataSource(self,forceUpdate:bool=False):
@@ -44,11 +46,7 @@ class ConferenceCorpusUpdate():
         Returns:
             EventDataSource: the event data source for my lookup id
         '''
-        configure = None
-        if self.lookupId.startswith('or'):
-            # set configuration function of openresearch datasource
-            configure = CorpusLookupConfigure.configureCorpusLookup
-        lookup=CorpusLookup(lookupIds=[self.lookupId], configure=configure)
+        lookup=CorpusLookup(lookupIds=[self.lookupId], debug=self.debug)
         lookup.load(forceUpdate=forceUpdate,showProgress=True)
         eventDataSource=lookup.getDataSource(self.lookupId)
         return eventDataSource
@@ -200,6 +198,9 @@ USAGE
         parser.add_argument('-V', '--version', action='version', version=program_version_message)
         
         args = parser.parse_args(argv)
+        if args.debug:
+            DEBUG = True
+            print("Starting in debug mode")
         if args.dblp:
             dblpUpdater=DblpUpdater()
             dblpUpdater.update(args)
@@ -211,7 +212,7 @@ USAGE
             locationFixer.fixLocations4LookupIds(args.fixlocations,args.perCentLimit)
         if args.updateSource:
             for lookupId in args.updateSource:
-                updater=ConferenceCorpusUpdate(lookupId)
+                updater=ConferenceCorpusUpdate(lookupId, debug=args.debug)
                 updater.updateDataSource(f"{lookupId} cache", args.sample)
         if args.addLookupAcronym:
             for lookupId in args.addLookupAcronym:
