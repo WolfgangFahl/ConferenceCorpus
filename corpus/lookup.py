@@ -54,23 +54,6 @@ class CorpusLookupConfigure:
         callback to configure the corpus lookup
         '''
         print("configureCorpusLookup callback called")
-        # TODO make wikiIds configurable for testing e.g. with pyMediaWikiDocker
-        for lookupId in ["or","orclone"]:
-            wikiId=lookupId
-            wikiUser=WikiUser.ofWikiId(wikiId, lenient=True)
-            wikiTextPath = CorpusLookupConfigure.getWikiTextPath(wikiUser.wikiId)
-            wikiFileManager = WikiFileManager(wikiId, wikiTextPath, login=False, debug=debug)
-     
-            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
-            if orDataSource is not None:
-                orDataSource.eventManager.smwHandler.wikiFileManager=wikiFileManager
-                orDataSource.eventSeriesManager.smwHandler.wikiFileManager=wikiFileManager
-
-            orDataSource=lookup.getDataSource(lookupId)
-            if orDataSource is not None:
-                orDataSource.eventManager.wikiUser=wikiUser
-                orDataSource.eventSeriesManager.wikiUser=wikiUser
-        
         pass
 
 class CorpusLookup(object):

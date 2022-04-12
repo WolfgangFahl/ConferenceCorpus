@@ -32,7 +32,7 @@ class OR(EventDataSource):
             wikiId(str): the wikiId to get the SMW data from 
             via(str): the access style api or backup
         '''
-        lookupId=f"{wikiId}" if via=="api" else f"{wikiId}-{via}"
+        lookupId=f"{wikiId}" if via=="api" else f"{wikiId}-backup"
         tableSuffix=f"{wikiId}" if via=="api" else f"{wikiId}backup"
         name=f"{wikiId}-{via}"
         title=f"OPENRESEARCH ({wikiId}-{via})"   
@@ -414,7 +414,7 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
                             if dateValue:
                                 rawEvent[dateProp] = dateValue
                         except Exception as e:
-                            if self.debug:
+                            if debug:
                                 print(f"{dateProp}: {rawDateValue} → Could not be converted to datetime (event record:{rawEvent})")
                             rawEvent[dateProp] = None
                     else:
@@ -579,7 +579,7 @@ class OREventSeries(EventSeries):
         super().__init__()
 
     @classmethod
-    def getSamples(self):
+    def getSamples(cls):
         '''
         Returns a sample LOD of an event Series
         '''
@@ -783,8 +783,8 @@ class OrSMW:
             if showProgress:
                 print(f"({i+1}/{total}) Extracting {entityType.templateName} record from {pageTitle} ...", end=' ')
             try:
-                record = wikiPage.getWikiSonFromPage(pageTitle, OREvent.templateName)
-                record = cls.normalizeProperties(record, entityType, force=False)
+                record = wikiPage.getWikiSonFromPage(pageTitle, entityType.templateName, includeWikiMarkup=True)
+                record = cls.normalizeProperties(record, entityType, force=False, includeProps=['pageTitle', 'wikiMarkup'])
                 record['pageTitle'] = pageTitle
                 lod.append(record)
                 if showProgress:
@@ -869,6 +869,7 @@ class OrSMW:
                             entity: Union[Type[OREvent], Type[OREventSeries]],
                             reverse: bool = False,
                             force: bool = False,
+                            includeProps:list=None,
                             debug: bool = False) -> dict:
         """
         update the keys of the given record. If reverse is False normalize the given keys with the property map provided
@@ -883,11 +884,14 @@ class OrSMW:
             reverse(bool): If False normalize. Otherwise, denormalize back to template property names
             force(bool): If True include properties that are not present in the getTemplateParamLookup() of the given
                          entity. Otherwise, exclude these properties and show a warning.
+            includeProps(list): List of properties that should be included even if not in getTemplateParamLookup()
             debug(bool): If True show debug messages.
 
         Returns:
             dict
         """
+        if includeProps is None:
+            includeProps = []
         propMap = entity.getTemplateParamLookup()
         if reverse:
             propMap = {v: k for k, v in propMap.items()}
@@ -896,7 +900,7 @@ class OrSMW:
             if key in propMap:
                 res[propMap[key]] = value
             else:
-                if force:
+                if force or key in includeProps:
                     res[key] = value
                 else:
                     msg = f"Property '{key}' will be excluded (not present in the getTemplateParamLookup() of {entity.__name__}). To include this property use force=True"

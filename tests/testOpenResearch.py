@@ -244,11 +244,15 @@ class TestOrSMW(BaseTest):
             lod = OrSMW.getLodFromWikiMarkup(self.wikiId, entityType=entityType, limit=limit, showProgress=False)
             self.assertEqual(limit, len(lod))
             expectedProps = [r.get('name') for r in entityType.propertyLookupList]
-            expectedProps.append("pageTitle")
+            mandatoryProperties = ['pageTitle', 'wikiMarkup']
+            expectedProps.extend(mandatoryProperties)
             for d in lod:
-                self.assertIn('pageTitle', d)
+                for mp in mandatoryProperties:
+                    self.assertIn(mp, d)
                 for prop in d:
                     self.assertIn(prop, expectedProps)
+                if self.debug or True:
+                    print(f"{d.get('pageTitle')}: {d}")
 
     def test_getLodFromWikiApi(self):
         """
@@ -278,9 +282,11 @@ class TestOrSMW(BaseTest):
                 lod = OrSMW.getLodFromWikiFiles(self.wikiId, entityType=entityType, limit=limit)
                 self.assertEqual(limit, len(lod))
                 expectedProps = [r.get('name') for r in entityType.propertyLookupList]
-                expectedProps.extend(['pageTitle', 'wikiMarkup'])
+                mandatoryProperties = ['pageTitle', 'wikiMarkup']
+                expectedProps.extend(mandatoryProperties)
                 for d in lod:
-                    self.assertIn('pageTitle', d)
+                    for mp in mandatoryProperties:
+                        self.assertIn(mp, d)
                     for prop in d:
                         self.assertIn(prop, expectedProps)
 
