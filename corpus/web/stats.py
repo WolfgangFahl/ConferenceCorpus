@@ -51,8 +51,6 @@ class Barchart:
         st.pyplot(fig=fig)
         
 st.title("Histogramm analysis")
-
-
 sqlDB=EventStorage.getSqlDB()
 viewName="event"
 viewTables=EventStorage.getViewTableList(viewName)
@@ -64,11 +62,20 @@ columns=list(tableDict[tableOption]["columns"])
 #st.write(columns)
 columnFrame=pd.DataFrame(columns)
 columnOption=st.selectbox("select a column:",columnFrame)
+totalSql=f"""SELECT  COUNT(*) as total 
+FROM {tableOption}
+WHERE {columnOption} is not NULL
+"""
+totalRows=sqlDB.query(totalSql)
+total=totalRows[0]["total"]
+centileLimit = st.slider('CentileLimit', 0, 20, 10)
 #st.table(columnFrame)
+havingLimit=round(total*centileLimit/100)
 sql=f"""SELECT  {columnOption},COUNT(*) as events 
 FROM {tableOption}
 WHERE {columnOption} is not NULL
 GROUP BY {columnOption}
+HAVING COUNT(*)>={havingLimit}
 ORDER BY 2 DESC"""
 st.write(sql)
 title=f"{columnOption} of {tableOption}"
