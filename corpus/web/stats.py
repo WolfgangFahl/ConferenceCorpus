@@ -14,24 +14,45 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lodstorage.sql import SQLDB
 
-class Histogrammer:
+class Barchart:
     '''
-    create Histograms
+    create Barchart
     '''
-    def __init__(self,df,bins:int=10):
+    def __init__(self,df,title,x=None,y=None):
         '''
         constructor
+        
+        Args:
+            df(DataFrame): the dataframe to create a barchart for
         '''
         self.df=df
-        self.bins=bins
+        self.title=title
+        columns=self.df.columns.values.tolist()
+        if x is None:
+            x=columns[0]
+        if y is None:
+            y=columns[1]
+        self.x=x
+        self.y=y
         
     def show(self):
-        hist=self.df.hist(bins=self.bins)
-        st.pyplot(fig=hist)
+        fig, ax = plt.subplots()
+        ax.set_ylabel(self.y)
+        ax.set_xlabel(self.x)
+        ax.set_title(self.title)
+        xValues=self.df[self.x].values.tolist()
+        yValues=self.df[self.y].values.tolist()
+        x = np.arange(len(xValues))
+        ax.set_xticks(x, xValues,rotation='vertical')
         
+        ax.bar(x,yValues)
+        #ax.legend()
+        fig.tight_layout()
+        st.pyplot(fig=fig)
         
-
 st.title("Histogramm analysis")
+
+
 sqlDB=EventStorage.getSqlDB()
 viewName="event"
 viewTables=EventStorage.getViewTableList(viewName)
@@ -43,16 +64,18 @@ columns=list(tableDict[tableOption]["columns"])
 #st.write(columns)
 columnFrame=pd.DataFrame(columns)
 columnOption=st.selectbox("select a column:",columnFrame)
-st.table(columnFrame)
-sql=f"""SELECT COUNT(*) as events, {columnOption} 
+#st.table(columnFrame)
+sql=f"""SELECT  {columnOption},COUNT(*) as events 
 FROM {tableOption}
 WHERE {columnOption} is not NULL
 GROUP BY {columnOption}
-ORDER BY 1 DESC"""
+ORDER BY 2 DESC"""
 st.write(sql)
-profiler.time(f"getHistogramm for {columnOption} of {tableOption}")
+title=f"{columnOption} of {tableOption}"
+profiler.time(f"getHistogramm for {title}")
 rows = pd.read_sql(sql,con=sqlDB.c)
 profiler.time()
+bc=Barchart(rows,title=title)
+bc.show()
 st.table(rows)
-hist=Histogrammer(rows)
-hist.show()
+ 
