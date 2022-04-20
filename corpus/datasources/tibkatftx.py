@@ -13,7 +13,7 @@ from corpus.version import Version
 import json
 import os
 import sys
-DEBUG = 0
+DEBUG = 1
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from corpus.xmlhandler.xmlparser import XMLEntityParser, XmlEntity
@@ -120,7 +120,8 @@ class FTXParser(object):
                 yield(xmlEntity)
                 if progress is not None:
                     progress.next()
-                
+
+
 class TibkatCmdLine:
     '''
     TIB Kat command line 
@@ -151,8 +152,8 @@ class TibkatCmdLine:
                 return
         else:
             rawInput = sys.stdin.read()
-        data = [json.loads(f"{l}]") for l in rawInput.split("]\n") if l is not None and len(l.strip())>1]
-        records = list(itertools.chain(*data))
+        data = json.loads(rawInput)
+        records = data
         stats={}
         total = len(records)
         for i, record in enumerate(records):
@@ -175,8 +176,6 @@ class TibkatCmdLine:
                 print(f"{bcolors.WARNING}{pageTitle}({wikiUrl}/{pageTitle.replace(' ', '_')}) found Ids: {pnnIds}{bcolors.ENDC}")
             else:
                 print(f"{bcolors.OKCYAN}{pageTitle}({wikiUrl}/) no id in records {bcolors.ENDC}")
-
-
 
     def addPpnIdToWiki(self, wikiId:str, record:dict, isDryRun:bool=False) -> (str,str):
         """
@@ -212,10 +211,10 @@ class TibkatCmdLine:
 
     def getMatchingEventFromWiki(self, wikiId:str, acronym:str, ordinal:int) -> Union[WikiFile, None]:
         """
-        retrieves a matching event form the gicven wiki and returns the wikiFile
+        retrieves a matching event form the given wiki and returns the wikiFile
         Args:
             wikiId: id of the wiki
-            acronym: aconym of the event series
+            acronym: acronym of the event series
             ordinal: ordinal of the event
 
         Returns:

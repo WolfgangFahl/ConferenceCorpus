@@ -30,3 +30,5 @@ lxml~=4.8.0
 #https://pypi.org/project/pydevd/
 # remote debugging
 pydevd
+# https://pypi.org/project/streamlit/
+streamlit~=1.8.1
