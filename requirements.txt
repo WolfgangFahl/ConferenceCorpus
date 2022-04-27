@@ -7,7 +7,7 @@ python-dateutil
 # https://pypi.org/project/py-3rdparty-mediawiki/
 py-3rdparty-mediawiki~=0.6.2
 # https://pypi.org/project/wikirender/
-wikirender~=0.0.40
+wikirender~=0.0.41
 # https://github.com/somnathrakshit/geograpy3
 geograpy3~=0.2.2
 # https://pypi.org/project/habanero/
