@@ -377,7 +377,7 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
         return cls.getPropertyLookup("templateParam")
 
     @staticmethod
-    def postProcessLodRecord(rawEvent:dict,wikiId=None, debug:bool=False):
+    def postProcessLodRecord(rawEvent:dict, wikiId=None, debug:bool=False):
         '''
         fix the given raw Event
         
@@ -387,13 +387,18 @@ This CfP was obtained from [http://www.wikicfp.com/cfp/servlet/event.showcfp?eve
             debug: If True display debug output
         '''
         if wikiId is not None:
-            wikiUser = WikiUser.ofWikiId(wikiId)
-            baseUrl=wikiUser.getWikiUrl()
-            if 'pageTitle' in rawEvent:
-                pageTitle=rawEvent["pageTitle"]
-                qPageTitle=urllib.parse.quote(pageTitle)
-                url=f"{baseUrl}/index.php?title={qPageTitle}"  #ToDo: Switch to proper page url generation
-                rawEvent['url']=url
+            try:
+                wikiUser = WikiUser.ofWikiId(wikiId)
+                baseUrl=wikiUser.getWikiUrl()
+                if 'pageTitle' in rawEvent:
+                    pageTitle=rawEvent["pageTitle"]
+                    qPageTitle=urllib.parse.quote(pageTitle)
+                    url=f"{baseUrl}/index.php?title={qPageTitle}"  #ToDo: Switch to proper page url generation
+                    rawEvent['url']=url
+            except Exception as e:
+                if debug:
+                    print(f"WikiUser for {wikiId} not found:  url could not be assigned")
+                    print(e)
         rawEvent['eventId']=rawEvent['pageTitle']
         if 'year' in rawEvent:
             yearStr=rawEvent['year']
@@ -654,13 +659,18 @@ class OREventSeries(EventSeries):
             debug: If True display debug output
         '''
         if wikiId is not None:
-            wikiUser = WikiUser.ofWikiId(wikiId)
-            baseUrl = wikiUser.getWikiUrl()
-            if 'pageTitle' in rawEvent:
-                pageTitle = rawEvent["pageTitle"]
-                qPageTitle = urllib.parse.quote(pageTitle)
-                url = f"{baseUrl}/index.php?title={qPageTitle}"   #ToDo: Switch to proper page url generation
-                rawEvent['url'] = url
+            try:
+                wikiUser = WikiUser.ofWikiId(wikiId)
+                baseUrl = wikiUser.getWikiUrl()
+                if 'pageTitle' in rawEvent:
+                    pageTitle = rawEvent["pageTitle"]
+                    qPageTitle = urllib.parse.quote(pageTitle)
+                    url = f"{baseUrl}/index.php?title={qPageTitle}"   #ToDo: Switch to proper page url generation
+                    rawEvent['url'] = url
+            except Exception as e:
+                if debug:
+                    print(f"WikiUser for {wikiId} not found:  url could not be assigned")
+                    print(e)
         rawEvent['eventSeriesId'] = rawEvent['pageTitle']
         period = rawEvent.get('period')
         if period and isinstance(period, str):
@@ -847,7 +857,7 @@ class OrSMW:
         profiler = Profiler(msg=f"querying of {entityType.entityName} records over SMW api", profile=profile)
         if wikiFileManager is None:
             wikiTextPath = f"{Path.home()}/.or/wikibackup/{wikiId}"
-            wikiFileManager = WikiFileManager(sourceWikiId=wikiId, wikiTextPath=wikiTextPath)
+            wikiFileManager = WikiFileManager(sourceWikiId=wikiId, wikiTextPath=wikiTextPath, login=False)
         wikiFileDict = wikiFileManager.getAllWikiFiles()
         lod = wikiFileManager.convertWikiFilesToLOD(wikiFiles=list(wikiFileDict.values()),
                                                     templateName=entityType.templateName,

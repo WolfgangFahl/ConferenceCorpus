@@ -21,13 +21,14 @@ class TestOpenResearch(DataSourceTest):
     def setUp(self, debug=False,profile=True, **kwargs):
         super().setUp(debug, profile, **kwargs)
         # by convention the lookupId "or" is for the OpenResearch via API / WikiUser access
-        # the lookupId "orclone" is for for the access via API on the OpenResearch clone
+        # the lookupId "orclone" is for the access via API on the OpenResearch clone
         lookupIds=[]
         self.testWikiId = "orclone"
         TestSMW.getWikiUser(self.testWikiId)
         self.testLimit=100
         OR.limitFiles=self.testLimit
         for wikiId in "or","orclone":
+            TestSMW.getWikiUser(wikiId)
             wikiTextPath=CorpusLookupConfigure.getWikiTextPath(wikiId)
             if not os.path.exists(wikiTextPath):
                 msg=f"wikibackup for {wikiId} missing you might want to run scripts/getbackup"
