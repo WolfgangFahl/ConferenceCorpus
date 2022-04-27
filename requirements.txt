@@ -32,3 +32,5 @@ lxml~=4.8.0
 pydevd
 # https://pypi.org/project/streamlit/
 streamlit~=1.8.1
+# https://pypi.org/project/st-annotated-text/
+st-annotated-text
