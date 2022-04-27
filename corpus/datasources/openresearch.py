@@ -776,7 +776,7 @@ class OrSMW:
         queryDivision = 10 if limit is None or limit >= 1000 else 1
         profiler = Profiler(msg=f"querying of {entityType.entityName} records from WikiMarkup", profile=profile)
         pageTitles = wikiPush.query(askQuery=askQuery, limit=limit, queryDivision=queryDivision)
-        wikiPage = WikiPage(wikiId=wikiId)
+        wikiPage = WikiPage(wikiId=wikiId, login=False)
         lod = []
         total = len(pageTitles)
         for i, pageTitle in enumerate(pageTitles):
