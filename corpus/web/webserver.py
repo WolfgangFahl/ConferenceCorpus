@@ -175,7 +175,7 @@ class WebServer(AppWrap):
             name(str): the name of the event series to be queried
         '''
         multiQuery="select * from {event}"
-        idQuery = f"""select source,eventId from event where acronym like "%{name}%" order by year desc"""
+        idQuery = f"""select source,eventId from event where lookupAcronym like "%{name}%" order by year desc"""
         dictOfLod = self.lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
         return self.convertToRequestedFormat(dictOfLod)
     

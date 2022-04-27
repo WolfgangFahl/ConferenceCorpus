@@ -209,6 +209,43 @@ see also [[http://cc.bitplan.com Conference Corpus]]
         return plantUml
     
     @classmethod
+    def getSignatureCache(cls,profile:bool=True,force:bool=False):
+        '''
+        cache the signature Data in a separate SQLite DB
+        
+        Args:
+            profile(bool): if True show profiling information
+            force(bool): if True force the cache creation
+        '''
+        signatureCache=cls.getDBFile("Signature")
+        profiler=None
+        if (not os.path.isfile(signatureCache)) or force:
+            if profile:
+                msg="Reading events for Signature cache"
+                profiler=Profiler(msg)
+            sqlDB=EventStorage.getSqlDB()
+            events=sqlDB.query("""select * from event""")
+            if profiler:
+                profiler.time()
+            if profile:
+                msg=f"Storing Signature cache for {len(events)} events"
+                profiler=Profiler(msg)
+            signature=SQLDB(signatureCache)
+            entityInfo=signature.createTable(events, "event")
+            signature.store(events, entityInfo)          
+            if profiler:
+                profiler.time()
+            ddls = [
+                "DROP INDEX if EXISTS eventsByCountry",
+                "CREATE INDEX eventsByCounty ON event(country)"]
+            for ddl in ddls:
+                signature.execute(ddl)
+      
+        else:
+            signature=SQLDB(signatureCache)
+        return signature
+    
+    @classmethod
     def createLookup(cls,column:str,tables:list):
         '''
         create a lookup for a column for the given list of tables
