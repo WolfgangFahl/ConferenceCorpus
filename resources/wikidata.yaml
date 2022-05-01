@@ -174,7 +174,7 @@
           OPTIONAL { ?event wdt:P227 ?gndId. }
           OPTIONAL { ?event wdt:P214 ?viafId. }
         }
-# as of 2022-03-11 this query times out on Wikidata Query Service        
+# as of 2022-03-11 this query times out on Wikidata Query Service
 'Wikidata-Events-WithCity':
   title: Academic events with details for EventCorpus including City
   description: Academic events with details for EventCorpus including City
@@ -296,22 +296,22 @@
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT (?confSeries as ?eventSeriesId) ?acronym ?title ?homepage ?DBLP_pid ?WikiCFP_pid ?FreeBase_pid ?Microsoft_Academic_pid ?Publons_pid ?ACM_pid ?GND_pid
-        WHERE 
+        WHERE
         {
-          #  scientific conference series (Q47258130) 
+          #  scientific conference series (Q47258130)
           ?confSeries wdt:P31 wd:Q47258130.
           OPTIONAL { ?confSeries wdt:P1813 ?short_name . }
           BIND (?confSeriesLabel AS ?title)
           BIND (COALESCE(?short_name,?confSeriesLabel) AS ?acronym).
-          #  official website (P856) 
+          #  official website (P856)
           OPTIONAL {
             ?confSeries wdt:P856 ?homepage
-          } 
-          # any item with a DBLP venue ID 
+          }
+          # any item with a DBLP venue ID
           OPTIONAL {
             ?confSeries wdt:P8926 ?DBLP_pid.
           }
-          # WikiCFP pid 
+          # WikiCFP pid
           optional {
              ?confSeries wdt:P5127 ?WikiCFP_pid.
           }
@@ -323,11 +323,11 @@
           optional {
               ?confSeries wdt:P6366 ?Microsoft_Academic_pid.
           }
-          # Publons journals/conferences ID 
+          # Publons journals/conferences ID
           optional {
               ?confSeries wdt:P7461 ?Publons_pid.
           }
-          # ACM conference ID   
+          # ACM conference ID
           optional {
             ?confSeries wdt:P7979 ?ACM_pid.
           }
@@ -335,7 +335,90 @@
           optional {
             ?confSeries wdt:P227 ?GND_pid.
           }
-          # label 
+          # label
           ?confSeries rdfs:label ?confSeriesLabel filter (lang(?confSeriesLabel) = "en").
         }
         ORDER BY (?acronym)
+'Continents':
+    title: Continents by population
+    sparql: |
+      # continents
+      SELECT ?item ?itemLabel ?population ?LoCId
+      WHERE {
+        # continent
+        ?item wdt:P31 wd:Q5107.
+        ?item rdfs:label ?itemLabel.
+        FILTER(LANG(?itemLabel)="en").
+        #  population (P1082)
+        ?item wdt:P1082 ?population.
+        # Library of Congress authority ID P244
+        ?item wdt:P244 ?LoCId.
+      } ORDER BY DESC(?population)
+'ACISP-Series':
+    title: ACISP series example
+    sparql: |
+      #
+      # get Event records
+      #
+      SELECT ?item ?itemLabel
+
+        ?part_of_the_series
+        ?series_ordinal
+        ?short_name
+        ?title
+        ?country
+        ?location
+        ?start_time
+        ?end_time
+        ?GND_ID
+        ?describedAt
+        ?official_website
+        ?WikiCFP_event_ID
+      WHERE {
+        ?item rdfs:label ?itemLabel.
+        FILTER(LANG(?itemLabel) = "en")
+
+        ?item wdt:P31 wd:Q2020153.
+        OPTIONAL { ?item wdt:P179 ?part_of_the_series. }
+        OPTIONAL { ?item wdt:P1545 ?series_ordinal. }
+        OPTIONAL { ?item wdt:P1813 ?short_name. }
+        OPTIONAL { ?item wdt:P1476 ?title. }
+        OPTIONAL { ?item wdt:P17 ?country. }
+        OPTIONAL { ?item wdt:P276 ?location. }
+        OPTIONAL { ?item wdt:P580 ?start_time. }
+        OPTIONAL { ?item wdt:P582 ?end_time. }
+        OPTIONAL { ?item wdt:P227 ?GND_ID. }
+        OPTIONAL { ?item wdt:P973 ?describedAt. }
+        OPTIONAL { ?item wdt:P856 ?official_website. }
+        OPTIONAL { ?item wdt:P5124 ?WikiCFP_event_ID. }
+
+        FILTER(?short_name IN(
+          'ACISP 1996'@en,
+          'ACISP 1997'@en,
+          'ACISP 1998'@en,
+          'ACISP 1999'@en,
+          'ACISP 2000'@en,
+          'ACISP 2001'@en,
+          'ACISP 2002'@en,
+          'ACISP 2003'@en,
+          'ACISP 2004'@en,
+          'ACISP 2005'@en,
+          'ACISP 2006'@en,
+          'ACISP 2007'@en,
+          'ACISP 2008'@en,
+          'ACISP 2009'@en,
+          'ACISP 2010'@en,
+          'ACISP 2011'@en,
+          'ACISP 2012'@en,
+          'ACISP 2013'@en,
+          'ACISP 2014'@en,
+          'ACISP 2015'@en,
+          'ACISP 2016'@en,
+          'ACISP 2017'@en,
+          'ACISP 2018'@en,
+          'ACISP 2019'@en,
+          'ACISP 2020'@en,
+          'ACISP 2021'@en
+        )).
+      }
+      ORDER BY ?short_name
