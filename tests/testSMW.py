@@ -17,7 +17,7 @@ class TestSMW:
         '''
         are we running in a public Continuous Integration Environment?
         '''
-        return getpass.getuser() in ["travis", "runner"];
+        return getpass.getuser() in ["travis", "runner"]
 
     @classmethod
     def getWikiUser(cls, wikiId=None):

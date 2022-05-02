@@ -51,6 +51,7 @@ class EventReferenceParser(object):
         if show:
             for token in tokenSequence.matchResults:
                 print(token)
+        return tokenSequence
         
     def showStatistics(self,tablefmt="mediawiki"):
         '''

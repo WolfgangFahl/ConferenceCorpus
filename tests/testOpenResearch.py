@@ -5,10 +5,9 @@ Created on 27.07.2021
 '''
 import os
 from functools import partial
-
-from lodstorage.lod import LOD
-
-from corpus.datasources.openresearch import OREventSeries, OREventSeriesManager, OREventManager, OREvent, OR
+from pathlib import Path
+from corpus.datasources.openresearch import OREventSeries, OREventSeriesManager, OREventManager, OREvent, OR, OrSMW
+from tests.basetest import BaseTest
 from tests.testSMW import TestSMW
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup, CorpusLookupConfigure
@@ -17,70 +16,36 @@ from corpus.lookup import CorpusLookup, CorpusLookupConfigure
 class TestOpenResearch(DataSourceTest):
     '''
     test the access to OpenResearch
-    
     '''
 
     def setUp(self, debug=False,profile=True, **kwargs):
         super().setUp(debug, profile, **kwargs)
         # by convention the lookupId "or" is for the OpenResearch via API / WikiUser access
-        # the lookupId "orclone" is for for the access via API on the OpenResearch clone
+        # the lookupId "orclone" is for the access via API on the OpenResearch clone
         lookupIds=[]
         self.testWikiId = "orclone"
         TestSMW.getWikiUser(self.testWikiId)
         self.testLimit=100
         OR.limitFiles=self.testLimit
         for wikiId in "or","orclone":
+            TestSMW.getWikiUser(wikiId)
             wikiTextPath=CorpusLookupConfigure.getWikiTextPath(wikiId)
             if not os.path.exists(wikiTextPath):
                 msg=f"wikibackup for {wikiId} missing you might want to run scripts/getbackup"
                 raise Exception(msg)
             lookupIds.append(wikiId)
             lookupIds.append(f"{wikiId}-backup")
-        self.lookup = CorpusLookup(lookupIds=lookupIds,configure=self.configureCorpusLookup)
-
-    def setWikiUserAndOptions(self,manager,wikiUser,debug,profile=True):
-        manager.wikiUser=wikiUser
-        manager.debug=debug
-        manager.config.withShowProgress=profile
-        manager.profile=profile
-    
-    def setWikiFileManagerAndOptions(self,manager,fileManager,debug,profile=True):
-        manager.wikiFileManager=fileManager
-        manager.debug=debug
-        manager.config.withShowProgress=profile
-        manager.profile=profile
-        
-    def configureCorpusLookup(self,lookup:CorpusLookup):
-        '''
-        callback to configure the corpus lookup
-        '''
-        for lookupId in ["or","orclone"]:
-            orDataSource=lookup.getDataSource(lookupId)
-            if orDataSource:
-                orDataSource.profile=True
-                orDataSource.debug=self.debug
-                wikiUser=TestSMW.getSMW_WikiUser(lookupId)
-                self.setWikiUserAndOptions(orDataSource.eventManager, wikiUser, self.debug)
-                self.setWikiUserAndOptions(orDataSource.eventSeriesManager, wikiUser, self.debug)
-            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
-            if orDataSource:
-                orDataSource.profile=True
-                orDataSource.debug=self.debug
-                wikiFileManager = TestSMW.getWikiFileManager(wikiId=lookupId)
-                self.setWikiFileManagerAndOptions(orDataSource.eventManager, wikiFileManager, self.debug)
-                self.setWikiFileManagerAndOptions(orDataSource.eventSeriesManager,wikiFileManager, self.debug)
+        self.lookup = CorpusLookup(lookupIds=lookupIds)
 
     def testORDataSourceFromWikiFileManager(self):
         '''
         tests the getting conferences form wiki markup files
         '''
-        self.lookup.load()
         expectedSeries = OR.limitFiles if OR.limitFiles is not None else 1000
         expectedEvents = OR.limitFiles if OR.limitFiles is not None else 8000
-        orDataSource=self.lookup.getDataSource("or-backup")
-        self.checkDataSource(orDataSource,expectedSeries,expectedEvents)
-        orDataSource=self.lookup.getDataSource("orclone-backup")
-        self.checkDataSource(orDataSource,expectedSeries,expectedEvents)
+        for wikiId in ['or', 'orclone']:
+            datasource = self.lookup.getDataSource(f"{wikiId}-backup")
+            self.checkDataSource(datasource, expectedSeries, expectedEvents)
 
     def testORDataSourceFromWikiUser(self):
         '''
@@ -89,77 +54,269 @@ class TestOpenResearch(DataSourceTest):
         self.lookup.load()
         expectedSeries = OR.limitFiles if OR.limitFiles is not None else 1000
         expectedEvents = OR.limitFiles if OR.limitFiles is not None else 8000
-        orDataSource=self.lookup.getDataSource("or")
-        self.checkDataSource(orDataSource, expectedSeries, expectedEvents)
-        orDataSource=self.lookup.getDataSource("orclone")
-        self.checkDataSource(orDataSource, expectedSeries, expectedEvents)
+        for wikiId in ['or', 'orclone']:
+            datasource = self.lookup.getDataSource(f"{wikiId}")
+            self.checkDataSource(datasource, expectedSeries, expectedEvents)
 
     def testAsCsv(self):
         '''
         test csv export of events
         '''
-        return
+        self.lookup.load()
         orDataSource =self.lookup.getDataSource("orclone-backup")
         eventManager=orDataSource.eventManager
         csvString=eventManager.asCsv(selectorCallback=partial(eventManager.getEventsInSeries, "3DUI"))
-        print(csvString)
-
-    def testEventSeriesGetLoDfromWikiFileManager(self):
-        '''
-        tests getLoDfromWikiFileManager from OREventSeries
-        '''
-        manager = OREventSeriesManager()
-        wikiFileManager = TestSMW.getWikiFileManager(self.testWikiId)
-        lod = manager.getLoDfromWikiFileManager(wikiFileManager=wikiFileManager, limit=self.testLimit)
-        self.checkEntityLoD(lod, OREventSeries, self.testLimit)
-
-    def testEventGetLoDfromWikiFileManager(self):
-        '''
-        tests getLoDfromWikiFileManager from OREvent
-        '''
-        manager = OREventManager()
-        wikiFileManager = TestSMW.getWikiFileManager(self.testWikiId)
-        lod = manager.getLoDfromWikiFileManager(wikiFileManager=wikiFileManager, limit=self.testLimit)
-        self.checkEntityLoD(lod, OREvent, self.testLimit)
-
-    def testEventSeriesGetLoDfromWikiUser(self):
-        '''
-        tests getLoDfromWikiUser from OREventSeries
-        '''
-        manager = OREventSeriesManager()
-        wikiUser = TestSMW.getWikiUser(self.testWikiId)
-        lod = manager.getLoDfromWikiUser(wikiuser=wikiUser, limit=self.testLimit)
-        self.checkEntityLoD(lod, OREventSeries, self.testLimit)
-
-    def testEventGetLoDfromWikiUser(self):
-        '''
-        tests getLoDfromWikiUser from OREvent
-        '''
-        manager = OREventManager()
-        wikiUser = TestSMW.getWikiUser(self.testWikiId)
-        lod = manager.getLoDfromWikiUser(wikiuser=wikiUser, limit=self.testLimit)
-        self.checkEntityLoD(lod, OREvent, self.testLimit)
-
-    def checkEntityLoD(self, lod:dict, entity:type, expectedRecords:int=None):
-        """
-        checks if the given lod contains fields from the samples
-        Args:
-            lod: list of entity records
-            entity: entity class containing the samples
-        """
         if self.debug:
-            print(lod)
-        entityFields = set(LOD.getFields(lod))
-        expectedTypes = {k:type(v) for k,v in entity().getSamples()[0].items()}
-        if expectedRecords is not None:
-            self.assertEqual(len(lod), expectedRecords, "LoD does not contain expected number of records")
-        for record in lod:
-            fields = set(record.keys())
-            self.assertTrue(fields.issubset(entityFields), f"Unexpected fields found: {fields - entityFields} are nt in the samples")
-            self.assertIsNotNone(record["pageTitle"])
-            for key, value in record.items():
-                if key in expectedTypes and value is not None:
-                    self.assertEqual(expectedTypes[key], type(value), f"{key} has not the expected type ({record})")
+            print(csvString)
+        self.assertIn("3DUI 2016", csvString)
+
+
+class TestOREventManager(DataSourceTest):
+    """
+    Tests OREventManager
+    """
+
+    def setUp(self,debug=False,profile=True,timeLimitPerTest=10.0):
+        super().setUp(debug, profile, timeLimitPerTest)
+        self.wikiId = "orclone"
+        TestSMW.getWikiUser(self.wikiId)
+        self.loadingMethods = {
+            "wikiMarkup": OREventManager.getLodFromWikiMarkup.__name__,
+            "backup": OREventManager.getLoDfromWikiFileManager.__name__,
+            "api": OREventManager.getLoDfromWikiUser.__name__
+        }
+        self.limit = 5
+
+    def test_configure(self):
+        """
+        tests configuring OREventManager with different loading methods to retrieve the records from the source
+        """
+        for via, expectedFn in self.loadingMethods.items():
+            manager = OREventManager(wikiId=self.wikiId, via=via)
+            manager.configure()
+            self.assertEqual(getattr(manager, expectedFn), manager.getListOfDicts)
+
+    def test_getLodFrom(self):
+        """
+        tests the different loading methods
+        Note: the functionality is tested in depth in TestOrSMW here only te enhancing of the records is tested
+        """
+        for via, expectedFn in self.loadingMethods.items():
+            manager = OREventManager(wikiId=self.wikiId, via=via)
+            lod = getattr(manager, expectedFn)(limit=self.limit)
+            self.assertEqual(self.limit, len(lod))
+            for d in lod:
+                self.assertEqual(f"{self.wikiId}-{via}", d.get('source'))
+
+    def test_fromWikiUser(self):
+        """
+        tests fromWikiUser
+        """
+        manager = OREventManager(wikiId=self.wikiId, via="api")
+        self.assertEqual([], manager.getList())
+        manager.fromWikiUser(limit=self.limit)
+        self.assertEqual(self.limit, len(manager.getList()))
+        self.assertIsInstance(manager.getList()[0], OREvent)
+
+    def test_fromWikiFileManager(self):
+        """
+        tests fromWikiFileManager
+        """
+        manager = OREventManager(wikiId=self.wikiId, via="backup")
+        self.assertEqual([], manager.getList())
+        manager.fromWikiFileManager(limit=self.limit)
+        self.assertEqual(self.limit, len(manager.getList()))
+        self.assertIsInstance(manager.getList()[0], OREvent)
+
+    def test_getPropertyLookup(self):
+        """
+        tests getPropertyLookup
+        """
+        lookup = OREventManager.getPropertyLookup()
+        self.assertIn('GND-ID', lookup)
+        self.assertEqual(3, len(lookup.get('Acronym')))
+        self.assertEqual(len(OREvent.propertyLookupList), len(lookup))
+
+
+class TestOREventSeriesManager(DataSourceTest):
+    """
+    Tests OREventSeriesManager
+    """
+
+    def setUp(self,debug=False,profile=True,timeLimitPerTest=10.0):
+        super().setUp(debug, profile, timeLimitPerTest)
+        self.wikiId = "orclone"
+        TestSMW.getWikiUser(self.wikiId)
+        self.loadingMethods = {
+            "wikiMarkup": OREventSeriesManager.getLodFromWikiMarkup.__name__,
+            "backup": OREventSeriesManager.getLoDfromWikiFileManager.__name__,
+            "api": OREventSeriesManager.getLoDfromWikiUser.__name__
+        }
+        self.limit = 5
+
+    def test_configure(self):
+        """
+        tests configuring OREventManager with different loading methods to retrieve the records from the source
+        """
+        for via, expectedFn in self.loadingMethods.items():
+            manager = OREventSeriesManager(wikiId=self.wikiId, via=via)
+            manager.configure()
+            self.assertEqual(getattr(manager, expectedFn), manager.getListOfDicts)
+
+    def test_getLodFrom(self):
+        """
+        tests the different loading methods
+        Note: the functionality is tested in depth in TestOrSMW here only te enhancing of the records is tested
+        """
+        for via, expectedFn in self.loadingMethods.items():
+            manager = OREventSeriesManager(wikiId=self.wikiId, via=via)
+            lod = getattr(manager, expectedFn)(limit=self.limit)
+            self.assertEqual(self.limit, len(lod))
+            for d in lod:
+                self.assertEqual(f"{self.wikiId}-{via}", d.get('source'))
+
+    def test_fromWikiUser(self):
+        """
+        tests fromWikiUser
+        """
+        manager = OREventSeriesManager(wikiId=self.wikiId, via="api")
+        self.assertEqual([], manager.getList())
+        manager.fromWikiUser(limit=self.limit)
+        self.assertEqual(self.limit, len(manager.getList()))
+        self.assertIsInstance(manager.getList()[0], OREventSeries)
+
+    def test_fromWikiFileManager(self):
+        """
+        tests fromWikiFileManager
+        """
+        manager = OREventSeriesManager(wikiId=self.wikiId, via="backup")
+        self.assertEqual([], manager.getList())
+        manager.fromWikiFileManager(limit=self.limit)
+        self.assertEqual(self.limit, len(manager.getList()))
+        self.assertIsInstance(manager.getList()[0], OREventSeries)
+
+    def test_getPropertyLookup(self):
+        """
+        tests getPropertyLookup
+        """
+        lookup = OREventSeriesManager.getPropertyLookup()
+        self.assertIn('GND-ID', lookup)
+        self.assertEqual(3, len(lookup.get('Title')))
+        self.assertEqual(len(OREventSeries.propertyLookupList), len(lookup))
+
+
+class TestOrSMW(BaseTest):
+    """
+    tests OrSWM
+    """
+
+    def setUp(self, debug:bool=False, profile:bool=True):
+        super().setUp(debug, profile)
+        self.wikiId = "orclone"
+        TestSMW.getWikiUser(self.wikiId)
+
+    def test_getAskQuery(self):
+        """
+        tests getAskQuery
+        """
+        for entityType in [OREvent, OREventSeries]:
+            askQuery = OrSMW.getAskQuery(entityType)
+            if self.debug:
+                print(askQuery)
+            self.assertIn(entityType.entityName, askQuery)
+            for prop, name in entityType.getPropertyLookup().items():
+                self.assertIn(f"?{prop}={name}", askQuery)
+
+    def test_getAskQueryPageTitles(self):
+        """
+        tests getAskQueryPageTitles
+        """
+        for entityType in [OREvent, OREventSeries]:
+            askQuery = OrSMW.getAskQueryPageTitles(entityType)
+            self.assertIn(f"[[IsA::{entityType.entityName}]]", askQuery)
+            self.assertIn("pageTitle", askQuery)
+
+    def test_getLodFromWikiMarkup(self):
+        """
+        tests getLodFromWikiMarkup
+        """
+        limit = 5
+        for entityType in [OREvent, OREventSeries]:
+            lod = OrSMW.getLodFromWikiMarkup(self.wikiId, entityType=entityType, limit=limit, showProgress=False)
+            self.assertEqual(limit, len(lod))
+            expectedProps = [r.get('name') for r in entityType.propertyLookupList]
+            mandatoryProperties = ['pageTitle', 'wikiMarkup']
+            expectedProps.extend(mandatoryProperties)
+            for d in lod:
+                for mp in mandatoryProperties:
+                    self.assertIn(mp, d)
+                for prop in d:
+                    self.assertIn(prop, expectedProps)
+                if self.debug or True:
+                    print(f"{d.get('pageTitle')}: {d}")
+
+    def test_getLodFromWikiApi(self):
+        """
+        tests getLodFromWikiApi
+        """
+        limit = 5
+        for entityType in [OREvent, OREventSeries]:
+            lod = OrSMW.getLodFromWikiApi(self.wikiId, entityType=entityType, limit=limit)
+            self.assertEqual(limit, len(lod))
+            expectedProps = [r.get('name') for r in entityType.propertyLookupList]
+            expectedProps.extend(["pageTitle", "modificationDate", "creationDate", "lastEditor"])
+            for d in lod:
+                self.assertIn('pageTitle', d)
+                for prop in d:
+                    self.assertIn(prop, expectedProps)
+
+    def test_getLodFromWikiFiles(self):
+        """
+        tests getLodFromWikiFiles
+        """
+        defaultQikiTextPath = f"{Path.home()}/.or/wikibackup/{self.wikiId}"
+        numberBackupFiles = len([name for name in os.listdir(defaultQikiTextPath) if os.path.isfile(os.path.join(defaultQikiTextPath, name))])
+        if numberBackupFiles >= 500:
+            # backup is present test extraction
+            limit = 5
+            for entityType in [OREvent, OREventSeries]:
+                lod = OrSMW.getLodFromWikiFiles(self.wikiId, entityType=entityType, limit=limit)
+                self.assertEqual(limit, len(lod))
+                expectedProps = [r.get('name') for r in entityType.propertyLookupList]
+                mandatoryProperties = ['pageTitle', 'wikiMarkup']
+                expectedProps.extend(mandatoryProperties)
+                for d in lod:
+                    for mp in mandatoryProperties:
+                        self.assertIn(mp, d)
+                    for prop in d:
+                        self.assertIn(prop, expectedProps)
+
+    def test_getLodFromWikiMarkup_queryAllEvents(self):
+        """
+        tests querying all events with getLodFromWikiApi to check if the query division works
+        """
+        return   # test takes ~20 min. only needs to be tested if query division seems not to work properly
+        lod = OrSMW.getLodFromWikiMarkup(self.wikiId, entityType=OREvent)
+        if self.debug:
+            total = len(lod)
+            for i, d in enumerate(lod):
+                print(f"({i}/{total}) {d}")
+        self.assertGreaterEqual(len(lod), 9850)
+
+    def test_normalizeProperties(self):
+        """
+        tests normalizeProperties
+        """
+        propMap = OREvent.getTemplateParamLookup()
+        template_dict = {k: "test value" for k in propMap.keys()}
+        normalized_dict = {v: "test value" for v in propMap.values()}
+        self.assertDictEqual(normalized_dict, OrSMW.normalizeProperties(template_dict, OREvent))
+        self.assertDictEqual(template_dict, OrSMW.normalizeProperties(normalized_dict, OREvent, reverse=True))
+        # test exclusion
+        unkown_prop = {"unkown_key":"This property should be excluded"}
+        extended_dict = {**unkown_prop, **template_dict}
+        self.assertDictEqual(normalized_dict, OrSMW.normalizeProperties(extended_dict, OREvent))
+        self.assertDictEqual({**unkown_prop, **normalized_dict}, OrSMW.normalizeProperties(extended_dict, OREvent, force=True))
 
 
 if __name__ == "__main__":
