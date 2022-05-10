@@ -14,6 +14,7 @@ import traceback
 from corpus.lookup import CorpusLookup
 from corpus.event import EventStorage
 #from corpus.web.eventseriesblueprint import EventSeriesBlueprint
+from corpus.web.eventseries import EventSeriesBlueprint
 from corpus.web.scholar import ScholarBlueprint
 
 
@@ -50,7 +51,7 @@ class WebServer(AppWrap):
 
         #Blueprints
         self.scholarBlueprint=ScholarBlueprint(self.app, "scholar", template_folder="scholar", appWrap=self)
-        #self.eventSeriesBlueprint = EventSeriesBlueprint(self.app, "eventseries", template_folder="eventseries", appWrap=self)
+        self.eventSeriesBlueprint = EventSeriesBlueprint(self.app, "eventseries", template_folder="eventseries", appWrap=self)
  
         @self.app.route('/')
         def home():
@@ -67,10 +68,7 @@ class WebServer(AppWrap):
         @self.app.route('/query/<name>')
         def query(name:str):
             return self.showQuery(name)
-        
-        @self.app.route('/eventseries/<name>')
-        def getEventSeries(name: str):
-            return self.getEventSeries(name)
+
 
         @self.app.errorhandler(Exception)
         def handle_exception(e):
@@ -166,46 +164,7 @@ class WebServer(AppWrap):
             dictOfLod={name:qlod}
             title=f"Conference Corpus Query {name}"
             return self.renderDictOfLod(dictOfLod,title=title)
-        
-    def getEventSeries(self, name:str):
-        '''
-        Query multiple datasources for the given event series
 
-        Args:
-            name(str): the name of the event series to be queried
-        '''
-        multiQuery="select * from {event}"
-        idQuery = f"""select source,eventId from event where lookupAcronym like "%{name}%" order by year desc"""
-        dictOfLod = self.lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
-        return self.convertToRequestedFormat(dictOfLod)
-    
-
-    def convertToRequestedFormat(self, dictOfLods:dict):
-        """
-        Converts the given dicts of lods to the requested format.
-        Supported formats: json, html
-        Default format: json
-
-        Args:
-            dictOfLods: data to be converted
-
-        Returns:
-            Response
-        """
-        formatParam = request.values.get('format', "")
-        if formatParam.lower() == "html":
-            tables=[]
-            for name, lod in dictOfLods.items():
-                tables.append(LodTable(name=name, lod=lod))
-            template = "cc/result.html"
-            title = "Query Result"
-            result="".join([str(t) for t in tables])
-            html = self.render_template(template, title=title, activeItem="", result=result)
-            return html
-        else:
-            return jsonify(dictOfLods)
-
-    
     def renderDictOfLod(self,dictOfLod:dict,title):
         '''
         render a dict of list of dicts

@@ -34,3 +34,5 @@ pydevd
 streamlit~=1.8.1
 # https://pypi.org/project/st-annotated-text/
 st-annotated-text
+# https://pypi.org/project/pyGenericSpreadSheet/
+pyGenericSpreadSheet
