@@ -32,6 +32,13 @@ class EventSeriesCompletion(object):
         yearOrdinalPair = {(r.get('year'), r.get("ordinal")) for r in lod }
         completeYearOrdinalPair = list({(year, ordinal) for year, ordinal in yearOrdinalPair if year is not None and ordinal is not None})
         completeYearOrdinalPair.sort(key=lambda r: r[0] if r[0] is not None else 0)
+        cleanedYOP = [completeYearOrdinalPair[0]]
+        ordinal = completeYearOrdinalPair[0][1]
+        for year, ord in completeYearOrdinalPair[1:]:
+            if ordinal < ord:
+                cleanedYOP.append((year, ord))
+                ordinal = ord
+        completeYearOrdinalPair = cleanedYOP
         ordByYear = {}
         for year, ord in completeYearOrdinalPair:
             if year in ordByYear:

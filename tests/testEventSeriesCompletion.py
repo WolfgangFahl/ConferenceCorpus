@@ -72,10 +72,15 @@ class TestEventSeriesCompletion(BaseTest):
         tests getCompletedBlankSeries
         extraction and completion of an event series for ordinal and year pairs
         """
-        vldbSeriesLod = self.getSeriesLod("VLDB")
-        completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(vldbSeriesLod)
+        seriesLod = self.getSeriesLod("AAAI")
+        completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(seriesLod)
         # vldbSeriesLod has multiple records with same year but different ordinal → expect None
         self.assertEqual([], completedBlankSeries)
+        seriesLod = self.getSeriesLod("VLDB")
+        completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(seriesLod)
+        self.assertEqual(46, len(completedBlankSeries))
+        self.assertEqual((1975, 1), completedBlankSeries[0])
+        self.assertEqual((2020, 46), completedBlankSeries[-1])
         seriesLod = self.getSeriesLod("3DUI")
         completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(seriesLod)
         self.assertEqual(12, len(completedBlankSeries))
@@ -86,6 +91,7 @@ class TestEventSeriesCompletion(BaseTest):
         """
         tests getFrequency
         """
+        self.assertEqual(0, EventSeriesCompletion.getFrequency([(2000, 1), (2004, 5), (2005, 5)]))
         self.assertEqual(1,EventSeriesCompletion.getFrequency([(2000, 1), (2001, 2), (2002,3)]))
         self.assertEqual(2, EventSeriesCompletion.getFrequency([(2000, 1), (2002, 2), (2004, 3)]))
         self.assertEqual(0, EventSeriesCompletion.getFrequency([(2000, 1), (2001, 2), (2004, 3)]))
