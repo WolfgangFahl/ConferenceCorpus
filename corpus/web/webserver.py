@@ -77,7 +77,7 @@ class WebServer(AppWrap):
                 return e
             traceMessage = traceback.format_exc()
             # to the server log
-            print(traceMessage)
+            print(traceMessage,flush=True)
             errorMessage=f"A server error occurred - see log for trace"
             
             return self.handleError(errorMessage)
