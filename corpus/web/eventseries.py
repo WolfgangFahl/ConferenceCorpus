@@ -73,16 +73,21 @@ class EventSeriesBlueprint():
             return html
         elif formatParam.lower() == "excel":
                 spreadsheet = ExcelDocument(name=name)
-                # Add completed event sheet
-                eventHeader = ["item", "label", "description", "Ordinal", "OrdinalStr", "Acronym", "Country", "City", "Title",	"Series",	"Year",	"Start date",	"End date",	"Homepage",	"dblp",	"dblpId"]
+                # Add completed event sheet and add proceedings sheet
+                eventHeader = ["item", "label", "description", "Ordinal", "OrdinalStr", "Acronym", "Country", "City", "Title",	"Series",	"Year",	"Start date",	"End date",	"Homepage",	"dblp",	"dblpId", "wikicfpId", "gndId"]
+                proceedingsHeaders = ["item",	"label",	"ordinal",	"ordinalStr",	"description",	"Title",	"Acronym",	"OpenLibraryId",	"oclcId",	"isbn13",	"ppnId",	"gndId",	"dblpId",	"doi",	"Event",	"publishedIn"]
                 eventRecords = list(flatten([lod for lod in dictOfLods.values()]))
                 completedBlankEvent = EventSeriesCompletion.getCompletedBlankSeries(eventRecords)
                 eventSheetRecords = []
+                proceedingsRecords = []
                 for year, ordinal in completedBlankEvent:
                     eventSheetRecords.append({**{k:None for k in eventHeader}, "Ordinal":ordinal, "Year":year})
+                    proceedingsRecords.append({**{k:None for k in proceedingsHeaders}, "ordinal":ordinal})
                 if not eventSheetRecords:
                     eventSheetRecords = [{k:None for k in eventHeader}]
+                    proceedingsRecords = [{k:None for k in proceedingsHeaders}]
                 spreadsheet.addTable("Event", eventSheetRecords)
+                spreadsheet.addTable("Proceedings", proceedingsRecords)
                 for lods in [dictOfLods, asdict(MetadataMappings())]:
                     for sheetName, lod in lods.items():
                         spreadsheet.addTable(sheetName, lod)
