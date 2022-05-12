@@ -19,3 +19,5 @@ getSeries() {
 
 getSeries ICSIE
 getSeries VLDB
+getSeries AAAI
+getSeries 3DUI

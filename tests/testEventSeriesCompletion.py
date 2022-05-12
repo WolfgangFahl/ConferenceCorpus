@@ -1,3 +1,4 @@
+from corpus.eventseriescompletion import EventSeriesCompletion
 from tests.basetest import BaseTest
 import json
 from os import path
@@ -65,5 +66,36 @@ class TestEventSeriesCompletion(BaseTest):
         for vldbEvent in vldbSeriesLod:
             if vldbEvent["year"] is  not None:
                 print(f"""{vldbEvent["year"]}:{vldbEvent["source"]}""")
-        
-        
+
+    def test_getCompletedBlankSeries(self):
+        """
+        tests getCompletedBlankSeries
+        extraction and completion of an event series for ordinal and year pairs
+        """
+        seriesLod = self.getSeriesLod("AAAI")
+        completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(seriesLod)
+        # vldbSeriesLod has multiple records with same year but different ordinal → expect None
+        self.assertEqual([], completedBlankSeries)
+        seriesLod = self.getSeriesLod("VLDB")
+        completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(seriesLod)
+        self.assertEqual(46, len(completedBlankSeries))
+        self.assertEqual((1975, 1), completedBlankSeries[0])
+        self.assertEqual((2020, 46), completedBlankSeries[-1])
+        seriesLod = self.getSeriesLod("3DUI")
+        completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(seriesLod)
+        self.assertEqual(12, len(completedBlankSeries))
+        self.assertEqual((2006,1), completedBlankSeries[0])
+        self.assertEqual((2017,12), completedBlankSeries[-1])
+
+    def test_getFrequency(self):
+        """
+        tests getFrequency
+        """
+        self.assertEqual(0, EventSeriesCompletion.getFrequency([(2000, 1), (2004, 5), (2005, 5)]))
+        self.assertEqual(1,EventSeriesCompletion.getFrequency([(2000, 1), (2001, 2), (2002,3)]))
+        self.assertEqual(2, EventSeriesCompletion.getFrequency([(2000, 1), (2002, 2), (2004, 3)]))
+        self.assertEqual(0, EventSeriesCompletion.getFrequency([(2000, 1), (2001, 2), (2004, 3)]))
+        self.assertEqual(0, EventSeriesCompletion.getFrequency([(2000, 1)]))
+        self.assertEqual(0, EventSeriesCompletion.getFrequency([(2000, 1), (2001, 5), (2002, 3)]))
+        self.assertEqual(0, EventSeriesCompletion.getFrequency([(2000, 1), (2002, 2), (2004, 3), (2005,4), (2006, 5)]))
+        self.assertEqual(0, EventSeriesCompletion.getFrequency([(2011, 2), (2013, 2), (2015, 4), (2016, 5), (2017, 6), (2018, 7), (2019, 8), (2020, 9), (2021, 10)]))

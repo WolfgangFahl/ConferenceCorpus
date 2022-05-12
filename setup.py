@@ -33,9 +33,9 @@ setup(name='ConferenceCorpus',
       ),
       classifiers=[
             'Programming Language :: Python',
-            'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
-            'Programming Language :: Python :: 3.9'
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10'
       ],
       packages=['resources','corpus','corpus.datasources','corpus.utils','corpus.quality','corpus.xmlhandler','ptp'],
       package_data={'resources':['*.yaml']},
