@@ -38,3 +38,5 @@ streamlit~=1.8.1
 st-annotated-text
 # https://pypi.org/project/pyJustpyWidgets/
 pyJustpyWidgets~=0.0.2
+# https://pypi.org/project/matplotlib/
+matplotlib>=3.5.2
