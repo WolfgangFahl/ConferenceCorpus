@@ -27,7 +27,7 @@ class EventExporter():
     
     def exportSeries2OpenResearch(self,dblpSeriesId):
         '''
-        export the seriew with the given dblp Series Id to OpenResearch
+        export the series with the given dblp Series Id to OpenResearch
         
         Args:
             dblpSeriesId(str): the id of the dblp series to be exported
