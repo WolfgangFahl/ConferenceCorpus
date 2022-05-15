@@ -49,6 +49,42 @@ class EventSeriesBlueprint():
         dictOfLod = self.appWrap.lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
         return self.convertToRequestedFormat(name, dictOfLod)
 
+    def generateSeriesSpreadsheet(self, name:str, dictOfLods: dict) -> ExcelDocument:
+        """
+
+        Args:
+            name(str): name of the series
+            dictOfLods: records of the series from different sources
+
+        Returns:
+            ExcelDocument
+        """
+        spreadsheet = ExcelDocument(name=name)
+        # Add completed event sheet and add proceedings sheet
+        eventHeader = ["item", "label", "description", "Ordinal", "OrdinalStr", "Acronym", "Country", "City", "Title",
+                       "Series", "Year", "Start date", "End date", "Homepage", "dblp", "dblpId", "wikicfpId", "gndId"]
+        proceedingsHeaders = ["item", "label", "ordinal", "ordinalStr", "description", "Title", "Acronym",
+                              "OpenLibraryId", "oclcId", "isbn13", "ppnId", "gndId", "dblpId", "doi", "Event",
+                              "publishedIn"]
+        eventRecords = list(flatten([lod for lod in dictOfLods.values()]))
+        completedBlankEvent = EventSeriesCompletion.getCompletedBlankSeries(eventRecords)
+        eventSheetRecords = []
+        proceedingsRecords = []
+        for year, ordinal in completedBlankEvent:
+            eventSheetRecords.append({**{k: None for k in eventHeader}, "Ordinal": ordinal, "Year": year})
+            proceedingsRecords.append({**{k: None for k in proceedingsHeaders}, "ordinal": ordinal})
+        if not eventSheetRecords:
+            eventSheetRecords = [{k: None for k in eventHeader}]
+            proceedingsRecords = [{k: None for k in proceedingsHeaders}]
+        spreadsheet.addTable("Event", eventSheetRecords)
+        spreadsheet.addTable("Proceedings", proceedingsRecords)
+        for lods in [dictOfLods, asdict(MetadataMappings())]:
+            for sheetName, lod in lods.items():
+                if isinstance(lod, list):
+                    lod.sort(key=lambda record: record.get('year',0))
+                spreadsheet.addTable(sheetName, lod)
+        return spreadsheet
+
     def convertToRequestedFormat(self, name:str, dictOfLods: dict):
         """
         Converts the given dicts of lods to the requested format.
@@ -72,25 +108,7 @@ class EventSeriesBlueprint():
             html = self.render_template(template, title=title, activeItem="", result=result)
             return html
         elif formatParam.lower() == "excel":
-                spreadsheet = ExcelDocument(name=name)
-                # Add completed event sheet and add proceedings sheet
-                eventHeader = ["item", "label", "description", "Ordinal", "OrdinalStr", "Acronym", "Country", "City", "Title",	"Series",	"Year",	"Start date",	"End date",	"Homepage",	"dblp",	"dblpId", "wikicfpId", "gndId"]
-                proceedingsHeaders = ["item",	"label",	"ordinal",	"ordinalStr",	"description",	"Title",	"Acronym",	"OpenLibraryId",	"oclcId",	"isbn13",	"ppnId",	"gndId",	"dblpId",	"doi",	"Event",	"publishedIn"]
-                eventRecords = list(flatten([lod for lod in dictOfLods.values()]))
-                completedBlankEvent = EventSeriesCompletion.getCompletedBlankSeries(eventRecords)
-                eventSheetRecords = []
-                proceedingsRecords = []
-                for year, ordinal in completedBlankEvent:
-                    eventSheetRecords.append({**{k:None for k in eventHeader}, "Ordinal":ordinal, "Year":year})
-                    proceedingsRecords.append({**{k:None for k in proceedingsHeaders}, "ordinal":ordinal})
-                if not eventSheetRecords:
-                    eventSheetRecords = [{k:None for k in eventHeader}]
-                    proceedingsRecords = [{k:None for k in proceedingsHeaders}]
-                spreadsheet.addTable("Event", eventSheetRecords)
-                spreadsheet.addTable("Proceedings", proceedingsRecords)
-                for lods in [dictOfLods, asdict(MetadataMappings())]:
-                    for sheetName, lod in lods.items():
-                        spreadsheet.addTable(sheetName, lod)
+                spreadsheet = self.generateSeriesSpreadsheet(name, dictOfLods)
                 return send_file(spreadsheet.toBytesIO(), as_attachment=True, download_name=spreadsheet.filename, mimetype=spreadsheet.MIME_TYPE)
         else:
             return jsonify(dictOfLods)
