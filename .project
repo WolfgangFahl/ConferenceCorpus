@@ -5,6 +5,7 @@
 	<projects>
 		<project>geograpy3</project>
 		<project>pyFlaskBootstrap4</project>
+		<project>pyJustpyWidgets</project>
 		<project>pyLoDStorage</project>
 	</projects>
 	<buildSpec>

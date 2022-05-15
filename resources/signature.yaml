@@ -1,0 +1,99 @@
+#
+# Pre-configured Queries for Conference Corpus Scientific Event lookup database
+#
+# WF 2022-05-14
+'SignatureAvailability':
+    sql: |
+      SELECT source,total,
+        acronymCount,acronymCount*100/total AS 'acronym%',
+        yearCount,yearCount*100/total AS 'year%',
+        ordinalCount,ordinalCount*100/total AS 'ordinal%',
+        cityCount,cityCount*100/total AS 'city%',
+        cityWikidataIdCount,cityWikidataIdCount*100/total AS 'cityWikidataId%',
+        countryCount,countryCount*100/total AS 'country%',
+        countryWikidataIdCount,countryWikidataIdCount*100/total AS 'countryWikidataId%'
+      FROM(
+        SELECT source,
+            COUNT(*) AS total,
+            SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+            SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+            SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+            SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+            SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount,
+            SUM(CASE WHEN country is not null THEN 1 ELSE 0 END) as countryCount,
+            SUM(CASE WHEN countryWikidataId is not null THEN 1 ELSE 0 END) as countryWikidataIdCount
+          FROM event_confref
+          GROUP BY source
+        UNION
+          SELECT source,
+            COUNT(*) AS total,
+            SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+            SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+            SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+            SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+            SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount,
+            SUM(CASE WHEN country is not null THEN 1 ELSE 0 END) as countryCount,
+            SUM(CASE WHEN countryWikidataId is not null THEN 1 ELSE 0 END) as countryWikidataIdCount
+          FROM event_crossref
+          GROUP BY source
+        UNION
+          SELECT source,
+            COUNT(*) AS total,
+            SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+            SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+            SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+            SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+            SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount,
+            SUM(CASE WHEN country is not null THEN 1 ELSE 0 END) as countryCount,
+            SUM(CASE WHEN countryWikidataId is not null THEN 1 ELSE 0 END) as countryWikidataIdCount
+          FROM event_dblp
+          GROUP BY source
+        UNION
+          SELECT source,
+            COUNT(*) AS total,
+            SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+            SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+            SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+            SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+            SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount,
+            SUM(CASE WHEN country is not null THEN 1 ELSE 0 END) as countryCount,
+            SUM(CASE WHEN countryWikidataId is not null THEN 1 ELSE 0 END) as countryWikidataIdCount
+          FROM event_gnd
+          GROUP BY source
+        UNION
+          SELECT source,
+            COUNT(*) AS total,
+            SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+            SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+            SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+            SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+            SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount,
+            SUM(CASE WHEN country is not null THEN 1 ELSE 0 END) as countryCount,
+            SUM(CASE WHEN countryWikidataId is not null THEN 1 ELSE 0 END) as countryWikidataIdCount
+          FROM event_tibkat
+          GROUP BY source
+        UNION
+          SELECT source,
+            COUNT(*) AS total,
+            SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+            SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+            SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+            SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+            SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount,
+            SUM(CASE WHEN country is not null THEN 1 ELSE 0 END) as countryCount,
+            SUM(CASE WHEN countryWikidataId is not null THEN 1 ELSE 0 END) as countryWikidataIdCount
+          FROM event_wikicfp
+          GROUP BY source
+        UNION
+          SELECT source,
+            COUNT(*) AS total,
+            SUM(CASE WHEN acronym is not null THEN 1 ELSE 0 END) as acronymCount,
+            SUM(CASE WHEN year is not null THEN 1 ELSE 0 END) as yearCount,
+            SUM(CASE WHEN ordinal is not null THEN 1 ELSE 0 END) as ordinalCount,
+            SUM(CASE WHEN city is not null THEN 1 ELSE 0 END) as cityCount,
+            SUM(CASE WHEN cityWikidataId is not null THEN 1 ELSE 0 END) as cityWikidataIdCount,
+            SUM(CASE WHEN country is not null THEN 1 ELSE 0 END) as countryCount,
+            SUM(CASE WHEN countryWikidataId is not null THEN 1 ELSE 0 END) as countryWikidataIdCount
+          FROM event_wikidata
+          GROUP BY source
+      ) counters

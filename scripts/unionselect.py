@@ -40,7 +40,7 @@ def countUnionQuery(name,colNames,indent):
 
 def main():
     indent=""
-    colNames=["acronym","year","ordinal","city","cityWikidataId"]
+    colNames=["acronym","year","ordinal","city","cityWikidataId","country","countryWikidataId"]
     sql=countUnionQuery("counters",colNames,indent)
     print(sql)
 
