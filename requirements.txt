@@ -40,3 +40,5 @@ st-annotated-text
 pyJustpyWidgets~=0.0.2
 # https://pypi.org/project/matplotlib/
 matplotlib>=3.5.2
+# https://pypi.org/project/Markdown/
+Markdown>=3.3.7
