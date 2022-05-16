@@ -105,7 +105,7 @@ class EventSeriesBlueprint():
             template = "cc/result.html"
             title = "Query Result"
             result = "".join([str(t) for t in tables])
-            html = self.render_template(template, title=title, activeItem="", result=result)
+            html = self.appWrap.render_template(template, title=title, activeItem="", result=result)
             return html
         elif formatParam.lower() == "excel":
                 spreadsheet = self.generateSeriesSpreadsheet(name, dictOfLods)
@@ -147,7 +147,11 @@ class MetadataMappings:
              {'Entity': 'Proceedings', 'Column': 'OpenLibraryId', 'PropertyName': 'Open Library ID', 'PropertyId': 'P648', 'Type': 'extid'},
              {'Entity': 'Proceedings', 'Column': 'ppnId', 'PropertyName': 'K10plus PPN ID', 'PropertyId': 'P6721', 'Type': 'extid'},
              {'Entity': 'Proceedings', 'Column': 'Event', 'PropertyName': 'is proceedings from', 'PropertyId': 'P4745', 'Lookup': 'Q2020153'},
-             {'Entity': 'Proceedings', 'Column': 'publishedIn', 'PropertyName': 'published in', 'PropertyId': 'P1433', 'Lookup': 'Q39725049'}
+             {'Entity': 'Proceedings', 'Column': 'publishedIn', 'PropertyName': 'published in', 'PropertyId': 'P1433', 'Lookup': 'Q39725049'},
+             {'Entity': 'Proceedings', 'Column': 'oclcId', 'PropertyName': 'OCLC work ID','PropertyId': 'P5331', 'Type': 'extid'},
+             {'Entity': 'Proceedings', 'Column': 'isbn13', 'PropertyName': 'ISBN-13', 'PropertyId': 'P212', 'Type': 'extid'},
+             {'Entity': 'Proceedings', 'Column': 'doi', 'PropertyName': 'DOI', 'PropertyId': 'P356', 'Type': 'extid'},
+             {'Entity': 'Proceedings', 'Column': 'dblpId', 'PropertyName': 'DBLP event ID', 'PropertyId': 'P10692', 'Type': 'extid'},
              ]
 
         self.SmwMetadata = [
