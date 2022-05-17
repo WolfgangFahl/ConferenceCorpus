@@ -4,16 +4,20 @@ Created on 2022-05-15
 @author: wf
 '''
 import argparse
-import numpy
-import random
 import pprint
 import socket
 import sys
 import traceback
 
+import matplotlib as plt
+
 import justpy as jp
+
 from jpwidgets.widgets import LodGrid,MenuButton, MenuLink
+
 from corpus.event import EventStorage
+from corpus.utils.histogramm import Histogramm
+
 from lodstorage.query import Query,QuerySyntaxHighlight
 from lodstorage.lod import LOD
 
@@ -84,17 +88,17 @@ class Queries:
     def __init__(self):
         self.queries=[{
             "name": "OrdinalHistogramm",
-            "query": """SELECT ordinal,count(*) as count
-    FROM "%s"
+            "query": """SELECT ordinal
+    FROM %s
     where ordinal is not null
-    group by ordinal
-    order by cast(ordinal as int) desc"""
+    and ordinal < %s
+    """
         }]
         self.queriesByName,_dup=LOD.getLookup(self.queries,"name")
         
-    def getQuery(self,name,tableName):
+    def getQuery(self,name,tableName,param):
         rawQuery=self.queriesByName[name]
-        sqlQuery=rawQuery["query"] % tableName
+        sqlQuery=rawQuery["query"] % (tableName,param)
         return sqlQuery
 
 class Dashboard():
@@ -109,6 +113,8 @@ class Dashboard():
         self.columnName="source"
         self.queries=Queries()
         self.queryName="OrdinalHistogramm"
+        self.maxValue=50
+        plt.use("WebAgg")
         
     def handleException(self,ex):
         '''
@@ -127,12 +133,20 @@ class Dashboard():
         if self.debug:
             print(trace)
             
-    def chart(self,lod):
+    def jpchart(self,lod,attr='count'):
+        '''
+        create a chart from the given list of dicts
+        '''
         self.chartDiv.delete_components()
         # Normal distribution
-        data = [numpy.random.normal() for _i in range(1000)]
+        data = [record[attr] for record in lod]
         chart = jp.Histogram(data, a=self.chartDiv, classes='m-2 border w-1/2')
         chart.options.title.text = 'Normal Distribution Histogram'
+        
+    def chart(self,lod,attr='count',title=""):
+        values=[record[attr] for record in lod]
+        h=Histogramm(x=values)
+        h.show(xLabel='ordinal',yLabel='count',title=title,bins=self.maxValue)
         
         
     def onChangeTable(self, msg:dict):
@@ -187,6 +201,9 @@ class Dashboard():
         self.agGrid.options.columnDefs[0].checkboxSelection = True
         
     def onHistogramm(self,_msg):
+        '''
+        handle a click of the histogramm button
+        '''
         try:
             totals=[]
             self.queryDiv.inner_html=""
@@ -211,17 +228,20 @@ class Dashboard():
         handle a click of the query button
         '''
         try:
-            sqlQuery=self.queries.getQuery(self.queryName, self.tableName)
+            sqlQuery=self.queries.getQuery(self.queryName, self.tableName,self.maxValue)
             html=self.queryHighlight(self.queryName, sqlQuery)
             self.queryDiv.inner_html=html
             queryLod=self.sqlDB.query(sqlQuery)
-            self.reloadAgGrid(queryLod)
-            self.chart(queryLod)
+            #self.reloadAgGrid(queryLod)
+            self.chart(lod=queryLod,attr="ordinal",title=f"{self.queryName} {self.tableName}")
         except Exception as ex:
             self.handleException(ex)
                 
     def onChangeQuery(self,msg):
         self.queryName=msg.value
+        
+    def onChangeMaxValue(self,msg):
+        self.maxValue=msg.value
             
     def setTableName(self,tableName:str):
         '''
@@ -270,10 +290,14 @@ class Dashboard():
         self.columnSelect=jp.Select(classes=selectorClasses, a=self.header, value=self.columnName,
             change=self.onChangeColumn)
         
+        jp.Br(a=self.header)
+        
         self.querySelect=jp.Select(classes=selectorClasses, a=self.header, value=self.queryName,
             change=self.onChangeQuery)
         for queryName in self.queries.queriesByName.keys():
             self.querySelect.add(jp.Option(value=queryName,text=queryName))
+        self.maxValueSlider=jp.QSlider(a=self.header, classes='m-8 p-2', style='width: 500px',input=self.onChangeMaxValue, label=True, label_always=True,
+               value=self.maxValue, min=10, max=250, snap=True, markers=True)
         
         self.updateColumnOptions()
         self.agGrid = LodGrid(a=self.resultDiv)
