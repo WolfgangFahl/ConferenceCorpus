@@ -6,10 +6,11 @@ Created on 2022-05-17
 import io
 import matplotlib.pyplot as plt
 import numpy as np
-import statistics
 from typing import Callable
 from collections import Counter
 from scipy.optimize import minimize 
+from scipy.optimize import curve_fit
+from scipy.special import zetac
 
 class PlotSettings():
     '''
@@ -78,10 +79,22 @@ class Zipf(Plot):
     def __init__(self, values):
         self.values=values
         self.counter_of_values = Counter(self.values)
-        self.mean = statistics.mean(self.counter_of_values.values())
+        
         self.x=np.array(list(self.counter_of_values.keys()))
         self.freqs=np.array(list(self.counter_of_values.values())) 
+        self.mean = np.mean(self.freqs)
+        self.freqsLog=np.log(self.freqs)
+        self.freqsLogMean= np.mean(self.freqsLog)
         
+    def curveFit(self):
+
+        def f(x, a):
+            return (x**-a)/zetac(a)
+
+
+        result = curve_fit(f, self.x, self.freqs)
+        return result
+
         
     def fit(self):
         '''
@@ -119,15 +132,21 @@ class Zipf(Plot):
         self.setup(title)
         plt.scatter(
             self.x,
-            np.log(self.freqs),       
+            self.freqsLog,       
         )
         plt.xlabel('Values')
         plt.ylabel('Log of count')
         fit=self.fit()
-        sx=3
-        sy=self.mean
+        curveFit=self.curveFit()
+        sx=1
+        sy=self.freqsLogMean-1
         if fit.success:
-            plt.text(sx, sy, r'Zipf distribution fit $\mu=100,\ \sigma=15$')
+            s=fit.x[0]
+            # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html
+            popt,pcov=curveFit
+            cfs=popt[0]
+            plt.text(sx, sy, fr'Zipf distribution fit s={s:.3f} cfs:{cfs:.3f} cov:{pcov}')
+            #plt.plot(self.x, self.x*-s)
         else:
             plt.text(sx, sy, r'no Zipf distribution fit')
         self.doShow(ps)

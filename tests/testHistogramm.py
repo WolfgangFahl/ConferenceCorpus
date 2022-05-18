@@ -6,8 +6,14 @@ Created on 17.05.2022
 from corpus.utils.plots import Histogramm, PlotSettings, Zipf
 from tests.basetest import BaseTest
 from corpus.event import EventStorage
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from collections import Counter
+from corpus.utils.distfit import BestFitDistribution
 import os
 import sys
+
 
 class TestHistogramm(BaseTest):
     '''
@@ -38,6 +44,23 @@ class TestHistogramm(BaseTest):
     def eventSeriesCompleteness(self):
         for tableName in self.getDatasources():
             print(tableName)
+            
+    def testZipf(self):
+        '''
+        test the Zipf distribution
+        '''
+        show=False
+        for a in [1.2,1.4,1.6]:
+            x = np.random.zipf(a=a, size=1000)
+            xlog=np.log(x)
+            df = pd.Series(xlog) 
+            # distributionNames=["powerlaw","norm"]
+            
+            bfd=BestFitDistribution(df)
+            bfd.analyze(f"Zipf distribution a={a:.1f}", x_label="x", y_label="zipf(x,a)",density=False,outputFilePrefix=f"/tmp/zipf{a}")
+        if show:
+            plt.show()
+        
     
     def testHistogramms(self):
         '''

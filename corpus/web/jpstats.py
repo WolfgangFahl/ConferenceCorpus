@@ -16,7 +16,7 @@ import justpy as jp
 from jpwidgets.widgets import LodGrid,MenuButton, MenuLink
 
 from corpus.event import EventStorage
-from corpus.utils.histogramm import Histogramm
+from corpus.utils.plots import Histogramm
 
 from lodstorage.query import Query,QuerySyntaxHighlight
 from lodstorage.lod import LOD
