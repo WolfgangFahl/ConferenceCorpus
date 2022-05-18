@@ -226,6 +226,10 @@ order by 6 desc
                    alpha=0.8,
                    ps=hps,
                    bins=20)
+            latex = self.latexFigure(scale=0.5, caption=f"event series completeness of {dataSource}",
+                                     figLabel=f"esc-{dataSource}", fileName=histOutputFileName)
+            print(self.wikiFigure(dataSource, sqlQuery, histOutputFileName))
+            print(latex)
             if debug:
                 aggLod.sort(key=lambda r:r.get("completeness"), reverse=True)
                 print(len(aggLod))
