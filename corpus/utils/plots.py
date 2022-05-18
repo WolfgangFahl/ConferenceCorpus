@@ -160,7 +160,7 @@ class Histogramm(Plot):
     def __init__(self, x):
         self.x=x
     
-    def show(self,xLabel,yLabel,title,facecolor='b',alpha=0.5,grid:bool=True,ps:PlotSettings=None,bins=None):
+    def show(self,xLabel,yLabel,title,facecolor='b',alpha=0.5,density:bool=False,grid:bool=True,ps:PlotSettings=None,bins=None):
         '''
         show the histogramm
         
@@ -170,6 +170,7 @@ class Histogramm(Plot):
             title(str): the title
             facecolor(str): the facecolor to use
             alpha(float): how opaque
+            density(bool): if True show the relative values
             grid(bool): if True show the histogramm grid
             ps(PlotSettings): plot settings
             
@@ -180,7 +181,7 @@ class Histogramm(Plot):
         if bins is None:
             bins = np.arange( min( self.x ) - 0.5 ,
                          max( self.x ) + 1.5 , 1.0 )
-        _n, _bins, _patches = plt.hist(self.x, bins, density=False, facecolor=facecolor, alpha=alpha)
+        _n, _bins, _patches = plt.hist(self.x, bins, density=density, facecolor=facecolor, alpha=alpha)
     
         plt.xlabel(xLabel)
         plt.ylabel(yLabel)
