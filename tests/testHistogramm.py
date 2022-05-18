@@ -59,6 +59,17 @@ class TestHistogramm(BaseTest):
             bfd.analyze(f"Zipf distribution a={a:.1f}", x_label="x", y_label="zipf(x,a)",density=False,outputFilePrefix=f"/tmp/zipf{a}")
         if show:
             plt.show()
+            
+    def wikiFigure(self,dataSource,sqlQuery,histOutputFileName):
+        markup=f"""== {dataSource} ==
+=== sql query ===
+<source lang='sql'>
+{sqlQuery}
+</source>
+=== histogramm ===
+[[File:{histOutputFileName}|600px]]
+        """
+        return markup 
         
     
     def testHistogramms(self):
@@ -94,7 +105,22 @@ class TestHistogramm(BaseTest):
                 pass
 
 
+    def latexFigure(self,caption,figLabel,fileName,scale=0.5):
+        '''
+        get the latex Code for the given figure
+        '''
+        latex="""\\begin{figure}
+    \centering
+    {\includegraphics[scale=%s]{%s}}
+    \caption{%s}
+    \label{fig:%s}
+\end{figure}"""
+        return latex % (scale,fileName,caption,figLabel)
+
     def testSeriesCompletenessHistogramm(self):
+        '''
+        test the event series completeness
+        '''
         def histogrammSettings(plot):
             #plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
             #plot.plt.xlim(1, maxValue)
@@ -102,35 +128,38 @@ class TestHistogramm(BaseTest):
             pass
 
         datasources = [
-            ("orclonebackup", "inEventSeries"),
+            ("orclone", "inEventSeries"),
             ("dblp", "series"),
-            ("confref", "seriesId"),
+            #("confref", "seriesId"),
             ("wikicfp", "seriesId"),
             ("wikidata", "eventInSeriesId")
         ]
         for datasource, seriesCol in datasources:
             sqlQuery = """SELECT 
-                               %s,
-                               min(ordinal) as minOrdinal, 
-                               max(ordinal) as maxOrdinal,
-                               avg(ordinal) as avgOrdinal,
-                               max(Ordinal)-min(Ordinal) as available,
-                               (max(Ordinal)-min(Ordinal)) /(max(Ordinal)-1.0) as completeness
-                            FROM event_%s
-                            Where ordinal is not null 
-                            group by %s
-                            order by 6 desc
+   %s,
+   min(ordinal) as minOrdinal, 
+   max(ordinal) as maxOrdinal,
+   avg(ordinal) as avgOrdinal,
+   max(Ordinal)-min(Ordinal) as available,
+   (max(Ordinal)-min(Ordinal)) /(max(Ordinal)-1.0) as completeness
+FROM event_%s
+Where ordinal is not null 
+group by %s
+order by 6 desc
                 """ % (seriesCol, datasource, seriesCol)
-
             sqlDB = EventStorage.getSqlDB()
             lod = sqlDB.query(sqlQuery)
             values = [round(record["completeness"],2) for record in lod if isinstance(record["completeness"], float)]
             h = Histogramm(x=values)
             histOutputFileName=f"{datasource}_series_completeness.png"
+            latex=self.latexFigure(scale=0.5, caption=f"event series completeness of {datasource}", figLabel=f"esc-{datasource}", fileName=histOutputFileName)
+            print(self.wikiFigure(datasource,sqlQuery,histOutputFileName))
+            print(latex)
             hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
             h.show(xLabel='completeness',
                    yLabel='count',
                    title=f'{datasource}_series_completeness',
+                   density=True,
                    alpha=0.8,
                    ps=hps,
                    bins=20)
