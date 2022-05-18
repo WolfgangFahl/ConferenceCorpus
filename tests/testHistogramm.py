@@ -156,6 +156,8 @@ order by 6 desc
             print(self.wikiFigure(datasource,sqlQuery,histOutputFileName))
             print(latex)
             hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
+            # density not working?
+            # https://stackoverflow.com/questions/55555466/matplotlib-hist-function-argument-density-not-working
             h.show(xLabel='completeness',
                    yLabel='count',
                    title=f'{datasource}_series_completeness',
