@@ -153,6 +153,9 @@ order by 6 desc
             sqlDB = EventStorage.getSqlDB()
             lod = sqlDB.query(sqlQuery)
             values = [round(record["completeness"],2) for record in lod if isinstance(record["completeness"], float)]
+            values.sort()
+            print(datasource,len(values),"→", len(values) // 2)
+            threshold = values[len(values) // 2]
             h = Histogramm(x=values)
             histOutputFileName=f"{datasource}_series_completeness.png"
             latex=self.latexFigure(scale=0.5, caption=f"event series completeness of {datasource}", figLabel=f"esc-{datasource}", fileName=histOutputFileName)
@@ -167,7 +170,8 @@ order by 6 desc
                    density=True,
                    alpha=0.8,
                    ps=hps,
-                   bins=20)
+                   bins=10,
+                   vlineAt=threshold)
 
     def testSeriesCompletenessHistogrammByAcronym(self):
         def histogrammSettings(plot):
@@ -218,6 +222,8 @@ order by 6 desc
                 }
                 aggLod.append(res)
             values = [round(record["completeness"], 2) for record in aggLod if isinstance(record["completeness"], float)]
+            values.sort()
+            threshold =values[len(values)//2]
             h = Histogramm(x=values)
             hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
             h.show(xLabel='completeness',
@@ -226,11 +232,13 @@ order by 6 desc
                    alpha=0.8,
                    density=True,
                    ps=hps,
-                   bins=10)
+                   bins=10,
+                   vlineAt=threshold)
             latex = self.latexFigure(scale=0.5, caption=f"event series completeness of {dataSource}",
                                      figLabel=f"esc-{dataSource}", fileName=histOutputFileName)
-            print(self.wikiFigure(dataSource, sqlQuery, histOutputFileName))
-            print(latex)
+            # print(self.wikiFigure(dataSource, sqlQuery, histOutputFileName))
+            # print(latex)
+            print(dataSource, len(values), "→", len(values) // 2)
             if debug:
                 aggLod.sort(key=lambda r:r.get("completeness"), reverse=True)
                 print(len(aggLod))

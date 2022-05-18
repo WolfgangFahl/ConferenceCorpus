@@ -162,7 +162,7 @@ class Histogramm(Plot):
     def __init__(self, x):
         self.x=x
     
-    def show(self,xLabel,yLabel,title,facecolor='b',alpha=0.5,density:bool=False,grid:bool=True,ps:PlotSettings=None,bins=None):
+    def show(self,xLabel,yLabel,title,facecolor='b',alpha=0.5,density:bool=False,grid:bool=True,ps:PlotSettings=None,bins=None, vlineAt:int=None):
         '''
         show the histogramm
         
@@ -188,7 +188,11 @@ class Histogramm(Plot):
         plt.xlabel(xLabel)
         plt.ylabel(yLabel)
         if density:
-            plt.gca().yaxis.set_major_formatter(ticker.PercentFormatter())
+            yvals = plt.gca().get_yticks()
+            print(yvals)
+            plt.gca().set_yticklabels([f"{y*bins}%"for y in yvals])
+        if vlineAt is not None:
+            plt.gca().axvline(x=vlineAt, color='r', linestyle='dashed', linewidth=2)
         plt.grid(grid)
         self.doShow(ps)
         
