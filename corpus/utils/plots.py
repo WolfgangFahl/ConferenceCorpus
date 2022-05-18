@@ -160,7 +160,7 @@ class Histogramm(Plot):
     def __init__(self, x):
         self.x=x
     
-    def show(self,xLabel,yLabel,title,facecolor='b',alpha=0.5,grid:bool=True,ps:PlotSettings=None):
+    def show(self,xLabel,yLabel,title,facecolor='b',alpha=0.5,grid:bool=True,ps:PlotSettings=None,bins=None):
         '''
         show the histogramm
         
@@ -176,9 +176,10 @@ class Histogramm(Plot):
         '''
         # the histogram of the data
         self.setup(title)
-    
-        bins = np.arange( min( self.x ) - 0.5 ,
-                     max( self.x ) + 1.5 , 1.0 ) 
+
+        if bins is None:
+            bins = np.arange( min( self.x ) - 0.5 ,
+                         max( self.x ) + 1.5 , 1.0 )
         _n, _bins, _patches = plt.hist(self.x, bins, density=False, facecolor=facecolor, alpha=alpha)
     
         plt.xlabel(xLabel)

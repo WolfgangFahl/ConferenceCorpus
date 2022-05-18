@@ -92,3 +92,44 @@ class TestHistogramm(BaseTest):
             except Exception as ex:
                 print(ex,file=sys.stderr)
                 pass
+
+
+    def testSeriesCompletenessHistogramm(self):
+        def histogrammSettings(plot):
+            #plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
+            #plot.plt.xlim(1, maxValue)
+            #plt.ylim(0, 0.03)
+            pass
+
+        datasources = [
+            ("orclonebackup", "inEventSeries"),
+            ("dblp", "series"),
+            ("confref", "seriesId"),
+            ("wikicfp", "seriesId")
+        ]
+        for datasource, seriesCol in datasources:
+            sqlQuery = """SELECT 
+                               %s,
+                               min(ordinal) as minOrdinal, 
+                               max(ordinal) as maxOrdinal,
+                               avg(ordinal) as avgOrdinal,
+                               max(Ordinal)-min(Ordinal) as available,
+                               (max(Ordinal)-min(Ordinal)) /(max(Ordinal)-1.0) as completeness
+                            FROM event_%s
+                            Where ordinal is not null 
+                            group by %s
+                            order by 6 desc
+                """ % (seriesCol, datasource, seriesCol)
+
+            sqlDB = EventStorage.getSqlDB()
+            lod = sqlDB.query(sqlQuery)
+            values = [round(record["completeness"],2) for record in lod if isinstance(record["completeness"], float)]
+            h = Histogramm(x=values)
+            histOutputFileName=f"{datasource}_series_completeness.png"
+            hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
+            h.show(xLabel='completeness',
+                   yLabel='count',
+                   title=f'{datasource}_series_completeness',
+                   alpha=0.8,
+                   ps=hps,
+                   bins=20)

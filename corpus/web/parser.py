@@ -44,11 +44,22 @@ class QuasarColorPalette:
 
 
 class Token(jp.QDiv):
+    """
+    Displays a token and its label in a given color
+    """
     TOKEN_CLASSES = "rounded-borders text-center row inline flex-center brand-color shadow-4 q-mx-xs"
     TOKEN_VALUE_CLASSES = "q-pa-xs"
     TOKEN_LABEL_CLASSES = "text-italic text-weight-light text-white q-pa-xs"
 
     def __init__(self, label:str, value:str, color:str=None, **kwargs):
+        """
+        constructor
+        Args:
+            label: label of the token (token name in NER)
+            value: value of the token
+            color: background color of the token Should be in QuasarColorPalette.colorPalette()
+            **kwargs:
+        """
         if color is None:
             color = "primary"
         classes = f"{self.TOKEN_CLASSES} bg-{color}"
