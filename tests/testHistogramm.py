@@ -9,8 +9,7 @@ from corpus.event import EventStorage
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from collections import Counter
-from corpus.utils.distfit import BestFitDistribution
+from pdffit.distfit import BestFitDistribution
 import os
 import sys
 
