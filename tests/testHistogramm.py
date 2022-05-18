@@ -105,7 +105,8 @@ class TestHistogramm(BaseTest):
             ("orclonebackup", "inEventSeries"),
             ("dblp", "series"),
             ("confref", "seriesId"),
-            ("wikicfp", "seriesId")
+            ("wikicfp", "seriesId"),
+            ("wikidata", "eventInSeriesId")
         ]
         for datasource, seriesCol in datasources:
             sqlQuery = """SELECT 
