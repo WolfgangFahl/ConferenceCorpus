@@ -3,6 +3,12 @@ Created on 17.05.2022
 
 @author: wf
 '''
+import re
+from statistics import mean
+from typing import List
+
+from tabulate import tabulate
+
 from corpus.utils.plots import Histogramm, PlotSettings, Zipf
 from tests.basetest import BaseTest
 from corpus.event import EventStorage
@@ -96,9 +102,6 @@ class TestHistogramm(BaseTest):
 
     def testSeriesCompletenessHistogramm(self):
         def histogrammSettings(plot):
-            #plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
-            #plot.plt.xlim(1, maxValue)
-            #plt.ylim(0, 0.03)
             pass
 
         datasources = [
@@ -134,3 +137,65 @@ class TestHistogramm(BaseTest):
                    alpha=0.8,
                    ps=hps,
                    bins=20)
+
+    def testSeriesCompletenessHistogrammByAcronym(self):
+        def histogrammSettings(plot):
+            pass
+        debug = False
+        for dataSource in self.getDatasources():
+            if dataSource in ["acm"]:
+                continue
+            print(dataSource)
+            tableName=f"event_{dataSource}"
+            histOutputFileName=f"eventSeriesCompletionByAcronymHistogramm_{tableName}.png"
+            sqlQuery = """SELECT acronym, ordinal
+                FROM event_%s
+                """ % (dataSource)
+            sqlDB = EventStorage.getSqlDB()
+            lod = sqlDB.query(sqlQuery)
+            series = {}
+            acronymRegexp = r'(?P<acronym>[A-Z]+)\s*[0-9]+'
+            for d in lod:
+                acronym = d.get('acronym')
+                if acronym:
+                    match = re.fullmatch(acronymRegexp, acronym)
+                    if match is None:
+                        continue
+                    seriesAcronym = match.group("acronym")
+                    if isinstance(seriesAcronym, str):
+                        if seriesAcronym in series:
+                            series[seriesAcronym].append(d)
+                        else:
+                            series[seriesAcronym] = [d]
+            aggLod = []
+            for series, eventRecords in series.items():
+                ordinals: List[int] = [int(r.get("ordinal"))
+                                       for r in eventRecords
+                                       if r.get("ordinal")
+                                       and (isinstance(r.get("ordinal"), str) and r.get("ordinal").isnumeric()) or isinstance(r.get("ordinal"), int)]
+                if len(ordinals) == 0:
+                    continue
+                minOrd = min(ordinals)
+                maxOrd = max(ordinals)
+                res = {
+                    "series": series,
+                    "minOrdinal": minOrd,
+                    "maxOrdinal": maxOrd,
+                    "avgOrdinal": mean(ordinals),
+                    "available": maxOrd - minOrd,
+                    "completeness": (maxOrd-minOrd) / (maxOrd-1) if maxOrd>1 else 1
+                }
+                aggLod.append(res)
+            values = [round(record["completeness"], 2) for record in aggLod if isinstance(record["completeness"], float)]
+            h = Histogramm(x=values)
+            hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
+            h.show(xLabel='completeness',
+                   yLabel='count',
+                   title=f'{dataSource}_series_completeness',
+                   alpha=0.8,
+                   ps=hps,
+                   bins=20)
+            if debug:
+                aggLod.sort(key=lambda r:r.get("completeness"), reverse=True)
+                print(len(aggLod))
+                print(tabulate(aggLod, tablefmt="mediawiki", headers="keys"))
