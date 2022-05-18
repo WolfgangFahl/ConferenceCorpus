@@ -162,7 +162,7 @@ order by 6 desc
             # density not working?
             # https://stackoverflow.com/questions/55555466/matplotlib-hist-function-argument-density-not-working
             h.show(xLabel='completeness',
-                   yLabel='count',
+                   yLabel='distribution',
                    title=f'{datasource}_series_completeness',
                    density=True,
                    alpha=0.8,
@@ -221,11 +221,12 @@ order by 6 desc
             h = Histogramm(x=values)
             hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
             h.show(xLabel='completeness',
-                   yLabel='count',
+                   yLabel='distribution',
                    title=f'{dataSource}_series_completeness',
                    alpha=0.8,
+                   density=True,
                    ps=hps,
-                   bins=20)
+                   bins=10)
             latex = self.latexFigure(scale=0.5, caption=f"event series completeness of {dataSource}",
                                      figLabel=f"esc-{dataSource}", fileName=histOutputFileName)
             print(self.wikiFigure(dataSource, sqlQuery, histOutputFileName))

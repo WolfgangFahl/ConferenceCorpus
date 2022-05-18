@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import Callable
 from collections import Counter
+
+from matplotlib import ticker
 from scipy.optimize import minimize 
 from scipy.optimize import curve_fit
 from scipy.special import zetac
@@ -185,6 +187,8 @@ class Histogramm(Plot):
     
         plt.xlabel(xLabel)
         plt.ylabel(yLabel)
+        if density:
+            plt.gca().yaxis.set_major_formatter(ticker.PercentFormatter())
         plt.grid(grid)
         self.doShow(ps)
         
