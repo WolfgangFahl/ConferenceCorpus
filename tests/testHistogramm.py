@@ -3,7 +3,6 @@ Created on 17.05.2022
 
 @author: wf
 '''
-import re
 from statistics import mean
 from typing import List
 
@@ -16,19 +15,98 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pdffit.distfit import BestFitDistribution
+
+from collections import Counter
+import re
 import os
 import sys
 
+class DataSource():
+    '''
+    helper class for datasource information
+    '''
+    def __init__(self,tableRecord):
+        '''
+        '''
+        self.table=tableRecord
+        self.tableName=tableRecord["name"]
+        self.name=self.tableName.replace("event_","")
+        self.title=self.name
+        
+        if self.title.startswith("or"):
+            self.title="OpenResearch"
+        if self.title=="ceurws": self.title="CEUR-WS"
+        if self.title=="gnd": self.title="GND"
+        if self.title=="tibkat": self.title="TIBKAT"
+        if self.title=="crossref": self.title="Crossref"
+        if self.title=="wikicfp": self.title="WikiCFP"
+        if self.title=="wikidata": self.title="Wikidata"
+        seriesColumnLookup = {
+            "orclone": "inEventSeries",
+            "dblp": "series",
+            #("confref", "seriesId"),
+            "wikicfp": "seriesId",
+            "wikidata": "eventInSeriesId"
+        }
+        self.seriescolumn=seriesColumnLookup.get(self.name,None)
+        pass
+    
+    def __str__(self):
+        text=f"{self.title}:{self.name}:{self.tableName}"
+        return text
+    
+    @classmethod
+    def getAll(cls):
+        cls.sources={}
+        for source in cls.getDatasources():
+            cls.sources[source.name]=source
+
+    @classmethod
+    def getDatasources(cls):
+        '''
+        get the datasources
+        '''
+        eventViewTables=EventStorage.getViewTableList("event")
+        sources=[DataSource(tableRecord)  for tableRecord in eventViewTables]
+        sortedSources=sorted(sources, key=lambda ds: ds.name)
+        return sortedSources
 
 class TestHistogramm(BaseTest):
     '''
-    test the histogramm class
+    test the histogramm class with example data
     '''
     
     def setUp(self, debug=False, profile=True):
         BaseTest.setUp(self, debug=debug, profile=profile)
         self.histroot="/tmp/histogramms"
         os.makedirs(self.histroot,exist_ok=True)
+        DataSource.getAll()
+        
+    def wikiFigure(self,dataSource,sqlQuery,fileName,fileTitle="histogramm",px=600):
+        '''
+        create mediawiki markup to show the given outputFilename and sqlQuery
+        '''
+        markup=f"""== {dataSource.title} =="""
+        if sqlQuery:
+            markup+=f"""
+=== sql query ===
+<source lang='sql'>
+{sqlQuery}
+</source>"""
+        markup+=f"""
+=== {fileTitle} ===
+[[File:{fileName}|{px}px]]
+        """
+        return markup 
+        
+    def testSources(self):
+        '''
+        check the source handling
+        '''
+        self.assertTrue(len(DataSource.sources)>=9)
+        for source in DataSource.sources.values():
+            if self.debug:
+                print(source)
     
     def getLod(self,tableName="event_ceurws",maxValue=75):
         sqlQuery="""SELECT ordinal
@@ -41,15 +119,19 @@ class TestHistogramm(BaseTest):
         lod=sqlDB.query(sqlQuery)
         return lod
     
-    def getDatasources(self):
-        eventViewTables=EventStorage.getViewTableList("event")
-        names=[tableRecord["name"].replace("event_","")  for tableRecord in eventViewTables]
-        return names
-    
-    def eventSeriesCompleteness(self):
-        for tableName in self.getDatasources():
-            print(tableName)
-            
+    def testZipfPlot(self):
+        '''
+        test the zipf plot
+        '''
+        counter=Counter()
+        counter[1]=8
+        counter[2]=4
+        counter[3]=2
+        zipf=Zipf(counter,minIndex=1)
+        self.assertEqual(3.0,zipf.mean)
+        pass
+        
+        
     def testZipf(self):
         '''
         test the Zipf distribution
@@ -65,20 +147,9 @@ class TestHistogramm(BaseTest):
             bfd.analyze(f"Zipf distribution a={a:.1f}", x_label="x", y_label="zipf(x,a)",density=False,outputFilePrefix=f"/tmp/zipf{a}")
         if show:
             plt.show()
-            
-    def wikiFigure(self,dataSource,sqlQuery,histOutputFileName):
-        markup=f"""== {dataSource} ==
-=== sql query ===
-<source lang='sql'>
-{sqlQuery}
-</source>
-=== histogramm ===
-[[File:{histOutputFileName}|600px]]
-        """
-        return markup 
         
     
-    def testHistogramms(self):
+    def testOrdinalHistogramms(self):
         '''
         test histogramm
         '''
@@ -88,24 +159,26 @@ class TestHistogramm(BaseTest):
             #plt.ylim(0, 0.03)
             pass
         
-        for dataSource in self.getDatasources():
-            tableName=f"event_{dataSource}"
-            histOutputFileName=f"ordinalhistogramm_{tableName}.png"
-            zipfOutputFileName=f"zipf_{tableName}.png"
-            print(f"""== {dataSource}==
+        for dataSource in DataSource.sources.values():
+            # loop over all datasources
+            histOutputFileName=f"ordinalhistogramm_{dataSource.tableName}.png"
+            zipfOutputFileName=f"zipf_{dataSource.tableName}.png"
+            print(f"""== {dataSource.title}==
 [[File:{histOutputFileName}|600px]]  
 [[File:{zipfOutputFileName}|600px]]        
             """)    
             try:
                 maxValue=75 if dataSource in  ["tibkat","gnd"] else 50
-                lod=self.getLod(tableName,maxValue=maxValue)
+                lod=self.getLod(dataSource.tableName,maxValue=maxValue)
                 values=[record["ordinal"] for record in lod]
                 h=Histogramm(x=values)
                 hps=PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}",callback=histogrammSettings)
-                h.show(xLabel='ordinal',yLabel='count',title=f'{dataSource} Ordinals',alpha=0.6,ps=hps)
-                z=Zipf(values=values)
+                h.show(xLabel='ordinal',yLabel='count',title=f'{dataSource.title} Ordinals',alpha=0.6,ps=hps)
+                
+                # zipf distribution without first value
+                z=Zipf(values,minIndex=1)
                 zps=PlotSettings(outputFile=f"{self.histroot}/{zipfOutputFileName}")
-                z.show(f'{dataSource} Zipf',ps=zps)
+                z.show(f'{dataSource.title} Zipf',ps=zps)
             except Exception as ex:
                 print(ex,file=sys.stderr)
                 pass
@@ -128,64 +201,67 @@ class TestHistogramm(BaseTest):
         test the event series completeness
         '''
         def histogrammSettings(plot):
+            '''
+            optional call back to add more data to histogramm
+            '''
             pass
 
-        datasources = [
-            ("orclone", "inEventSeries"),
-            ("dblp", "series"),
-            #("confref", "seriesId"),
-            ("wikicfp", "seriesId"),
-            ("wikidata", "eventInSeriesId")
-        ]
-        for datasource, seriesCol in datasources:
-            sqlQuery = """SELECT 
-   %s,
-   min(ordinal) as minOrdinal, 
-   max(ordinal) as maxOrdinal,
-   avg(ordinal) as avgOrdinal,
-   max(Ordinal)-min(Ordinal) as available,
-   (max(Ordinal)-min(Ordinal)) /(max(Ordinal)-1.0) as completeness
-FROM event_%s
-Where ordinal is not null 
-group by %s
-order by 6 desc
-                """ % (seriesCol, datasource, seriesCol)
-            sqlDB = EventStorage.getSqlDB()
-            lod = sqlDB.query(sqlQuery)
-            values = [round(record["completeness"],2) for record in lod if isinstance(record["completeness"], float)]
-            values.sort()
-            print(datasource,len(values),"→", len(values) // 2)
-            threshold = values[len(values) // 2]
-            h = Histogramm(x=values)
-            histOutputFileName=f"{datasource}_series_completeness.png"
-            latex=self.latexFigure(scale=0.5, caption=f"event series completeness of {datasource}", figLabel=f"esc-{datasource}", fileName=histOutputFileName)
-            print(self.wikiFigure(datasource,sqlQuery,histOutputFileName))
-            print(latex)
-            hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
-            # density not working?
-            # https://stackoverflow.com/questions/55555466/matplotlib-hist-function-argument-density-not-working
-            h.show(xLabel='completeness',
-                   yLabel='distribution',
-                   title=f'{datasource}_series_completeness',
-                   density=True,
-                   alpha=0.8,
-                   ps=hps,
-                   bins=10,
-                   vlineAt=threshold)
+        for datasource in DataSource.sources.values():
+            if datasource.seriescolumn:
+                sqlQuery = """SELECT 
+       %s,
+       min(ordinal) as minOrdinal, 
+       max(ordinal) as maxOrdinal,
+       avg(ordinal) as avgOrdinal,
+       max(Ordinal)-min(Ordinal) as available,
+       (max(Ordinal)-min(Ordinal)) /(max(Ordinal)-1.0) as completeness
+    FROM event_%s
+    Where ordinal is not null 
+    group by %s
+    order by 6 desc
+                    """ % (datasource.seriescolumn, datasource, datasource.seriescolumn)
+                sqlDB = EventStorage.getSqlDB()
+                lod = sqlDB.query(sqlQuery)
+                values = [round(record["completeness"],2) for record in lod if isinstance(record["completeness"], float)]
+                values.sort()
+                print(datasource,len(values),"→", len(values) // 2)
+                threshold = values[len(values) // 2]
+                h = Histogramm(x=values)
+                histOutputFileName=f"{datasource}_series_completeness.png"
+                latex=self.latexFigure(scale=0.5, caption=f"event series completeness of {datasource}", figLabel=f"esc-{datasource}", fileName=histOutputFileName)
+                print(self.wikiFigure(datasource,sqlQuery,histOutputFileName))
+                print(latex)
+                hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
+                # density not working?
+                # https://stackoverflow.com/questions/55555466/matplotlib-hist-function-argument-density-not-working
+                h.show(xLabel='completeness',
+                       yLabel='distribution',
+                       title=f'{datasource}_series_completeness',
+                       density=True,
+                       alpha=0.8,
+                       ps=hps,
+                       bins=10,
+                       vlineAt=threshold)
 
     def testSeriesCompletenessHistogrammByAcronym(self):
+        '''
+        acronym based histogramms
+        '''
         def histogrammSettings(plot):
+            '''
+            optional callback to add more data to histogramm
+            '''
             pass
+        
         debug = False
-        for dataSource in self.getDatasources():
-            if dataSource in ["acm"]:
+        for dataSource in DataSource.sources.values():
+            if dataSource.name in ["acm"]:
                 continue
             print(dataSource)
-            tableName=f"event_{dataSource}"
-            histOutputFileName=f"eventSeriesCompletionByAcronymHistogramm_{tableName}.png"
+            histOutputFileName=f"eventSeriesCompletionByAcronymHistogramm_{dataSource.tableName}.png"
             sqlQuery = """SELECT acronym, ordinal
-                FROM event_%s
-                """ % (dataSource)
+                FROM %s
+                """ % (dataSource.tableName)
             sqlDB = EventStorage.getSqlDB()
             lod = sqlDB.query(sqlQuery)
             series = {}
@@ -228,16 +304,18 @@ order by 6 desc
             hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
             h.show(xLabel='completeness',
                    yLabel='distribution',
-                   title=f'{dataSource}_series_completeness',
-                   alpha=0.8,
+                   title=f'{dataSource.title} Series completeness',
+                   alpha=0.7,
                    density=True,
                    ps=hps,
                    bins=10,
                    vlineAt=threshold)
-            latex = self.latexFigure(scale=0.5, caption=f"event series completeness of {dataSource}",
-                                     figLabel=f"esc-{dataSource}", fileName=histOutputFileName)
-            # print(self.wikiFigure(dataSource, sqlQuery, histOutputFileName))
-            # print(latex)
+            latex = self.latexFigure(scale=0.5, caption=f"event series completeness of {dataSource.title}",
+                                     figLabel=f"esca-{dataSource.name}", fileName=histOutputFileName)
+            
+            print(self.wikiFigure(dataSource, sqlQuery=None, fileName=histOutputFileName))
+            print(latex)
+            
             print(dataSource, len(values), "→", len(values) // 2)
             if debug:
                 aggLod.sort(key=lambda r:r.get("completeness"), reverse=True)

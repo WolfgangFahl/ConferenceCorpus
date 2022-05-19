@@ -73,17 +73,25 @@ class Plot():
 
 class Zipf(Plot):
     '''
+    
+    Powerlaw/Zipf Distribution plot and analysis
+    
     https://stats.stackexchange.com/questions/331219/characterizing-fitting-word-count-data-into-zipf-power-law-lognormal
     https://stats.stackexchange.com/questions/6780/how-to-calculate-zipfs-law-coefficient-from-a-set-of-top-frequencies
     https://stackoverflow.com/questions/12037494/curve-fitting-zipf-distribution-matplotlib-python
     
     '''
-    def __init__(self, values):
+    def __init__(self, values:list,minIndex:int=0):
+        '''
+        Constructor
+        '''
         self.values=values
         self.counter_of_values = Counter(self.values)
-        
-        self.x=np.array(list(self.counter_of_values.keys()))
-        self.freqs=np.array(list(self.counter_of_values.values())) 
+        xValues=sorted(list(self.counter_of_values.keys()))
+        xValues=xValues[minIndex:]
+        self.x=np.array(xValues)
+        yValues=[self.counter_of_values[x] for x in xValues]
+        self.freqs=np.array(yValues) 
         self.mean = np.mean(self.freqs)
         self.freqsLog=np.log(self.freqs)
         self.freqsLogMean= np.mean(self.freqsLog)
@@ -147,7 +155,7 @@ class Zipf(Plot):
             # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html
             popt,pcov=curveFit
             cfs=popt[0]
-            plt.text(sx, sy, fr'Zipf distribution fit s={s:.3f} cfs:{cfs:.3f} cov:{pcov}')
+            #plt.text(sx, sy, fr'Zipf distribution fit s={s:.3f} cfs:{cfs:.3f} cov:{pcov}')
             #plt.plot(self.x, self.x*-s)
         else:
             plt.text(sx, sy, r'no Zipf distribution fit')
