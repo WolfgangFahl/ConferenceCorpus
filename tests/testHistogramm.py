@@ -34,6 +34,7 @@ class TestHistogramm(BaseTest):
         os.makedirs(self.histroot,exist_ok=True)
         DataSource.getAll()
         self.alpha=0.7
+        self.figureList=FigureList()
         
     def testSources(self):
         '''
@@ -94,17 +95,18 @@ class TestHistogramm(BaseTest):
             plot.plt.xlim(1, maxValue)
             #plt.ylim(0, 0.03)
             pass
-        figureList=FigureList()
+        self.figureList.clear()
         for dataSource in DataSource.sources.values():
             # loop over all datasources
-            histOutputFileName=f"ordinalhistogramm_{dataSource.tableName}.png"
-            zipfOutputFileName=f"zipf_{dataSource.tableName}.png"
+            histOutputFileName=f"ordinalHistogramm-{dataSource.name}.png"
+            zipfOutputFileName=f"ordinalHistogrammZipf-{dataSource.name}.png"
             try:
                 print(f"creating histogramm for {dataSource}")
                 maxValue=75 if dataSource in  ["tibkat","gnd"] else 50
                 sqlQuery,lod=self.getLod(dataSource.tableName,maxValue=maxValue)
                 figure=Figure(dataSource.title,caption=f"{dataSource.name} ordinals",figLabel=f"ord-{dataSource.name}",sqlQuery=sqlQuery,fileNames=[histOutputFileName,zipfOutputFileName])
-                figureList.add(figure)
+                if dataSource.name!="confref":
+                    self.figureList.add(figure)
                 values=[record["ordinal"] for record in lod]
                 h=Histogramm(x=values)
                 hps=PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}",callback=histogrammSettings)
@@ -117,7 +119,7 @@ class TestHistogramm(BaseTest):
             except Exception as ex:
                 print(ex,file=sys.stderr)
                 pass
-        figureList.printAllMarkups()
+        self.figureList.printAllMarkups()
     
 
     def testSeriesCompletenessHistogramm(self):
@@ -129,7 +131,7 @@ class TestHistogramm(BaseTest):
             optional call back to add more data to histogramm
             '''
             pass
-        figureList=FigureList()
+        self.figureList.clear()
         for dataSource in DataSource.sources.values():
             if dataSource.seriescolumn:
                 sqlQuery = """SELECT 
@@ -151,9 +153,9 @@ ORDER by 6 DESC
                 print(dataSource,len(values),"→", len(values) // 2)
                 threshold = values[len(values) // 2]
                 h = Histogramm(x=values)
-                histOutputFileName=f"{dataSource.name}_series_completeness.png"
+                histOutputFileName=f"eventSeriesCompleteness-{dataSource.name}.png"
                 figure=Figure(dataSource.title,caption=f"event series completeness of {dataSource.name}",figLabel=f"esc-{dataSource.name}",sqlQuery=sqlQuery,fileNames=[histOutputFileName])
-                figureList.add(figure)
+                self.figureList.add(figure)
                 hps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}", callback=histogrammSettings)
                 # density not working?
                 # https://stackoverflow.com/questions/55555466/matplotlib-hist-function-argument-density-not-working
@@ -165,7 +167,7 @@ ORDER by 6 DESC
                        ps=hps,
                        bins=10,
                        vlineAt=threshold)
-        figureList.printAllMarkups()
+        self.figureList.printAllMarkups()
 
     def testSeriesCompletenessHistogrammByAcronym(self):
         '''
@@ -178,7 +180,7 @@ ORDER by 6 DESC
             pass
         
         debug = False
-        figureList=FigureList()
+        self.figureList.clear()
         for dataSource in DataSource.sources.values():
             if dataSource.name in ["acm"]:
                 continue
@@ -223,7 +225,7 @@ ORDER by 6 DESC
                 }
                 aggLod.append(res)
             figure=Figure(dataSource.title,caption=f"event series completeness of {dataSource.name}",figLabel=f"esca-{dataSource.name}",sqlQuery=None,fileNames=[histOutputFileName])
-            figureList.add(figure)
+            self.figureList.add(figure)
               
             values = [round(record["completeness"], 2) for record in aggLod if isinstance(record["completeness"], float)]
             values.sort()
@@ -240,4 +242,4 @@ ORDER by 6 DESC
                    vlineAt=threshold)
         
             print(dataSource, len(values), "→", len(values) // 2)
-        figureList.printAllMarkups()
+        self.figureList.printAllMarkups()
