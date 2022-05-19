@@ -9,7 +9,59 @@ from corpus.quality.rating import RatingManager
 from corpus.utils.download import Download
 from corpus.utils.download import Profiler
 
+class DataSource():
+    '''
+    helper class for datasource information
+    '''
+    sources={}
+    
+    def __init__(self,tableRecord):
+        '''
+        '''
+        self.table=tableRecord
+        self.tableName=tableRecord["name"]
+        self.name=self.tableName.replace("event_","")
+        self.title=self.name
+        
+        if self.title.startswith("or"):
+            self.title="OpenResearch"
+        if self.title=="ceurws": self.title="CEUR-WS"
+        if self.title=="gnd": self.title="GND"
+        if self.title=="tibkat": self.title="TIBKAT"
+        if self.title=="crossref": self.title="Crossref"
+        if self.title=="wikicfp": self.title="WikiCFP"
+        if self.title=="wikidata": self.title="Wikidata"
+        seriesColumnLookup = {
+            "orclone": "inEventSeries",
+            "dblp": "series",
+            #("confref", "seriesId"),
+            "wikicfp": "seriesId",
+            "wikidata": "eventInSeriesId"
+        }
+        self.seriescolumn=seriesColumnLookup.get(self.name,None)
+        pass
+    
+    def __str__(self):
+        text=f"{self.title}:{self.name}:{self.tableName}"
+        return text
+    
+    @classmethod
+    def getAll(cls):
+        cls.sources={}
+        for source in cls.getDatasources():
+            cls.sources[source.name]=source
 
+    @classmethod
+    def getDatasources(cls):
+        '''
+        get the datasources
+        '''
+        eventViewTables=EventStorage.getViewTableList("event")
+        sources=[DataSource(tableRecord)  for tableRecord in eventViewTables]
+        sortedSources=sorted(sources, key=lambda ds: ds.name)
+        return sortedSources
+
+    
 class EventDataSource(object):
     '''
     a data source for events

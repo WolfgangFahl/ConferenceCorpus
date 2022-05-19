@@ -197,7 +197,7 @@ class Histogramm(Plot):
         plt.ylabel(yLabel)
         if density:
             yvals = plt.gca().get_yticks()
-            print(yvals)
+            #print(yvals)
             plt.gca().set_yticklabels([f"{y*bins}%"for y in yvals])
         if vlineAt is not None:
             plt.gca().axvline(x=vlineAt, color='r', linestyle='dashed', linewidth=2)
