@@ -215,11 +215,11 @@ class TestHistogramm(BaseTest):
        avg(ordinal) as avgOrdinal,
        max(Ordinal)-min(Ordinal) as available,
        (max(Ordinal)-min(Ordinal)) /(max(Ordinal)-1.0) as completeness
-    FROM event_%s
+    FROM %s
     Where ordinal is not null 
     group by %s
     order by 6 desc
-                    """ % (datasource.seriescolumn, datasource, datasource.seriescolumn)
+                    """ % (datasource.seriescolumn, datasource.tableName, datasource.seriescolumn)
                 sqlDB = EventStorage.getSqlDB()
                 lod = sqlDB.query(sqlQuery)
                 values = [round(record["completeness"],2) for record in lod if isinstance(record["completeness"], float)]
