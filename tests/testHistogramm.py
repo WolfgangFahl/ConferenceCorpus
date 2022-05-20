@@ -8,7 +8,7 @@ from typing import List
 
 from tabulate import tabulate
 from corpus.eventcorpus import DataSource
-from corpus.utils.plots import Histogramm, PlotSettings, Zipf
+from corpus.utils.plots import Histogramm, PlotSettings, Zipf, Plot
 from tests.basetest import BaseTest
 from corpus.event import EventStorage
 from corpus.utils.figure import Figure,FigureList
@@ -241,3 +241,63 @@ ORDER by 6 DESC
         
             print(dataSource, len(values), "→", len(values) // 2)
         self.figureList.printAllMarkups()
+
+    def testEventSignatureCompleteness(self):
+        """
+        event signature completeness of data sources
+        """
+
+        completeQuery = """SELECT COUNT(*) AS count
+        FROM %s
+        WHERE acronym is NOT NULL
+        AND year is NOT NULL
+        AND city is NOT NULL
+        AND country is NOT NULL
+        AND ordinal is NOT NULL
+        AND title is NOT NULL
+        AND startDate is NOT NULL
+        """
+
+        propertyQuery = """SELECT COUNT(*) AS count
+        FROM %s
+        WHERE %s is NOT NULL
+        """
+        totalRecordsQuery = "SELECT COUNT(*) AS count FROM %s"
+        signatureProps = ["acronym", "startDate", "ordinal", "year", "title", "city", "country"]
+        sqlDB = EventStorage.getSqlDB()
+        res = {}
+        for dataSource in DataSource.sources.values():
+            if dataSource.name in ["acm", "ceurws"]:
+                continue
+            total = sqlDB.query(totalRecordsQuery % (dataSource.tableName))[0].get("count")
+            dataSourceCompletness = {
+                "complete": round(sqlDB.query(completeQuery % (dataSource.tableName))[0].get("count") / total, 2),
+                **{prop:round(sqlDB.query(propertyQuery % (dataSource.tableName, prop))[0].get("count")/total, 2) for prop in signatureProps}
+            }
+            print(dataSource, dataSourceCompletness)
+            res[dataSource] = dataSourceCompletness
+
+        for prop in ["complete", *signatureProps]:
+            values = [v.get(prop) for v in res.values()]
+
+            plot = Plot()
+            title = f"Event Signature Completeness - {prop}"
+            plot.setup(title)
+
+            labels = [dataSource.name for dataSource in res]
+
+            x = np.arange(len(res.values()))  # the label locations
+            width = 0.35  # the width of the bars
+
+
+            fig, ax = plot.plt.subplots()
+            rect = ax.bar(x, values, width)
+            ax.set_ylabel('Completeness')
+            ax.set_title(title)
+            ax.set_xticks(x, labels , rotation='vertical')
+            ax.legend()
+            ax.bar_label(rect, padding=3)
+            fig.tight_layout()
+            ps = PlotSettings(outputFile=f"{self.histroot}/completeSignature_{prop}.png")
+            plot.doShow(ps)
+
