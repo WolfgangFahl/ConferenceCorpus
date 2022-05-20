@@ -84,7 +84,6 @@ class TestHistogramm(BaseTest):
             bfd.analyze(f"Zipf distribution a={a:.1f}", x_label="x", y_label="zipf(x,a)",density=False,outputFilePrefix=f"/tmp/zipf{a}")
         if show:
             plt.show()
-        
     
     def testOrdinalHistogramms(self):
         '''
