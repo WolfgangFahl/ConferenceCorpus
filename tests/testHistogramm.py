@@ -266,16 +266,20 @@ ORDER by 6 DESC
         signatureProps = ["acronym", "startDate", "ordinal", "year", "title", "city", "country"]
         sqlDB = EventStorage.getSqlDB()
         res = {}
+        self.figureList=FigureList(caption="datasource signature completeness",figureListLabel="signcomp",cols=2)
         for dataSource in DataSource.sources.values():
             if dataSource.name in ["acm", "ceurws"]:
                 continue
-            total = sqlDB.query(totalRecordsQuery % (dataSource.tableName))[0].get("count")
-            dataSourceCompletness = {
-                "complete": round(sqlDB.query(completeQuery % (dataSource.tableName))[0].get("count") / total, 2),
-                **{prop:round(sqlDB.query(propertyQuery % (dataSource.tableName, prop))[0].get("count")/total, 2) for prop in signatureProps}
-            }
-            print(dataSource, dataSourceCompletness)
-            res[dataSource] = dataSourceCompletness
+            try:
+                total = sqlDB.query(totalRecordsQuery % (dataSource.tableName))[0].get("count")
+                dataSourceCompletness = {
+                    "complete": round(sqlDB.query(completeQuery % (dataSource.tableName))[0].get("count") / total, 2),
+                    **{prop:round(sqlDB.query(propertyQuery % (dataSource.tableName, prop))[0].get("count")/total, 2) for prop in signatureProps}
+                }
+                print(dataSource, dataSourceCompletness)
+                res[dataSource] = dataSourceCompletness
+            except Exception as ex:
+                print(f"{dataSource.name} signatureCompleteness failed")
 
         for prop in ["complete", *signatureProps]:
             values = [v.get(prop) for v in res.values()]
@@ -298,6 +302,10 @@ ORDER by 6 DESC
             ax.legend()
             ax.bar_label(rect, padding=3)
             fig.tight_layout()
-            ps = PlotSettings(outputFile=f"{self.histroot}/completeSignature_{prop}.png")
+            histOutputFileName=f"completeSignature_{prop}.png"
+            ps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}")
             plot.doShow(ps)
+            figure=Figure(dataSource.title,caption=f"signature completeness of {dataSource.name}",figLabel=f"esca-{dataSource.name}",sqlQuery=None,fileNames=[histOutputFileName])
+            self.figureList.add(figure)
+        self.figureList.printAllMarkups()
 
