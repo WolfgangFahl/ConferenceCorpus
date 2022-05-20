@@ -34,7 +34,6 @@ class TestHistogramm(BaseTest):
         os.makedirs(self.histroot,exist_ok=True)
         DataSource.getAll()
         self.alpha=0.7
-        self.figureList=FigureList()
         
     def testSources(self):
         '''
@@ -94,7 +93,7 @@ class TestHistogramm(BaseTest):
             plot.plt.xlim(1, maxValue)
             #plt.ylim(0, 0.03)
             pass
-        self.figureList.clear()
+        self.figureList=FigureList(caption="ordinal Histogramms",figureListLabel="ordHist")
         for dataSource in DataSource.sources.values():
             # loop over all datasources
             histOutputFileName=f"ordinalHistogramm-{dataSource.name}.png"
@@ -130,7 +129,7 @@ class TestHistogramm(BaseTest):
             optional call back to add more data to histogramm
             '''
             pass
-        self.figureList.clear()
+        self.figureList=FigureList(caption="event Series completeness",figureListLabel="eventcomp",cols=2)
         for dataSource in DataSource.sources.values():
             if dataSource.seriescolumn:
                 sqlQuery = """SELECT 
@@ -179,7 +178,7 @@ ORDER by 6 DESC
             pass
         
         debug = False
-        self.figureList.clear()
+        self.figureList=FigureList(caption="event Series completeness by acronym",figureListLabel="eventcompa",cols=3)
         for dataSource in DataSource.sources.values():
             if dataSource.name in ["acm"]:
                 continue
