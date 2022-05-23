@@ -81,7 +81,7 @@ class EventSeriesBlueprint():
         for lods in [dictOfLods, asdict(MetadataMappings())]:
             for sheetName, lod in lods.items():
                 if isinstance(lod, list):
-                    lod.sort(key=lambda record: record.get('year',0))
+                    lod.sort(filter(lambda record: record.get('year',0) is not None),key=lambda record: record.get('year',0))
                 spreadsheet.addTable(sheetName, lod)
         return spreadsheet
 
