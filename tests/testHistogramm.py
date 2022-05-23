@@ -309,3 +309,47 @@ ORDER by 6 DESC
             self.figureList.add(figure)
         self.figureList.printAllMarkups()
 
+    def test_VolumeDistribution(self):
+        """
+        tests the volume distribution in tibkat
+        """
+        volumeRegexp = r'\[?[Vv]ol\.\]?( |)(?P<volumeNumber>\d{1,2}|[A-H]|(IX|IV|V?I{0,3}))'
+        sqlQuery = """SELECT title FROM event_tibkat WHERE LOWER(title) LIKE "%vol.%" """
+        sqlDB = EventStorage.getSqlDB()
+        lod = sqlDB.query(sqlQuery)
+        volumes = {}
+        for d in lod:
+            title = d.get('title')
+            if title:
+                match = re.search(volumeRegexp, title)
+                if match is None:
+                    continue
+                volume = match.group("volumeNumber")
+                if volume in volumes:
+                    volumes[volume] += 1
+                else:
+                    volumes[volume] = 1
+        totalRecords = sum(volumes.values())
+        volumes = [(k,v) for k,v in volumes.items()]
+        volumes.sort(key=lambda item:item[1], reverse=True)
+        plot = Plot()
+        title = f"Volume Number Distribution in Tibkat records"
+        plot.setup(title)
+
+        labels = [volNumber for (volNumber, count) in volumes]
+        values = [count for (volNumber, count) in volumes]
+        x = np.arange(len(values))  # the label locations
+        width = 0.35  # the width of the bars
+
+        fig, ax = plot.plt.subplots(figsize=[15,10])
+        fig.suptitle(f"(#records in total: {totalRecords})")
+        rect = ax.bar(x, values, width)
+        ax.set_ylabel('number of records')
+        ax.set_xlabel('volume number')
+        ax.set_title(title)
+        ax.set_xticks(x, labels, rotation='vertical')
+        ax.legend()
+        histOutputFileName = f"volumeNumberDistribution_tibkat.png"
+        ps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}")
+        plot.doShow(ps)
+        print(volumes)
