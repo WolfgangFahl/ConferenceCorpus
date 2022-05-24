@@ -1,11 +1,13 @@
+import json
 from dataclasses import asdict
 
 from spreadsheet.googlesheet import GoogleSheet
 
-from corpus.web.eventseries import MetadataMappings
-from tests.basetest import BaseTest
+from corpus.web.eventseries import MetadataMappings, EventSeriesBlueprint
+from tests.testWebServer import TestWebServer
 
-class TestEventSeriesBlueprint(BaseTest):
+
+class TestEventSeriesBlueprint(TestWebServer):
     """
     tests EventSeriesBlueprint
     """
@@ -25,3 +27,51 @@ class TestEventSeriesBlueprint(BaseTest):
     def test_MetadataMapping(self):
         mapping = MetadataMappings()
         print(asdict(mapping))
+
+    def testGetEventSeries(self):
+        '''
+        tests the multiquerying of event series over api
+
+        some 17 secs for test
+        '''
+        jsonStr = self.getResponse("/eventseries/WEBIST?format=json")
+        res = json.loads(jsonStr)
+        debug = self.debug
+        if debug:
+            print(res)
+        self.assertTrue("confref" in res)
+        self.assertTrue(len(res["confref"]) > 15)
+
+    def test_getEventSeriesBkFilter(self):
+        """
+        tests getEventSeries bk filter
+        see https://github.com/WolfgangFahl/ConferenceCorpus/issues/55
+        """
+        testParams = ["85.20", "54.65,54.84", "54.84,85"]
+        for testParam in testParams:
+            jsonStr = self.getResponse(f"/eventseries/WEBIST?format=json&bk={testParam}")
+            res = json.loads(jsonStr)
+            self.assertIn("tibkat", res)
+            bksPerRecord = [record.get("bk") for record in res.get("tibkat")]
+            expectedBks = set(testParam.split(","))
+            for rawBks in bksPerRecord:
+                self.assertIsNotNone(rawBks)
+                bks = set(rawBks.split("⇹"))
+                bks = bks.union({bk.split(".")[0] for bk in bks})
+                self.assertTrue(bks.intersection(expectedBks))
+
+    def test_filterForBk(self):
+        """
+        tests filterForBk
+        """
+        testMatrix = [
+            (['54.84⇹85.20', '54.84⇹85.20', '54.84⇹81.68⇹85.20⇹88.03⇹54.65', '85.20'], ["54"], 3),
+            (['54.84⇹85.20', '54.84⇹85.20', '54.84⇹81.68⇹85.20⇹88.03⇹54.65', '85.20'], ["54","85"], 4),
+            (['54.84⇹85.20', '54.84⇹85.20', '54.84⇹81.68⇹85.20⇹88.03⇹54.65', '85.20'], ["85.20"], 4),
+            (['54.84⇹85.20', '54.84⇹85.20', '54.84⇹81.68⇹85.20⇹88.03⇹54.65', '85.20'], ["02"], 0),
+            (['54.84⇹85.20', '54.84⇹85.20', '54.84⇹81.68⇹85.20⇹88.03⇹54.65', '85.20'], ["81.68","88.03"], 1),
+        ]
+        for recordData, bkFilter, expectedNumberOfRecords in testMatrix:
+            lod = [{"bk":bk} for bk in recordData]
+            EventSeriesBlueprint.filterForBk(lod, bkFilter)
+            self.assertEqual(len(lod), expectedNumberOfRecords, f"Tried to filter for {bkFilter} and expected {expectedNumberOfRecords} but filter left {len(lod)} in the list")

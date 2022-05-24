@@ -1,4 +1,6 @@
+import re
 from dataclasses import dataclass, field, asdict
+from typing import List
 
 from fb4.widgets import LodTable
 from flask import Blueprint, request, jsonify, send_file
@@ -47,7 +49,40 @@ class EventSeriesBlueprint():
         multiQuery = "select * from {event}"
         idQuery = f"""select source,eventId from event where lookupAcronym LIKE "{name} %" order by year desc"""
         dictOfLod = self.appWrap.lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
+        if request.values.get("bk"):
+            bkParam = request.values.get("bk")
+            allowedBks = bkParam.split(",") if bkParam else None
+            self.filterForBk(dictOfLod.get("tibkat"), allowedBks)
         return self.convertToRequestedFormat(name, dictOfLod)
+
+    @staticmethod
+    def filterForBk(lod:List[dict], allowedBks:List[str]):
+        """
+        Filters the given dict to only include the records with their bk in the given list of allowed bks
+        Args:
+            lod: list of records to filter
+            allowedBks: list of allowed bks
+        """
+        if lod is None or allowedBks is None:
+            return
+        mainclassBk = set()
+        subclassBk = set()
+        for bk in allowedBks:
+            if bk.isnumeric():
+                mainclassBk.add(bk)
+            elif re.fullmatch(r"\d{1,2}\.\d{2}", bk):
+                subclassBk.add(bk)
+        def filterBk(record:dict) -> bool:
+            keepRecord: bool = False
+            bks = record.get("bk")
+            if bks is not None:
+                bks = set(bks.split("⇹"))
+                recordMainclasses = {bk.split(".")[0] for bk in bks}
+                if mainclassBk.intersection(recordMainclasses) or subclassBk.intersection(bks):
+                    keepRecord = True
+            return keepRecord
+        lod[:] = [record for record in lod if filterBk(record)]
+
 
     def generateSeriesSpreadsheet(self, name:str, dictOfLods: dict) -> ExcelDocument:
         """
