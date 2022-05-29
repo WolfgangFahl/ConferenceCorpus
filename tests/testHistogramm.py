@@ -222,8 +222,6 @@ ORDER by 6 DESC
                     "minOrdinal": minOrd,
                     "maxOrdinal": maxOrd,
                     "avgOrdinal": mean(ordinals),
-                    #  available is not maxOrd -minOrd but len(ordinalSet)
-                    "available": maxOrd - minOrd,
                     "completeness": numberOfDistinctOrds / maxOrd if maxOrd>1 else 1
                 }
                 aggLod.append(res)
@@ -273,7 +271,7 @@ ORDER by 6 DESC
         res = {}
         self.figureList=FigureList(caption="datasource signature completeness",figureListLabel="signcomp",cols=2)
         for dataSource in DataSource.sources.values():
-            if dataSource.name in ["acm", "ceurws"]:
+            if dataSource.name in ["acm", "ceurws", "or", "orbackup", "orclonebackup"]:
                 continue
             try:
                 total = sqlDB.query(totalRecordsQuery % (dataSource.tableName))[0].get("count")
@@ -304,7 +302,6 @@ ORDER by 6 DESC
             ax.set_ylabel('Completeness')
             ax.set_title(title)
             ax.set_xticks(x, labels , rotation='vertical')
-            ax.legend()
             ax.bar_label(rect, padding=3)
             fig.tight_layout()
             histOutputFileName=f"completeSignature_{prop}.png"
