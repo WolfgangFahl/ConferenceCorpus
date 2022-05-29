@@ -210,11 +210,12 @@ ORDER by 6 DESC
                 ordinals: List[int] = [int(r.get("ordinal"))
                                        for r in eventRecords
                                        if r.get("ordinal")
-                                       and (isinstance(r.get("ordinal"), str) and r.get("ordinal").isnumeric()) or isinstance(r.get("ordinal"), int)]
+                                       and ((isinstance(r.get("ordinal"), str) and r.get("ordinal").isnumeric()) or isinstance(r.get("ordinal"), int))]
                 if len(ordinals) == 0:
                     continue
                 minOrd = min(ordinals)
                 maxOrd = max(ordinals)
+                numberOfDistinctOrds = len(set(ordinals))
                 # count set content
                 res = {
                     "series": series,
@@ -223,7 +224,7 @@ ORDER by 6 DESC
                     "avgOrdinal": mean(ordinals),
                     #  available is not maxOrd -minOrd but len(ordinalSet)
                     "available": maxOrd - minOrd,
-                    "completeness": (maxOrd-minOrd) / (maxOrd-1) if maxOrd>1 else 1
+                    "completeness": numberOfDistinctOrds / maxOrd if maxOrd>1 else 1
                 }
                 aggLod.append(res)
             figure=Figure(dataSource.title,caption=f"event series completeness of {dataSource.name}",figLabel=f"esca-{dataSource.name}",sqlQuery=None,fileNames=[histOutputFileName])
