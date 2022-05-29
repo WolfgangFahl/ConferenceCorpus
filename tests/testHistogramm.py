@@ -222,7 +222,7 @@ ORDER by 6 DESC
                     "minOrdinal": minOrd,
                     "maxOrdinal": maxOrd,
                     "avgOrdinal": mean(ordinals),
-                    "completeness": numberOfDistinctOrds / maxOrd if maxOrd>1 else 1
+                    "completeness": numberOfDistinctOrds / maxOrd if maxOrd>1.0 else 1.0
                 }
                 aggLod.append(res)
             figure=Figure(dataSource.title,caption=f"event series completeness of {dataSource.name}",figLabel=f"esca-{dataSource.name}",sqlQuery=None,fileNames=[histOutputFileName])
@@ -291,14 +291,14 @@ ORDER by 6 DESC
             title = f"Event Signature Completeness - {prop}"
             plot.setup(title)
 
-            labels = [dataSource.name for dataSource in res]
+            labels = [dataSource.title for dataSource in res]
 
             x = np.arange(len(res.values()))  # the label locations
             width = 0.35  # the width of the bars
 
 
             fig, ax = plot.plt.subplots()
-            rect = ax.bar(x, values, width)
+            rect = ax.bar(x, values, width, color=['#4c4cff'])
             ax.set_ylabel('Completeness')
             ax.set_title(title)
             ax.set_xticks(x, labels , rotation='vertical')
