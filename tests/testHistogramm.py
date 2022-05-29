@@ -93,7 +93,8 @@ class TestHistogramm(BaseTest):
             plot.plt.xlim(1, maxValue)
             #plt.ylim(0, 0.03)
             pass
-        self.figureList=FigureList(caption="ordinal Histogramms",figureListLabel="ordHist")
+        labelPrefix="ordA"
+        self.figureList=FigureList(caption="ordinal Histogramms",figureListLabel=f"{labelPrefix}-Hist")
         for dataSource in DataSource.sources.values():
             # loop over all datasources
             histOutputFileName=f"ordinalHistogramm-{dataSource.name}.png"
@@ -102,7 +103,7 @@ class TestHistogramm(BaseTest):
                 print(f"creating histogramm for {dataSource}")
                 maxValue=75 if dataSource in  ["tibkat","gnd"] else 50
                 sqlQuery,lod=self.getLod(dataSource.tableName,maxValue=maxValue)
-                figure=Figure(dataSource.title,caption=f"{dataSource.name} ordinals",figLabel=f"ord-{dataSource.name}",sqlQuery=sqlQuery,fileNames=[histOutputFileName,zipfOutputFileName])
+                figure=Figure(dataSource.title,caption=f"{dataSource.name} ordinals",figLabel=f"{labelPrefix}-{dataSource.name}",sqlQuery=sqlQuery,fileNames=[histOutputFileName,zipfOutputFileName])
                 if dataSource.name!="confref":
                     self.figureList.add(figure)
                 values=[record["ordinal"] for record in lod]
@@ -205,6 +206,7 @@ ORDER by 6 DESC
                             series[seriesAcronym] = [d]
             aggLod = []
             for series, eventRecords in series.items():
+                # set operation
                 ordinals: List[int] = [int(r.get("ordinal"))
                                        for r in eventRecords
                                        if r.get("ordinal")
@@ -213,11 +215,13 @@ ORDER by 6 DESC
                     continue
                 minOrd = min(ordinals)
                 maxOrd = max(ordinals)
+                # count set content
                 res = {
                     "series": series,
                     "minOrdinal": minOrd,
                     "maxOrdinal": maxOrd,
                     "avgOrdinal": mean(ordinals),
+                    #  available is not maxOrd -minOrd but len(ordinalSet)
                     "available": maxOrd - minOrd,
                     "completeness": (maxOrd-minOrd) / (maxOrd-1) if maxOrd>1 else 1
                 }
@@ -305,7 +309,7 @@ ORDER by 6 DESC
             histOutputFileName=f"completeSignature_{prop}.png"
             ps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}")
             plot.doShow(ps)
-            figure=Figure(dataSource.title,caption=f"signature completeness of {dataSource.name}",figLabel=f"esca-{dataSource.name}",sqlQuery=None,fileNames=[histOutputFileName])
+            figure=Figure(dataSource.title,caption=f"signature completeness of {prop}",figLabel=f"signcomp-{prop}",sqlQuery=None,fileNames=[histOutputFileName])
             self.figureList.add(figure)
         self.figureList.printAllMarkups()
 
