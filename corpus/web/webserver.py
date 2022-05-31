@@ -216,4 +216,4 @@ def main(_argv=None):
     web.run(args)
 
 if __name__ == '__main__':
-    sys.exit(main())    
+    sys.exit(main())

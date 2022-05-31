@@ -67,11 +67,14 @@ class EventSeriesBlueprint():
             return
         mainclassBk = set()
         subclassBk = set()
+        allowNullValue = False
         for bk in allowedBks:
             if bk.isnumeric():
                 mainclassBk.add(bk)
             elif re.fullmatch(r"\d{1,2}\.\d{2}", bk):
                 subclassBk.add(bk)
+            elif bk.lower() == "null" or bk.lower() == "none":
+                allowNullValue = True
         def filterBk(record:dict) -> bool:
             keepRecord: bool = False
             bks = record.get("bk")
@@ -80,6 +83,8 @@ class EventSeriesBlueprint():
                 recordMainclasses = {bk.split(".")[0] for bk in bks}
                 if mainclassBk.intersection(recordMainclasses) or subclassBk.intersection(bks):
                     keepRecord = True
+            elif bks is None and allowNullValue:
+                keepRecord = True
             return keepRecord
         lod[:] = [record for record in lod if filterBk(record)]
 
