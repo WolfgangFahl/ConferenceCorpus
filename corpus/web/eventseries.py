@@ -1,10 +1,12 @@
+import distutils
 import re
 from dataclasses import dataclass, field, asdict
-from typing import List
+from typing import List, Dict
 
 from fb4.widgets import LodTable
 from flask import Blueprint, request, jsonify, send_file
 from iteration_utilities import flatten
+from lodstorage.lod import LOD
 from spreadsheet.spreadsheet import ExcelDocument
 
 from corpus.datasources.openresearch import OREvent, OREventSeries
@@ -53,6 +55,11 @@ class EventSeriesBlueprint():
             bkParam = request.values.get("bk")
             allowedBks = bkParam.split(",") if bkParam else None
             self.filterForBk(dictOfLod.get("tibkat"), allowedBks)
+        reduceRecords = request.values.get("reduce")
+        if reduceRecords is not  None and (reduceRecords == "" or bool(distutils.util.strtobool(reduceRecords))):
+            tibkatRecords = dictOfLod.get("tibkat")
+            if tibkatRecords:
+                dictOfLod["tibkat"] = EventSeriesCompletion.filterTibkatDuplicates(tibkatRecords)
         return self.convertToRequestedFormat(name, dictOfLod)
 
     @staticmethod
@@ -87,7 +94,6 @@ class EventSeriesBlueprint():
                 keepRecord = True
             return keepRecord
         lod[:] = [record for record in lod if filterBk(record)]
-
 
     def generateSeriesSpreadsheet(self, name:str, dictOfLods: dict) -> ExcelDocument:
         """
@@ -152,6 +158,8 @@ class EventSeriesBlueprint():
                 return send_file(spreadsheet.toBytesIO(), as_attachment=True, download_name=spreadsheet.filename, mimetype=spreadsheet.MIME_TYPE)
         else:
             return jsonify(dictOfLods)
+
+
 
 
 @dataclass

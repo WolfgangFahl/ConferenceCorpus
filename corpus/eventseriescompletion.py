@@ -3,7 +3,12 @@ Created on 2022-04-03
 
 @author: wf
 '''
-from typing import List, Tuple
+import re
+from typing import List, Tuple, Dict
+
+from lodstorage.lod import LOD
+
+from ptp.signature import OrdinalCategory
 
 
 class EventSeriesCompletion(object):
@@ -97,3 +102,96 @@ class EventSeriesCompletion(object):
         if frequency.is_integer() and len(yearsBetweenEvents) == 1 and int(frequency) in yearsBetweenEvents:
             return int(frequency)
         return 0
+
+
+    @staticmethod
+    def filterTibkatDuplicates(lod: dict, debug:bool=False):
+        """
+        tries to filter out duplicate event records
+        currently only for tibkat records
+        Args:
+            dictOfDicts: event records from different sources
+
+        Returns:
+
+        """
+        byOrd = LOD.getLookup(lod, "ordinal", withDuplicates=True)
+        res = []
+        for ord, records in byOrd.items():
+            if len(records) > 1:
+                recordsRanked = [(TitleScore.getScore(record.get("title")), record) for record in records]
+                recordsRanked.sort(key=lambda pair:pair[0], reverse=True)
+                if debug:
+                    print(f"==={ord}===")
+                    for score, record in recordsRanked:
+                        print(f"* {score} - '{record.get('title')}'")
+                maxScore = recordsRanked[0][0]
+                records = [record for score, record in recordsRanked if score == maxScore]
+                if len(records) > 1:
+                    elRecords = [r for r in records if r.get("documentTypeCode") == "EL"]
+                    if elRecords:
+                        res.append(elRecords[0])
+                    else:
+                        # print(records)
+                        pass
+                elif len(records) == 1:
+                    res.append(records[0])
+                else:
+                    pass
+            else:
+                res.append(records[0])
+        return res
+
+
+class TitleScore:
+    """
+    Calculates a rating for an event title
+    A higher score represents a better fit of the record as first/correct record for an event with multiple records
+    """
+    VOLUME_LOOKUP = OrdinalCategory()
+
+    @classmethod
+    def getScore(cls, title:str)-> float:
+        """
+        calc title score
+        Args:
+            title: event title
+
+        Returns:
+            float - score
+        """
+        if title is None:
+            return 0.0
+        score = cls._hasProceeding(title) + cls._hasEventType(title)
+        volume = cls._getVolume(title)
+        if volume:
+            score += 1/volume
+        score += (1/max(1, cls._countSpecialCharacters(title))) / 2
+        return score
+
+    @classmethod
+    def _getVolume(cls, title:str) -> int:
+        #ToDo: Migrate to VolumeCategory parsing
+        volumePattern = r"\[?([Vv]ol\.|[Vv]olume|[Pp]t\.|[Pp]art)\]?( |)(?P<volumeNumber>\d{1,2}|[A-H]|(IX|IV|V?I{0,3}))"
+        match = re.search(volumePattern, title)
+        volume = None
+        if match is not None:
+            volume = cls.VOLUME_LOOKUP.lookup(match.group("volumeNumber") + '.')  # adding dot as workaround to be able to use the ordinal parser
+        return volume
+
+    @classmethod
+    def _hasProceeding(cls, title:str):
+        return cls._titleContains("proceeding", title)
+
+    @classmethod
+    def _hasEventType(cls, title:str):
+        return cls._titleContains("conference", title)
+
+    @classmethod
+    def _titleContains(cls, value:str, title:str):
+        return 1.0 if title is not None and value in title.lower() else 0.0
+
+    @classmethod
+    def _countSpecialCharacters(cls, title:str):
+        res = sum([1 for char in title if not(char.isalpha() or char.isdigit() or ' ')])
+        return res

@@ -79,3 +79,20 @@ class TestEventSeriesBlueprint(TestWebServer):
             lod = [{"bk":bk} for bk in recordData]
             EventSeriesBlueprint.filterForBk(lod, bkFilter)
             self.assertEqual(len(lod), expectedNumberOfRecords, f"Tried to filter for {bkFilter} and expected {expectedNumberOfRecords} but filter left {len(lod)} in the list")
+
+    def testTibkatReducingRecords(self):
+        """
+        tests deduplication of the tibkat records if reduce parameter is set
+        """
+        positiveTestParams = ["reduce", "reduce=True", "reduce=yes"]
+        for testParam in positiveTestParams:
+            jsonStr = self.getResponse(f"/eventseries/AAAI?format=json&{testParam}")
+            res = json.loads(jsonStr)
+            self.assertIn("tibkat", res)
+            self.assertLessEqual(len(res.get("tibkat")), 50)
+        negativeTestParams = ["", "reduce=False", "reduce=no"]
+        for testParam in negativeTestParams:
+            jsonStr = self.getResponse(f"/eventseries/AAAI?format=json&{testParam}")
+            res = json.loads(jsonStr)
+            self.assertIn("tibkat", res)
+            self.assertGreaterEqual(len(res.get("tibkat")), 400)
