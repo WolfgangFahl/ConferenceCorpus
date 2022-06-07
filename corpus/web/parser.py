@@ -51,7 +51,7 @@ class Token(jp.QDiv):
     TOKEN_VALUE_CLASSES = "q-pa-xs"
     TOKEN_LABEL_CLASSES = "text-italic text-weight-light text-white q-pa-xs"
 
-    def __init__(self, label:str, value:str, color:str=None, **kwargs):
+    def __init__(self, label:str, value:str, tokenStr:str=None, color:str=None, **kwargs):
         """
         constructor
         Args:
@@ -66,10 +66,12 @@ class Token(jp.QDiv):
         super(Token, self).__init__(classes=classes, **kwargs)
         self.label = label
         self.value = value
+        self.tokenStr = tokenStr
         self.valueWrapper = jp.QDiv(a=self, classes=self.TOKEN_VALUE_CLASSES)
-        jp.QDiv(a=self.valueWrapper, text=self.value, classes="col")
+        jp.QDiv(a=self.valueWrapper, text=self.tokenStr, classes="col")
         self.labelWrapper = jp.QDiv(a=self, classes=self.TOKEN_LABEL_CLASSES)
         jp.QDiv(a=self.labelWrapper, text=self.label, classes="col")
+        jp.QTooltip(text=self.value, a=self)
 
 
 class TokenSequence(jp.QDiv):
@@ -94,8 +96,8 @@ class TokenSequence(jp.QDiv):
             if isinstance(token, str):
                 jp.QDiv(a=self, text=token, classes="q-mx-xs text-center")
             else:
-                label, value = token
-                Token(label, value, color=colorMap.get(label),a=self)
+                label, value, tokenStr = token
+                Token(label, value, tokenStr=tokenStr, color=colorMap.get(label),a=self)
 
 
 class EventReferenceParserWebInterface:
@@ -128,8 +130,9 @@ class EventReferenceParserWebInterface:
         annText=[]
         for i, word in enumerate(msg.value.split(" ")):
             if i in lut:
-                name = "/".join([c.name for c in lut[i]])
-                annText.append((name, word))
+                name = "|".join([c.name for c in lut[i] ])
+                values = "|".join([str(t.value) for t in lut[i] ])
+                annText.append((name,values, word))
             else:
                 annText.append(f"{word} ")
         self.output.delete_components()
