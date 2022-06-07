@@ -45,3 +45,5 @@ matplotlib>=3.5.2
 # seaborn
 # https://pypi.org/project/Markdown/
 Markdown>=3.3.7
+# https://github.com/pyparsing/pyparsing
+pyparsing>=3.0.9

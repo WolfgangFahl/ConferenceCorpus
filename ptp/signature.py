@@ -4,12 +4,17 @@ Created on 2021-05-03
 Proceedings Title signature elements
 @author: wf
 '''
+from functools import reduce
+from typing import Union
+
 from ptp.parsing import Category
 from num2words import num2words
 import re
 import yaml
 import pathlib
 from pyparsing import ParseException
+import pyparsing as pp
+
 
 class RegexpCategory(Category):
     '''
@@ -130,7 +135,7 @@ class EnumCategory(Category):
         add the given key value pair to my lookup
         '''
         self.lookupByKey[key]=value
-    
+
 class OrdinalCategory(EnumCategory):
     '''
     I am the category for ordinals
@@ -161,25 +166,26 @@ class OrdinalCategory(EnumCategory):
             title=ordinal4i.title()
             self.addLookup(title,i)
             pass       
-    
-    def toRoman(self,number):
+
+    @classmethod
+    def toRoman(cls,number):
         ''' https://stackoverflow.com/a/11749642/1497139 '''
         if (number < 0) or (number > 3999):
             raise Exception("number needs to be between 1 and 3999")
         if (number < 1): return ""
-        if (number >= 1000): return "M" + self.self.toRoman(number - 1000)
-        if (number >= 900): return "CM" + self.toRoman(number - 900)
-        if (number >= 500): return "D" + self.toRoman(number - 500)
-        if (number >= 400): return "CD" + self.toRoman(number - 400)
-        if (number >= 100): return "C" + self.toRoman(number - 100)
-        if (number >= 90): return "XC" + self.toRoman(number - 90)
-        if (number >= 50): return "L" + self.toRoman(number - 50)
-        if (number >= 40): return "XL" + self.toRoman(number - 40)
-        if (number >= 10): return "X" + self.toRoman(number - 10)
-        if (number >= 9): return "IX" + self.toRoman(number - 9)
-        if (number >= 5): return "V" + self.toRoman(number - 5)
-        if (number >= 4): return "IV" + self.toRoman(number - 4)
-        if (number >= 1): return "I" + self.toRoman(number - 1)
+        if (number >= 1000): return "M" + cls.toRoman(number - 1000)
+        if (number >= 900): return "CM" + cls.toRoman(number - 900)
+        if (number >= 500): return "D" + cls.toRoman(number - 500)
+        if (number >= 400): return "CD" + cls.toRoman(number - 400)
+        if (number >= 100): return "C" + cls.toRoman(number - 100)
+        if (number >= 90): return "XC" + cls.toRoman(number - 90)
+        if (number >= 50): return "L" + cls.toRoman(number - 50)
+        if (number >= 40): return "XL" + cls.toRoman(number - 40)
+        if (number >= 10): return "X" + cls.toRoman(number - 10)
+        if (number >= 9): return "IX" + cls.toRoman(number - 9)
+        if (number >= 5): return "V" + cls.toRoman(number - 5)
+        if (number >= 4): return "IV" + cls.toRoman(number - 4)
+        if (number >= 1): return "I" + cls.toRoman(number - 1)
 
 
 class CountryCategory(EnumCategory):
@@ -203,3 +209,92 @@ class YearCategory(EnumCategory):
         constructor
         '''
         super().__init__("year", lookupName="years")
+
+
+class RomanNumeral(pp.OneOrMore):
+    """
+    matches roman numerals
+    see https://github.com/pyparsing/pyparsing/blob/master/examples/romanNumerals.py
+    limited to number up to 99
+    """
+
+    def __init__(self, limit:int=None, name:str=None):
+        """
+        constructor
+        """
+        if name is None:
+            name = "roman"
+        map = [("I", 1), ("IV", 4), ("V", 5), ("IX", 9), ("X", 10), ("XL", 40), ("L", 50), ("XC", 90), ("C", 100),
+               ("CD", 400), ("D", 500), ("CM", 900), ("M", 1000)]
+        expressions = [self.romanNumeralLiteral(numeralString, value) for numeralString, value in map if limit is None or value < limit]
+        numeral = reduce(lambda a, b: b|a, expressions).leaveWhitespace()
+        super(RomanNumeral, self).__init__(numeral[1, ...])
+        self.setParseAction(sum)
+        self.setName(name)
+
+    @classmethod
+    def romanNumeralLiteral(cls, numeralString, value):
+        return pp.Literal(numeralString).setParseAction(pp.replaceWith(value))
+
+
+class VolumeCategory(Category):
+    """
+    I am a category for volumes
+    """
+    VOLUME_LABEL = pp.Group(pp.CaselessLiteral("volume") |
+                            pp.CaselessLiteral("vol.") |
+                            pp.CaselessLiteral("vol") |
+                            pp.CaselessLiteral("part") |
+                            pp.CaselessLiteral("pt.")
+                            )("label")
+    VOLUME_VALUE_NUMERIC = pp.Word(pp.nums).setParseAction(pp.pyparsing_common.convertToInteger).setName("numeric")
+    VOLUME_VALUE_ALPHA = pp.Char(pp.alphas).setParseAction(pp.tokenMap(lambda value: ord(value.lower())-96)).setName("alphanumeric")
+    VOLUME_VALUE = pp.Group(VOLUME_VALUE_NUMERIC | RomanNumeral(limit=100, name="roman reduced") | VOLUME_VALUE_ALPHA)("value")
+    VOLUME = VOLUME_LABEL + pp.Optional(" ") + VOLUME_VALUE
+
+    def __init__(self):
+        """
+        constructor
+        """
+        super().__init__("volume", self.getValue)
+
+    def checkMatch(self, word:str) -> bool:
+        return self.VOLUME.matches(word)
+
+    def checkMatchWithContext(self, tokenStr: str, pos: int, tokenSequence) -> bool:
+        matches = False
+        if self.VOLUME_LABEL.matches(tokenStr):
+            matches = True
+        else:
+            previousTokens = tokenSequence.getTokenOfCategory(self.name)
+            tokensAtPreviousPosition = [token for token in previousTokens if token.pos == pos-1]
+            if len(tokensAtPreviousPosition) == 1:
+                tokenAtPreviousPosition = tokensAtPreviousPosition[0]
+                if tokenAtPreviousPosition.value == "LABEL":
+                    # previous token is volume label → match against volume value
+                    matches = self.VOLUME_VALUE.matches(tokenStr)
+        return matches
+
+
+    def getValue(self, word:str) -> Union[str, int, None]:
+        """
+        returns the value of the given word.
+        LABEL if the word is the volume label
+        <integer> if the word is the volume label
+        Args:
+            word: word to parse the value for
+
+        Returns:
+            value of the given word
+        """
+        res = None
+        if self.VOLUME.matches(word):
+            parsedValue = self.VOLUME.parseString(word).asDict()
+            vals = [m for m,_,_ in self.VOLUME.scanString(word)]
+            res = parsedValue.get("value")[0]
+        elif self.VOLUME_LABEL.matches(word):
+            res = "LABEL"
+        elif self.VOLUME_VALUE.matches(word):
+            res = int(self.VOLUME_VALUE.parseString(word)["value"][0])
+        return res
+

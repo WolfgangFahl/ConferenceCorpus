@@ -4,60 +4,64 @@ Created on 2021-05-31
 @author: wf
 '''
 from collections import Counter
+from typing import Tuple, List
+
 from lodstorage.tabulateCounter import TabulateCounter
+
 
 class Tokenizer(object):
     '''
     categorize some text input
-    ''' 
-    def __init__(self,categories):
-        self.categories=categories
+    '''
+
+    def __init__(self, categories):
+        self.categories = categories
         for category in categories:
-            for neededFunc in ["checkMatch","itemFunc"]:
-                hasNeededFunc=hasattr(category,neededFunc) and callable(getattr(category,neededFunc))
+            for neededFunc in ["checkMatch", "itemFunc"]:
+                hasNeededFunc = hasattr(category, neededFunc) and callable(getattr(category, neededFunc))
                 if not hasNeededFunc:
                     raise Exception(f"category {category.name} has no {neededFunc} function")
         pass
-    
-    def tokenize(self,text,item):
+
+    def tokenize(self, text, item):
         '''
         tokenize the given text for the given item
         '''
-        tokenSequence=TokenSequence(text)
-        tokenSequence.match(self.categories,item)
+        tokenSequence = TokenSequence(text)
+        tokenSequence.match(self.categories, item)
         return tokenSequence
-        
+
+
 class TokenSequence(object):
     '''
     a sequence of tokens
     '''
-    
-    def __init__(self,text,separator=' '):
+
+    def __init__(self, text: str, separator: str = ' '):
         '''
         constructor
         
         Args:
             separator(str): the separator for the tokens - default: blank
         '''
+        self.text = text
         if text:
-            self.words=text.split(separator)
+            self.words = text.split(separator)
         else:
-            self.words=[]
-        self.pos=-1
-        self.matchResults=[]
-        
-    def next(self)->str:
-        '''
+            self.words = []
+        self.matchResults: List['Token'] = []
+
+    def next(self) -> Tuple[int, str]:
+        """
         get the next token in this sequence
-        
+
         Returns:
-            str: the string representation of the token
-        '''
-        while self.pos+1<len(self.words):
-            self.pos+=1
-            yield self.words[self.pos]
-            
-    def match(self,categories:list,item:object)->list:
+            (int, str): position of the token and the string representation of the token
+        """
+        for pos, word in enumerate(self.words):
+            yield pos, self.words[pos]
+
+    def match(self, categories: list, item: object) -> list:
         '''
         match me for the given categories
         
@@ -66,37 +70,54 @@ class TokenSequence(object):
             item(object): the item this token sequence belongs to
         
         '''
-        self.item=item
-        for tokenStr in self.next():
+        self.item = item
+        for pos, tokenStr in self.next():
             for category in categories:
-                if category.checkMatch(tokenStr):
-                    token=Token(category,self,self.pos,tokenStr,item)
+                if category.checkMatch(tokenStr) or (hasattr(category, "checkMatchWithContext")
+                                                     and callable(getattr(category, "checkMatchWithContext"))
+                                                     and category.checkMatchWithContext(tokenStr, pos, self)):
+                    token = Token(category, self, pos, tokenStr, item)
                     self.matchResults.append(token)
         return self.matchResults
-    
+
+    def getTokenOfCategory(self, categoryName: str) -> List['Token']:
+        """
+        Returns list of matched tokens that are in the given category
+        Args:
+            categoryName: name of the category the tokens should be in
+
+        Returns:
+            list of tokens of the given category
+        """
+        tokens = [token for token in self.matchResults if token.name == categoryName]
+        return tokens
+
     def __str__(self):
-        text=f"{self.name}:{self.matchResults}"
+        text=f"{self.text}:{self.matchResults}"
         return text
-        
-        
+
+
 class Token(object):
     '''
     a single categorized token
     '''
-    
-    def __init__(self,category,tokenSequence,pos,tokenStr,item):
-        self.category=category
-        self.name=category.name
-        self.tokenSequence=tokenSequence
-        self.pos=pos
-        self.tokenStr=tokenStr
-        self.value=category.add(item,tokenStr)
-        
+
+    def __init__(self, category, tokenSequence, pos, tokenStr, item):
+        self.category = category
+        self.name = category.name
+        self.tokenSequence = tokenSequence
+        self.pos = pos
+        self.tokenStr = tokenStr
+        self.value = category.add(item, tokenStr)
+
     def __str__(self):
-        text=self.tokenStr
+        text = self.tokenStr
         return text
-       
-        
+
+    def __repr__(self):
+        return f"Token({self.__dict__})"
+
+
 class Category(object):
     '''
     I am a category (a token type) representing an expected part of a signature
@@ -107,33 +128,55 @@ class Category(object):
         '''
         Constructor
         '''
-        self.name=name
-        self.items={}
-        self.itemFunc=itemFunc
-        self.counter=Counter()
-        self.subCategories={}
-        
-    def addCategory(self,category):
-        self.subCategory[category.name]=category
-        
-    def add(self,item,propValue):
+        self.name = name
+        self.items = {}
+        self.itemFunc = itemFunc
+        self.counter = Counter()
+        self.subCategories = {}
+
+    def checkMatch(self, tokenStr: str) -> bool:
+        """
+        Checks whether the given token lies within the category
+        Args:
+            tokenStr(str): value of the token
+
+        Returns:
+            True if the token is in the category otherwise False
+        """
+        return NotImplemented
+
+    def checkMatchWithContext(self, tokenStr: str, pos: int, tokenSequence: TokenSequence) -> bool:
+        """
+        Checks whether the given token lies within the category
+        Args:
+            tokenStr(str): value of the token
+            pos(int): position of the token
+            tokenSequence: tokenSequence containing previously matched tokens
+
+        Returns:
+            True if the token is in the category otherwise False
+        """
+        return False
+
+    def addCategory(self, category):
+        self.subCategories[category.name] = category
+
+    def add(self, item, propValue):
         '''
         add the given item with the given value
         '''
-        value=self.itemFunc(propValue)
+        value = self.itemFunc(propValue)
         if value in self.items:
             self.items[value].append(item)
         else:
-            self.items[value]=[item]
-        self.counter[value]+=1
+            self.items[value] = [item]
+        self.counter[value] += 1
         return value
-        
-   
-    def mostCommonTable(self,tablefmt='pretty',limit=50):
+
+    def mostCommonTable(self, tablefmt='pretty', limit=50):
         '''
         get the most common Table
         '''
-        tabulateCounter=TabulateCounter(self.counter)
-        table=tabulateCounter.mostCommonTable(tablefmt=tablefmt, limit=limit)
+        tabulateCounter = TabulateCounter(self.counter)
+        table = tabulateCounter.mostCommonTable(tablefmt=tablefmt, limit=limit)
         return table
-        

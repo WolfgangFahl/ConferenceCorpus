@@ -5,7 +5,9 @@ Created on 2022-04-11
 '''
 from pyparsing import oneOf
 from ptp.parsing import Tokenizer
-from ptp.signature import ParsingCategory,RegexpCategory,OrdinalCategory, EnumCategory, CountryCategory,YearCategory
+from ptp.signature import ParsingCategory, RegexpCategory, OrdinalCategory, EnumCategory, CountryCategory, YearCategory, \
+    VolumeCategory
+
 
 class EventReferenceParser(object):
     '''
@@ -34,7 +36,8 @@ class EventReferenceParser(object):
             EnumCategory('publish'),
             EnumCategory('scope'),
             EnumCategory('syntax'),
-            ParsingCategory('part',"Part"+oneOf("A B C 1 2 3 4 I II III IV")+".")
+            ParsingCategory('part',"Part"+oneOf("A B C 1 2 3 4 I II III IV")+"."),
+            VolumeCategory()
         ]
         self.tokenizer=Tokenizer(self.categories)
         
