@@ -1,6 +1,4 @@
 from ptp.parsing import Tokenizer
-from pyparsing.diagram import to_railroad, railroad_to_html
-
 from ptp.eventrefparser import EventReferenceParser
 from ptp.signature import VolumeCategory
 from tests.basetest import BaseTest
@@ -25,7 +23,12 @@ class TestVolumeCategory(BaseTest):
                 self.assertEqual(expectedVolume, matchedVolume, f"Expected volume {expectedVolume} from '{volumeStr}'")
 
     def testPlotVolumeParser(self):
+        """
+        plots the Volume parser structure
+        """
+        # to execute this function 'railroad-diagrams' needs to be installed
         return
+        from pyparsing.diagram import to_railroad, railroad_to_html
         with open('/tmp/volumeCategoryParser.html', 'w') as fp:
             railroad = to_railroad(VolumeCategory.VOLUME, show_results_names=True, show_groups=False)
             print(str(railroad))
@@ -35,6 +38,7 @@ class TestVolumeCategory(BaseTest):
         """
         tests tokenization of volume category
         """
+        #
         tokenizer = Tokenizer([VolumeCategory()])
         event = {
             'acronym': 'AAAI 23',
