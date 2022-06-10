@@ -1,0 +1,102 @@
+#
+# City name prefix directory
+# the value describes the positions the prefix occurs
+#
+Abu:
+  value: '1'
+Ann:
+  value: '1'
+Atlantic:
+  value: '1'
+Bandar:
+  value: '1'
+Big:
+  value: '1'
+Buenos:
+  value: '1'
+Cape:
+  value: '1'
+Chi:
+  value: '2'
+Chiang:
+  value: '1'
+City:
+  value: '2'
+College:
+  value: '1'
+Colorado:
+  value: '1'
+Donostia-San:
+  value: '1'
+Fort:
+  value: '1'
+Frankfurt:
+  value: '2'
+Gold:
+  value: '1'
+Ho:
+  value: '3'
+Hong:
+  value: '1'
+Kansas:
+  value: '1'
+Kuala:
+  value: '1'
+La:
+  value: '1'
+Lake:
+  value: '1'
+Las:
+  value: '1'
+Long:
+  value: '1'
+Los:
+  value: '1'
+Mexico:
+  value: '1'
+Minh:
+  value: '1'
+New:
+  value: 1,2
+Novi:
+  value: '1'
+Oteruelo:
+  value: '3'
+Pacific:
+  value: '1'
+Palma:
+  value: '2'
+Punta:
+  value: '1'
+Rio:
+  value: '2'
+Saint:
+  value: '1'
+Salt:
+  value: '2'
+San:
+  value: '1'
+Santa:
+  value: '1'
+Shah:
+  value: '1'
+South:
+  value: '2'
+St.:
+  value: '1'
+"S\xE3o":
+  value: '1'
+Washington,:
+  value: '1'
+Yogyakarta:
+  value: '1'
+York:
+  value: '1'
+am:
+  value: '1'
+de:
+  value: 1,2
+la:
+  value: '1'
+of:
+  value: '1'

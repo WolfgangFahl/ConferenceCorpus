@@ -6,7 +6,7 @@ Created on 2022-04-11
 from pyparsing import oneOf
 from ptp.parsing import Tokenizer
 from ptp.signature import ParsingCategory, RegexpCategory, OrdinalCategory, EnumCategory, CountryCategory, YearCategory, \
-    VolumeCategory
+    VolumeCategory, CityPrefixCategory, CityCategory
 
 
 class EventReferenceParser(object):
@@ -37,7 +37,9 @@ class EventReferenceParser(object):
             EnumCategory('scope'),
             EnumCategory('syntax'),
             ParsingCategory('part',"Part"+oneOf("A B C 1 2 3 4 I II III IV")+"."),
-            VolumeCategory()
+            VolumeCategory(),
+            CityPrefixCategory(),
+            CityCategory()
         ]
         self.tokenizer=Tokenizer(self.categories)
         
@@ -84,11 +86,11 @@ class EventReferenceParser(object):
         for entry in lookup:
             d=lookup[entry]
             yamlstr+=f"""{d["name"]}:
-    qid={d["qid"]}
-    frequency={d["frequency"]}\n"""
+    qid: {d["qid"]}
+    frequency: {d["frequency"]}\n"""
             for table in tables:
                 if table in d:
-                    yamlstr+=f"    {table}={d[table]}\n"
+                    yamlstr+=f"    {table}: {d[table]}\n"
         yamlFile=f"{yamlPath}/{name}.yaml"
         print(yamlstr,  file=open(yamlFile, 'w'))
         

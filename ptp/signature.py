@@ -298,3 +298,48 @@ class VolumeCategory(Category):
             res = int(self.VOLUME_VALUE.parseString(word)["value"][0])
         return res
 
+
+class CityPrefixCategory(EnumCategory):
+    '''
+    I am the category for countries
+    '''
+
+    def __init__(self):
+        '''
+        constructor
+        '''
+        super().__init__("cityPrefix", lookupName="cityNamePrefixes")
+
+
+class CityCategory(EnumCategory):
+    '''
+    I am the category for countries
+    '''
+
+    def __init__(self):
+        '''
+        constructor
+        '''
+        super().__init__("city", lookupName="cityNames")
+        self.itemFunc=None
+
+    def checkMatchWithContext(self, tokenStr: str, pos: int, tokenSequence) -> bool:
+        fullname = self.getTokeStrWithPrefixes(tokenStr, pos, tokenSequence)
+        matches = self.checkMatch(fullname)
+        return matches
+
+    def getValue(self, word: str, pos: int, tokenSequence):
+        fullname = self.getTokeStrWithPrefixes(word, pos, tokenSequence)
+        value = self.lookup(fullname)
+        return value
+
+    def getTokeStrWithPrefixes(self, tokenStr: str, pos:int, tokenSequence) -> str:
+        tokenStr = tokenStr.strip(",;")
+        cityPrefixTokens = [token for token in tokenSequence.matchResults if
+                            isinstance(token.category, CityPrefixCategory)]
+        cityPrefixTokens = [token for token in cityPrefixTokens if pos in [token.pos + prefixPos for prefixPos in
+                                                                           [int(pos) for pos in
+                                                                            token.value.split(",")]]]
+        cityPrefixTokens.sort(key=lambda token: token.pos)
+        fullname = " ".join([token.tokenStr for token in cityPrefixTokens]) + " " + tokenStr
+        return fullname.strip()

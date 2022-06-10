@@ -1,0 +1,1095 @@
+#
+# City directory
+#
+Aachen:
+  type: city
+  value: Q1017
+Aalborg:
+  type: city
+  value: Q25410
+Aarhus:
+  type: city
+  value: Q25319
+Abu Dhabi:
+  type: city
+  value: Q1519
+Adelaide:
+  type: city
+  value: Q5112
+Albuquerque:
+  type: city
+  value: Q34804
+Alexandria:
+  type: city
+  value: Q88
+Alicante:
+  type: city
+  value: Q11959
+Allahabad:
+  type: city
+  value: Q162442
+Amman:
+  type: city
+  value: Q3805
+Amsterdam:
+  type: city
+  value: Q727
+Anaheim:
+  type: city
+  value: Q49247
+Anchorage:
+  type: city
+  value: Q39450
+Ankara:
+  type: city
+  value: Q3640
+Ann Arbor:
+  type: city
+  value: Q485172
+Antalya:
+  type: city
+  value: Q6487
+Antwerp:
+  type: city
+  value: Q12892
+Arlington:
+  type: city
+  value: Q17943
+Athens:
+  type: city
+  value: Q1524
+Atlanta:
+  type: city
+  value: Q23556
+Atlantic City:
+  type: city
+  value: Q139564
+Auckland:
+  type: city
+  value: Q37100
+Austin:
+  type: city
+  value: Q16559
+Bali:
+  type: city
+  value: Q60437836
+Baltimore:
+  type: city
+  value: Q5092
+Bandar Kong:
+  type: city
+  value: Q2986542
+Bandung:
+  type: city
+  value: Q10389
+Banff:
+  type: city
+  value: Q58337
+Bangkok:
+  type: city
+  value: Q1861
+Barcelona:
+  type: city
+  value: Q1492
+Bari:
+  type: city
+  value: Q3519
+Beijing:
+  type: city
+  value: Q956
+Beirut:
+  type: city
+  value: Q3820
+Belgrade:
+  type: city
+  value: Q3711
+Bengaluru:
+  type: city
+  value: Q1355
+Berkeley:
+  type: city
+  value: Q484678
+Berlin:
+  type: city
+  value: Q64
+Bertinoro:
+  type: city
+  value: Q99934
+Bhubaneswar:
+  type: city
+  value: Q171771
+Big Sky:
+  type: city
+  value: Q964258
+Bled:
+  type: city
+  value: Q202852
+"Bogot\xE1":
+  type: city
+  value: Q2841
+Bologna:
+  type: city
+  value: Q1891
+Bonn:
+  type: city
+  value: Q586
+Bordeaux:
+  type: city
+  value: Q1479
+Boston:
+  type: city
+  value: Q100
+Boulder:
+  type: city
+  value: Q192517
+Braga:
+  type: city
+  value: Q614230
+Brasil:
+  type: city
+  value: Q20274905
+Bremen:
+  type: city
+  value: Q24879
+Brighton:
+  type: city
+  value: Q3644692
+Brisbane:
+  type: city
+  value: Q34932
+Brno:
+  type: city
+  value: Q14960
+Bucharest:
+  type: city
+  value: Q19660
+Buenos Aires:
+  type: city
+  value: Q1486
+Burgos:
+  type: city
+  value: Q9580
+Burlingame:
+  type: city
+  value: Q986867
+Busan:
+  type: city
+  value: Q16520
+Cairo:
+  type: city
+  value: Q85
+California:
+  type: city
+  value: Q754623
+Cambridge:
+  type: city
+  value: Q49111
+Canada:
+  type: city
+  value: Q1031917
+Canberra:
+  type: city
+  value: Q3114
+Cancun:
+  type: city
+  value: Q8969
+Cannes:
+  type: city
+  value: Q39984
+Cape Town:
+  type: city
+  value: Q5465
+Capri:
+  type: city
+  value: Q71902
+Catania:
+  type: city
+  value: Q1903
+Changsha:
+  type: city
+  value: Q174091
+Charlotte:
+  type: city
+  value: Q16565
+Charlottesville:
+  type: city
+  value: Q123766
+Chengdu:
+  type: city
+  value: Q30002
+Chennai:
+  type: city
+  value: Q1352
+Chiang Mai:
+  type: city
+  value: Q52028
+Chicago:
+  type: city
+  value: Q1297
+China:
+  type: city
+  value: Q932423
+Chongqing:
+  type: city
+  value: Q11725
+Cincinnati:
+  type: city
+  value: Q43196
+City of Brussels:
+  type: city
+  value: Q239
+Cluj-Napoca:
+  type: city
+  value: Q100188
+Coimbatore:
+  type: city
+  value: Q9885
+Coimbra:
+  type: city
+  value: Q45412
+College Park:
+  type: city
+  value: Q668676
+College Station:
+  type: city
+  value: Q695511
+Colombo:
+  type: city
+  value: Q35381
+Colorado Springs:
+  type: city
+  value: Q49258
+Columbus:
+  type: city
+  value: Q16567
+Como:
+  type: city
+  value: Q1308
+Copenhagen:
+  type: city
+  value: Q3459904
+Dalian:
+  type: city
+  value: Q74881
+Dallas:
+  type: city
+  value: Q16557
+Darmstadt:
+  type: city
+  value: Q2973
+Dayton:
+  type: city
+  value: Q34739
+Dearborn:
+  type: city
+  value: Q430464
+Delft:
+  type: city
+  value: Q690
+Denmark:
+  type: city
+  value: Q936697
+Denver:
+  type: city
+  value: Q16554
+Detroit:
+  type: city
+  value: Q12439
+Dhaka:
+  type: city
+  value: Q1354
+Doha:
+  type: city
+  value: Q3861
+"Donostia-San Sebasti\xE1n":
+  type: city
+  value: Q10313
+Dortmund:
+  type: city
+  value: Q1295
+Dresden:
+  type: city
+  value: Q1731
+Dubai:
+  type: city
+  value: Q612
+Dublin:
+  type: city
+  value: Q837109
+Dubrovnik:
+  type: city
+  value: Q1722
+Edinburgh:
+  type: city
+  value: Q23436
+Eindhoven:
+  type: city
+  value: Q9832
+Erice:
+  type: city
+  value: Q192917
+Fairfax:
+  type: city
+  value: Q501785
+Farmingdale:
+  type: city
+  value: Q2737048
+Florence:
+  type: city
+  value: Q2044
+Forest:
+  type: city
+  value: Q72946
+Fort Worth:
+  type: city
+  value: Q16558
+Frankfurt am Main:
+  type: city
+  value: Q1794
+Fukuoka:
+  type: city
+  value: Q26600
+Funchal:
+  type: city
+  value: Q25444
+Gaithersburg:
+  type: city
+  value: Q752719
+Geneva:
+  type: city
+  value: Q71
+Genoa:
+  type: city
+  value: Q1449
+Germany:
+  type: city
+  value: Q15221573
+Ghent:
+  type: city
+  value: Q1296
+Glasgow:
+  type: city
+  value: Q4093
+Gold Coast:
+  type: city
+  value: Q140075
+Gothenburg:
+  type: city
+  value: Q25287
+Granada:
+  type: city
+  value: Q8810
+Graz:
+  type: city
+  value: Q13298
+Greece:
+  type: city
+  value: Q2610369
+Grenoble:
+  type: city
+  value: Q1289
+Guangzhou:
+  type: city
+  value: Q16572
+Guilin:
+  type: city
+  value: Q189633
+Haifa:
+  type: city
+  value: Q41621
+Hamburg:
+  type: city
+  value: Q1055
+Hammamet:
+  type: city
+  value: Q339535
+Hangzhou:
+  type: city
+  value: Q4970
+Hanoi:
+  type: city
+  value: Q1858
+Harbin:
+  type: city
+  value: Q42956
+Hefei:
+  type: city
+  value: Q185684
+Heidelberg:
+  type: city
+  value: Q2966
+Helsinki:
+  type: city
+  value: Q1757
+Heraklion:
+  type: city
+  value: Q160544
+Hiroshima:
+  type: city
+  value: Q34664
+Ho Chi Minh City:
+  type: city
+  value: Q1854
+Hong Kong:
+  type: city
+  value: Q8646
+Honolulu:
+  type: city
+  value: Q18094
+Houston:
+  type: city
+  value: Q16555
+Hsinchu:
+  type: city
+  value: Q249994
+Huntsville:
+  type: city
+  value: Q79860
+Hyderabad:
+  type: city
+  value: Q1361
+"Ia\u0219i":
+  type: city
+  value: Q46852
+Innsbruck:
+  type: city
+  value: Q1735
+Irvine:
+  type: city
+  value: Q49219
+Ischia:
+  type: city
+  value: Q72134
+Islamabad:
+  type: city
+  value: Q1362
+Istanbul:
+  type: city
+  value: Q406
+Jaipur:
+  type: city
+  value: Q66485
+Jakarta:
+  type: city
+  value: Q3630
+Japan:
+  type: city
+  value: Q25258897
+Jeju:
+  type: city
+  value: Q42142
+Jerusalem:
+  type: city
+  value: Q1218
+Jinan:
+  type: city
+  value: Q170247
+Kaiserslautern:
+  type: city
+  value: Q3758
+Kanazawa:
+  type: city
+  value: Q191130
+Kansas City:
+  type: city
+  value: Q41819
+Kaohsiung:
+  type: city
+  value: Q181557
+Karachi:
+  type: city
+  value: Q8660
+Karlskrona:
+  type: city
+  value: Q25789
+Karlsruhe:
+  type: city
+  value: Q1040
+"Kitaky\u016Bsh\u016B":
+  type: city
+  value: Q188806
+Klagenfurt:
+  type: city
+  value: Q41753
+Kolkata:
+  type: city
+  value: Q1348
+"Krak\xF3w":
+  type: city
+  value: Q31487
+Kuala Lumpur:
+  type: city
+  value: Q1865
+Kuching:
+  type: city
+  value: Q220445
+Kunming:
+  type: city
+  value: Q182852
+Kyiv:
+  type: city
+  value: Q1899
+Kyoto:
+  type: city
+  value: Q34600
+"K\u014Dbe":
+  type: city
+  value: Q48320
+La Jolla:
+  type: city
+  value: Q840668
+Lahore:
+  type: city
+  value: Q11739
+Las Vegas:
+  type: city
+  value: Q23768
+Lausanne:
+  type: city
+  value: Q807
+Leipzig:
+  type: city
+  value: Q2079
+Leuven:
+  type: city
+  value: Q118958
+Lille:
+  type: city
+  value: Q648
+Lima:
+  type: city
+  value: Q2868
+Limassol:
+  type: city
+  value: Q185632
+Limerick:
+  type: city
+  value: Q55075729
+Linz:
+  type: city
+  value: Q41329
+Lisbon:
+  type: city
+  value: Q597
+Ljubljana:
+  type: city
+  value: Q437
+London:
+  type: city
+  value: Q84
+Long Beach:
+  type: city
+  value: Q16739
+Los Angeles:
+  type: city
+  value: Q65
+Lugano:
+  type: city
+  value: Q7024
+Lviv:
+  type: city
+  value: Q36036
+Lyon:
+  type: city
+  value: Q456
+Macau:
+  type: city
+  value: Q14773
+Madrid:
+  type: city
+  value: Q2807
+Magdeburg:
+  type: city
+  value: Q1733
+Malang:
+  type: city
+  value: Q11445
+Manchester:
+  type: city
+  value: Q21525592
+Maribor:
+  type: city
+  value: Q1010
+Marrakesh:
+  type: city
+  value: Q101625
+Marseille:
+  type: city
+  value: Q23482
+Mashhad:
+  type: city
+  value: Q121157
+Medan:
+  type: city
+  value: Q5972
+Melbourne:
+  type: city
+  value: Q3141
+Mexico City:
+  type: city
+  value: Q1489
+Miami:
+  type: city
+  value: Q8652
+Milan:
+  type: city
+  value: Q490
+Minneapolis:
+  type: city
+  value: Q36091
+Monterey:
+  type: city
+  value: Q487315
+Montpellier:
+  type: city
+  value: Q6441
+Montreal:
+  type: city
+  value: Q340
+Moscow:
+  type: city
+  value: Q649
+Mumbai:
+  type: city
+  value: Q1156
+Munich:
+  type: city
+  value: Q1300313
+"M\xE1laga":
+  type: city
+  value: Q8851
+Nagoya:
+  type: city
+  value: Q11751
+Nanchang:
+  type: city
+  value: Q171943
+Nancy:
+  type: city
+  value: Q40898
+Nanjing:
+  type: city
+  value: Q16666
+Nantes:
+  type: city
+  value: Q12191
+Naples:
+  type: city
+  value: Q2634
+Nara:
+  type: city
+  value: Q169134
+Nashville:
+  type: city
+  value: Q23197
+Natal:
+  type: city
+  value: Q131620
+New Delhi:
+  type: city
+  value: Q987
+New Orleans:
+  type: city
+  value: Q34404
+New Paltz:
+  type: city
+  value: Q3709293
+New York City:
+  type: city
+  value: Q60
+Newark:
+  type: city
+  value: Q25395
+Nice:
+  type: city
+  value: Q33959
+Noida:
+  type: city
+  value: Q278204
+Noordwijkerhout:
+  type: city
+  value: Q848988
+Novi Sad:
+  type: city
+  value: Q55630
+Novosibirsk:
+  type: city
+  value: Q883
+Nuremberg:
+  type: city
+  value: Q1181674
+Oakland:
+  type: city
+  value: Q17042
+Orlando:
+  type: city
+  value: Q49233
+Osaka:
+  type: city
+  value: Q35765
+Oslo:
+  type: city
+  value: Q6073453
+Oteruelo de la Valduerma:
+  type: city
+  value: Q16466449
+Ottawa:
+  type: city
+  value: Q1930
+Oxford:
+  type: city
+  value: Q20986484
+Pacific Grove:
+  type: city
+  value: Q117514
+Paderborn:
+  type: city
+  value: Q2971
+Padua:
+  type: city
+  value: Q617
+Palma de Mallorca:
+  type: city
+  value: Q8826
+Palo:
+  type: city
+  value: Q213281
+Paphos:
+  type: city
+  value: Q180918
+Paris:
+  type: city
+  value: Q90
+Pattaya:
+  type: city
+  value: Q170919
+Penang:
+  type: city
+  value: Q20584173
+Perth:
+  type: city
+  value: Q3183
+Pest:
+  type: city
+  value: Q210205
+Philadelphia:
+  type: city
+  value: Q1345
+Phoenix:
+  type: city
+  value: Q16556
+Phuket:
+  type: city
+  value: Q844430
+Pisa:
+  type: city
+  value: Q13375
+Pittsburgh:
+  type: city
+  value: Q1342
+Portland:
+  type: city
+  value: Q6106
+Porto:
+  type: city
+  value: Q36433
+Potsdam:
+  type: city
+  value: Q1711
+"Pozna\u0144":
+  type: city
+  value: Q268
+Prague:
+  type: city
+  value: Q1085
+Princeton:
+  type: city
+  value: Q138518
+Providence:
+  type: city
+  value: Q18383
+Pune:
+  type: city
+  value: Q1538
+Punta Cana:
+  type: city
+  value: Q1568095
+Qingdao:
+  type: city
+  value: Q170322
+Rabat:
+  type: city
+  value: Q3551
+Raleigh:
+  type: city
+  value: Q41087
+Rennes:
+  type: city
+  value: Q647
+Reno:
+  type: city
+  value: Q49225
+Republic:
+  type: city
+  value: Q267220
+"Reykjav\xEDk":
+  type: city
+  value: Q1764
+Riga:
+  type: city
+  value: Q1773
+Rio de Janeiro:
+  type: city
+  value: Q8678
+Rochester:
+  type: city
+  value: Q49218
+Rome:
+  type: city
+  value: Q220
+Royal:
+  type: city
+  value: Q1911284
+"Saarbr\xFCcken":
+  type: city
+  value: Q1724
+Saint Petersburg:
+  type: city
+  value: Q656
+Salt Lake City:
+  type: city
+  value: Q23337
+Salvador:
+  type: city
+  value: Q36947
+Salzburg:
+  type: city
+  value: Q34713
+San Antonio:
+  type: city
+  value: Q975
+San Diego:
+  type: city
+  value: Q16552
+San Francisco:
+  type: city
+  value: Q62
+San Jose:
+  type: city
+  value: Q16553
+Santa Barbara:
+  type: city
+  value: Q159288
+Santa Clara:
+  type: city
+  value: Q211590
+Santiago:
+  type: city
+  value: Q2887
+Sanya:
+  type: city
+  value: Q319804
+Sapporo:
+  type: city
+  value: Q37951
+Scottsdale:
+  type: city
+  value: Q49221
+Seattle:
+  type: city
+  value: Q5083
+Semarang:
+  type: city
+  value: Q11025
+Sendai:
+  type: city
+  value: Q46747
+Seoul:
+  type: city
+  value: Q8684
+Seville:
+  type: city
+  value: Q8717
+Shah Alam:
+  type: city
+  value: Q500033
+Shanghai:
+  type: city
+  value: Q8686
+Shenyang:
+  type: city
+  value: Q11720
+Shenzhen:
+  type: city
+  value: Q15174
+Sinaia:
+  type: city
+  value: Q213296
+Singapore:
+  type: city
+  value: Q334
+Snowbird:
+  type: city
+  value: Q3487194
+Sofia:
+  type: city
+  value: Q472
+Sorrento:
+  type: city
+  value: Q72672
+Sousse:
+  type: city
+  value: Q180717
+South Lake Tahoe:
+  type: city
+  value: Q983602
+St. Louis:
+  type: city
+  value: Q38022
+Stanford:
+  type: city
+  value: Q173813
+Stuttgart:
+  type: city
+  value: Q1022
+Surabaya:
+  type: city
+  value: Q11462
+Suzhou:
+  type: city
+  value: Q42622
+Sydney:
+  type: city
+  value: Q3130
+Szeged:
+  type: city
+  value: Q81581
+"S\xE3o Paulo":
+  type: city
+  value: Q174
+Taichung:
+  type: city
+  value: Q245023
+Tainan:
+  type: city
+  value: Q140631
+Taipei:
+  type: city
+  value: Q1867
+Tallinn:
+  type: city
+  value: Q1770
+Tampa:
+  type: city
+  value: Q49255
+Tampere:
+  type: city
+  value: Q40840
+Tehran:
+  type: city
+  value: Q3616
+Tempe:
+  type: city
+  value: Q51685
+Thessaloniki:
+  type: city
+  value: Q17151
+Tianjin:
+  type: city
+  value: Q11736
+"Timi\u0219oara":
+  type: city
+  value: Q83404
+Tokyo:
+  type: city
+  value: Q1490
+Toronto:
+  type: city
+  value: Q172
+Toulouse:
+  type: city
+  value: Q7880
+Trento:
+  type: city
+  value: Q3376
+Trieste:
+  type: city
+  value: Q546
+Tsukuba:
+  type: city
+  value: Q273863
+Tucson:
+  type: city
+  value: Q18575
+Turin:
+  type: city
+  value: Q495
+Turku:
+  type: city
+  value: Q38511
+Uppsala:
+  type: city
+  value: Q25286
+Utrecht:
+  type: city
+  value: Q803
+Valencia:
+  type: city
+  value: Q8818
+Vancouver:
+  type: city
+  value: Q24639
+Varna:
+  type: city
+  value: Q6506
+Venice:
+  type: city
+  value: Q641
+Victoria:
+  type: city
+  value: Q2132
+Vienna:
+  type: city
+  value: Q1741
+Waltham:
+  type: city
+  value: Q49190
+Warsaw:
+  type: city
+  value: Q270
+Washington, D.C.:
+  type: city
+  value: Q61
+Williamsburg:
+  type: city
+  value: Q771572
+Wollongong:
+  type: city
+  value: Q187861
+"Wroc\u0142aw":
+  type: city
+  value: Q1799
+Wuhan:
+  type: city
+  value: Q11746
+Xi'an:
+  type: city
+  value: Q5826
+Xiamen:
+  type: city
+  value: Q68744
+Yogyakarta City:
+  type: city
+  value: Q7568
+Yokohama:
+  type: city
+  value: Q38283
+Zhangjiajie:
+  type: city
+  value: Q197379
+Zhuhai:
+  type: city
+  value: Q59095
+"Z\xFCrich":
+  type: city
+  value: Q72

@@ -16,12 +16,6 @@ class Tokenizer(object):
 
     def __init__(self, categories):
         self.categories = categories
-        for category in categories:
-            for neededFunc in ["checkMatch", "itemFunc"]:
-                hasNeededFunc = hasattr(category, neededFunc) and callable(getattr(category, neededFunc))
-                if not hasNeededFunc:
-                    raise Exception(f"category {category.name} has no {neededFunc} function")
-        pass
 
     def tokenize(self, text, item):
         '''
@@ -102,13 +96,13 @@ class Token(object):
     a single categorized token
     '''
 
-    def __init__(self, category, tokenSequence, pos, tokenStr, item):
+    def __init__(self, category: 'Category', tokenSequence: TokenSequence, pos: int, tokenStr: str, item):
         self.category = category
         self.name = category.name
         self.tokenSequence = tokenSequence
         self.pos = pos
         self.tokenStr = tokenStr
-        self.value = category.add(item, tokenStr)
+        self.value = category.add(item, tokenStr, pos, tokenSequence)
 
     def __str__(self):
         text = self.tokenStr
@@ -158,20 +152,36 @@ class Category(object):
         """
         return False
 
-    def addCategory(self, category):
+    def addCategory(self, category: 'Category'):
         self.subCategories[category.name] = category
 
-    def add(self, item, propValue):
+    def add(self, item, propValue, pos:int, tokenSequence: TokenSequence):
         '''
         add the given item with the given value
         '''
-        value = self.itemFunc(propValue)
+        if self.itemFunc is not None:
+            value = self.itemFunc(propValue)
+        else:
+            value = self.getValue(propValue, pos, tokenSequence)
         if value in self.items:
             self.items[value].append(item)
         else:
             self.items[value] = [item]
         self.counter[value] += 1
         return value
+
+    def getValue(self, word: str, pos: int, tokenSequence: TokenSequence):
+        """
+
+        Args:
+            word: raw token value
+            pos: position of the raw token value
+            tokenSequence: already matched tokens up to position pos-1
+
+        Returns:
+            category value of the token
+        """
+        return None
 
     def mostCommonTable(self, tablefmt='pretty', limit=50):
         '''
