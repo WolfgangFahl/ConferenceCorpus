@@ -17,7 +17,7 @@ class TestCityCategory(BaseTest):
         """
         tests categorization of city prefixes
         """
-        testParams = [("Los", '0'), ("de", "1"), ("Washington,", "0")]
+        testParams = [("Los", '1'), ("de", "1,2"), ("Washington,", "1")]
         cityPrefixCategory = CityPrefixCategory()
         for prefix, expectedPositions in testParams:
             self.assertTrue(cityPrefixCategory.checkMatch(prefix))
