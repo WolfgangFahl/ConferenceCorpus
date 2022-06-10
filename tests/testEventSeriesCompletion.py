@@ -132,7 +132,7 @@ class TestEventSeriesCompletion(BaseTest):
         completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(seriesLod)
         self.assertEqual(46, len(completedBlankSeries))  # CI has 46 my local db has 47???
         self.assertEqual((1975, 1), completedBlankSeries[0])
-        self.assertEqual((2021, 46), completedBlankSeries[-1])
+        self.assertEqual((2020, 46), completedBlankSeries[-1])
         seriesLod = self.getSeriesLod("3DUI")
         completedBlankSeries = EventSeriesCompletion.getCompletedBlankSeries(seriesLod)
         self.assertEqual(12, len(completedBlankSeries))

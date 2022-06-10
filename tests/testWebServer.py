@@ -44,7 +44,22 @@ class TestWebServer(DataSourceTest):
         html=response.data.decode()
         if self.debug:
             print(html)
-        return html 
+        return html
+
+    def getJsonResponse(self, query: str):
+        '''
+        get a response from the app for the given query string
+
+        Args:
+            query(str): the html query string to fetch the response for
+        '''
+        response = self.client.get(query)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data is not None)
+        json = response.json
+        if self.debug:
+            print(json)
+        return json
 
     def testWebServerHome(self):
         '''

@@ -86,13 +86,11 @@ class TestEventSeriesBlueprint(TestWebServer):
         """
         positiveTestParams = ["reduce", "reduce=True", "reduce=yes"]
         for testParam in positiveTestParams:
-            jsonStr = self.getResponse(f"/eventseries/AAAI?format=json&{testParam}")
-            res = json.loads(jsonStr)
+            res = self.getJsonResponse(f"/eventseries/AAAI?format=json&{testParam}")
             self.assertIn("tibkat", res)
             self.assertLessEqual(len(res.get("tibkat")), 50)
         negativeTestParams = ["", "reduce=False", "reduce=no"]
         for testParam in negativeTestParams:
-            jsonStr = self.getResponse(f"/eventseries/AAAI?format=json&{testParam}")
-            res = json.loads(jsonStr)
+            res = self.getJsonResponse(f"/eventseries/AAAI?format=json&{testParam}")
             self.assertIn("tibkat", res)
             self.assertGreaterEqual(len(res.get("tibkat")), 400)
