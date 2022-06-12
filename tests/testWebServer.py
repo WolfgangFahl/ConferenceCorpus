@@ -10,6 +10,7 @@ from corpus.web.webserver import WebServer
 from corpus.web.scholar import Scholar
 import json
 
+
 class TestWebServer(DataSourceTest):
     """Test the WebServers RESTful interface"""
     
@@ -41,25 +42,21 @@ class TestWebServer(DataSourceTest):
         response=self.client.get(query)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data is not None)
-        html=response.data.decode()
+        html = response.get_data(as_text=True)
         if self.debug:
             print(html)
         return html
 
     def getJsonResponse(self, query: str):
-        '''
+        """
         get a response from the app for the given query string
 
         Args:
             query(str): the html query string to fetch the response for
-        '''
-        response = self.client.get(query)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.data is not None)
-        json = response.json
-        if self.debug:
-            print(json)
-        return json
+        """
+        res = self.getResponse(query)
+        json_res = json.loads(res)
+        return json_res
 
     def testWebServerHome(self):
         '''
