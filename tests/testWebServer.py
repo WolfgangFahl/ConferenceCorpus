@@ -54,7 +54,10 @@ class TestWebServer(DataSourceTest):
         Args:
             query(str): the html query string to fetch the response for
         """
-        res = self.getResponse(query)
+        response = self.client.get(query)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data is not None)
+        res = response.get_data(as_text=False)
         json_res = json.loads(res)
         return json_res
 
