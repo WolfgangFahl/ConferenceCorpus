@@ -24,12 +24,12 @@ class EventSeriesCompletion(object):
     
     
     @classmethod
-    def getCompletedBlankSeries(cls, lod:dict, debug:bool=False) -> list:
+    def getCompletedBlankSeries(cls, lod: List[dict], debug: bool = False) -> list:
         """
         gets all blank entries of a series from the different records that are given.
         It is expected that each lod comes from a  different datasource
         Args:
-            lods:
+            lods: list of event records
 
         Returns:
             List of completed year ordinal pairs, or empty list if given lod can not be completed

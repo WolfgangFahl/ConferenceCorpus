@@ -59,7 +59,9 @@ class EventSeriesBlueprint():
         if reduceRecords is not  None and (reduceRecords == "" or bool(distutils.util.strtobool(reduceRecords))):
             tibkatRecords = dictOfLod.get("tibkat")
             if tibkatRecords:
-                dictOfLod["tibkat"] = EventSeriesCompletion.filterTibkatDuplicates(tibkatRecords)
+                reducedRecords = EventSeriesCompletion.filterTibkatDuplicates(tibkatRecords, debug=True)  #ToDo: deactivate debug
+                dictOfLod["tibkat"] = reducedRecords
+        print("Return", dictOfLod)
         return self.convertToRequestedFormat(name, dictOfLod)
 
     @staticmethod
@@ -158,8 +160,6 @@ class EventSeriesBlueprint():
                 return send_file(spreadsheet.toBytesIO(), as_attachment=True, download_name=spreadsheet.filename, mimetype=spreadsheet.MIME_TYPE)
         else:
             return jsonify(dictOfLods)
-
-
 
 
 @dataclass
