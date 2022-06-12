@@ -59,7 +59,7 @@ class EventSeriesBlueprint():
         if reduceRecords is not None and (reduceRecords == "" or bool(strtobool(reduceRecords))):
             tibkatRecords = dictOfLod.get("tibkat")
             if tibkatRecords:
-                reducedRecords = EventSeriesCompletion.filterTibkatDuplicates(tibkatRecords, debug=True)  #ToDo: deactivate debug
+                reducedRecords = EventSeriesCompletion.filterTibkatDuplicates(tibkatRecords)
                 dictOfLod["tibkat"] = reducedRecords
         return self.convertToRequestedFormat(name, dictOfLod)
 
