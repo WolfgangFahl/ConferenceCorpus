@@ -1,6 +1,6 @@
-import distutils
 import re
 from dataclasses import dataclass, field, asdict
+from distutils.util import strtobool
 from typing import List, Dict
 
 from fb4.widgets import LodTable
@@ -56,12 +56,11 @@ class EventSeriesBlueprint():
             allowedBks = bkParam.split(",") if bkParam else None
             self.filterForBk(dictOfLod.get("tibkat"), allowedBks)
         reduceRecords = request.values.get("reduce")
-        if reduceRecords is not  None and (reduceRecords == "" or bool(distutils.util.strtobool(reduceRecords))):
+        if reduceRecords is not None and (reduceRecords == "" or bool(strtobool(reduceRecords))):
             tibkatRecords = dictOfLod.get("tibkat")
             if tibkatRecords:
                 reducedRecords = EventSeriesCompletion.filterTibkatDuplicates(tibkatRecords, debug=True)  #ToDo: deactivate debug
                 dictOfLod["tibkat"] = reducedRecords
-        print("Return", dictOfLod)
         return self.convertToRequestedFormat(name, dictOfLod)
 
     @staticmethod
