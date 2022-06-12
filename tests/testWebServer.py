@@ -56,10 +56,8 @@ class TestWebServer(DataSourceTest):
         """
         response = self.client.get(query)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.data is not None)
-        res = response.get_data(as_text=False)
-        json_res = json.loads(res)
-        return json_res
+        self.assertTrue(response.json is not None)
+        return response.get_json()
 
     def testWebServerHome(self):
         '''

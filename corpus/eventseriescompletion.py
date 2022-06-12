@@ -105,15 +105,16 @@ class EventSeriesCompletion(object):
 
 
     @staticmethod
-    def filterTibkatDuplicates(lod: dict, debug:bool=False):
+    def filterTibkatDuplicates(lod: List[dict], debug: bool = False) -> List[dict]:
         """
         tries to filter out duplicate event records
         currently only for tibkat records
         Args:
-            dictOfDicts: event records from different sources
+            lod(List[dict]): List of event records from one sources
+            debug(bool): if True show debug messages
 
         Returns:
-
+            List[dict]
         """
         byOrd = LOD.getLookup(lod, "ordinal", withDuplicates=True)
         res = []
