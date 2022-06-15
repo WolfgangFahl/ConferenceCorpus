@@ -9,8 +9,7 @@ import numpy as np
 from typing import Callable
 from collections import Counter
 
-from matplotlib import ticker
-from scipy.optimize import minimize 
+from scipy.optimize import minimize
 from scipy.optimize import curve_fit
 from scipy.special import zetac
 
@@ -38,7 +37,7 @@ class Plot():
     '''
     super class of all plots
     '''
-    def __init__(self):
+    def __init__(self, **kwargs):
         pass
     
     def setup(self,title:str):

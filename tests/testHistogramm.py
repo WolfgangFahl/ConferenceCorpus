@@ -3,11 +3,13 @@ Created on 17.05.2022
 
 @author: wf
 '''
+import datetime
 from statistics import mean
 from typing import List
 
-from tabulate import tabulate
+from dateutil.parser import parse
 from corpus.eventcorpus import DataSource
+from corpus.utils.DatePolarHistogram import DatePolarHistogram
 from corpus.utils.plots import Histogramm, PlotSettings, Zipf, Plot
 from tests.basetest import BaseTest
 from corpus.event import EventStorage
@@ -355,3 +357,33 @@ ORDER by 6 DESC
         ps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}")
         plot.doShow(ps)
         print(volumes)
+
+    def testStartDateDistribution(self):
+        """
+        tests the startDate distribution
+        Assumption: due to a parsing error it is expected that many events wrongfully are dated at the first of january
+        """
+        for source in list(DataSource.sources.values()):
+            if source.name in ["acm", "ceurws", "or", "orbackup", "orclonebackup"]:
+                continue
+            with self.subTest(source=source):
+                sqlQuery = f"""SELECT startDate FROM {source.tableName}"""
+                sqlDB = EventStorage.getSqlDB()
+                lod = sqlDB.query(sqlQuery)
+                rawDates = [d.get("startDate") for d in lod]
+                dates = []
+                for date in rawDates:
+                    if isinstance(date, datetime.datetime) or isinstance(date, datetime.date):
+                        dates.append(date)
+                    elif isinstance(date, str):
+                        dates.append(parse(date))
+                    else:
+                        if date is not None:
+                            print(f"{source.name}: ", "Filtered out", date, f"(Type:{type(date)})")
+                print("Filtered out", len(lod)-len(dates), "due to wrong format")
+                hist = DatePolarHistogram(dates)
+                hist.plt.title(f"Histogram of Event startDates in {source.name}")
+                #hist.plot()
+                histOutputFileName = f"startDate_histogram_{source.name}.png"
+                ps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}")
+                hist.doShow(ps)
