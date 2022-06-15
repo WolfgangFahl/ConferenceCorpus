@@ -324,16 +324,16 @@ class CityCategory(EnumCategory):
         self.itemFunc=None
 
     def checkMatchWithContext(self, tokenStr: str, pos: int, tokenSequence) -> bool:
-        fullname = self.getTokeStrWithPrefixes(tokenStr, pos, tokenSequence)
+        fullname = self.getTokenStrWithPrefixes(tokenStr, pos, tokenSequence)
         matches = self.checkMatch(fullname)
         return matches
 
     def getValue(self, word: str, pos: int, tokenSequence):
-        fullname = self.getTokeStrWithPrefixes(word, pos, tokenSequence)
+        fullname = self.getTokenStrWithPrefixes(word, pos, tokenSequence)
         value = self.lookup(fullname)
         return value
 
-    def getTokeStrWithPrefixes(self, tokenStr: str, pos:int, tokenSequence) -> str:
+    def getTokenStrWithPrefixes(self, tokenStr: str, pos:int, tokenSequence) -> str:
         tokenStr = tokenStr.strip(",;")
         cityPrefixTokens = [token for token in tokenSequence.matchResults if
                             isinstance(token.category, CityPrefixCategory)]
