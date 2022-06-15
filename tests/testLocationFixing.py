@@ -72,9 +72,7 @@ limit 20"""),
                 print(location)
             if not location.wikidataid == expectedLocationId:
                 failures.append(locationText)
-        if self.debug:
-            print(f"locationLooup failed for {failures}")
-        self.assertEqual(0,len(failures))
+        self.assertEqual(0,len(failures), f"locationLooup failed for {failures}")
 
     def testCrossRefParts(self):
         '''
