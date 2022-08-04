@@ -6,7 +6,7 @@ Created on 2022-04-11
 from pyparsing import oneOf
 from ptp.parsing import Tokenizer
 from ptp.signature import ParsingCategory, RegexpCategory, OrdinalCategory, EnumCategory, CountryCategory, YearCategory, \
-    VolumeCategory, CityPrefixCategory, CityCategory
+    VolumeCategory, CityPrefixCategory, CityCategory, AcronymCategory
 
 
 class EventReferenceParser(object):
@@ -39,7 +39,8 @@ class EventReferenceParser(object):
             ParsingCategory('part',"Part"+oneOf("A B C 1 2 3 4 I II III IV")+"."),
             VolumeCategory(),
             CityPrefixCategory(),
-            CityCategory()
+            CityCategory(),
+            AcronymCategory()
         ]
         self.tokenizer=Tokenizer(self.categories)
         

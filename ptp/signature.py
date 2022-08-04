@@ -343,3 +343,25 @@ class CityCategory(EnumCategory):
         cityPrefixTokens.sort(key=lambda token: token.pos)
         fullname = " ".join([token.tokenStr for token in cityPrefixTokens]) + " " + tokenStr
         return fullname.strip()
+
+class AcronymCategory(EnumCategory):
+    '''
+    I am the category for acronyms
+    '''
+
+    def __init__(self):
+        '''
+        constructor
+        '''
+        super().__init__("acronym", lookupName="acronyms")
+
+    @staticmethod
+    def sanitize(word:str):
+        if isinstance(word, str):
+            return word.strip(" ()#")
+
+    def checkMatch(self, word):
+        return super().checkMatch(self.sanitize(word))
+
+    def lookup(self, word):
+        return super().lookup(self.sanitize(word))
