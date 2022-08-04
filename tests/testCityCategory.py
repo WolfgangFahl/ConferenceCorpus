@@ -79,7 +79,8 @@ class TestCityCategory(BaseTest):
             fp.write(desc)
             yaml.dump(citiesYaml, fp)
 
-    def addToDictList(self, d:dict, key:str, value, distinct:bool=False):
+    @staticmethod
+    def addToDictList(d:dict, key:str, value, distinct:bool=False):
         if key in d:
             if isinstance(d[key], list):
                 d[key].append(value)

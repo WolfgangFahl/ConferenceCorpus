@@ -5,10 +5,12 @@ Created on 2022-05-17
 '''
 import io
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import numpy as np
-from typing import Callable
+from typing import Callable, List
 from collections import Counter
 
+import pandas as pd
 from scipy.optimize import minimize
 from scipy.optimize import curve_fit
 from scipy.special import zetac
@@ -163,15 +165,34 @@ class Zipf(Plot):
 
 class Histogramm(Plot):
     '''
-    Histogramm
+    Histogram
     '''
 
     def __init__(self, x):
         self.x=x
+
+    def prepareHistogram(self,facecolor='b',alpha=0.5,density:bool=False, bins=None, label=None):
+        self.addHistogramSeries(x=self.x,
+                                facecolor=facecolor,
+                                alpha=alpha,
+                                density=density,
+                                bins=bins,
+                                label=label)
+
+    def addHistogramSeries(self, x, facecolor='b',alpha=0.5,density:bool=False, bins=None, label=None):
+        if bins is None:
+            bins = np.arange(min(x) - 0.5, max(x) + 1.5, 1.0)
+        _n, _bins, _patches = plt.hist(x,
+                                       bins,
+                                       density=density,
+                                       facecolor=facecolor,
+                                       alpha=alpha,
+                                       rwidth=0.9,
+                                       label=label)
     
-    def show(self,xLabel,yLabel,title,facecolor='b',alpha=0.5,density:bool=False,grid:bool=True,ps:PlotSettings=None,bins=None, vlineAt:int=None):
+    def show(self,xLabel,yLabel,title,facecolor='b',alpha=0.5,density:bool=False,grid:bool=True,ps:PlotSettings=None,bins=None, vlineAt:int=None, label=None):
         '''
-        show the histogramm
+        show the histogram
         
         Args:
             xLabel(str): the x-axis label
@@ -186,21 +207,63 @@ class Histogramm(Plot):
         '''
         # the histogram of the data
         self.setup(title)
-
-        if bins is None:
-            bins = np.arange( min( self.x ) - 0.5 ,
-                         max( self.x ) + 1.5 , 1.0 )
-        _n, _bins, _patches = plt.hist(self.x, bins, density=density, facecolor=facecolor, alpha=alpha)
-    
+        self.prepareHistogram(facecolor=facecolor,
+                              alpha=alpha,
+                              density=density,
+                              bins=bins,
+                              label=label)
         plt.xlabel(xLabel)
         plt.ylabel(yLabel)
         if density:
             yvals = plt.gca().get_yticks()
             #print(yvals)
-            plt.gca().set_yticklabels([f"{y*bins}%"for y in yvals])
+            plt.gca().set_yticklabels([f"{y*100:.2f}%"for y in yvals])
         if vlineAt is not None:
             plt.gca().axvline(x=vlineAt, color='r', linestyle='dashed', linewidth=2)
         plt.grid(grid)
+        plt.legend(loc='upper right')
         self.doShow(ps)
+
+
+class HistogramSeries(Histogramm):
+    '''
+    Histogram of multiple Series
+    '''
+
+    def __init__(self, series:dict):
+        if series is None:
+            series = {}
+        super().__init__(series)
+
+    def addSeries(self, label:str, series):
+        """
+        Add a series to the histogram
+        Args:
+            label: label of the series (displayed in the legend)
+            series: series data
+        """
+        self.x.update(label, series)
+
+    def prepareHistogram(self, facecolor='b', alpha=0.5, density: bool = False, bins=None, label=None):
+        """
+        Prepares the histogram with the given parameters
+        Args:
+            facecolor:
+            alpha:
+            density:
+            bins:
+            label:
+
+        Returns:
+
+        """
+        for i, (label, series) in enumerate(self.x.items()):
+            color = list(mcolors.BASE_COLORS.keys())[i % len(mcolors.BASE_COLORS)]
+            self.addHistogramSeries(x=series,
+                                    facecolor=color,
+                                    alpha=alpha,
+                                    density=density,
+                                    bins=bins,
+                                    label=label)
         
             

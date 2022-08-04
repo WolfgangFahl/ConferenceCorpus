@@ -57,10 +57,11 @@ class EventSeriesBlueprint():
             self.filterForBk(dictOfLod.get("tibkat"), allowedBks)
         reduceRecords = request.values.get("reduce")
         if reduceRecords is not None and (reduceRecords == "" or bool(strtobool(reduceRecords))):
-            tibkatRecords = dictOfLod.get("tibkat")
-            if tibkatRecords:
-                reducedRecords = EventSeriesCompletion.filterTibkatDuplicates(tibkatRecords)
-                dictOfLod["tibkat"] = reducedRecords
+            for source in ["tibkat", "dblp"]:
+                sourceRecords = dictOfLod.get(source)
+                if sourceRecords:
+                    reducedRecords = EventSeriesCompletion.filterDuplicatesByTitle(sourceRecords)
+                    dictOfLod[source] = reducedRecords
         return self.convertToRequestedFormat(name, dictOfLod)
 
     @staticmethod

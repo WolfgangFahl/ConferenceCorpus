@@ -363,8 +363,10 @@ ORDER by 6 DESC
         tests the startDate distribution
         Assumption: due to a parsing error it is expected that many events wrongfully are dated at the first of january
         """
+        excluded_sources = ["acm", "ceurws", "or", "orbackup", "orclonebackup"]
+        excluded_sources.append("confref")
         for source in list(DataSource.sources.values()):
-            if source.name in ["acm", "ceurws", "or", "orbackup", "orclonebackup"]:
+            if source.name in excluded_sources:
                 continue
             with self.subTest(source=source):
                 sqlQuery = f"""SELECT startDate FROM {source.tableName}"""
@@ -380,6 +382,9 @@ ORDER by 6 DESC
                     else:
                         if date is not None:
                             print(f"{source.name}: ", "Filtered out", date, f"(Type:{type(date)})")
+                filterOut1Jan = False  # 1st Jan is almost always a conversion error
+                if filterOut1Jan:
+                    dates = [date for date in dates if not (date.day == 1 and date.month == 1)]
                 print("Filtered out", len(lod)-len(dates), "due to wrong format")
                 hist = DatePolarHistogram(dates)
                 hist.plt.title(f"Histogram of Event startDates in {source.name}")

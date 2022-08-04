@@ -173,7 +173,7 @@ class TestEventSeriesCompletion(BaseTest):
             seriesRes["#MultipleRecords"] = sum([len(v) if len(v)>1 else 0 for v in byOrd.values()])
             seriesRes["#ProceedingsInTitle"] = len([True for d in lod if d.get("title", "") and "proceedings" in d.get("title", "").lower()])
             seriesRes["#VolumeInTitle"] = len([True for d in lod if len(byOrd.get(d.get("ordinal"), [])) > 1 and d.get("title", "") and re.search(volumeRegexp,d.get("title", ""))])
-            filteredLod = EventSeriesCompletion.filterTibkatDuplicates(lod, debug=False)
+            filteredLod = EventSeriesCompletion.filterDuplicatesByTitle(lod, debug=False)
             seriesRes["#deduplicatedRecords"] = len(filteredLod)
             res.append(seriesRes)
         print(tabulate.tabulate(res, headers="keys", tablefmt="mediawiki"))
@@ -184,7 +184,7 @@ class TestEventSeriesCompletion(BaseTest):
         """
         seriesAcronym = "ACCV"
         seriesRecords = self.querySeriesLod(seriesAcronym).get("tibkat")
-        res = EventSeriesCompletion.filterTibkatDuplicates(seriesRecords)
+        res = EventSeriesCompletion.filterDuplicatesByTitle(seriesRecords)
         if self.debug:
             print("Reduced:", len(seriesRecords), "→", len(res))
         self.assertLessEqual(140,len(seriesRecords))

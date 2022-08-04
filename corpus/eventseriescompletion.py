@@ -105,10 +105,10 @@ class EventSeriesCompletion(object):
 
 
     @staticmethod
-    def filterTibkatDuplicates(lod: List[dict], debug: bool = False) -> List[dict]:
+    def filterDuplicatesByTitle(lod: List[dict], debug: bool = False) -> List[dict]:
         """
         tries to filter out duplicate event records
-        currently only for tibkat records
+        currently only for tibkat and dblp records
         Args:
             lod(List[dict]): List of event records from one sources
             debug(bool): if True show debug messages
@@ -116,29 +116,19 @@ class EventSeriesCompletion(object):
         Returns:
             List[dict]
         """
-        byOrd = LOD.getLookup(lod, "ordinal", withDuplicates=True)
+        byYear = LOD.getLookup(lod, "year", withDuplicates=True)
         res = []
-        for ord, records in byOrd.items():
+        for year, records in byYear.items():
             if len(records) > 1:
                 recordsRanked = [(TitleScore.getScore(record.get("title")), record) for record in records]
                 recordsRanked.sort(key=lambda pair:pair[0], reverse=True)
                 if debug:
-                    print(f"==={ord}===")
+                    print(f"==={year}===")
                     for score, record in recordsRanked:
                         print(f"* {score} - '{record.get('title')}'")
                 maxScore = recordsRanked[0][0]
                 records = [record for score, record in recordsRanked if score == maxScore]
-                if len(records) > 1:
-                    elRecords = [r for r in records if r.get("documentTypeCode") == "EL"]
-                    if elRecords:
-                        res.append(elRecords[0])
-                    else:
-                        # print(records)
-                        pass
-                elif len(records) == 1:
-                    res.append(records[0])
-                else:
-                    pass
+                res.extend(records)
             else:
                 res.append(records[0])
         return res
