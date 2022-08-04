@@ -106,7 +106,12 @@ class TestOREventManager(DataSourceTest):
             lod = getattr(manager, expectedFn)(limit=self.limit)
             self.assertEqual(self.limit, len(lod))
             for d in lod:
-                self.assertEqual(f"{self.wikiId}-{via}", d.get('source'))
+                postfix = ""
+                if via == "backup":
+                    postfix = "-backup"
+                elif via == "wikiMarkup":
+                    postfix = "-wikiMarkup"
+                self.assertEqual(f"{self.wikiId}{postfix}", d.get('source'))
 
     def test_fromWikiUser(self):
         """
@@ -173,7 +178,12 @@ class TestOREventSeriesManager(DataSourceTest):
             lod = getattr(manager, expectedFn)(limit=self.limit)
             self.assertEqual(self.limit, len(lod))
             for d in lod:
-                self.assertEqual(f"{self.wikiId}-{via}", d.get('source'))
+                postfix = ""
+                if via == "backup":
+                    postfix = "-backup"
+                elif via == "wikiMarkup":
+                    postfix = "-wikiMarkup"
+                self.assertEqual(f"{self.wikiId}{postfix}", d.get('source'))
 
     def test_fromWikiUser(self):
         """

@@ -5,7 +5,7 @@ import pandas as pd
 from geograpy.locator import City
 from lodstorage.lod import LOD
 
-from basetest import BaseTest
+from tests.basetest import BaseTest
 from event import EventStorage
 from eventseriescompletion import EventSeriesCompletion
 from location import LocationLookup
