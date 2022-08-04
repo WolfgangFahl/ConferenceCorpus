@@ -134,7 +134,7 @@ class OREventManager(EventManager):
             profile(bool):
         '''
         lod = OrSMW.getLodFromWikiApi(self.wikiId, OREvent, askExtra=askExtra, limit=limit, profile=profile)
-        self.setAllAttr(lod,"source",f"{self.wikiId}-api")
+        self.setAllAttr(lod,"source",f"{self.wikiId}")
         self.postProcessLodRecords(lod,wikiId=self.wikiId, debug=self.debug)
         return lod
 
@@ -492,7 +492,7 @@ class OREventSeriesManager(EventSeriesManager):
             limit(int): limit number of queried records
         '''
         lod = OrSMW.getLodFromWikiApi(self.wikiId, OREventSeries, askExtra=askExtra, limit=limit, profile=profile)
-        self.setAllAttr(lod, "source", f"{self.wikiId}-api")
+        self.setAllAttr(lod, "source", f"{self.wikiId}")
         self.postProcessLodRecords(lod, wikiId=self.wikiId, debug=self.debug)
         return lod
 
