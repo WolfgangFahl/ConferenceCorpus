@@ -1,6 +1,6 @@
 import pathlib
 import os
-from setuptools import setup,find_packages
+from setuptools import setup
 from collections import OrderedDict
 from corpus.version import Version
 

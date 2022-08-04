@@ -307,7 +307,7 @@ def main(_argv=None):
     '''
     command line entry point
     '''
-    parser = argparse.ArgumentParser(description='blackjack demo')
+    parser = argparse.ArgumentParser(description='Dashboard')
     parser.add_argument('--host',default=socket.getfqdn())
     parser.add_argument('--port',type=int,default=8000)
     args = parser.parse_args()
