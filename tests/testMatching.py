@@ -6,10 +6,10 @@ from geograpy.locator import City
 from lodstorage.lod import LOD
 
 from tests.basetest import BaseTest
-from event import EventStorage
-from eventseriescompletion import EventSeriesCompletion
-from location import LocationLookup
-from parsing import Tokenizer
+from corpus.event import EventStorage
+from corpus.eventseriescompletion import EventSeriesCompletion
+from corpus.location import LocationLookup
+from ptp.parsing import Tokenizer
 from ptp.signature import AcronymCategory
 
 @unittest.skip("Tests are in development for a matching training set generation")
