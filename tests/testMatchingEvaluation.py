@@ -10,7 +10,7 @@ import unittest
 
 import requests
 
-from basetest import BaseTest
+from tests.basetest import BaseTest
 from corpus.matching.evaluation import MatchEvaluation
 
 
@@ -61,7 +61,7 @@ class TestMatching(BaseTest):
                 for value in values:
                     self.lut[source_id][value] = record
 
-    @unittest.skipIf(BaseTest.inPublicCI(), "Accesses api of bitplan conferenceCorpus api")
+    @unittest.skipIf(BaseTest.inPublicCI(), "Accesses api of bitplan conferenceCorpus api → unreliable for CI")
     def test_raw_records(self):
         """
         tests existing ids directly from records
