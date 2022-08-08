@@ -38,7 +38,7 @@ setup(name='ConferenceCorpus',
             'Programming Language :: Python :: 3.10'
       ],
       packages=['resources','corpus','corpus.datasources','corpus.utils','corpus.quality','corpus.xmlhandler','ptp'],
-      package_data={'resources':['*.yaml']},
+      package_data={'resources':['*.yaml', '*.json']},
       install_requires=requirements,
       entry_points={
          'console_scripts': [

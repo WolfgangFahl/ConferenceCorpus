@@ -47,3 +47,7 @@ matplotlib>=3.5.2
 Markdown>=3.3.7
 # https://github.com/pyparsing/pyparsing
 pyparsing>=3.0.9
+# https://pypi.org/project/scikit-learn/
+scikit-learn~=1.1.2
+# https://pypi.org/project/requests/
+requests~=2.26.0

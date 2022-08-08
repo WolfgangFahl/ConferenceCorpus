@@ -1,0 +1,991 @@
+{
+    "ACISP 1996":
+    {
+        "openresearchId": ["ACISP 1996"],
+        "wikidataId": ["Q106067066"],
+        "dblpConferenceId": ["conf/acisp/1996"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["2159559-8"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp1996"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 1997":
+    {
+        "openresearchId": ["ACISP 1997"],
+        "wikidataId": ["Q106067060"],
+        "TibKatId": ["534995004"],
+        "dblpConferenceId": ["conf/acisp/1997"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["2164018-X"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp1997"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 1998":
+    {
+        "openresearchId": ["ACISP 1998"],
+        "wikidataId": ["Q106242954"],
+        "TibKatId": ["272031666","333951670"],
+        "dblpConferenceId": ["conf/acisp/1998"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["2170923-3"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp1998"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 1999":
+    {
+        "openresearchId": ["ACISP 1999"],
+        "wikidataId": ["Q106067058"],
+        "TibKatId": ["265598397","334055849"],
+        "dblpConferenceId": ["conf/acisp/1999"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["2175582-6"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp1999"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2000":
+    {
+        "openresearchId": ["ACISP 2000"],
+        "wikidataId": ["Q111784339"],
+        "TibKatId": ["534036406","314893369"],
+        "dblpConferenceId": ["conf/acisp/2000"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["2183997-9"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2000"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2001":
+    {
+        "openresearchId": ["ACISP 2001"],
+        "wikidataId": ["Q111784736"],
+        "TibKatId": ["330623206","336906773"],
+        "dblpConferenceId": ["conf/acisp/2001"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["10022167-1"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2001"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2002":
+    {
+        "openresearchId": ["ACISP 2002"],
+        "wikidataId": ["Q106242953"],
+        "TibKatId": ["36539324X","349360782"],
+        "dblpConferenceId": ["conf/acisp/2002"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["10038863-2"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2002"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2003":
+    {
+        "openresearchId": ["ACISP 2003"],
+        "wikidataId": ["Q106242952"],
+        "TibKatId": ["36781966X","366188070"],
+        "dblpConferenceId": ["conf/acisp/2003"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["10059290-9"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2003"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2004":
+    {
+        "openresearchId": ["ACISP 2004"],
+        "wikidataId": ["Q106067054"],
+        "TibKatId": ["390320854","393434567"],
+        "dblpConferenceId": ["conf/acisp/2004"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["10082551-5"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2004"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2005":
+    {
+        "openresearchId": ["ACISP 2005"],
+        "wikidataId": ["Q106242951"],
+        "TibKatId": ["493627456","490235301"],
+        "dblpConferenceId": ["conf/acisp/2005"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["16033855-4"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2005"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2006":
+    {
+        "openresearchId": ["ACISP 2006"],
+        "wikidataId": ["Q106242950"],
+        "TibKatId": ["1646686845","513555757"],
+        "dblpConferenceId": ["conf/acisp/2006"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["6056596-2"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2006"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2007":
+    {
+        "openresearchId": ["ACISP 2007"],
+        "wikidataId": ["Q111784784"],
+        "TibKatId": ["535028881","533208920"],
+        "dblpConferenceId": ["conf/acisp/2007"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["6065791-1"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2007"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2008":
+    {
+        "openresearchId": ["ACISP 2008"],
+        "wikidataId": ["Q111784785"],
+        "TibKatId": ["569643872","570921171"],
+        "dblpConferenceId": ["conf/acisp/2008"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["10347903-X"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2008"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2009":
+    {
+        "openresearchId": ["ACISP 2009"],
+        "wikidataId": ["Q111784786"],
+        "TibKatId": ["602624282"],
+        "dblpConferenceId": ["conf/acisp/2009"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["16013249-6"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2009"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2010":
+    {
+        "openresearchId": ["ACISP 2010"],
+        "wikicfpId": ["8320"],
+        "wikidataId": ["Q111784787"],
+        "TibKatId": ["627267920","635987597"],
+        "dblpConferenceId": ["conf/acisp/2010"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["16070998-2"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2010"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2011":
+    {
+        "wikicfpId": ["12418"],
+        "wikidataId": ["Q106242949"],
+        "TibKatId": ["666068267","66269421X"],
+        "dblpConferenceId": ["conf/acisp/2011"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["16163914-8"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2011"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2012":
+    {
+        "openresearchId": ["ACISP 2012"],
+        "wikicfpId": ["21309"],
+        "wikidataId": ["Q111784796"],
+        "TibKatId": ["717614948"],
+        "dblpConferenceId": ["conf/acisp/2012"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1023843218"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2012"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2013":
+    {
+        "openresearchId": ["ACISP 2013"],
+        "wikidataId": ["Q106242948"],
+        "TibKatId": ["747730474"],
+        "dblpConferenceId": ["conf/acisp/2013"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1036717933"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2013"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2014":
+    {
+        "openresearchId": ["ACISP 2014"],
+        "wikicfpId": ["40064"],
+        "wikidataId": ["Q106242946"],
+        "TibKatId": ["793863643"],
+        "dblpConferenceId": ["conf/acisp/2014"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1054616329"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2014"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2015":
+    {
+        "openresearchId": ["ACISP 2015"],
+        "wikicfpId": ["43473"],
+        "wikidataId": ["Q106242945"],
+        "TibKatId": ["832011959"],
+        "dblpConferenceId": ["conf/acisp/2015"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1072487039"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2015"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2016":
+    {
+        "openresearchId": ["ACISP 2016"],
+        "wikicfpId": ["47130"],
+        "wikidataId": ["Q111784798"],
+        "TibKatId": ["866995692"],
+        "dblpConferenceId": ["conf/acisp/2016-1"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1105667170"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2016"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2017":
+    {
+        "openresearchId": ["ACISP 2017"],
+        "wikicfpId": ["58319"],
+        "wikidataId": ["Q106067051"],
+        "TibKatId": ["890936579"],
+        "dblpConferenceId": ["conf/acisp/2017-1"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1135628742"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2017"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2018":
+    {
+        "openresearchId": ["ACISP 2018"],
+        "wikicfpId": ["70654"],
+        "wikidataId": ["Q111784799"],
+        "TibKatId": ["102704185X"],
+        "dblpConferenceId": ["conf/acisp/2018"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1161856749"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2018"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2019":
+    {
+        "openresearchId": ["ACISP 2019"],
+        "wikicfpId": ["79124"],
+        "wikidataId": ["Q106242943"],
+        "TibKatId": ["1667628194"],
+        "dblpConferenceId": ["conf/acisp/2019"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1188659006"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefId": ["acisp2019"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2020":
+    {
+        "openresearchId": ["ACISP 2020"],
+        "wikidataId": ["Q106242942"],
+        "dblpConferenceId": ["conf/acisp/2020"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1217872477"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2021":
+    {
+        "openresearchId": ["ACISP 2021"],
+        "wikidataId": ["Q111784806"],
+        "dblpConferenceId": ["conf/acisp/2021"],
+        "dblpSeriesId": ["conf/acisp"],
+        "gndId": ["1247081958"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACISP 2022":
+    {
+        "openresearchId": ["ACISP 2022"],
+        "dblpSeriesId": ["conf/acisp"],
+        "seriesWikidataId": ["Q105695401"],
+        "seriesWikicfpId": ["32"],
+        "seriesOpenresearchId": ["ACISP"],
+        "confrefSeriesId": ["acisp"]
+    },
+    "ACII 2005":
+    {
+        "openresearchId": ["ACII 2005"],
+        "wikidataId": ["Q106079196"],
+        "TibKatId": ["501430601","50309417X"],
+        "dblpConferenceId": ["conf/acii/acii2005"],
+        "dblpSeriesId": ["conf/acii"],
+        "gndId": ["10120135-7"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2005"],
+        "confrefSeriesId": ["acii"]
+    },
+    "ACII 2007":
+    {
+        "openresearchId": ["ACII 2007"],
+        "wikicfpId": ["1182"],
+        "TibKatId": ["543317862","550128050"],
+        "dblpConferenceId": ["conf/acii/acii2007"],
+        "dblpSeriesId": ["conf/acii"],
+        "gndId": ["6067506-8"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2007"],
+        "confrefSeriesId": ["acii"]
+    },
+    "ACII 2009":
+    {
+        "openresearchId": ["ACII 2009"],
+        "wikicfpId": ["3889"],
+        "TibKatId": ["655702016","655702148","655701958"],
+        "dblpConferenceId": ["conf/acii/acii2009"],
+        "dblpSeriesId": ["conf/acii"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2009"],
+        "confrefSeriesId": ["acii"]
+    },
+    "ACII 2011":
+    {
+        "openresearchId": ["ACII 2011"],
+        "wikicfpId": ["13393"],
+        "wikidataId": ["Q106067012"],
+        "TibKatId": ["668314389","668314257","671091727","671091670"],
+        "dblpConferenceId": ["conf/acii/acii2011-1"],
+        "dblpSeriesId": ["conf/acii"],
+        "gndId": ["16324667-1"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2011"],
+        "confrefSeriesId": ["acii"]
+    },
+    "ACII 2013":
+    {
+        "openresearchId": ["ACII 2013"],
+        "wikicfpId": ["26573","25094"],
+        "wikidataId": ["Q106330455"],
+        "TibKatId": ["782440541","782442927"],
+        "dblpConferenceId": ["conf/acii/2013"],
+        "dblpSeriesId": ["conf/acii"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2013"],
+        "confrefSeriesId": ["acii"]
+    },
+    "ACII 2015":
+    {
+        "openresearchId": ["ACII 2015"],
+        "wikicfpId": ["41320"],
+        "wikidataId": ["Q106242726"],
+        "TibKatId": ["847204308","843967234"],
+        "dblpConferenceId": ["conf/acii/2015"],
+        "dblpSeriesId": ["conf/acii"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2015"],
+        "confrefSeriesId": ["acii"],
+        "gndId": ["1103464345"]
+    },
+    "ACII 2017":
+    {
+        "openresearchId": ["ACII 2017"],
+        "wikicfpId": ["57886"],
+        "dblpConferenceId": ["conf/acii/2017"],
+        "dblpSeriesId": ["conf/acii"],
+        "gndId": ["1049668995"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2017"],
+        "confrefSeriesId": ["acii"],
+        "TibKatId": ["101871023X","1018828222"]
+    },
+    "ACII 2019":
+    {
+        "openresearchId": ["ACII 2019"],
+        "wikicfpId": ["85665"],
+        "wikidataId": ["Q106242725"],
+        "dblpConferenceId": ["conf/acii/2019"],
+        "dblpSeriesId": ["conf/acii"],
+        "gndId": ["1206593571"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2019"],
+        "confrefSeriesId": ["acii"],
+        "TibKatId": ["169266655X","1693008068"]
+    },
+    "ACII 2021":
+    {
+        "openresearchId": ["ACII 2021"],
+        "dblpConferenceId": ["conf/acii/2021"],
+        "dblpSeriesId": ["conf/acii"],
+        "gndId": ["1255322934"],
+        "seriesWikidataId": ["Q105694969"],
+        "seriesWikicfpId": ["29"],
+        "seriesOpenresearchId": ["ACII"],
+        "confrefId": ["acii2021"],
+        "confrefSeriesId": ["acii"]
+    },
+    "AAAI 1980":
+    {
+        "openresearchId": ["AAAI 1980"],
+        "wikidataId": ["Q109514597"],
+        "TibKatId": ["02205460X"],
+        "dblpConferenceId": ["conf/aaai/aaai80"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["811273-3"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1982":
+    {
+        "openresearchId": ["AAAI 1982"],
+        "wikidataId": ["Q109514598"],
+        "TibKatId": ["22054642"],
+        "dblpConferenceId": ["conf/aaai/aaai82"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1091806-1"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1983":
+    {
+        "openresearchId": ["AAAI 1983"],
+        "wikidataId": ["Q109514599"],
+        "dblpConferenceId": ["conf/aaai/aaai83"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5002546-6"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1984":
+    {
+        "openresearchId": ["AAAI 1984"],
+        "wikidataId": ["Q109514600"],
+        "TibKatId": ["22089552X"],
+        "dblpConferenceId": ["conf/aaai/aaai84"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5002926-5"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1986":
+    {
+        "openresearchId": ["AAAI 1986"],
+        "wikidataId": ["Q109514601"],
+        "TibKatId": ["30436974"],
+        "dblpConferenceId": ["conf/aaai/aaai86-1"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["815268-8"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1987":
+    {
+        "openresearchId": ["AAAI 1987"],
+        "wikidataId": ["Q109514602"],
+        "TibKatId": ["124950248"],
+        "dblpConferenceId": ["conf/aaai/aaai87"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["808466-X"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1988":
+    {
+        "openresearchId": ["AAAI 1988"],
+        "wikidataId": ["Q109514603"],
+        "TibKatId": ["167949640"],
+        "dblpConferenceId": ["conf/aaai/aaai88"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5048155-1"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1990":
+    {
+        "openresearchId": ["AAAI 1990"],
+        "wikidataId": ["Q109514604"],
+        "TibKatId": ["32489110"],
+        "dblpConferenceId": ["conf/aaai/aaai90"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1219939-4"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1991":
+    {
+        "openresearchId": ["AAAI 1991"],
+        "wikidataId": ["Q109517925"],
+        "TibKatId": ["32257058"],
+        "dblpConferenceId": ["conf/aaai/aaai91-1"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["3014161-8"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1992":
+    {
+        "openresearchId": ["AAAI 1992"],
+        "wikidataId": ["Q109517926"],
+        "TibKatId": ["22382364"],
+        "dblpConferenceId": ["conf/aaai/aaai92"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1223909-4"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1993":
+    {
+        "openresearchId": ["AAAI 1993"],
+        "wikidataId": ["Q109517927"],
+        "TibKatId": ["128519312"],
+        "dblpConferenceId": ["conf/aaai/aaai93"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5093545-8"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1994":
+    {
+        "openresearchId": ["AAAI 1994"],
+        "wikidataId": ["Q109517928"],
+        "TibKatId": ["173152295"],
+        "dblpConferenceId": ["conf/aaai/aaai94-1"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5118370-5"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1996":
+    {
+        "openresearchId": ["AAAI 1996"],
+        "wikidataId": ["Q109517929"],
+        "TibKatId": ["218977662"],
+        "dblpConferenceId": ["conf/aaai/aaai96-1"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5190272-2"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1997":
+    {
+        "openresearchId": ["AAAI 1997"],
+        "wikidataId": ["Q109517930"],
+        "TibKatId": ["236041010"],
+        "dblpConferenceId": ["conf/aaai/aaai97"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5264284-7"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1998":
+    {
+        "openresearchId": ["AAAI 1998"],
+        "wikidataId": ["Q109517932"],
+        "TibKatId": ["249954583"],
+        "dblpConferenceId": ["conf/aaai/aaai98"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5305949-9"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 1999":
+    {
+        "openresearchId": ["AAAI 1999"],
+        "wikidataId": ["Q109518279"],
+        "TibKatId": ["302034455"],
+        "dblpConferenceId": ["conf/aaai/aaai99"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1402508-5"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2000":
+    {
+        "openresearchId": ["AAAI 2000"],
+        "wikidataId": ["Q109517933"],
+        "TibKatId": ["321529308"],
+        "dblpConferenceId": ["conf/aaai/aaai2000"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["10013436-1"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2002":
+    {
+        "openresearchId": ["AAAI 2002"],
+        "wikidataId": ["Q109517993"],
+        "TibKatId": ["772448817"],
+        "dblpConferenceId": ["conf/aaai/aaai2002"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["5542102-7"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2004":
+    {
+        "openresearchId": ["AAAI 2004"],
+        "wikidataId": ["Q109517994"],
+        "TibKatId": ["38804022X"],
+        "dblpConferenceId": ["conf/aaai/aaai2004"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["10093357-9"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2005":
+    {
+        "openresearchId": ["AAAI 2005"],
+        "wikidataId": ["Q109517995"],
+        "TibKatId": ["502828560"],
+        "dblpConferenceId": ["conf/aaai/aaai2005"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["10121051-6"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2006":
+    {
+        "openresearchId": ["AAAI 2006"],
+        "wikidataId": ["Q73134823"],
+        "TibKatId": ["518881199"],
+        "dblpConferenceId": ["conf/aaai/aaai2006"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["6059591-7"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2007":
+    {
+        "openresearchId": ["AAAI 2007"],
+        "wikidataId": ["Q109517996"],
+        "TibKatId": ["545950309"],
+        "dblpConferenceId": ["conf/aaai/aaai2007"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["10178179-9"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2008":
+    {
+        "openresearchId": ["AAAI 2008"],
+        "wikicfpId": ["1842"],
+        "wikidataId": ["Q101111863"],
+        "TibKatId": ["585899800"],
+        "dblpConferenceId": ["conf/aaai/aaai2008"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["10358438-9"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2010":
+    {
+        "openresearchId": ["AAAI 2010"],
+        "wikidataId": ["Q109517997"],
+        "TibKatId": ["659420589"],
+        "dblpConferenceId": ["conf/aaai/aaai2010"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["16101726-5"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2011":
+    {
+        "openresearchId": ["AAAI 2011"],
+        "wikidataId": ["Q109517999"],
+        "TibKatId": ["734535899"],
+        "dblpConferenceId": ["conf/aaai/aaai2011"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["16324722-5"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2011"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2012":
+    {
+        "openresearchId": ["AAAI 2012"],
+        "wikicfpId": ["18353"],
+        "wikidataId": ["Q109518000"],
+        "TibKatId": ["741220180"],
+        "dblpConferenceId": ["conf/aaai/aaai2012"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1027360564"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2012"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2013":
+    {
+        "openresearchId": ["AAAI 2013"],
+        "wikicfpId": ["25337"],
+        "wikidataId": ["Q109518001"],
+        "TibKatId": ["799384151"],
+        "dblpConferenceId": ["conf/aaai/aaai2013"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1054394946"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2013"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2014":
+    {
+        "openresearchId": ["AAAI 2014"],
+        "wikicfpId": ["31244"],
+        "wikidataId": ["Q109518196"],
+        "TibKatId": ["804999694"],
+        "dblpConferenceId": ["conf/aaai/aaai2014"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["106856444X"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2014"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2015":
+    {
+        "openresearchId": ["AAAI 2015"],
+        "wikicfpId": ["37497"],
+        "wikidataId": ["Q109518197"],
+        "TibKatId": ["836010892"],
+        "dblpConferenceId": ["conf/aaai/aaai2015"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1076297633"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2015"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2016":
+    {
+        "openresearchId": ["AAAI 2016"],
+        "wikicfpId": ["45094"],
+        "wikidataId": ["Q109518200"],
+        "TibKatId": ["891228934"],
+        "dblpConferenceId": ["conf/aaai/aaai2016"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1126057851"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2016"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2017":
+    {
+        "openresearchId": ["AAAI 2017"],
+        "wikicfpId": ["54779"],
+        "wikidataId": ["Q109518201"],
+        "TibKatId": ["885581504"],
+        "dblpConferenceId": ["conf/aaai/aaai2017"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1141255189"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2017"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2018":
+    {
+        "openresearchId": ["AAAI 2018"],
+        "wikicfpId": ["63229"],
+        "wikidataId": ["Q109518202"],
+        "TibKatId": ["1677843861"],
+        "dblpConferenceId": ["conf/aaai/aaai2018"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1167948785"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2018"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2019":
+    {
+        "openresearchId": ["AAAI 2019"],
+        "wikicfpId": ["75888"],
+        "wikidataId": ["Q56677269"],
+        "TibKatId": ["167784499X"],
+        "dblpConferenceId": ["conf/aaai/aaai2019"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1195735456"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefId": ["aaai2019"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2020":
+    {
+        "openresearchId": ["AAAI 2020"],
+        "wikicfpId": ["90881"],
+        "wikidataId": ["Q65769858"],
+        "TibKatId": ["1759191353"],
+        "dblpConferenceId": ["conf/aaai/aaai2020"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1227124856"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2021":
+    {
+        "openresearchId": ["AAAI 2021"],
+        "wikicfpId": ["104535"],
+        "wikidataId": ["Q109518203"],
+        "TibKatId": ["1753153867"],
+        "dblpConferenceId": ["conf/aaai/aaai2021"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1233825666"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    },
+    "AAAI 2022":
+    {
+        "openresearchId": ["AAAI 2022"],
+        "wikicfpId": ["137565"],
+        "wikidataId": ["Q109518204"],
+        "dblpConferenceId": ["conf/aaai/aaai2022"],
+        "dblpSeriesId": ["conf/aaai"],
+        "gndId": ["1260680606"],
+        "seriesWikidataId": ["Q56682083"],
+        "seriesWikicfpId": ["3"],
+        "seriesOpenresearchId": ["AAAI"],
+        "confrefSeriesId": ["aaai"]
+    }
+}
