@@ -90,7 +90,7 @@ class TestCorpusLookup(DataSourceTest):
         '''
         test getting entries for a given query
         '''
-        multiQuery="select * from {event}"
+        multiQuery="SELECT * FROM {event}"
         lookup=CorpusLookup(configure=self.configureCorpusLookup)
         variable=lookup.getMultiQueryVariable(multiQuery)
         debug=self.debug
@@ -99,7 +99,7 @@ class TestCorpusLookup(DataSourceTest):
             print(f"found '{variable}' as the variable in '{multiQuery}'")
         self.assertEqual("event",variable)
         lookup.load()
-        idQuery="""select source,eventId from event where acronym like "%WEBIST%" order by year desc"""
+        idQuery="""SELECT source,eventId FROM event WHERE acronym LIKE "%WEBIST%" ORDER BY year DESC"""
         dictOfLod=lookup.getDictOfLod4MultiQuery(multiQuery,idQuery)
         if debug:
             jsonStr=json.dumps(dictOfLod, sort_keys=True, indent=2,default=str)

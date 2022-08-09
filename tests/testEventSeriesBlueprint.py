@@ -26,7 +26,8 @@ class TestEventSeriesBlueprint(TestWebServer):
 
     def test_MetadataMapping(self):
         mapping = MetadataMappings()
-        print(asdict(mapping))
+        if self.debug:
+            print(asdict(mapping))
 
     def testGetEventSeries(self):
         '''
@@ -36,8 +37,7 @@ class TestEventSeriesBlueprint(TestWebServer):
         '''
         jsonStr = self.getResponse("/eventseries/WEBIST?format=json")
         res = json.loads(jsonStr)
-        debug = self.debug
-        if debug:
+        if self.debug:
             print(res)
         self.assertTrue("confref" in res)
         self.assertTrue(len(res["confref"]) > 15)

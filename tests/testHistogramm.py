@@ -4,26 +4,25 @@ Created on 17.05.2022
 @author: wf
 '''
 import datetime
-from statistics import mean
-from typing import List
-
-from dateutil.parser import parse
-from corpus.eventcorpus import DataSource
-from corpus.utils.DatePolarHistogram import DatePolarHistogram
-from corpus.utils.plots import Histogramm, PlotSettings, Zipf, Plot
-from tests.basetest import BaseTest
-from corpus.event import EventStorage
-from corpus.utils.figure import Figure,FigureList
-
+import re
+import sys
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from statistics import mean
+from typing import List
+from dateutil.parser import parse
+from collections import Counter
 from pdffit.distfit import BestFitDistribution
 
-from collections import Counter
-import re
-import os
-import sys
+from corpus.eventcorpus import DataSource
+from corpus.utils.DatePolarHistogram import DatePolarHistogram
+from corpus.utils.plots import Histogramm, PlotSettings, Zipf, Plot
+from corpus.event import EventStorage
+from corpus.utils.figure import Figure,FigureList
+from tests.basetest import BaseTest
+
 
 class TestHistogramm(BaseTest):
     '''
@@ -120,7 +119,8 @@ class TestHistogramm(BaseTest):
             except Exception as ex:
                 print(ex,file=sys.stderr)
                 pass
-        self.figureList.printAllMarkups()
+        if not self.inPublicCI():
+            self.figureList.printAllMarkups()
     
 
     def testSeriesCompletenessHistogramm(self):
@@ -151,7 +151,6 @@ ORDER by 6 DESC
                 lod = sqlDB.query(sqlQuery)
                 values = [round(record["completeness"],2) for record in lod if isinstance(record["completeness"], float)]
                 values.sort()
-                print(dataSource,len(values),"→", len(values) // 2)
                 threshold = values[len(values) // 2]
                 h = Histogramm(x=values)
                 histOutputFileName=f"eventSeriesCompleteness-{dataSource.name}.png"
@@ -168,7 +167,8 @@ ORDER by 6 DESC
                        ps=hps,
                        bins=10,
                        vlineAt=threshold)
-        self.figureList.printAllMarkups()
+        if not self.inPublicCI():
+            self.figureList.printAllMarkups()
 
     def testSeriesCompletenessHistogrammByAcronym(self):
         '''
@@ -243,9 +243,8 @@ ORDER by 6 DESC
                    ps=hps,
                    bins=10,
                    vlineAt=threshold)
-        
-            print(dataSource, len(values), "→", len(values) // 2)
-        self.figureList.printAllMarkups()
+        if not self.inPublicCI():
+            self.figureList.printAllMarkups()
 
     def testEventSignatureCompleteness(self):
         """
@@ -311,7 +310,8 @@ ORDER by 6 DESC
             plot.doShow(ps)
             figure=Figure(dataSource.title,caption=f"signature completeness of {prop}",figLabel=f"signcomp-{prop}",sqlQuery=None,fileNames=[histOutputFileName])
             self.figureList.add(figure)
-        self.figureList.printAllMarkups()
+        if not self.inPublicCI():
+            self.figureList.printAllMarkups()
 
     def test_VolumeDistribution(self):
         """
@@ -356,7 +356,8 @@ ORDER by 6 DESC
         histOutputFileName = f"volumeNumberDistribution_tibkat.png"
         ps = PlotSettings(outputFile=f"{self.histroot}/{histOutputFileName}")
         plot.doShow(ps)
-        print(volumes)
+        if self.debug:
+            print(volumes)
 
     def testStartDateDistribution(self):
         """

@@ -80,7 +80,7 @@ class MatchEvaluation:
         """
         return ["match" if match else "no-match" for match in result]
 
-    def plot_confusion_matrix(self):
+    def plot_confusion_matrix(self, show: bool=False):
         """
         prints out different evaluation metrics
         """
@@ -90,7 +90,8 @@ class MatchEvaluation:
         plt.xlabel('Prediction', fontsize=18)
         plt.ylabel('Actual', fontsize=18)
         plt.title('Confusion Matrix', fontsize=18)
-        plt.show()
+        if show:
+            plt.show()
 
     def evaluate_records(self, records: List[dict]):
         """

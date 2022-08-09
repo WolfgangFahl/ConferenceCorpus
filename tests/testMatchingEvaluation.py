@@ -7,7 +7,6 @@ import json
 import pathlib
 import random
 import unittest
-
 import requests
 
 from tests.basetest import BaseTest
@@ -50,6 +49,7 @@ class TestMatching(BaseTest):
             "confrefSeriesId": ["acisp"]
         }
         self.training_data = self.load_training_data()
+        self.showPlot = not self.inPublicCI()
         self.lut = {}
         # construct lookup table for source ids
         for source_id in MatchEvaluation.source_ids:
@@ -73,7 +73,7 @@ class TestMatching(BaseTest):
                 records.extend(values)
         evaluation = MatchEvaluation(self.lut)
         evaluation.evaluate_records(records)
-        evaluation.plot_confusion_matrix()
+        evaluation.plot_confusion_matrix(show=self.showPlot)
         evaluation.print_scores()
 
     def test_baseline(self):
@@ -92,7 +92,7 @@ class TestMatching(BaseTest):
             })
         evaluation = MatchEvaluation(self.lut)
         evaluation.evaluate_records(matches)
-        evaluation.plot_confusion_matrix()
+        evaluation.plot_confusion_matrix(show=self.showPlot)
         evaluation.print_scores()
 
     def test_perfect_match(self):
@@ -103,12 +103,11 @@ class TestMatching(BaseTest):
         record1 = {k: v[0] for k, v in self.acisp1997.items()}
         record2 = {k: v[0] for k, v in self.acisp1996.items()}
         evaluation.evaluate_records([record1, record2])
-        evaluation.plot_confusion_matrix()
+        evaluation.plot_confusion_matrix(show=self.showPlot)
         evaluation.print_scores()
         self.assertEqual(1.0, evaluation.recall)
         self.assertEqual(1.0, evaluation.precision)
         self.assertEqual(1.0, evaluation.accuracy)
-        print(evaluation.evaluation_result)
 
     def test_checkMatch(self):
         """

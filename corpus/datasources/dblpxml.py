@@ -75,8 +75,7 @@ class DblpXml(object):
         warn if we are using the full dataset
         '''
         print(f"Warning - using full {self.xmlfile} dataset ~{self.getExpectedTotal()/1000000:3.1f}m records!")  
-        
-           
+
     def isDownloaded(self,minsize:int=3000000000)->bool:
         '''
         check that the dblp file is downloaded
@@ -117,7 +116,7 @@ class DblpXml(object):
         for event, element in self.iterParser():
             showProgress.next()
             if event == 'start': 
-                level += 1;
+                level += 1
                 if level==2:
                     doadd=element.tag in entities
                     if element.tag in keyEntities:
@@ -142,7 +141,7 @@ class DblpXml(object):
                         
                 pass
             elif event == 'end':
-                level -=1;
+                level -=1
             self.clear_element(element)
         sampleTree=etree.ElementTree(root) 
         return sampleTree
@@ -264,7 +263,7 @@ class DblpXml(object):
             starttime=time.time()
             dictOfLod=self.asDictOfLod(limit,progressSteps=progress,expectedTotal=expectedTotal)
             elapsed=time.time()-starttime
-            executeMany=True;
+            executeMany=True
             if showProgress:
                 print(f"parsing done after {elapsed:5.1f} s ... storing ...")
             starttime=time.time()    
@@ -314,7 +313,7 @@ class DblpXml(object):
         levelCount=Counter()
         for event, elem in self.iterParser():
             if event == 'start': 
-                level += 1;
+                level += 1
                 levelCount[level]+=1
                 if level==2:
                     kind=elem.tag
@@ -351,7 +350,7 @@ class DblpXml(object):
                     current={} 
                     if progress.count>=limit:
                         break
-                level -= 1;
+                level -= 1
                 self.clear_element(elem)
                 index+=1
         if self.debug:

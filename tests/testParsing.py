@@ -49,6 +49,6 @@ class TestParsing(BaseTest):
             event=f"""{titleRow["source"]}-{titleRow["eventId"]}"""
             count+=1
             eParser.parse(title,event,show=count<=showLimit)
-        show=True
+        show = not self.inPublicCI()
         if show:
             eParser.showStatistics()

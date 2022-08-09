@@ -88,19 +88,20 @@ class TestEventSeriesCompletion(BaseTest):
         '''
         test guessing the ordinal
         '''
-        debug=self.debug
-        debug=True
-        seriesIds=["VLDB"]
+        seriesIds = ["VLDB"]
         for seriesId in seriesIds:
-            seriesLod=self.getSeriesLod(seriesId)
+            seriesLod = self.getSeriesLod(seriesId)
             for event in seriesLod:
                 Ordinal.addParsedOrdinal(event)
-            if debug:
+            if self.debug:
                 print(f"Series {seriesId} (sorted)")        
-            seriesLodByOrdinal=sorted(seriesLod,key=lambda event:event["ordinal"] if event.get("ordinal") in event else 0)
+            seriesLodByOrdinal = sorted(seriesLod,key=lambda event: event.get("ordinal", 0))
             for event in seriesLodByOrdinal:
-                if debug:
-                    print(f"""{event.get("ordinal","?")}:{event.get("year","?")}-{event["source"]}{event}""")
+                if self.debug:
+                    ordinal = event.get("ordinal", "?")
+                    year = event.get("year", "?")
+                    source = event.get("source")
+                    print(f"""{ordinal}:{year}-{source}{event}""")
                 
        
     def testMergingSeries(self):
@@ -108,16 +109,17 @@ class TestEventSeriesCompletion(BaseTest):
         test merging event series from different sources
         '''
         vldbSeriesLod=self.getSeriesLod("VLDB")
-        debug=self.debug
-        #debug=True
-        if debug:
-            #print (vldbSeriesLod)
+        if self.debug:
+            # print (vldbSeriesLod)
             print (len(vldbSeriesLod))
             
         vldbSeriesLod=sorted(vldbSeriesLod,key=lambda event:event["year"] if event.get("year") in event else 0)
         for vldbEvent in vldbSeriesLod:
             if vldbEvent["year"] is  not None:
-                print(f"""{vldbEvent["year"]}:{vldbEvent["source"]}""")
+                if self.debug:
+                    year = vldbEvent["year"]
+                    source = vldbEvent["source"]
+                    print(f"{year}: {source}")
 
     def test_getCompletedBlankSeries(self):
         """
