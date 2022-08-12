@@ -10,7 +10,7 @@ import unittest
 import requests
 
 from tests.basetest import BaseTest
-from corpus.matching.evaluation import MatchEvaluation
+from corpus.matching.evaluation import CM, MatchEvaluation
 
 
 class TestMatching(BaseTest):
@@ -76,6 +76,26 @@ class TestMatching(BaseTest):
         evaluation.plot_confusion_matrix(show=self.showPlot)
         evaluation.print_scores()
 
+    @unittest.skipIf(BaseTest.inPublicCI(), "Accesses api of bitplan conferenceCorpus api → unreliable for CI")
+    def test_raw_records_reduced_evaluation(self):
+        """
+        tests existing ids directly from records abd reduce evaluated ids to
+        """
+        records = []
+        for acronym in ["AAAI", "ACII", "ACISP"]:
+            resp = requests.get(f"https://cc.bitplan.com/eventseries/{acronym}")
+            for source, values in resp.json().items():
+                if source in ["wikidata"]:
+                    records.extend(values)
+        print(len(records), "records")
+        # for record in records:
+        #     print(record)
+        evaluation = MatchEvaluation(self.lut)
+        evaluation.evaluate_records(records, source_id_names=["wikidataId", "seriesWikidataId", "wikicfpId"])
+        evaluation.plot_confusion_matrix(show=self.showPlot)
+        evaluation.print_scores()
+        evaluation.plot_matching_result(classifications=[CM.TruePositive, CM.TrueNegative, CM.FalseNegative])
+
     def test_baseline(self):
         """
         tests evaluation by randomly generating matches
@@ -94,6 +114,7 @@ class TestMatching(BaseTest):
         evaluation.evaluate_records(matches)
         evaluation.plot_confusion_matrix(show=self.showPlot)
         evaluation.print_scores()
+        evaluation.plot_matching_result(classifications=[CM.TruePositive, CM.TrueNegative, CM.FalseNegative])
 
     def test_perfect_match(self):
         """
@@ -108,6 +129,28 @@ class TestMatching(BaseTest):
         self.assertEqual(1.0, evaluation.recall)
         self.assertEqual(1.0, evaluation.precision)
         self.assertEqual(1.0, evaluation.accuracy)
+
+    def test_match_example(self):
+        """
+        tests matching evaluation for perfect match
+        """
+        evaluation = MatchEvaluation(self.lut)
+        record1 = {
+            "openresearchId": "ACISP 1997",
+            "wikidataId": "Q106067066",
+            "dblpConferenceId": "conf/acisp/1996",
+            "dblpSeriesId": "conf/acisp",
+            "gndId": "2159559-8",
+            "seriesWikidataId": "Q105695401",
+            "seriesWikicfpId": "32",
+            "seriesOpenresearchId": "ACISP",
+            "confrefId": "acisp1996",
+            "confrefSeriesId": "acisp"
+        }
+        evaluation.evaluate_records([record1], source_id_names=["wikidataId", "openresearchId", "dblpConferenceId"])
+        evaluation.plot_confusion_matrix(show=self.showPlot)
+        evaluation.print_scores()
+        evaluation.plot_matching_result(classifications=[CM.TruePositive, CM.TrueNegative, CM.FalseNegative])
 
     def test_checkMatch(self):
         """
