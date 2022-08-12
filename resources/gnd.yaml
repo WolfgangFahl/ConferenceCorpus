@@ -32,9 +32,9 @@
         PREFIX dc: <http://purl.org/dc/terms/>
         PREFIX wdrs: <http://www.w3.org/2007/05/powder-s#>
 
-        SELECT  
-           ?event 
-           ?eventId  
+        SELECT
+           ?event
+           ?eventId
            (MIN(?eventTitle) as ?fulltitle)
 
            (COUNT (DISTINCT ?eventDate) as ?dateCount)
@@ -46,11 +46,11 @@
 
            (MIN(?eventVariant) as ?variant)
            (COUNT (DISTINCT ?eventVariant) as ?variantCount)
-           (GROUP_CONCAT(DISTINCT ?eventVariant; SEPARATOR="| ") AS ?variants) 
+           (GROUP_CONCAT(DISTINCT ?eventVariant; SEPARATOR="| ") AS ?variants)
 
            (MIN(?eventPlace) as ?place)
            (COUNT (DISTINCT ?eventPlace) as ?placeCount)
-           (GROUP_CONCAT(DISTINCT ?eventPlace; SEPARATOR="| ") AS ?places) 
+           (GROUP_CONCAT(DISTINCT ?eventPlace; SEPARATOR="| ") AS ?places)
 
            (MIN(?eventHomepage) as ?homepage)
         WHERE {
@@ -87,3 +87,10 @@
         GROUP BY ?c
         HAVING (?count >100)
         ORDER BY DESC(?count)
+
+'dateCardinality':
+    sql: |
+      select count(dateCount)
+      from event_gnd
+      group by dateCount
+      order by 1 desc

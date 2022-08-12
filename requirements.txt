@@ -1,5 +1,5 @@
 # web server with Flask and Bootstrap4
-pyFlaskBootstrap4~=0.4.6
+pyFlaskBootstrap4~=0.4.7
 # https://pypi.org/project/pylodstorage/
 pylodstorage~=0.2.2
 # https://pypi.org/project/python-dateutil/
@@ -32,8 +32,6 @@ lxml~=4.8.0
 pydevd
 # https://pypi.org/project/pyGenericSpreadSheet/
 pyGenericSpreadSheet
-# https://pypi.org/project/streamlit/
-streamlit~=1.8.1
 # https://pypi.org/project/st-annotated-text/
 st-annotated-text
 # https://pypi.org/project/pyJustpyWidgets/
