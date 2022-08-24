@@ -1,12 +1,10 @@
 import re
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, asdict
 from distutils.util import strtobool
-from typing import List, Dict
+from typing import List
 
 from fb4.widgets import LodTable
 from flask import Blueprint, request, jsonify, send_file
-from iteration_utilities import flatten
-from lodstorage.lod import LOD
 from spreadsheet.spreadsheet import ExcelDocument
 
 from corpus.datasources.openresearch import OREvent, OREventSeries
@@ -114,7 +112,9 @@ class EventSeriesBlueprint():
         proceedingsHeaders = ["item", "label", "ordinal", "ordinalStr", "description", "Title", "Acronym",
                               "OpenLibraryId", "oclcId", "isbn13", "ppnId", "gndId", "dblpId", "doi", "Event",
                               "publishedIn"]
-        eventRecords = list(flatten([lod for lod in dictOfLods.values()]))
+        eventRecords = []
+        for lod in dictOfLods.values():
+            eventRecords.extend(lod)
         completedBlankEvent = EventSeriesCompletion.getCompletedBlankSeries(eventRecords)
         eventSheetRecords = []
         proceedingsRecords = []
