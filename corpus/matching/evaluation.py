@@ -5,6 +5,8 @@ updated at 2022-08-08
 """
 
 import itertools
+import json
+import pathlib
 from enum import Enum
 
 import matplotlib.pyplot as plt
@@ -311,6 +313,29 @@ class MatchEvaluation:
                         ids.add(value)
             res[sourceId] = ids
         return res
+
+    @classmethod
+    def fromResources(cls) -> 'MatchEvaluation':
+        """
+        Load MatchEvaluation with training data from the resources
+        """
+        grandParent = pathlib.Path(__file__).parent.parent.parent.resolve()
+        filepath = (grandParent / "resources/matching/training_set.json")
+        path = str(filepath)
+        with open(path, mode="r") as fp:
+            lod = json.load(fp)
+        lut = {}
+        # construct lookup table for source ids
+        for source_id in MatchEvaluation.source_ids:
+            lut[source_id] = {}
+            for record in lod.values():
+                values = record.get(source_id)
+                if values is None or values == []:
+                    continue
+                for value in values:
+                    lut[source_id][value] = record
+        matchEvaluation = MatchEvaluation(training_data=lut)
+        return matchEvaluation
 
 
 @dataclass
