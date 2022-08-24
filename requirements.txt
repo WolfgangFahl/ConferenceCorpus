@@ -34,8 +34,6 @@ pydevd
 pyGenericSpreadSheet
 # https://pypi.org/project/streamlit/
 streamlit~=1.8.1
-# https://pypi.org/project/st-annotated-text/
-st-annotated-text
 # https://pypi.org/project/pyJustpyWidgets/
 pyJustpyWidgets~=0.0.2
 # https://pypi.org/project/pyProbabilityDistributionFit/
