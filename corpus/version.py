@@ -8,7 +8,7 @@ class Version(object):
     '''
     Version handling for ConferenceCorpus
     '''
-    version='0.0.36'
+    version='0.0.37'
     date = '2020-09-10'
     updated = '2022-10-04'
 
