@@ -1,5 +1,5 @@
 # web server with Flask and Bootstrap4
-pyFlaskBootstrap4~=0.4.7
+pyFlaskBootstrap4>=0.5.1
 # https://pypi.org/project/pylodstorage/
 pylodstorage~=0.4.7
 # https://pypi.org/project/python-dateutil/
