@@ -3,8 +3,9 @@ Created on 2021-10-24
 
 @author: wf
 '''
+from wikibaseintegrator import wbi_helpers
+
 from tests.datasourcetoolbox import DataSourceTest
-from wikibaseintegrator import wbi_functions
 import json
 
 
@@ -27,7 +28,7 @@ class TestWikiBaseIntegrator(DataSourceTest):
     'titles': 'Q5',
     'rvlimit': 10
 }
-        result=wbi_functions.mediawiki_api_call_helper(query, allow_anonymous=True)
+        result=wbi_helpers.mediawiki_api_call_helper(query, allow_anonymous=True)
         self.prettyJson(json.dumps(result))
 
 
