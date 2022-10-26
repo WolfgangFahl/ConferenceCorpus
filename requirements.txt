@@ -9,7 +9,7 @@ py-3rdparty-mediawiki~=0.6.2
 # https://pypi.org/project/wikirender/
 wikirender~=0.0.41
 # https://github.com/somnathrakshit/geograpy3
-geograpy3~=0.2.2
+geograpy3~=0.2.4
 # https://pypi.org/project/habanero/
 habanero
 # https://github.com/geopy/geopy
