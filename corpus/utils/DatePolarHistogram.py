@@ -11,7 +11,7 @@ class DatePolarHistogram(Plot):
     polar histogram for dates
     only month and date are plotted the year is ignored
 
-    see https://matplotlib.org/2.0.2/examples/pie_and_polar_charts/polar_bar_demo.html
+    see https://matplotlib.org/2.0.2/jpexamples/pie_and_polar_charts/polar_bar_demo.html
     """
 
     bottom = 0

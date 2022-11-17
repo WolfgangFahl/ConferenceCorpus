@@ -56,7 +56,7 @@ class Textparse(object):
             
         Returns:
             dict: containing year, startDate, endDate
-        examples:
+        jpexamples:
         2018-2019
         08.01.2019-11.01.2019
         2019

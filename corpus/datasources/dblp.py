@@ -76,7 +76,7 @@ class Dblp(EventDataSource):
             
         Returns:
             dict: containing year, startDate, endDate
-        examples:
+        jpexamples:
             18-21 September 2005
 
         '''

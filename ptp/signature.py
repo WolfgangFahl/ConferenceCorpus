@@ -214,7 +214,7 @@ class YearCategory(EnumCategory):
 class RomanNumeral(pp.OneOrMore):
     """
     matches roman numerals
-    see https://github.com/pyparsing/pyparsing/blob/master/examples/romanNumerals.py
+    see https://github.com/pyparsing/pyparsing/blob/master/jpexamples/romanNumerals.py
     limited to number up to 99
     """
 
