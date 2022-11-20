@@ -33,7 +33,7 @@ pydevd>=2.9.1
 # https://pypi.org/project/pyGenericSpreadSheet/
 pyGenericSpreadSheet
 # https://pypi.org/project/pyJustpyWidgets/
-pyJustpyWidgets~=0.0.28
+pyJustpyWidgets~=0.1.3
 # https://pypi.org/project/pyProbabilityDistributionFit/
 pyProbabilityDistributionFit>=0.0.4
 # https://pypi.org/project/matplotlib/
