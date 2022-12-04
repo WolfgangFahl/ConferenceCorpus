@@ -35,7 +35,7 @@ class ACM(EventDataSource):
         Args:
             url(str): the url to parse
             
-        Return:
+        Returns:
             BeautifulSoup: the soup
         '''
         msg=f"getting {url} ..."

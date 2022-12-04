@@ -1,7 +1,7 @@
 import getpass
 import os
 from os import path
-from wikibot.wikiuser import WikiUser
+from wikibot3rd.wikiuser import WikiUser
 from wikifile.wikiFileManager import WikiFileManager
 
 

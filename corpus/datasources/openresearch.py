@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import List, Union, Type
 from lodstorage.lod import LOD
 from lodstorage.storageconfig import StorageConfig
-from wikibot.wikipush import WikiPush
-from wikibot.wikiuser import WikiUser
+from wikibot3rd.wikipush import WikiPush
+from wikibot3rd.wikiuser import WikiUser
 from wikifile.wikiFile import WikiFile
 from wikifile.wikiFileManager import WikiFileManager
 from wikifile.wikiPage import WikiPage

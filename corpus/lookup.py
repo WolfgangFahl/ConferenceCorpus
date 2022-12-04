@@ -16,7 +16,7 @@ from corpus.datasources.openresearch import OR
 from corpus.datasources.wikicfp import WikiCfp
 
 from lodstorage.lod import LOD
-from wikibot.wikiuser import WikiUser
+from wikibot3rd.wikiuser import WikiUser
 from wikifile.wikiFileManager import WikiFileManager
 
 import os

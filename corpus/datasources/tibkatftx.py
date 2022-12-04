@@ -4,7 +4,7 @@ Created on 2022-03-04
 @author: wf
 '''
 import itertools
-from wikibot.wikipush import WikiPush
+from wikibot3rd.wikipush import WikiPush
 from wikifile.wikiFile import WikiFile
 from wikifile.wikiFileManager import WikiFileManager
 
