@@ -231,13 +231,20 @@ see also [[http://cc.bitplan.com Conference Corpus]]
                 msg=f"Storing Signature cache for {len(events)} events"
                 profiler=Profiler(msg)
             signature=SQLDB(signatureCache)
-            entityInfo=signature.createTable(events, "event")
+            entityInfo=signature.createTable(events, "event",withDrop=force)
             signature.store(events, entityInfo)          
             if profiler:
                 profiler.time()
             ddls = [
                 "DROP INDEX if EXISTS eventsByCountry",
-                "CREATE INDEX eventsByCounty ON event(country)"]
+                "CREATE INDEX eventsByCountry ON event(country)",
+                #"DROP INDEX if EXISTS eventsByRegion",
+                #"#CREATE INDEX eventsByRegion ON event(region)",
+                #"DROP INDEX if EXISTS eventsByCity",
+                #"CREATE INDEX eventsByCity ON event(city)",
+                "DROP INDEX if EXISTS eventsByOrdinal",
+                "CREATE INDEX eventsByOrdinal ON event(ordinal)"
+            ]
             for ddl in ddls:
                 signature.execute(ddl)
       

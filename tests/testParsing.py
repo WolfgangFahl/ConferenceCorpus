@@ -12,25 +12,46 @@ class TestParsing(BaseTest):
     tests Parsing EventReferences
     """
     
-    def getEventTitles(self,limit=None):
+    def getEventTitles(self,limit=None,sources=None):
         '''
         get all Events with titles directly from SQL
         '''
-        sqlDB=EventStorage.getSqlDB()
+        signatureDB=EventStorage.getSignatureCache()
         if limit is None:
             limit=""
         else:
             limit=f" LIMIT {limit}"
-        sqlQuery=f"select eventId,source,title from event{limit}"
-        titles=sqlDB.query(sqlQuery)
+        if sources is None:
+            sources=""
+        else:
+            sources_clause=""
+            delim=""
+            for source in sources:
+                sources_clause+=f'{delim}"{source}"'
+                delim=","
+            sources=f" WHERE source in ({sources_clause})"
+        sqlQuery=f"SELECT eventId,source,title from event{limit}{sources}"
+        titles=signatureDB.query(sqlQuery)
         return titles
+    
+    def testGetOrCreateSignatureDB(self):
+        """
+        test creating the Event SignatureDB
+        """
+        force=False
+        signatureDB=EventStorage.getSignatureCache(profile=False, force=force)
+        countRecord=signatureDB.query("select count(*) as count from event")
+        debug=self.debug
+        if debug:
+            print(countRecord)
+        self.assertTrue(countRecord[0]["count"]>1759900)
         
     def testCreateLookup(self):
         '''
         test creating a lookup dictionary
         '''
         eParser=EventReferenceParser()
-        tables=["dblp","wikidata","crossref","confref","crossref"]
+        tables=["dblp","wikidata","crossref","confref"]
         yamlPath="/tmp"
         for column,columnPlural in [("country","countries"),("city","cities"),("region","regions")]:
             lookup=EventStorage.createLookup(column,tables)
