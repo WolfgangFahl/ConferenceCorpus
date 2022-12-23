@@ -38,10 +38,11 @@ class TestParsing(BaseTest):
         """
         test creating the Event SignatureDB
         """
-        force=False
+        force=self.inPublicCI()
         signatureDB=EventStorage.getSignatureCache(profile=False, force=force)
         countRecord=signatureDB.query("select count(*) as count from event")
         debug=self.debug
+        debug=True
         if debug:
             print(countRecord)
         self.assertTrue(countRecord[0]["count"]>1759900)
