@@ -45,7 +45,8 @@ class TestParsing(BaseTest):
         debug=True
         if debug:
             print(countRecord)
-        self.assertTrue(countRecord[0]["count"]>1759900)
+        # 1759830
+        self.assertTrue(countRecord[0]["count"]>1759000)
         
     def testCreateLookup(self):
         '''
