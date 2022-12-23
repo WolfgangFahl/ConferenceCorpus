@@ -1,6 +1,5 @@
-from ptp.parsing import Tokenizer
-from ptp.eventrefparser import EventReferenceParser
-from ptp.signature import VolumeCategory
+from plp.parsing import Tokenizer
+from plp.signature import VolumeCategory
 from tests.basetest import BaseTest
 
 

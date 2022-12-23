@@ -9,7 +9,7 @@ from corpus.lookup import CorpusLookup
 from tests.basetest import BaseTest
 import json
 from os import path
-from ptp.ordinal import Ordinal
+from plp.ordinal import Ordinal
 
 class TestEventSeriesCompletion(BaseTest):
     """

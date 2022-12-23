@@ -11,7 +11,7 @@ from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from corpus.quality.rating import Rating, RatingType
 from datetime import datetime
 from corpus.datasources import wikicfpscrape
-from ptp.ordinal import Ordinal
+from plp.ordinal import Ordinal
 
 class WikiCfp(EventDataSource):
     '''

@@ -9,8 +9,8 @@ from tests.basetest import BaseTest
 from corpus.event import EventStorage
 from corpus.eventseriescompletion import EventSeriesCompletion
 from corpus.location import LocationLookup
-from ptp.parsing import Tokenizer
-from ptp.signature import AcronymCategory
+from plp.parsing import Tokenizer
+from plp.signature import AcronymCategory
 
 @unittest.skip("Tests are in development for a matching training set generation")
 class TestMatching(BaseTest):

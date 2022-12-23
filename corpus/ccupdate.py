@@ -16,7 +16,7 @@ from corpus.utils.download import Profiler
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from corpus.event import EventStorage
-from ptp.eventrefparser import EventReferenceParser
+from plp.eventrefparser import EventReferenceParser
 
 class ConferenceCorpusUpdate():
     '''

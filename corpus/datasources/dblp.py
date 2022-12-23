@@ -7,7 +7,7 @@ from corpus.event import EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
 from corpus.datasources.dblpxml import DblpXml
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
-from ptp.ordinal import Ordinal
+from plp.ordinal import Ordinal
 import re
 from datetime import datetime
 

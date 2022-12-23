@@ -2,8 +2,8 @@ import os.path
 import yaml
 from collections import Counter, OrderedDict
 
-from ptp.parsing import Tokenizer
-from ptp.signature import CityPrefixCategory, CityCategory
+from plp.parsing import Tokenizer
+from plp.signature import CityPrefixCategory, CityCategory
 from tests.basetest import BaseTest
 from tests.testParsing import TestParsing
 

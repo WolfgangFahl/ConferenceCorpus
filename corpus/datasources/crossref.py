@@ -3,7 +3,7 @@ Created on 2020-07-05
 
 @author: wf
 '''
-from ptp.ordinal import Ordinal
+from plp.ordinal import Ordinal
 from corpus.event import Event, EventSeries, EventManager, EventSeriesManager
 from lodstorage.storageconfig import StorageConfig
 from lodstorage.lod import LOD

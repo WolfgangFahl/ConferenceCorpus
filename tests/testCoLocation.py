@@ -7,9 +7,9 @@ from collections import Counter
 from typing import List
 
 from corpus.utils.plots import Histogramm, PlotSettings, HistogramSeries, Plot
-from ptp.parsing import Tokenizer
+from plp.parsing import Tokenizer
 from corpus.event import EventStorage
-from ptp.signature import OrdinalCategory, EnumCategory, AcronymCategory
+from plp.signature import OrdinalCategory, EnumCategory, AcronymCategory
 from tests.basetest import BaseTest
 
 

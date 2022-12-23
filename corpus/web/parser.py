@@ -4,7 +4,7 @@ import sys
 from typing import List, Tuple, Union
 import justpy as jp
 
-from ptp.eventrefparser import EventReferenceParser
+from plp.eventrefparser import EventReferenceParser
 
 
 class QuasarColorPalette:

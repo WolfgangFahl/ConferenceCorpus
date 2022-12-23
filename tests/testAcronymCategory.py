@@ -3,12 +3,12 @@ import re
 from typing import List
 
 import yaml
-from ptp.parsing import Tokenizer
+from plp.parsing import Tokenizer
 
 from corpus.event import EventStorage
 from corpus.eventcorpus import DataSource
 from corpus.utils.plots import PlotSettings, Histogramm
-from ptp.signature import EnumCategory, OrdinalCategory, YearCategory, AcronymCategory
+from plp.signature import EnumCategory, OrdinalCategory, YearCategory, AcronymCategory
 from tests.basetest import BaseTest
 
 

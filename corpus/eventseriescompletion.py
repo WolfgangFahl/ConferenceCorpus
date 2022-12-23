@@ -8,7 +8,7 @@ from typing import List, Tuple, Dict
 
 from lodstorage.lod import LOD
 
-from ptp.signature import OrdinalCategory
+from plp.signature import OrdinalCategory
 
 
 class EventSeriesCompletion(object):

@@ -14,7 +14,7 @@ from wikifile.wikiPage import WikiPage
 from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
 from corpus.eventcorpus import EventDataSource,EventDataSourceConfig
 from corpus.utils.download import Profiler
-from ptp.ordinal import Ordinal
+from plp.ordinal import Ordinal
 
 
 class OR(EventDataSource):

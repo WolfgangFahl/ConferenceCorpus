@@ -37,7 +37,7 @@ setup(name='ConferenceCorpus',
             'Programming Language :: Python :: 3.9',
             'Programming Language :: Python :: 3.10'
       ],
-      packages=['resources','corpus','corpus.datasources','corpus.utils','corpus.quality','corpus.xmlhandler', 'corpus.matching','ptp'],
+      packages=['resources','corpus','corpus.datasources','corpus.utils','corpus.quality','corpus.xmlhandler', 'corpus.matching'],
       package_data={'resources':['*.yaml', '*.json', 'matching/*.json']},
       install_requires=requirements,
       entry_points={

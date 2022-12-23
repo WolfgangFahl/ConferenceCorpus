@@ -1,7 +1,7 @@
 # web server with Flask and Bootstrap4
 pyFlaskBootstrap4>=0.5.1
 # https://pypi.org/project/pylodstorage/
-pylodstorage>=0.4.7
+pylodstorage>=0.4.9
 # https://pypi.org/project/python-dateutil/
 python-dateutil>=2.8.2
 # https://pypi.org/project/py-3rdparty-mediawiki/
@@ -21,8 +21,6 @@ wikibaseintegrator>=0.12.1
 # pybibtex https://pybtex.org/
 # https://pypi.org/project/pybtex/
 pybtex>=0.24.0
-# https://github.com/savoirfairelinux/num2words
-num2words>=0.5.9
 # https://pypi.org/project/psutil/
 psutil>=5.9.0
 # lxml
@@ -38,12 +36,11 @@ pyJustpyWidgets>=0.1.11
 pyProbabilityDistributionFit>=0.0.4
 # https://pypi.org/project/matplotlib/
 matplotlib>=3.6.0
-# seaborn
 # https://pypi.org/project/Markdown/
 Markdown>=3.3.7
-# https://github.com/pyparsing/pyparsing
-pyparsing>=3.0.9
 # https://pypi.org/project/scikit-learn/
 scikit-learn>=1.1.2
 # https://pypi.org/project/requests/
 requests>=2.28.1
+# https://github.com/WolfgangFahl/pyLookupParser
+pyLookupParser>=0.0.1

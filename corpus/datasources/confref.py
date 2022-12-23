@@ -11,7 +11,7 @@ from corpus.event import Event,EventSeries,EventManager,EventSeriesManager
 from corpus.eventcorpus import EventDataSourceConfig,EventDataSource
 from lodstorage.storageconfig import StorageConfig
 from lodstorage.sql import SQLDB
-from ptp.ordinal import Ordinal
+from plp.ordinal import Ordinal
 
 class Confref(EventDataSource):
     '''

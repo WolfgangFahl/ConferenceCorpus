@@ -4,7 +4,7 @@ Created on 2022-04-09
 @author: wf
 '''
 from tests.basetest import BaseTest,Profiler
-from ptp.eventrefparser import EventReferenceParser
+from plp.eventrefparser import EventReferenceParser
 from corpus.event import EventStorage
 
 class TestParsing(BaseTest):

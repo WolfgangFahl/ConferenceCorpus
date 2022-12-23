@@ -8,6 +8,7 @@
 		<project>pyFlaskBootstrap4</project>
 		<project>pyJustpyWidgets</project>
 		<project>pyLoDStorage</project>
+		<project>pyLookupParser</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
