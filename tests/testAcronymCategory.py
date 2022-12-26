@@ -1,5 +1,4 @@
 import os
-import re
 from typing import List
 
 import yaml
@@ -8,7 +7,7 @@ from plp.parsing import Tokenizer
 from corpus.event import EventStorage
 from corpus.eventcorpus import DataSource
 from corpus.utils.plots import PlotSettings, Histogramm
-from plp.signature import EnumCategory, OrdinalCategory, YearCategory, AcronymCategory
+from plp.signature import OrdinalCategory, YearCategory, AcronymCategory
 from tests.basetest import BaseTest
 
 
