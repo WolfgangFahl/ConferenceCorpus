@@ -32,7 +32,7 @@ class TestWikiData(DataSourceTest):
         self.assertTrue(queryManager is not None)
         wikiDataEventsQuery=queryManager.queriesByName["Wikidata-Events"]
         debug = self.debug
-        #debug=True
+        debug=True
         if debug:
             print(wikiDataEventsQuery)
         self.assertEqual("sparql",wikiDataEventsQuery.lang)

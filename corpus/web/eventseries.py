@@ -107,8 +107,17 @@ class EventSeriesBlueprint():
         """
         spreadsheet = ExcelDocument(name=name)
         # Add completed event sheet and add proceedings sheet
-        eventHeader = ["item", "label", "description", "Ordinal", "OrdinalStr", "Acronym", "Country", "City", "Title",
-                       "Series", "Year", "Start date", "End date", "Homepage", "dblp", "dblpId", "wikicfpId", "gndId"]
+        eventHeader = [
+            "item", 
+            "label", 
+            "description", 
+            "Ordinal", 
+            "OrdinalStr", 
+            "Acronym", 
+            "Country", 
+            "City", 
+            "Title",
+            "Series", "Year", "Start date", "End date", "Homepage", "dblp", "dblpId", "wikicfpId", "gndId"]
         proceedingsHeaders = ["item", "label", "ordinal", "ordinalStr", "description", "Title", "Acronym",
                               "OpenLibraryId", "oclcId", "isbn13", "ppnId", "gndId", "dblpId", "doi", "Event",
                               "publishedIn"]
@@ -126,6 +135,7 @@ class EventSeriesBlueprint():
             proceedingsRecords = [{k: None for k in proceedingsHeaders}]
         spreadsheet.addTable("Event", eventSheetRecords)
         spreadsheet.addTable("Proceedings", proceedingsRecords)
+        
         for lods in [dictOfLods, asdict(MetadataMappings())]:
             for sheetName, lod in lods.items():
                 if isinstance(lod, list):
@@ -156,22 +166,22 @@ class EventSeriesBlueprint():
             html = self.appWrap.render_template(template, title=title, activeItem="", result=result)
             return html
         elif formatParam.lower() == "excel":
-                spreadsheet = self.generateSeriesSpreadsheet(name, dictOfLods)
-                return send_file(spreadsheet.toBytesIO(), as_attachment=True, download_name=spreadsheet.filename, mimetype=spreadsheet.MIME_TYPE)
+            spreadsheet = self.generateSeriesSpreadsheet(name, dictOfLods)
+            return send_file(spreadsheet.toBytesIO(), as_attachment=True, download_name=spreadsheet.filename, mimetype=spreadsheet.MIME_TYPE)
         else:
             return jsonify(dictOfLods)
-
 
 @dataclass
 class MetadataMappings:
     """
     Spreadsheet metadata mappings
     """
-    WikidataMetadata: list = None
-    SmwMetadata: list = None
+    WikidataMapping: list = None
+    SmwMapping: list = None
 
     def __init__(self):
-        self.WikidataMetadata = [{'Entity': 'Event series', 'Column':None, 'PropertyName': 'instanceof', 'PropertyId': 'P31', 'Value': 'Q47258130'},
+        self.WikidataMapping = [
+             {'Entity': 'Event series', 'Column':None, 'PropertyName': 'instanceof', 'PropertyId': 'P31', 'Value': 'Q47258130'},
              {'Entity': 'Event series', 'Column': 'Acronym', 'PropertyName': 'short name', 'PropertyId': 'P1813', 'Type': 'text'},
              {'Entity': 'Event series', 'Column': 'Title', 'PropertyName': 'title', 'PropertyId': 'P1476', 'Type': 'text'},
              {'Entity': 'Event series', 'Column': 'Homepage', 'PropertyName': 'official website', 'PropertyId': 'P856', 'Type': 'url'},
@@ -202,7 +212,7 @@ class MetadataMappings:
              {'Entity': 'Proceedings', 'Column': 'dblpId', 'PropertyName': 'DBLP event ID', 'PropertyId': 'P10692', 'Type': 'extid'},
              ]
 
-        self.SmwMetadata = [
+        self.SmwMapping = [
             *[{"Entity":"Event",
                "Column":r.get("templateParam"),
                "PropertyName":r.get("name"),
