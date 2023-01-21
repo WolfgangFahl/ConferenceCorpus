@@ -18,8 +18,8 @@ class GND(EventDataSource):
     https://d-nb.info/standards/elementset/gnd
     '''
     debug=False
-    host="http://jena.wikidata.dbis.rwth-aachen.de"
-    endpoint=f"https://{host}/gnd/sparql"
+    host="jena.wikidata.dbis.rwth-aachen.de"
+    endpoint=f"http://{host}/gnd/sparql"
     sourceConfig = EventDataSourceConfig(lookupId="gnd", name="GND", url='https://d-nb.info/standards/elementset/gnd', title='Gemeinsame Normdatei', tableSuffix="gnd",locationAttribute="location")
     
     def __init__(self,debug=False):
