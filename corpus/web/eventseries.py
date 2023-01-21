@@ -117,7 +117,15 @@ class EventSeriesBlueprint():
             "Country", 
             "City", 
             "Title",
-            "Series", "Year", "Start date", "End date", "Homepage", "dblp", "dblpId", "wikicfpId", "gndId"]
+            "Series", 
+            "Year", 
+            "Start date", 
+            "End date", 
+            "Homepage", 
+            "dblp", 
+            "dblpId", 
+            "wikicfpId", 
+            "gndId"]
         proceedingsHeaders = ["item", "label", "ordinal", "ordinalStr", "description", "Title", "Acronym",
                               "OpenLibraryId", "oclcId", "isbn13", "ppnId", "gndId", "dblpId", "doi", "Event",
                               "publishedIn"]

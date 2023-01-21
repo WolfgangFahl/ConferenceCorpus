@@ -26,7 +26,9 @@ class EventSeriesCompletion(object):
     @classmethod
     def getCompletedBlankSeries(cls, lod: List[dict], debug: bool = False) -> list:
         """
-        gets all blank entries of a series from the different records that are given.
+        gets all blank entries of a series from the different records 
+        that are given.
+        
         It is expected that each lod comes from a  different datasource
         Args:
             lods: list of event records
@@ -34,6 +36,8 @@ class EventSeriesCompletion(object):
         Returns:
             List of completed year ordinal pairs, or empty list if given lod can not be completed
         """
+        if len(lod)==0:
+            return lod
         yearOrdinalPair = {(r.get('year'), r.get("ordinal")) for r in lod }
         completeYearOrdinalPair = list({(year, ordinal) for year, ordinal in yearOrdinalPair if year is not None and ordinal is not None})
         completeYearOrdinalPair.sort(key=lambda r: r[0] if r[0] is not None else 0)
