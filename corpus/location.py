@@ -19,6 +19,8 @@ class LocationLookup:
         locMap={
             "Not Known": None,
             "Online": None,
+            "Virtual": None,
+            "Virtual, USA": None,
             "Virtual Event, USA": None,
             "Amsterdam": "Q727",
             "Amsterdam, Amsterdam": "Q727",
@@ -29,10 +31,12 @@ class LocationLookup:
             "Bergen, Norway":"Q26793",
             "Bremen, Germany": "Q24879",
             "Brussels, Belgium": "Q239",
+            "Brussels Belgium": "Q239",
             "Cancun, Mexico":"Q8969",
             "Cancún, Mexico": "Q8969",
             "Gdansk, Poland":"Q1792",
             "Heraklion, Crete, Greece":"Q160544",
+            "Красноярск": "Q919",
             "Luxembourg, Luxembourg":"Q1842",
             "Macau, Macau, China":"Q14773",
             "Marina del Rey, CA": "Q988140",
@@ -40,9 +44,11 @@ class LocationLookup:
             "Москва": "Q649",
             "New Delhi": "Q987",
             "New Delhi, India": "Q987",
+            "Новосибирск":"Q883",
             "Salamanca, Spain": "Q15695",
             "Skovde, Sweden": "Q21166",
             "St. Petersburg": "Q656",
+            "Санкт-Петербург": "Q656",
             "Saint-Petersburg, Russia":"Q656",
             "Thessaloniki": "Q17151",
             "Thessaloniki, Greece": "Q17151",
@@ -58,10 +64,12 @@ class LocationLookup:
             ("Cambridge",None,None,"UK","United Kingdom","Q21713103"),
             ("Cambridge","Massachusetts","MA","USA","United States","Q49111"),
             ("Charleston","South Carolina","SC","USA","United States","Q47716"),
+            ("Lake Louise","Alberta","AB","CA","Canada","Q12826048"),
             ("Los Angeles","California","CA","USA","United States","Q65"),
             ("Montreal","Quebec","QC","CA","Canada","Q340"),
             ("Montréal","Quebec","QC","CA","Canada","Q340"),
             ("New Brunswick","New Jersey","NJ","USA","United States","Q138338"),
+            ("New Port Beach","California","CA","USA","United States","Q268873"),
             ("New Orleans","Louisiana","LA","USA","United States","Q34404"),
             ("New York","New York","NY","USA","United States", "Q60"),
             ("Palo Alto","California","CA","USA","United States","Q47265"),
@@ -75,6 +83,7 @@ class LocationLookup:
             ("Snowbird","Utah","UT","USA","United States","Q3487194"),
             ("St. Louis","Missouri","MO","USA","United States", "Q38022"),
             ("Toronto","Ontario","ON","CA","Canada", "Q172"),
+            ("Waikiki, Honolulu","Hawaii","HI","USA","United States","Q254861")
         ]:
             terms=[
                 f"{city}, {country}",
@@ -87,8 +96,11 @@ class LocationLookup:
                     f"{city}, {regionCode}",
                     f"{city} {regionCode}",
                     f"{city}, {region}, {country}",
+                    f"{city}  {region} {country}"
                     f"{city}, {region}, {countryCode}",
+                    f"{city} {region} {countryCode}",
                     f"{city}, {regionCode}, {country}",
+                    f"{city} {regionCode} {country}",
                     f"{city}, {regionCode}, {countryCode}",
                     f"{city} {regionCode} {countryCode}"
                 ])
