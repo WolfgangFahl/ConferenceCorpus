@@ -85,17 +85,17 @@ class ConferenceCorpusBrowser(App):
         """
         DataSource.getAll()
         markup="""<table class="table">
-                        <thead class="primary">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Source</th>
-                                <th scope="col">mode</th>
-                                <th scope="col">events</th>
-                                <th scope="col">acronyms</th>
-                             </tr>
-                        </thead>
-                        <tbody>
-        """
+    <thead class="primary">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Source</th>
+            <th scope="col">mode</th>
+            <th scope="col">events</th>
+            <th scope="col">acronyms</th>
+         </tr>
+    </thead>
+    <tbody>
+    """
         acronymCount=0
         eventsCount=0
         for index,source in enumerate(DataSource.sources.values()):

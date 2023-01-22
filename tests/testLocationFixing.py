@@ -52,6 +52,8 @@ limit 20"""),
             dqr=query.documentQueryResult(localityRecords)
             if self.debug:
                 print(dqr)
+                
+   
     
     def testLocationLookup(self):
         '''

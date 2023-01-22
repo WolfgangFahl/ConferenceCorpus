@@ -30,6 +30,8 @@ class TestHistogramm(BaseTest):
     '''
     
     def setUp(self, debug=False, profile=True):
+        """
+        """
         BaseTest.setUp(self, debug=debug, profile=profile)
         self.histroot="/tmp/histogramms"
         os.makedirs(self.histroot,exist_ok=True)
