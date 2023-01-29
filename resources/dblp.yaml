@@ -1,0 +1,129 @@
+#
+# Pre-configured Queries for Conference Corpus Scientific Event lookup database
+#
+# dblp examples
+#
+# WF 2023-01-22
+'dblp-predicates':
+    title: available predicates
+    description: shows all available predicates
+    sparql: |
+      SELECT
+        ?predicate
+        (COUNT(DISTINCT ?subject) as ?count)
+      WHERE {
+        ?subject ?predicate ?object
+      }
+      GROUP BY ?predicate
+      ORDER BY DESC(?count)
+'dblp-EventSeries':
+    title: dblp eventseries details
+    description: maps dblp conf short names to true Acronyms see https://github.com/WolfgangFahl/dblpconf/issues/21
+    database: qlever
+    sparql: |
+        PREFIX dblp: <https://dblp.org/rdf/schema#>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        SELECT ?conf 
+               (IRI(CONCAT("https://dblp.org/db/conf/", ?conf, "/index.html")) as ?dblp)
+               (MIN(xsd:integer(?year)) AS ?minYear) 
+               (MAX(xsd:integer(?year)) AS ?maxYear) 
+               (COUNT(?conf) as ?count)
+               (IRI(CONCAT("https://confident.dbis.rwth-aachen.de/dblpconf/series/", ?conf)) as ?series)
+        WHERE
+        {
+            SELECT 
+                (strbefore(REPLACE(STR(?p), "https://dblp.org/rec/conf/", "", "i"), "/") as ?conf)
+                ?year
+            WHERE {
+                ?p a dblp:Editorship .
+                OPTIONAL{?p dblp:yearOfPublication ?year}
+                FILTER(strstarts(STR(?p), "https://dblp.org/rec/conf/"))
+            }
+        }
+        GROUP BY ?conf
+        ORDER BY ?conf
+
+'dblp-Events':
+    title: Academic events with details for EventCorpus
+    description: Academic events with details for EventCorpus
+    database: qlever
+    sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX dblp: <https://dblp.org/rdf/schema#>
+        PREFIX datacite: <http://purl.org/spar/datacite/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX bibtex: <http://purl.org/net/nknouf/ns/bibtex#>
+        SELECT DISTINCT
+          ?pub 
+          ?type
+          #?identifier 
+          ?title
+          ?label 
+          ?bibtexType 
+          ?year
+          ?wikidata
+          (COUNT(?isbn_value) as ?isbn_count)
+          (SAMPLE(?isbn_value) as ?isbn)
+          (GROUP_CONCAT(?isbn_value) as ?isbn_list)
+          (COUNT(?doi_value) as ?doi_count)
+          (SAMPLE(?doi_value) as ?doi)
+          (GROUP_CONCAT(?doi_value) as ?doi_list)
+          (COUNT(?publishedInBook_value) AS ?publishedInBook_count)
+          (SAMPLE(?publishedInBook_value) AS ?publishedInBook)
+          (GROUP_CONCAT(?publishedInBook_value) AS ?publishedInBook_list)
+          (COUNT(?publishedIn_value) AS ?publishedIn_count)
+          (SAMPLE(?publishedIn_value) AS ?publishedIn)
+          (GROUP_CONCAT(?publishedIn_value) AS ?publishedIn_list)
+          (COUNT(?publishedInSeries_value) AS ?publishedInSeries_count)
+          (SAMPLE(?publishedInSeries_value) AS ?publishedInSeries)
+          (GROUP_CONCAT(?publishedInSeries_value) AS ?publishedInSeries_list)
+          (COUNT(?publishedInSeriesVolume_value) AS ?publishedInSeriesVolume_count)
+          (SAMPLE(?publishedInSeriesVolume_value) AS ?publishedInSeriesVolume)
+          (GROUP_CONCAT(?editedBy_value) AS ?editedBy_list)
+        WHERE {
+          VALUES ?type {
+            dblp:Publication 
+          } 
+          VALUES ?bibtexType {
+            bibtex:Proceedings
+            #bibtex:Book
+          }
+          ?pub rdf:type ?type .
+          ?pub rdfs:label ?label.
+          ?pub dblp:bibtexType ?bibtexType.
+          #?pub datacite:hasIdentifier ?identifier .
+          ?pub dblp:title ?title.
+          #FILTER(REGEX(?title,"MTSR"))
+          OPTIONAL {
+            ?pub dblp:yearOfPublication ?year.
+          }
+          OPTIONAL {
+            ?pub dblp:wikidata ?wikidata
+          }
+          OPTIONAL {
+            ?pub dblp:isbn ?isbn_value.
+          }
+          OPTIONAL {
+            ?pub dblp:doi ?doi_value.
+          }
+          OPTIONAL {
+            ?pub dblp:publishedIn ?publishedIn_value
+          }
+          OPTIONAL 
+          {
+            ?pub dblp:publishedInBook ?publishedInBook_value
+          }
+          OPTIONAL {
+            ?pub dblp:publishedInSeries ?publishedInSeries_value
+          }
+          OPTIONAL {
+            ?pub dblp:publishedInSeriesVolume ?publishedInSeriesVolume_value
+          }
+          OPTIONAL {
+            ?pub dblp:editedBy ?editedBy_value . 
+          }
+        } 
+        GROUP BY ?pub ?type ?label ?title ?bibtexType ?year ?wikidata
+        ORDER BY DESC(?year) 
+
+

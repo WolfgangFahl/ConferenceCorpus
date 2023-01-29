@@ -5,10 +5,9 @@ Created on 28.07.2021
 '''
 import tests.testDblpXml
 from datetime import datetime
-from corpus.datasources.dblp import Dblp
+from corpus.datasources.dblp import Dblp,DblpEventManager
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
-
 
 class TestDblpEvents(DataSourceTest):
     '''
@@ -19,9 +18,13 @@ class TestDblpEvents(DataSourceTest):
     def setUpClass(cls):
         super(TestDblpEvents, cls).setUpClass()
         cls.debug=False
-        cls.mock=tests.testDblpXml.TestDblp.mock 
+        cls.useXml=False
+        cls.mock=False
+        if cls.useXml:
+            cls.mock=tests.testDblpXml.TestDblp.mock 
+        DblpEventManager.testMode=True
         cls.lookup=CorpusLookup(lookupIds=["dblp"],configure=cls.configureCorpusLookup)
-        cls.lookup.load(forceUpdate=False)
+        cls.lookup.load(forceUpdate=True)
         cls.dblp=Dblp()
  
     def setUp(self, **kwargs):
@@ -39,27 +42,29 @@ class TestDblpEvents(DataSourceTest):
         callback to configure the corpus lookup
         '''
         dblpDataSource=lookup.getDataSource("dblp")
-        dblpXml=tests.testDblpXml.TestDblp.getMockedDblp(mock=cls.mock,debug=cls.debug)
-        dblpDataSource.eventManager.dblpXml=dblpXml
-        dblpDataSource.eventSeriesManager.dblpXml=dblpXml
+        if cls.useXml:
+            dblpXml=tests.testDblpXml.TestDblp.getMockedDblp(mock=cls.mock,debug=cls.debug)
+            dblpDataSource.eventManager.dblpXml=dblpXml
+            dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         
     def testDblp(self):
         '''
-        test getting the conference series and events from dblp xml dump
+        test getting the conference series and events from SPARQL
         '''
-      
         dblpDataSource=self.lookup.getDataSource("dblp")
-        self.checkDataSource(dblpDataSource, 138 if self.mock else 5200,1000 if self.mock else 40000)    
+        self.checkDataSource(dblpDataSource, 138 if self.mock else 5200,1000 if self.mock else 40000) 
 
     def testDblpDateFix(self):
         '''
         test Dblp DateRange extraction/fixing
         '''
+        debug=self.debug
+        debug=True
         dblpDataSource=self.lookup.getDataSource("dblp")
         limit=100
         for i,dblpEvent in enumerate(dblpDataSource.eventManager.events):
             dateRange=Dblp.getDateRangeFromTitle(dblpEvent.title)
-            if self.debug and i < limit:
+            if debug and i < limit:
                 print(dateRange)
                 
     def testDateRange(self):

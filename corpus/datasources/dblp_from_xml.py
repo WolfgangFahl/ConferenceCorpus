@@ -3,8 +3,9 @@ Created on 2021-07-28
 
 @author: th
 '''
-from corpus.event import EventStorage,EventSeriesManager, EventSeries, Event, EventManager
+from corpus.event import EventSeriesManager, EventSeries, Event, EventManager
 from lodstorage.storageconfig import StorageConfig
+from corpus.datasources.dblpxml import DblpXml
 from corpus.eventcorpus import EventDataSource, EventDataSourceConfig
 from plp.ordinal import Ordinal
 import re
@@ -13,8 +14,6 @@ from datetime import datetime
 class Dblp(EventDataSource):
     '''
     scientific events from https://dblp.org
-    
-    using SPARQL query
     '''
     sourceConfig = EventDataSourceConfig(lookupId="dblp", name="dblp", url='https://dblp.org/', title='dblp computer science bibliography', tableSuffix="dblp",locationAttribute="location")
     
@@ -126,16 +125,14 @@ class DblpEvent(Event):
         Args:
             rawEvent(dict): the raw event record to fix
         '''
-        url=rawEvent["pub"]
-        rawEvent["url"]=url
-        rawEvent["event_id"]=url
+        if 'url' in rawEvent:
+            rawEvent["url"] = f"https://dblp.org/{rawEvent['url']}" 
         if 'title' in rawEvent:   
             title=rawEvent["title"]
             dateRange=Dblp.getDateRangeFromTitle(title)
             for key, value in dateRange.items():
                 rawEvent[key]=value
             Ordinal.addParsedOrdinal(rawEvent)
-            pass
                 
         if "year" in rawEvent:
             # set year to integer value
@@ -174,6 +171,7 @@ class DblpEventSeries(EventSeries):
         super().__init__()
         pass
         
+
 class DblpEventManager(EventManager):
     '''
     dblp event access (in fact proceedings)
@@ -182,36 +180,45 @@ class DblpEventManager(EventManager):
     
     '''
     cacheOnly=False
-    testMode=False
 
     def __init__(self, config: StorageConfig=None):
         '''
         Constructor
         '''
         super(DblpEventManager, self).__init__(name="DblpEvents", sourceConfig=Dblp.sourceConfig, clazz=DblpEvent, config=config)
-        self.queryManager=EventStorage.getQueryManager(lang="sparql",name="dblp")
-        self.source="dblp"
-        self.endpoint="https://qlever.cs.uni-freiburg.de/api/dblp"
+
     pass
 
     def configure(self):
         '''
         configure me
         '''
+        withProgress = False
+        if DblpEventManager.cacheOnly:
+            return
+        if not hasattr(self, "dblpXml"): 
+            self.dblpXml = DblpXml()
+            self.dblpXml.warnFullSize()
+            withProgress = True
+        self.sqlDb = self.dblpXml.getXmlSqlDB(showProgress=withProgress)
         if not hasattr(self, "getListOfDicts"):
-            self.getListOfDicts = self.getLoDfromEndpoint
+            self.getListOfDicts = self.getLoDfromDblp
+
+    def getLoDfromDblp(self) -> list:
+        '''
+        get the LoD for the event series
             
-    def getSparqlQuery(self):
+        Return:
+            list: the list of dict with my series data
+
         '''
-        get  the SPARQL query for this event manager
-        
-        see also 
-        '''
-        eventQuery=self.queryManager.queriesByName['dblp-Events']
-        query=eventQuery.query
-        if DblpEventManager.testMode:
-            query=query.replace("#FILTER","FILTER")
-        return query
+        query = """select conf as series,title,year,url,booktitle,series as publicationSeries,ee,isbn,mdate,key as eventId
+        from proceedings 
+        order by series,year"""
+        listOfDicts = self.sqlDb.query(query)
+        self.setAllAttr(listOfDicts, "source", "dblp")
+        self.postProcessLodRecords(listOfDicts)
+        return listOfDicts
     
     def addLocations(self):
         # extract locations
@@ -240,8 +247,16 @@ class DblpEventSeriesManager(EventSeriesManager):
         '''
         configure me
         '''
+        withProgress = False
+        if DblpEventManager.cacheOnly:
+            return
+        if not hasattr(self, "dblpXml"): 
+            self.dblpXml = DblpXml()
+            self.dblpXml.warnFullSize()
+            withProgress = True
+        self.sqlDb = self.dblpXml.getXmlSqlDB(showProgress=withProgress)
         if not hasattr(self, "getListOfDicts"):
-            self.getListOfDicts = self.getLoDfromEndpoint
+            self.getListOfDicts = self.getLoDfromDblp
 
     def getLoDfromDblp(self) -> list:
         '''

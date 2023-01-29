@@ -57,6 +57,39 @@
       ?proceedings rdfs:label ?proceedingsLabel.
       filter(lang(?proceedingsLabel) = "en")
     }
+'WikidataDblpEventSeries':    
+    title: dblp eventseries details
+    description: maps dblp conf short names of scientific conference Series to true Acronyms
+    database: qlever
+    sparql: |
+        # scientific conference Series that have a DBLP venue ID
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT ?confSeries ?short_name ?confSeriesLabel ?DBLP_pid ?WikiCFP_pid ?GND_pid
+        WHERE 
+        {
+          #  scientific conference series (Q47258130) 
+          ?confSeries wdt:P31 wd:Q47258130.
+          OPTIONAL {
+              ?confSeries wdt:P1813 ?short_name . 
+          }
+          # any item with a DBLP venue ID 
+          ?confSeries wdt:P8926 ?DBLP_pid.
+          # WikiCFP pid 
+          optional {
+             ?confSeries wdt:P5127 ?WikiCFP_pid.
+          }
+          # GND pid
+          optional {
+            ?confSeries wdt:P227 ?GND_pid.
+          }
+          # label 
+          ?confSeries rdfs:label ?confSeriesLabel filter (lang(?confSeriesLabel) = "en").
+          # filter exotic pair entry
+          FILTER(?confSeries != wd:Q7395156)
+        }
+        ORDER BY (?short_name)
 'Wikidata-Events':
     title: Academic events with details for EventCorpus
     description: Academic events with details for EventCorpus
