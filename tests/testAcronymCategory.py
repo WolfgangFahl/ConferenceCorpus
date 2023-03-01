@@ -106,7 +106,7 @@ class TestAcronymCategory(BaseTest):
 
     def testGenerateAcronymYaml(self):
         """
-        generates the prefix yaml for city names
+        generates the prefix yaml for acronyms
         """
         ordinalMatcher = OrdinalCategory()
         yearMatcher = YearCategory()
