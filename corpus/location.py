@@ -5,7 +5,7 @@ Created on 2021-08-11
 '''
 #from lodstorage.entity import EntityManager
 from geograpy.locator import LocationContext
-from corpus.nominatim import NominatimWrapper
+from geograpy.nominatim import NominatimWrapper
 import sys
 
 class LocationLookup:
