@@ -22,10 +22,6 @@ classifiers = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11'
 ]
-dynamic = ["version"]
-[tool.hatch.version]
-path = "corpus/__init__.py"
-
 dependencies = [
     "pylodstorage>=0.4.9",
     "python-dateutil>=2.8.2",
@@ -46,8 +42,12 @@ dependencies = [
     "pyLookupParser>=0.0.2",
     #https://pypi.org/project/ngwidgets/
     "ngwidgets>=0.4.0"
-    
+
 ]
+
+dynamic = ["version"]
+[tool.hatch.version]
+path = "corpus/__init__.py"
 
 [project.optional-dependencies]
 test = [
