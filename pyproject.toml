@@ -43,7 +43,10 @@ dependencies = [
     "Markdown>=3.3.7",
     "scikit-learn>=1.1.2",
     "requests>=2.28.1",
-    "pyLookupParser>=0.0.2"
+    "pyLookupParser>=0.0.2",
+    #https://pypi.org/project/ngwidgets/
+    "ngwidgets>=0.4.0"
+    
 ]
 
 [project.optional-dependencies]
@@ -55,10 +58,6 @@ test = [
 Home = "http://wiki.bitplan.com/index.php/ConferenceCorpus"
 Source = "https://github.com/WolfgangFahl/ConferenceCorpus"
 Documentation = "https://github.com/WolfgangFahl/ConferenceCorpus/issues"
-
-
-
-
 
 [project.scripts]
 aelookup = "corpus.lookup:main"
