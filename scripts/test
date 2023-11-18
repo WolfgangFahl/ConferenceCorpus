@@ -1,5 +1,6 @@
 #!/bin/bash
 # WF 2020-06-03
+export PYTHON_PATH="."
 python="python3"
 backgound=""
 log=""
