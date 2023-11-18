@@ -3,17 +3,20 @@ Created on 2022-02-16
 
 @author: wf
 '''
+import corpus
+from dataclasses import dataclass
 
-class Version(object):
+@dataclass
+class Version():
     '''
     Version handling for ConferenceCorpus
     '''
     name = "Conference Corpus Browser"
     description = 'Conference Corpus Volume browser'
  
-    version='0.1.2'
+    version=corpus.__version__
     date = '2020-09-10'
-    updated = '2023-01-22'
+    updated = '2023-11-18'
     
     doc_url="https://wiki.bitplan.com/index.php/ConferenceCorpus"
     chat_url="https://github.com/WolfgangFahl/ConferenceCorpus/discussions"

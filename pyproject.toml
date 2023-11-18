@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ConferenceCorpus"
+description = "python api providing access to academic events and event series from different sources"
+home-page = "http://wiki.bitplan.com/index.php/ConferenceCorpus"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [
+  {name = "Wolfgang Fahl", email = "wf@WolfgangFahl.com"}
+]
+maintainers = [
+  { name = "Wolfgang Fahl", email = "wf@WolfgangFahl.com" },
+]
+requires-python = ">=3.9"
+classifiers = [
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11'
+]
+dynamic = ["version"]
+[tool.hatch.version]
+path = "corpus/__init__.py"
+
+dependencies = [
+    "pylodstorage>=0.4.9",
+    "python-dateutil>=2.8.2",
+    "py-3rdparty-mediawiki>=0.8.0",
+    "wikirender>=0.0.43",
+    "geograpy3>=0.2.7",
+    "habanero",
+    "wikibaseintegrator>=0.12.1",
+    "pybtex>=0.24.0",
+    "psutil>=5.9.0",
+    "lxml>=4.9.1",
+    "pydevd>=2.9.1",
+    "pyProbabilityDistributionFit>=0.0.4",
+    "matplotlib>=3.6.0",
+    "Markdown>=3.3.7",
+    "scikit-learn>=1.1.2",
+    "requests>=2.28.1",
+    "pyLookupParser>=0.0.2"
+]
+
+[project.optional-dependencies]
+test = [
+  "green",
+]
+
+[project.urls]
+Home = "http://wiki.bitplan.com/index.php/ConferenceCorpus"
+Source = "https://github.com/WolfgangFahl/ConferenceCorpus"
+Documentation = "https://github.com/WolfgangFahl/ConferenceCorpus/issues"
+
+
+
+
+
+[project.scripts]
+aelookup = "corpus.lookup:main"
+ccTibkat = "corpus.datasources.tibkatftx:main"
+ccUpdate = "corpus.ccupdate:main"
+ccServer = "corpus.web.cc_cmd:main"
