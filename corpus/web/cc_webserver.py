@@ -36,13 +36,10 @@ class ConferenceCorpusWebserver(InputWebserver):
         self.event_series_api=EventSeriesAPI(self.lookup)
         
         @app.get('/eventseries/{name}')
-        def get_eventseries(name:str): 
-            bks=""
-            reduce=False
-            markup_format="json"
-
-            event_series_dict=self.event_series_api.getEventSeries(name, bks, reduce)
-            response=self.event_series_api.convertToRequestedFormat(name, event_series_dict, markup_format)
+        def get_eventseries(name: str, bks: str = "", reduce: bool = False, format: str = "json"):
+            # Use the parameters directly in the API calls
+            event_series_dict = self.event_series_api.getEventSeries(name, bks, reduce)
+            response = self.event_series_api.convertToRequestedFormat(name, event_series_dict, format)
             return response
  
     def setup_home(self):

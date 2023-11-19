@@ -51,3 +51,20 @@ class RestFulApiTest(WebserverTest):
                 print(f"Event Count: {event_count}")
             self.assertEquals(expected_sources,sources)
             self.assertTrue(expected_event_count<=event_count)
+            
+    def test_event_series_api_formats(self):
+        """
+        test different markup formats
+        """   
+        test_series=[
+            ("AISI","")
+        ]     
+        debug=True
+        for name,needle in test_series:
+            for markup_format in ["github"]:
+                path=f"/eventseries/{name}?format={markup_format}"
+                markup=self.get_html(path)
+                if debug:
+                    print(f"{markup_format}:")
+                    print(markup)
+            

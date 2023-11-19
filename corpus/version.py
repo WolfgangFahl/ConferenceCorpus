@@ -16,7 +16,7 @@ class Version():
  
     version=corpus.__version__
     date = '2020-09-10'
-    updated = '2023-11-18'
+    updated = '2023-11-19'
     
     doc_url="https://wiki.bitplan.com/index.php/ConferenceCorpus"
     chat_url="https://github.com/WolfgangFahl/ConferenceCorpus/discussions"
