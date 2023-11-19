@@ -1,8 +1,0 @@
-{% extends 'fb4common/base.html' %}
-{% from 'bootstrap/form.html' import render_form %}
-{% block content %}
-{% if title is not none %}<h2>{{ title }}</h2>{%endif %}
-<ul>
-{% for link in linkList %}<li>{{link|safe }}{% endfor %}
-</ul>
-{% endblock %}

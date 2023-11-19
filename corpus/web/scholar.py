@@ -1,14 +1,13 @@
 import json
 from typing import List
-from flask import Blueprint, request, jsonify
 from lodstorage.sparql import SPARQL
 
-class ScholarBlueprint():
+class ScholarAPI():
     """
     API service for scholarly data
     """
 
-    def __init__(self, app, name: str, template_folder:str=None, appWrap=None):
+    def __init__(self, name: str):
         '''
         construct me
 
@@ -17,19 +16,11 @@ class ScholarBlueprint():
             template_folder(str): the template folder
         '''
         self.name = name
-        if template_folder is not None:
-            self.template_folder = template_folder
-        else:
-            self.template_folder = 'scholar'
-        self.blueprint = Blueprint(name, __name__, template_folder=self.template_folder,url_prefix="/scholar")
-        self.app = app
-        self.appWrap = appWrap
 
         @self.blueprint.route('/complete', methods=['POST'])
         def completeScholar():
             return self.completeScholar()
 
-        app.register_blueprint(self.blueprint)
 
     def completeScholar(self):
         """

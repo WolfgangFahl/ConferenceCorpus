@@ -3,7 +3,6 @@ Created on 2021-08-02
 
 @author: wf
 '''
-import unittest
 from tests.datasourcetoolbox import DataSourceTest
 from corpus.lookup import CorpusLookup
 

@@ -1,45 +1,33 @@
-import re
-from dataclasses import dataclass, asdict
-from distutils.util import strtobool
-from typing import List
 
-from fb4.widgets import LodTable
-from flask import Blueprint, request, jsonify, send_file
+import io
+import re
+import pandas as pd
+from dataclasses import dataclass, asdict
+from fastapi import Response
+from fastapi.responses import JSONResponse,FileResponse
+from tabulate import tabulate
+from typing import List
 from spreadsheet.spreadsheet import ExcelDocument
+from corpus.lookup import CorpusLookup
 
 from corpus.datasources.openresearch import OREvent, OREventSeries
 from corpus.eventseriescompletion import EventSeriesCompletion
 
-
-class EventSeriesBlueprint():
+class EventSeriesAPI():
     """
     API service for event series data
     """
 
-    def __init__(self, app, name: str, template_folder:str=None, appWrap=None):
+    def __init__(self,lookup:CorpusLookup):
         '''
         construct me
 
         Args:
-            name(str): my name
-            template_folder(str): the template folder
+            lookup
         '''
-        self.name = name
-        if template_folder is not None:
-            self.template_folder = template_folder
-        else:
-            self.template_folder = 'eventseries'
-        self.blueprint = Blueprint(name, __name__, template_folder=self.template_folder,url_prefix="/eventseries")
-        self.app = app
-        self.appWrap = appWrap
+        self.lookup=lookup
 
-        @self.blueprint.route('/<name>')
-        def getEventSeries(name: str):
-            return self.getEventSeries(name)
-
-        app.register_blueprint(self.blueprint)
-
-    def getEventSeries(self, name: str):
+    def getEventSeries(self,name: str,bks:str=None,reduce:bool=False):
         '''
         Query multiple datasources for the given event series
 
@@ -48,22 +36,19 @@ class EventSeriesBlueprint():
         '''
         multiQuery = "select * from {event}"
         idQuery = f"""select source,eventId from event where lookupAcronym LIKE "{name} %" order by year desc"""
-        dictOfLod = self.appWrap.lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
-        if request.values.get("bk"):
-            bkParam = request.values.get("bk")
-            allowedBks = bkParam.split(",") if bkParam else None
+        dictOfLod = self.lookup.getDictOfLod4MultiQuery(multiQuery, idQuery)
+        if bks:
+            allowedBks = bks.split(",") if bks else None
             self.filterForBk(dictOfLod.get("tibkat"), allowedBks)
-        reduceRecords = request.values.get("reduce")
-        if reduceRecords is not None and (reduceRecords == "" or bool(strtobool(reduceRecords))):
+        if reduce:
             for source in ["tibkat", "dblp"]:
                 sourceRecords = dictOfLod.get(source)
                 if sourceRecords:
                     reducedRecords = EventSeriesCompletion.filterDuplicatesByTitle(sourceRecords)
                     dictOfLod[source] = reducedRecords
-        return self.convertToRequestedFormat(name, dictOfLod)
+        return dictOfLod
 
-    @staticmethod
-    def filterForBk(lod:List[dict], allowedBks:List[str]):
+    def filterForBk(self,lod:List[dict], allowedBks:List[str]):
         """
         Filters the given dict to only include the records with their bk in the given list of allowed bks
         Args:
@@ -151,10 +136,10 @@ class EventSeriesBlueprint():
                 spreadsheet.addTable(sheetName, lod)
         return spreadsheet
 
-    def convertToRequestedFormat(self, name:str, dictOfLods: dict):
+    async def convertToRequestedFormat(self, name: str, dictOfLods: dict, markup_format: str = "json"):
         """
-        Converts the given dicts of lods to the requested format.
-        Supported formats: json, html
+        Converts the given dicts of lods to the requested markup format.
+        Supported formats: json, html, excel, pd_excel, various tabulate formats.
         Default format: json
 
         Args:
@@ -163,21 +148,31 @@ class EventSeriesBlueprint():
         Returns:
             Response
         """
-        formatParam = request.values.get('format', "")
-        if formatParam.lower() == "html":
-            tables = []
-            for name, lod in dictOfLods.items():
-                tables.append(LodTable(name=name, lod=lod))
-            template = "cc/result.html"
-            title = "Query Result"
-            result = "".join([str(t) for t in tables])
-            html = self.appWrap.render_template(template, title=title, activeItem="", result=result)
-            return html
-        elif formatParam.lower() == "excel":
+        if markup_format.lower() == "excel":
+            # Custom Excel spreadsheet generation
             spreadsheet = self.generateSeriesSpreadsheet(name, dictOfLods)
-            return send_file(spreadsheet.toBytesIO(), as_attachment=True, download_name=spreadsheet.filename, mimetype=spreadsheet.MIME_TYPE)
+            spreadsheet_io = io.BytesIO(spreadsheet.toBytesIO().getvalue())  # Ensure it's a BytesIO object
+            spreadsheet_io.seek(0)
+            return FileResponse(spreadsheet_io, media_type="application/vnd.ms-excel", filename=f"{name}.xlsx")
+
+        elif markup_format.lower() == "pd_excel":
+            # Pandas style Excel spreadsheet generation
+            df = pd.DataFrame.from_dict({k: v for lod in dictOfLods.values() for k, v in lod.items()})
+            excel_io = io.BytesIO()
+            with pd.ExcelWriter(excel_io, engine="xlsxwriter") as writer:
+                df.to_excel(writer, sheet_name=name)
+            excel_io.seek(0)
+            return FileResponse(excel_io, media_type="application/vnd.ms-excel", filename=f"{name}.xlsx")
+
+        elif markup_format.lower() == "json":
+            # Direct JSON response
+            return JSONResponse(content=dictOfLods)
+
         else:
-            return jsonify(dictOfLods)
+            # Using tabulate for other formats (including HTML)
+            tabulated_content = tabulate([lod for lod in dictOfLods.values()], headers="keys", tablefmt=markup_format)
+            media_type = "text/plain" if markup_format.lower() != "html" else "text/html"
+            return Response(content=tabulated_content, media_type=media_type)
 
 @dataclass
 class MetadataMappings:
