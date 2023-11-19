@@ -45,6 +45,9 @@ class ConferenceCorpusWebserver(InputWebserver):
             event_series_dict = self.event_series_api.getEventSeries(name, bks, reduce)
             response = self.event_series_api.convertToRequestedFormat(name, event_series_dict, format)
             return response
+        
+    def handle_exception(self,ex):
+        super().handle_exception(ex, trace=True)
  
     def setup_home(self):
         """

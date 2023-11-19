@@ -72,7 +72,7 @@ class Dashboard:
         )
 
         self.resultDiv = ui.html("result")
-        self.chartDiv = ui.html("chart")
+        self.lod_chartDiv = ui.html("chart")
         self.queryDiv = ui.html("query")
 
         self.tableSelect = ui.select(
@@ -104,36 +104,29 @@ class Dashboard:
         self.updateColumnOptions()
         self.agGrid = ListOfDictsGrid()
 
-    def lod_chart(self, lod, attr="count"):
+    def lod_chart(self, title:str, lod, attr="count"):
         """
         Create a chart from the given list of dicts.
         """
         data = [record[attr] for record in lod]
         histogram = Histogramm(data)
 
-        # Get the histogram image
-        histogram_image = histogram.get_image(
+        # Get the histogram image as a BytesIO object
+        histogram_image_stream = histogram.get_image(
             xLabel=attr,
             yLabel="Frequency",
-            title="Normal Distribution Histogram",
+            title=title,
             alpha=0.75,
             density=True,
         )
-
+    
         # Convert the image for NiceGUI
-        image_stream = BytesIO()
-        histogram_image.save(image_stream, format="PNG")
-        image_base64 = base64.b64encode(image_stream.getvalue()).decode("utf-8")
+        image_base64 = base64.b64encode(histogram_image_stream.getvalue()).decode("utf-8")
         image_data = f"data:image/png;base64,{image_base64}"
-
         # Display the image in NiceGUI
-        with self.chartDiv:
-            ui.image(src=image_data, width=500, height=300)
-
-    def chart(self, lod, attr="count", title=""):
-        values = [record[attr] for record in lod]
-        h = Histogramm(x=values)
-        h.show(xLabel="ordinal", yLabel="count", title=title, bins=self.maxValue)
+        with self.lod_chartDiv:
+            # see https://nicegui.io/documentation/image
+            self.chart_image = ui.image(image_data).style("width: 500px; height: 300px;")
 
     def onChangeTable(self, msg: dict):
         """
@@ -205,10 +198,10 @@ class Dashboard:
                     columnTotal["percent"] = columnTotal["count"] / total * 100
                     totals.append(columnTotal)
                 except Exception as totalFail:
-                    self.webserver.handleException(totalFail)
+                    self.webserver.handle_exception(totalFail)
             self.reloadAgGrid(totals)
         except Exception as ex:
-            self.webserver.handleException(ex)
+            self.webserver.handle_exception(ex)
 
     def onQueryClick(self, _msg):
         """
@@ -219,14 +212,14 @@ class Dashboard:
                 self.queryName, self.tableName, self.maxValue
             )
             html = self.queryHighlight(self.queryName, sqlQuery)
-            self.queryDiv.inner_html = html
+            self.queryDiv.content = html
             queryLod = self.sqlDB.query(sqlQuery)
             # self.reloadAgGrid(queryLod)
-            self.chart(
+            self.lod_chart(
                 lod=queryLod, attr="ordinal", title=f"{self.queryName} {self.tableName}"
             )
         except Exception as ex:
-            self.handleException(ex)
+            self.webserver.handle_exception(ex)
 
     def onChangeQuery(self, msg):
         self.queryName = msg.value
