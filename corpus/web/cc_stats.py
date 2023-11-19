@@ -3,7 +3,6 @@ Created on 2022-05-15
 
 @author: wf
 """
-from io import BytesIO
 import base64
 import pprint
 import matplotlib as plt
@@ -65,7 +64,7 @@ class Dashboard:
         setup the ConferenceCorpus statistics page
         """
         self.histoGrammButton = ui.button(
-            "histogramm", icon="bar_chart_4_bars", on_click=self.onHistogramm
+            "histogramm", icon="bar_chart", on_click=self.onHistogramm
         )
         self.queryButton = ui.button(
             "query", icon="question_mark", on_click=self.onQueryClick
@@ -102,7 +101,7 @@ class Dashboard:
         )
 
         self.updateColumnOptions()
-        self.agGrid = ListOfDictsGrid()
+        self.lod_grid = ListOfDictsGrid()
 
     def lod_chart(self, title:str, lod, attr="count"):
         """
@@ -173,18 +172,20 @@ class Dashboard:
         return result, html
 
     def reloadAgGrid(self, lod: list, showLimit=10):
-        self.agGrid.load_lod(lod)
+        """
+        reload my List of Dicts Grid
+        """
+        self.lod_grid.load_lod(lod)
         if self.debug:
             pprint.pprint(lod[:showLimit])
-        self.agGrid.options.columnDefs[0].checkboxSelection = True
 
     def onHistogramm(self, _msg):
         """
-        handle a click of the histogramm button
+        handle a click of the histogram button
         """
         try:
             totals = []
-            self.queryDiv.inner_html = ""
+            self.queryDiv.content = ""
             for eventView in self.eventViewTables:
                 tableName = eventView["name"]
                 try:
@@ -193,7 +194,7 @@ class Dashboard:
                     columnTotal, html = self.getTotals(
                         tableName, self.columnName, withSyntax=True
                     )
-                    self.queryDiv.inner_html += html
+                    self.queryDiv.content += html
                     columnTotal["total"] = total
                     columnTotal["percent"] = columnTotal["count"] / total * 100
                     totals.append(columnTotal)

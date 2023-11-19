@@ -5,6 +5,7 @@ Created on 2022-05-17
 """
 import io
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FixedLocator
 import matplotlib.colors as mcolors
 import numpy as np
 from typing import Callable
@@ -12,7 +13,6 @@ from collections import Counter
 from scipy.optimize import minimize
 from scipy.optimize import curve_fit
 from scipy.special import zetac
-
 
 class PlotSettings:
     """
@@ -242,6 +242,8 @@ class Histogramm(Plot):
             yvals = plt.gca().get_yticks()
             # print(yvals)
             plt.gca().set_yticklabels([f"{y*100:.2f}%" for y in yvals])
+            plt.gca().yaxis.set_major_locator(FixedLocator(yvals))  # Add this line
+
         if vlineAt is not None:
             plt.gca().axvline(x=vlineAt, color="r", linestyle="dashed", linewidth=2)
         plt.grid(grid)
