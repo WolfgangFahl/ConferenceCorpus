@@ -223,6 +223,17 @@ class Histogramm(Plot):
         plt.grid(grid)
         plt.legend(loc='upper right')
         self.doShow(ps)
+        
+    def get_image(self, xLabel, yLabel, title, facecolor='b', alpha=0.5, density:bool=False, grid:bool=True, bins=None, vlineAt:int=None):
+        """
+        Get the histogram as an image.
+
+        Returns:
+            BytesIO: The image in memory.
+        """
+        ps = PlotSettings(imageFormat='png', interactive=False)
+        self.show(xLabel, yLabel, title, facecolor, alpha, density, grid, ps, bins, vlineAt)
+        return ps.outputFile
 
 
 class HistogramSeries(Histogramm):

@@ -3,15 +3,15 @@ Created on 2023-11-18
 
 @author: wf
 """
-from nicegui import app
 from ngwidgets.input_webserver import InputWebserver
 from ngwidgets.webserver import WebserverConfig
 from corpus.version import Version
-from nicegui import ui, Client
+from nicegui import app,ui, Client
 from ngwidgets.profiler import Profiler
 from corpus.eventcorpus import DataSource
 from corpus.lookup import CorpusLookup
 from corpus.web.eventseries import EventSeriesAPI
+from corpus.web.cc_stats import Dashboard
     
 class ConferenceCorpusWebserver(InputWebserver):
     """
@@ -34,6 +34,10 @@ class ConferenceCorpusWebserver(InputWebserver):
         InputWebserver.__init__(self, config=ConferenceCorpusWebserver.get_config())
         self.lookup=CorpusLookup()
         self.event_series_api=EventSeriesAPI(self.lookup)
+        
+        @ui.page("/stats")
+        async def stats(client:Client):
+            return await self.show_stats_dashboard()
         
         @app.get('/eventseries/{name}')
         def get_eventseries(name: str, bks: str = "", reduce: bool = False, format: str = "json"):
@@ -58,6 +62,20 @@ class ConferenceCorpusWebserver(InputWebserver):
         for index,source in enumerate(data_sources,start=1):
             ui.label(f"{index}:{source.title}")
         pass
+    
+    async def show_stats_dashboard(self):
+        """
+        show the statistics dashboard
+        """
+        def show():
+            self.dashboard=Dashboard(self)
+        await self.setup_content_div(show)
+    
+    def configure_menu(self):
+        """
+        add a menu entry
+        """
+        self.link_button(name="statistics",target="/stats",icon_name="query_stats")
         
     async def home(self, _client: Client):
         """
