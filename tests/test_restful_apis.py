@@ -59,6 +59,7 @@ class RestFulApiTest(WebserverTest):
         test_series=[
             ("AISI","")
         ]     
+        debug=self.debug
         debug=True
         for name,needle in test_series:
             for markup_format in ["github"]:

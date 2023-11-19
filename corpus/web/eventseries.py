@@ -178,7 +178,7 @@ class EventSeriesAPI():
                 if isinstance(lod, list):
                     table = tabulate(lod, headers="keys", tablefmt=markup_format)
                     table_header=MarkupHeader.get_markup(source, markup_format=markup_format, level=1)
-                    all_tables += table_header +"\n"+ table
+                    all_tables += "\n"+ table_header +"\n"+ table
             media_type = "text/plain" if markup_format.lower() != "html" else "text/html"
             return Response(content=all_tables, media_type=media_type)
 
