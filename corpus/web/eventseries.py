@@ -4,15 +4,17 @@ import re
 import pandas as pd
 from dataclasses import dataclass, asdict
 from fastapi import Response
-from fastapi.responses import JSONResponse,FileResponse
+from ngwidgets.orjson_response import ORJSONResponse
+from fastapi.responses import FileResponse
 from tabulate import tabulate
-from typing import List
+from typing import Any,List
 from spreadsheet.spreadsheet import ExcelDocument
 from corpus.lookup import CorpusLookup
 
 from corpus.datasources.openresearch import OREvent, OREventSeries
 from corpus.eventseriescompletion import EventSeriesCompletion
-
+from datetime import date,datetime
+    
 class EventSeriesAPI():
     """
     API service for event series data
@@ -136,7 +138,7 @@ class EventSeriesAPI():
                 spreadsheet.addTable(sheetName, lod)
         return spreadsheet
 
-    async def convertToRequestedFormat(self, name: str, dictOfLods: dict, markup_format: str = "json"):
+    def convertToRequestedFormat(self, name: str, dictOfLods: dict, markup_format: str = "json"):
         """
         Converts the given dicts of lods to the requested markup format.
         Supported formats: json, html, excel, pd_excel, various tabulate formats.
@@ -165,8 +167,9 @@ class EventSeriesAPI():
             return FileResponse(excel_io, media_type="application/vnd.ms-excel", filename=f"{name}.xlsx")
 
         elif markup_format.lower() == "json":
-            # Direct JSON response
-            return JSONResponse(content=dictOfLods)
+            # Using custom IsoDatingJSONResponse for JSON response
+            response= ORJSONResponse(content=dictOfLods)
+            return response
 
         else:
             # Using tabulate for other formats (including HTML)

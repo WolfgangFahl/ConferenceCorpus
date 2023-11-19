@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>geograpy3</project>
+		<project>nicegui_widgets</project>
 		<project>py-3rdparty-mediawiki</project>
 		<project>pyFlaskBootstrap4</project>
 		<project>pyJustpyWidgets</project>

@@ -43,8 +43,7 @@ dependencies = [
     # https://github.com/WolfgangFahl/PyGenericSpreadSheet/
     "pyGenericSpreadSheet>=0.2.4",
     #https://pypi.org/project/ngwidgets/
-    "ngwidgets>=0.4.1"
-
+    "ngwidgets>=0.4.2"
 ]
 
 dynamic = ["version"]
