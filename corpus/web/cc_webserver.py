@@ -12,7 +12,8 @@ from corpus.eventcorpus import DataSource
 from corpus.lookup import CorpusLookup
 from corpus.web.eventseries import EventSeriesAPI
 from corpus.web.cc_stats import Dashboard
-    
+from corpus.web.cc_queries import ConferenceCorpusQueries
+
 class ConferenceCorpusWebserver(InputWebserver):
     """
     Webserver for the Conference Corpus
@@ -34,10 +35,15 @@ class ConferenceCorpusWebserver(InputWebserver):
         InputWebserver.__init__(self, config=ConferenceCorpusWebserver.get_config())
         self.lookup=CorpusLookup()
         self.event_series_api=EventSeriesAPI(self.lookup)
+        self.queries=ConferenceCorpusQueries()
         
         @ui.page("/stats")
         async def stats(client:Client):
             return await self.show_stats_dashboard()
+        
+        @ui.page("/queries")
+        async def show_queries(client:Client):
+            return await self.show_queries()
         
         @app.get('/eventseries/{name}')
         def get_eventseries(name: str, bks: str = "", reduce: bool = False, format: str = "json"):
@@ -73,6 +79,15 @@ class ConferenceCorpusWebserver(InputWebserver):
         def show():
             self.dashboard=Dashboard(self)
         await self.setup_content_div(show)
+        
+    async def show_queries(self):
+        """
+        show the list of available queries
+        """
+        def show():
+            ui.html(self.queries.as_html())
+        await self.setup_content_div(show)
+   
     
     def configure_menu(self):
         """

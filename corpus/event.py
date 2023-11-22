@@ -84,7 +84,8 @@ class EventStorage:
             debug(bool): if True set debugging on
         '''
         cachedir=EventStorage.getStorageConfig().getCachePath()
-        for path in cachedir,os.path.dirname(__file__)+"/../resources":
+        resources_path=os.path.dirname(__file__)+"/../resources"
+        for path in cachedir,resources_path:
             qYamlFile=f"{path}/{name}.yaml"
             if os.path.isfile(qYamlFile):
                 qm=QueryManager(lang=lang,debug=debug,queriesPath=qYamlFile)
