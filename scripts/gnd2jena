@@ -1,0 +1,467 @@
+#!/bin/bash
+# WF 2024-01-30
+# Apache Jena Docker based
+# Fuseki helper functions
+# with GND example dataset loading
+
+# Global variables
+
+# configuration
+base="$HOME/.conferencecorpus/jena"
+jena_version=4.10.0
+image_tag="fuseki-$jena_version"  # Docker image name with version
+container_name="fuseki" # Name of your Docker container
+repo_dir="https://repo1.maven.org/maven2/org/apache/jena/jena-fuseki-docker"
+stain_repo="stain"
+stain_image="$stain_repo/jena-fuseki"
+stain_container_name="stain_fuseki"
+credentials_file="$base/.credentials.txt"
+
+# settings
+verbose=true
+use_color=false
+use_stain=false
+force_restart=false
+custom_port=3030
+
+# prepare environment
+cur_dir=$(pwd)
+cd $HOME
+if [ -f .profile ]
+then
+  . .profile
+fi
+cd $base
+
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
+
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+	local l_msg="$2"
+  if [ "$use_color" == "true" ]
+  then
+ 	  echo -e "${l_color}$l_msg${endColor}"
+  else
+    log "$l_msg"
+  fi
+}
+
+#
+# error
+#
+#   show an error message and exit
+#
+#   params:
+#     1: l_msg - the message to display
+error() {
+  local l_msg="$1"
+	# use ansi red for error
+  color_msg $red "Error: $l_msg" 1>&2
+  exit 1
+}
+
+#
+# show usage
+#
+usage() {
+  local p_name=$(basename $0)
+  color_msg $blue "Usage: $p_name [options]"
+  color_msg $blue "Options:"
+  color_msg $blue "    --base [path]        : set the base directory for jena and it's data"
+  color_msg $blue "    --bash               : access bash shell inside the running Docker container"
+  color_msg $blue "    -c  |--color         : enable colored messages"
+  color_msg $blue "    -d  |--debug         : use set -x for debugging this script"
+  color_msg $blue "    -f  |--force         : force restart the server if it's already running"
+  color_msg $blue "    -h  |--help          : show this usage"
+  color_msg $blue "    -lg |--load-gnd      : download and load GND data"
+  color_msg $blue "    -i  |--install       : install Fuseki Docker image (version specified by 'jena_version')"
+  color_msg $blue "    --port [port]        : set custom port for the Docker container"
+  color_msg $blue "    --rm                 : remove the Docker container"
+  color_msg $blue "    --rmi                : remove the Docker image"
+  color_msg $blue "    --stain              : install and run stain/jena-fuseki Docker image"
+  color_msg $blue "    -s  |--start         : start the server"
+  color_msg $blue "    --stop               : stop the running server"
+  color_msg $blue "    -v  |--verbose       : enable verbose logging"
+
+  exit 1
+}
+
+#
+# log the given message if we are in verbose mode
+# params
+#   1: msg- the message to show
+#
+log()  {
+  local l_msg="$1"
+  if [ "$verbose" == "true" ]
+  then
+    echo "$l_msg"
+  fi
+}
+
+#
+# prepare logging for the given service
+#
+# params
+#   1: root
+#   2: name
+prepare_logging() {
+  local l_root=$1
+  local l_name=$1
+  local l_logdir=/var/log/$l_root
+  local l_log=$l_logdir/$l_name.log
+  local l_idn=$(id -un)
+  local l_idg=$(id -gn)
+  if [ ! -d $l_logdir ]
+  then
+    sudo mkdir -p $l_logdir
+  fi
+  sudo chown $l_idn $l_logdir
+  sudo chgrp $l_idg $l_logdir
+  sudo touch $l_log
+  sudo chown $l_idn $l_log
+  sudo chgrp $l_idg $l_log
+  color_msg $blue "log is at $l_log"
+}
+
+#
+# log the given message if we are in verbose mode
+# params
+#   1: msg- the message to show
+#
+log()  {
+  local l_msg="$1"
+  if [ "$verbose" == "true" ]
+  then
+    echo "$l_msg"
+  fi
+}
+
+# Function to perform sed in-place editing with compatibility for both Linux and macOS
+sed_in_place() {
+  local file=$1
+  local pattern=$2
+
+  case $(uname) in
+    Darwin*)
+      # macOS requires an empty string as an argument to -i
+      sed -i '' "$pattern" "$file" || return 1
+      ;;
+    *)
+      # Linux and other OSes
+      sed -i "$pattern" "$file" || return 1
+      ;;
+  esac
+}
+
+#
+# set the base directory
+#
+prepare_base() {
+  mkdir -p $base
+  docker_data_dir="$base/data"           # Directory in Docker where the data will be mounted
+  credentials_file="$base/.credentials.txt"
+}
+
+#
+# Check if the Docker image exists
+# params:
+#   1: repo - the name of the repo to check
+#   2: image_tag the image tag to check
+#
+docker_image_exists() {
+  local repo="$1"
+  local image_tag="$2"
+  local image_info=$(docker images --format '{{json .}}' | jq '. | select(.Repository | contains("'"$repo"'")) | {repo:.Repository, tag:.Tag, size: .Size, created: .CreatedAt, since: .CreatedSince, id: .ID}')
+
+  if [ "$use_color" == "true" ]; then
+    color_msg $blue "Docker images check for $repo:$image_tag: $image_info"
+  fi
+
+  echo "$image_info" | grep -q "$image_tag" > /dev/null
+  if [ $? -ne 0 ]; then
+    return 1 # Image does not exist
+  else
+    return 0 # Image exists
+  fi
+}
+
+#
+# Install stain/jena-fuseki Docker
+#
+install_stain_fuseki() {
+  # Check if the Docker image already exists
+  if docker_image_exists "stain" "jena-fuseki"; then
+    color_msg $green "Docker image $stain_image already exists. Skipping pull."
+    return 0
+  else
+    color_msg $blue "Docker image $stain_image does not exist. Proceeding with pull..."
+  fi
+
+  # Pull the stain/jena-fuseki image
+  color_msg $blue "Pulling $stain_image..."
+  docker pull $stain_image || color_msg $red "Failed to pull $stain_image."
+}
+
+#
+# Install Jena Fuseki Docker
+#
+# Downloads the specified version of the jena-fuseki-docker package,
+# extracts it, and builds the Docker image using the Dockerfile and
+# docker-compose file provided in the package.
+#
+# params:
+#   1: jena_version - The version of the Jena Fuseki to install
+#
+install_fuseki_docker() {
+  local jena_version=$1
+  local package_name="jena-fuseki-docker-$jena_version"
+  local package_zip="$package_name.zip"
+  local package_url="$repo_dir/$jena_version/$package_zip"
+  local docker_build_dir="./$package_name"  # Directory to hold the build files
+  local docker_compose_file="docker-compose.yaml"
+
+  # Check if the Docker image already exists
+  if docker_image_exists "fuseki" "$image_tag"; then
+    color_msg $green "Docker image fuseki:$image_tag already exists."
+    return 0
+  else
+    color_msg $blue "Docker image fuseki:$image_tag does not exist. Proceeding with build..."
+  fi
+
+  # Check if the package zip file already exists
+  if [ ! -f "$package_zip" ]; then
+    color_msg $blue "Downloading $package_zip..."
+    wget "$package_url" || color_msg $red "Failed to download $package_zip."
+  else
+    color_msg $green "$package_zip already downloaded."
+  fi
+
+  # Check if the package has already been extracted
+  if [ ! -d "$docker_build_dir" ]; then
+    color_msg $blue "Extracting $package_zip to $docker_build_dir..."
+    unzip "$package_zip" -d "./" || color_msg $red "Failed to extract $package_zip."
+  else
+    color_msg $green "$docker_build_dir already exists."
+  fi
+
+  # Navigate to the docker build directory
+  color_msg $blue "Navigating to docker build directory: $docker_build_dir"
+  cd "$docker_build_dir" || color_msg $red "Failed to navigate to docker build directory."
+
+  # Patch the docker-compose.yml to set the image name with version
+  if ! sed_in_place "$docker_compose_file" "s|image: fuseki|image: fuseki:$image_tag|"; then
+    color_msg $red "Failed to update image name in docker-compose.yaml."
+  fi
+
+  # Build the Docker image using docker-compose
+  color_msg $blue "Building Jena Fuseki Docker image $image_name..."
+  docker-compose build --build-arg JENA_VERSION="$jena_version" || color_msg $red "Failed to build Docker image $image_name."
+}
+
+#
+# Install Docker based on the selected option
+#
+install_docker() {
+  if [ "$use_stain" == "true" ]; then
+    install_stain_fuseki
+  else
+    install_fuseki_docker $jena_version
+  fi
+}
+
+#
+# Bash into the Docker container
+#
+bash_into_container() {
+  if [ "$(docker ps -q -f name=$container_name)" ]; then
+    color_msg $blue "Accessing bash inside the Docker container $container_name."
+    docker exec -it $container_name /bin/bash
+  else
+    color_msg $red "Docker container $container_name is not running."
+  fi
+}
+
+
+# Start server
+start_server() {
+
+  if [ "$(docker ps -q -f name=$container_name)" ]; then
+    if [ "$force_restart" == true ]; then
+      color_msg $blue "Forcing restart of the Docker container $container_name."
+      docker stop $container_name && docker rm $container_name
+    else
+      color_msg $green "Docker container $container_name is already running."
+      return
+    fi
+  fi
+
+  # Check if a non-running container with the name exists
+  if [ "$(docker ps -a -q -f name=$container_name)" ]; then
+    color_msg $red "A non-running container with the name $container_name exists. Removing it..."
+    docker rm $container_name || error "Failed to remove existing non-running container $container_name"
+  fi
+
+  # Start the Docker container
+  docker run -d --name $container_name -p $custom_port:3030 -v "$docker_data_dir" "fuseki:$image_tag" --mem /ds
+  if [ $? -ne 0 ]; then
+    error "Failed to start Docker container $container_name"
+  else
+    color_msg $green "Docker container $container_name started successfully."
+  fi
+}
+
+#
+# Stop the Docker container
+#
+stop_server() {
+  if [ "$(docker ps -q -f name=$container_name)" ]; then
+    color_msg $blue "Stopping the Docker container $container_name."
+    docker stop $container_name || error "Failed to stop container $container_name"
+  else
+    color_msg $red "Docker container $container_name is not running."
+  fi
+}
+
+#
+# Remove the Docker container
+#
+remove_container() {
+  if [ "$(docker ps -a -q -f name=$container_name)" ]; then
+    color_msg $blue "Removing the Docker container $container_name."
+    docker rm $container_name || error "Failed to remove container $container_name"
+  else
+    color_msg $red "Docker container $container_name does not exist."
+  fi
+}
+
+#
+# Remove the Docker image
+#
+remove_image() {
+  local fuseki_images=$(docker images --format '{{json .}}' | jq '. | select(.Repository | contains("fuseki")) | {repo:.Repository, tag:.Tag, size: .Size, created: .CreatedAt, since: .CreatedSince, id: .ID}')
+  echo "$fuseki_images" | grep "$image_tag" > /dev/null
+  if [ $? -eq 0 ]; then
+    color_msg $blue "Removing the Docker image $image_tag."
+    docker rmi "fuseki:$image_tag" || error "Failed to remove image fuseki:$image_tag"
+  else
+    color_msg $red "Docker image $image_tag does not exist."
+  fi
+}
+
+#
+# load files for german national library
+#
+load_gnd() {
+  base_url=https://data.dnb.de/opendata
+  file=authorities-kongress_lds.ttl
+  gz_file=$file.gz
+  url=$base_url/$gz_file
+  if [ ! -f $file ]
+  then
+    color_msg $blue "getting and unzipping $gz_file"
+    wget $url
+    gunzip $gz_file
+  else
+    color_msg $green "$file already exists"
+  fi
+  load_data $data $file
+}
+
+prepare_base
+prepare_logging jena fuseki
+
+# remember the time we started this
+start_date=$(date -u +"%s")
+
+while test $# -gt 0
+do
+  case $1 in
+   # set the base directoy
+    --base)
+      if [ $# -lt 2 ]; then
+        error "Missing argument for --base"
+      fi
+      base="$2"
+      prepare_base
+      shift 1
+      ;;
+  # Function to bash into the container
+    --bash)
+      bash_into_container
+      ;;
+   # color
+     -c|--color)
+       use_color=true
+       ;;
+   # debug
+     -d|--debug)
+       set -x
+       ;;
+   # force restart
+    -f|--force)
+       force_restart=true
+       ;;
+   # help
+     -h|--help)
+        usage;;
+   # download and load GND data
+     -lg|--load-gnd)
+        load_gnd;;
+   # install
+     -i|--install)
+       install_docker;;
+   # modify the port
+     --port)
+         if [ $# -lt 2 ]; then
+           error "Missing argument for --port"
+         fi
+         custom_port="$2" # Use this custom port for running the container
+         shift 1
+         ;;
+   # start the server
+     -s|--start)
+       start_server
+      ;;
+
+   # stain option
+      --stain)
+        use_stain=true
+      ;;
+   # Function to stop the server
+    --stop)
+      stop_server
+      ;;
+   # Function to remove the container
+    --rm)
+      remove_container
+      ;;
+   # Function to remove the image
+    --rmi)
+      remove_image
+      ;;
+   # set verbose mode
+     -v|--verbose)
+       verbose=true
+     ;;
+  esac
+  shift
+done
+
+# stop the end time
+end_date=$(date -u +"%s")
+
+# show how long this took
+diff=$(($end_date-$start_date))
+color_msg $blue "run took $(($diff / 60)) minutes and $(($diff % 60)) seconds."
