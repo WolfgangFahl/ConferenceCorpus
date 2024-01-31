@@ -9,12 +9,14 @@
 # configuration
 base="$HOME/.conferencecorpus/jena"
 jena_version=4.10.0
+repo="fuseki"
 image_tag="fuseki-$jena_version"  # Docker image name with version
+image_name="$repo:$image_tag"
 container_name="fuseki" # Name of your Docker container
 repo_dir="https://repo1.maven.org/maven2/org/apache/jena/jena-fuseki-docker"
-stain_repo="stain"
-stain_image="$stain_repo/jena-fuseki"
-stain_container_name="stain_fuseki"
+
+# stain
+stain_image="stain/jena-fuseki"
 credentials_file="$base/.credentials.txt"
 
 # settings
@@ -135,34 +137,25 @@ prepare_logging() {
   color_msg $blue "log is at $l_log"
 }
 
-#
-# log the given message if we are in verbose mode
-# params
-#   1: msg- the message to show
-#
-log()  {
-  local l_msg="$1"
-  if [ "$verbose" == "true" ]
-  then
-    echo "$l_msg"
-  fi
-}
 
 # Function to perform sed in-place editing with compatibility for both Linux and macOS
 sed_in_place() {
   local file=$1
   local pattern=$2
-
-  case $(uname) in
-    Darwin*)
-      # macOS requires an empty string as an argument to -i
-      sed -i '' "$pattern" "$file" || return 1
-      ;;
-    *)
-      # Linux and other OSes
-      sed -i "$pattern" "$file" || return 1
-      ;;
-  esac
+  local match=$(echo $pattern | cut -d'/' -f2)  # Extract the match pattern from sed expression
+  # Check if the pattern is already in the file
+  if ! grep -q "$match" "$file"; then
+    case $(uname) in
+      Darwin*)
+        # macOS requires an empty string as an argument to -i
+        sed -i '' "$pattern" "$file" || return 1
+        ;;
+      *)
+        # Linux and other OSes
+        sed -i "$pattern" "$file" || return 1
+        ;;
+    esac
+  fi
 }
 
 #
@@ -172,6 +165,21 @@ prepare_base() {
   mkdir -p $base
   docker_data_dir="$base/data"           # Directory in Docker where the data will be mounted
   credentials_file="$base/.credentials.txt"
+}
+
+#
+# Check if a Docker container is running or exists
+# params:
+#   1: container_name - the name of the container to check
+#   2: options (optional) - if '-a', checks if the container exists (running or stopped)
+#
+check_container() {
+  local container_name="$1"
+  local options="$2"
+
+  # Check container based on the provided options
+  docker ps $options --format '{{.Names}}' | grep -q "^$container_name$"
+  return $? # 0 if condition is met, 1 if not
 }
 
 #
@@ -202,11 +210,11 @@ docker_image_exists() {
 #
 install_stain_fuseki() {
   # Check if the Docker image already exists
-  if docker_image_exists "stain" "jena-fuseki"; then
-    color_msg $green "Docker image $stain_image already exists. Skipping pull."
+  if docker_image_exists "$repo" "$image_tag"; then
+    color_msg $green "Docker image $image_name already exists. Skipping pull."
     return 0
   else
-    color_msg $blue "Docker image $stain_image does not exist. Proceeding with pull..."
+    color_msg $blue "Docker image $image_name does not exist. Proceeding with pull..."
   fi
 
   # Pull the stain/jena-fuseki image
@@ -233,11 +241,11 @@ install_fuseki_docker() {
   local docker_compose_file="docker-compose.yaml"
 
   # Check if the Docker image already exists
-  if docker_image_exists "fuseki" "$image_tag"; then
-    color_msg $green "Docker image fuseki:$image_tag already exists."
+  if docker_image_exists "$repo" "$image_tag"; then
+    color_msg $green "Docker image $repo:$image_tag already exists."
     return 0
   else
-    color_msg $blue "Docker image fuseki:$image_tag does not exist. Proceeding with build..."
+    color_msg $blue "Docker image $repo:$image_tag does not exist. Proceeding with build..."
   fi
 
   # Check if the package zip file already exists
@@ -296,9 +304,14 @@ bash_into_container() {
 
 # Start server
 start_server() {
+  local options="--mem /ds"
+  if [ "$use_stain" == "true" ]; then
+    options=""
+  fi
 
-  if [ "$(docker ps -q -f name=$container_name)" ]; then
-    if [ "$force_restart" == true ]; then
+  # Force restart if required
+  if check_container $container_name; then
+    if [ "$force_restart" == "true" ]; then
       color_msg $blue "Forcing restart of the Docker container $container_name."
       docker stop $container_name && docker rm $container_name
     else
@@ -308,19 +321,20 @@ start_server() {
   fi
 
   # Check if a non-running container with the name exists
-  if [ "$(docker ps -a -q -f name=$container_name)" ]; then
+  if check_container $container_name -a; then
     color_msg $red "A non-running container with the name $container_name exists. Removing it..."
     docker rm $container_name || error "Failed to remove existing non-running container $container_name"
   fi
 
-  # Start the Docker container
-  docker run -d --name $container_name -p $custom_port:3030 -v "$docker_data_dir" "fuseki:$image_tag" --mem /ds
+  # Start the Docker container with the appropriate image
+  docker run -d --name $container_name -p $custom_port:3030 -v "$docker_data_dir" "$image_name" "$options"
   if [ $? -ne 0 ]; then
     error "Failed to start Docker container $container_name"
   else
     color_msg $green "Docker container $container_name started successfully."
   fi
 }
+
 
 #
 # Stop the Docker container
@@ -438,6 +452,10 @@ do
    # stain option
       --stain)
         use_stain=true
+        repo="stain/jena-fuseki"
+        image_tag="latest"
+        image_name=$repo:$image_tag
+        container_name="stain_fuseki"
       ;;
    # Function to stop the server
     --stop)
