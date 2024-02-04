@@ -103,7 +103,7 @@ class ConferenceCorpusSolution(InputWebSolution):
         """
         self.link_button(name="statistics",target="/stats",icon_name="query_stats")
         
-    async def home(self, _client: Client):
+    async def home(self):
         """
         provide the main content page
         """
