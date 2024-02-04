@@ -3,7 +3,7 @@ Created on 2023-11-18
 
 @author: wf
 """
-from ngwidgets.input_webserver import InputWebserver
+from ngwidgets.input_webserver import InputWebserver, InputWebSolution
 from ngwidgets.webserver import WebserverConfig
 from corpus.version import Version
 from nicegui import app,ui, Client
@@ -24,11 +24,14 @@ class ConferenceCorpusWebserver(InputWebserver):
         """
         get the configuration for this Webserver
         """
-        copy_right = "(c)2020-2023 Wolfgang Fahl"
+        copy_right = "(c)2020-2024 Wolfgang Fahl"
         config = WebserverConfig(
-            copy_right=copy_right, version=Version(), default_port=5005
+            short_name="cc",
+            copy_right=copy_right, 
+            version=Version(), default_port=5005
         )
-        return config
+        server_config=WebserverConfig.get(config)
+        return server_config
     
     def __init__(self):
         """Constructor"""
@@ -39,22 +42,26 @@ class ConferenceCorpusWebserver(InputWebserver):
         
         @ui.page("/stats")
         async def stats(client:Client):
-            return await self.show_stats_dashboard()
+            return await self.page(client,ConferenceCorpusSolution.show_stats_dashboard)
         
         @ui.page("/queries")
         async def show_queries(client:Client):
-            return await self.show_queries()
+            return await self.page(client.ConfernceCorpusSolution.show_queries)
         
         @app.get('/eventseries/{name}')
-        def get_eventseries(name: str, bks: str = "", reduce: bool = False, format: str = "json"):
+        def get_eventseries(name: str, bks: str = "", reduce: bool = False, table_fmt: str = "json"):
             # Use the parameters directly in the API calls
             event_series_dict = self.event_series_api.getEventSeries(name, bks, reduce)
-            response = self.event_series_api.convertToRequestedFormat(name, event_series_dict, format)
+            response = self.event_series_api.convertToRequestedFormat(name, event_series_dict, table_fmt)
             return response
         
-    def handle_exception(self,ex):
-        super().handle_exception(ex, trace=True)
- 
+class ConferenceCorpusSolution(InputWebSolution):
+    """
+    Conference Corpus per Client Web UI
+    """
+    def __init__(self, webserver:ConferenceCorpusWebserver, client: Client):
+        super().__init__(webserver, client)  # Call to the superclass constructor
+         
     def setup_home(self):
         """
         first load all data sources then

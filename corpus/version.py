@@ -16,14 +16,14 @@ class Version():
  
     version=corpus.__version__
     date = '2020-09-10'
-    updated = '2023-11-19'
+    updated = '2024-02-04'
     
     doc_url="https://wiki.bitplan.com/index.php/ConferenceCorpus"
     chat_url="https://github.com/WolfgangFahl/ConferenceCorpus/discussions"
     cm_url="https://github.com/WolfgangFahl/ConferenceCorpus"
 
     authors = 'Wolfgang Fahl, Tim Holzheim'
-    license = f'''Copyright 2022-2023 contributors. All rights reserved.
+    license = f'''Copyright 2020-2024 contributors. All rights reserved.
 
   Licensed under the Apache License 2.0
   http://www.apache.org/licenses/LICENSE-2.0

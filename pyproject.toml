@@ -23,7 +23,7 @@ classifiers = [
     'Programming Language :: Python :: 3.11'
 ]
 dependencies = [
-    "pylodstorage>=0.4.9",
+    "pylodstorage>=0.8.1",
     "python-dateutil>=2.8.2",
     "py-3rdparty-mediawiki>=0.8.0",
     "wikirender>=0.0.43",
@@ -43,7 +43,7 @@ dependencies = [
     # https://github.com/WolfgangFahl/PyGenericSpreadSheet/
     "pyGenericSpreadSheet>=0.2.4",
     #https://pypi.org/project/ngwidgets/
-    "ngwidgets>=0.4.4"
+    "ngwidgets>=0.11.0"
 ]
 
 dynamic = ["version"]
@@ -59,6 +59,14 @@ test = [
 Home = "http://wiki.bitplan.com/index.php/ConferenceCorpus"
 Source = "https://github.com/WolfgangFahl/ConferenceCorpus"
 Documentation = "https://github.com/WolfgangFahl/ConferenceCorpus/issues"
+
+
+[tool.hatch.build.targets.wheel]
+only-include = ["corpus","resources"]
+
+[tool.hatch.build.targets.wheel.sources]
+"corpus" = "corpus"
+"resources" = "resources"
 
 [project.scripts]
 aelookup = "corpus.lookup:main"

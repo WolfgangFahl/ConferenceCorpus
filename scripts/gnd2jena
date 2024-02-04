@@ -305,8 +305,10 @@ bash_into_container() {
 # Start server
 start_server() {
   local options="--mem /ds"
+  vol_options="$docker_data_dir"
   if [ "$use_stain" == "true" ]; then
     options=""
+    vol_options="$docker_data_dir:/data"
   fi
 
   # Force restart if required
@@ -327,7 +329,7 @@ start_server() {
   fi
 
   # Start the Docker container with the appropriate image
-  docker run -d --name $container_name -p $custom_port:3030 -v "$docker_data_dir" "$image_name" "$options"
+  docker run -d --name $container_name -p $custom_port:3030 -v "$vol_options" "$image_name" $options
   if [ $? -ne 0 ]; then
     error "Failed to start Docker container $container_name"
   else
@@ -375,11 +377,49 @@ remove_image() {
 }
 
 #
+# show the given timestamp
+#
+timestamp() {
+ local msg="$1"
+ local ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ echo "$msg at $ts"
+}
+
+#
+# load data for the given data dir and input
+#
+# params:
+#   1: file (e.g. ttl) to be loaded
+#
+load_data() {
+	local file="$1"
+  timestamp "start loading $file with $container_name"
+  # Construct the docker exec command
+  local docker_cmd="docker exec $container_name ./tdbloader --loc=/data"
+  color_msg $blue "trying $docker_cmd"
+  # Run tdbloader in the Docker container and redirect output to log files
+  $docker_cmd > tdb2-out.log 2> tdb2-err.log
+
+  # Check the exit status of the tdbloader command
+  local status=$?
+
+  # Check for errors in tdb2-$phase-err.log
+  if [ $status -ne 0 ] || [ -s tdb2-err.log ]; then
+    color_msg $red "Errors occurred during loading $file with docker container $container_name"
+    cat  tdb2--err.log
+  else
+    color_msg $green "Data loaded successfully from $file with docker container $container_name."
+  fi
+
+	timestamp "finished loading $file"
+}
+
+#
 # load files for german national library
 #
 load_gnd() {
   base_url=https://data.dnb.de/opendata
-  file=authorities-kongress_lds.ttl
+  file=authorities-gnd-kongress_lds.ttl
   gz_file=$file.gz
   url=$base_url/$gz_file
   if [ ! -f $file ]
