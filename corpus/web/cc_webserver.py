@@ -31,6 +31,7 @@ class ConferenceCorpusWebserver(InputWebserver):
             version=Version(), default_port=5005
         )
         server_config=WebserverConfig.get(config)
+        server_config.solution_class=ConferenceCorpusSolution
         return server_config
     
     def __init__(self):
