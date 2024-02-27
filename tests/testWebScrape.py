@@ -45,6 +45,21 @@ class TestWebScrape(DataSourceTest):
         self.assertEqual('Proceedings of the Workshop on Deep Learning for Knowledge Graphs (DL4KG2020)',scrapedDict["title"])
         pass
 
+    def test_findLinkByPrefixLabel(self):
+        """
+        tests findLinkByPrefixLabel
+        """
+        test_params = [
+            ("http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid=300", "http://wwwling.arts.kuleuven.be/nrg4"),
+            ("http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid=3", None)
+        ]
+        for (url, expected_homepage) in test_params:
+            with self.subTest(url):
+                scrape = WebScrape(debug=self.debug)
+                triples = scrape.parseRDFa(url)
+                extracted_homepage = scrape.findLinkByPrefixLabel("\w*Link:\w*")
+                self.assertEqual(expected_homepage, extracted_homepage)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

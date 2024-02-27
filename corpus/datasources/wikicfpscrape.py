@@ -533,13 +533,16 @@ class WikiCfpEventFetcher(object):
             self.fromTriples(rawEvent,triples)
             # add series information
             # Tag: <a href="/cfp/program?id=1769&amp;s=ISWC&amp;f=International Semantic Web Conference">International Semantic Web Conference</a>
-            m,seriesText=scrape.findLinkForRegexp(r'/cfp/program\?id=([0-9]+).*')
+            m, seriesText = scrape.findLinkForRegexp(r'/cfp/program\?id=([0-9]+).*')
             if m:
                 seriesId=m.group(1)
                 rawEvent['seriesId']=seriesId
                 rawEvent['series']=seriesText
                 pass
-                
+            # extract event homepage
+            homepage_url = scrape.findLinkByPrefixLabel("\w*Link:\w*")
+            if homepage_url:
+                rawEvent["homepage"] = homepage_url
             if 'summary' in rawEvent:
                 rawEvent['acronym']=rawEvent.pop('summary').strip()
             if 'description' in rawEvent:

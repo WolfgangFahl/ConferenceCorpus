@@ -4,8 +4,9 @@ Created on 2020-08-20
 @author: wf
 '''
 import urllib.request
+from typing import Optional
 from urllib.request import build_opener, HTTPCookieProcessor
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import re
 
 class WebScrape(object):
@@ -56,6 +57,24 @@ class WebScrape(object):
             if hasattr(link, "text"):
                 text=link.text 
         return m,text
+
+    def findLinkByPrefixLabel(self, prefix: str) -> Optional[str]:
+        """
+        Find the element which has the given prefix and a link as child element and return the url and label of the url
+        Args:
+            prefix: prefix that indicates the wanted url
+
+        Returns:
+            str: url
+            None: If the prefix was not found
+        """
+        element = self.soup.find(string=re.compile(prefix))
+        if element and element.next_sibling:
+            a_tag = element.next_sibling
+            if isinstance(a_tag, Tag) and a_tag.name == "a":
+                return a_tag.attrs.get("href", None)
+        return None
+
         
     def fromTag(self,soup,tag,attr=None,value=None):
         '''
