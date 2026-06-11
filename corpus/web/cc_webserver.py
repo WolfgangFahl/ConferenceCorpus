@@ -6,8 +6,9 @@ Created on 2023-11-18
 from ngwidgets.input_webserver import InputWebserver, InputWebSolution
 from ngwidgets.webserver import WebserverConfig
 from corpus.version import Version
-from nicegui import app,ui, Client
+from nicegui import app, ui, Client
 from ngwidgets.profiler import Profiler
+from ngwidgets.lod_grid import ListOfDictsGrid
 from corpus.eventcorpus import DataSource
 from corpus.lookup import CorpusLookup
 from corpus.web.eventseries import EventSeriesAPI
@@ -47,11 +48,14 @@ class ConferenceCorpusWebserver(InputWebserver):
         
         @ui.page("/queries")
         async def show_queries(client:Client):
-            return await self.page(client.ConfernceCorpusSolution.show_queries)
-        
+            return await self.page(client, ConferenceCorpusSolution.show_queries)
+
+        @ui.page("/eventseries")
+        async def eventseries(client:Client):
+            return await self.page(client, ConferenceCorpusSolution.show_eventseries)
+
         @app.get('/eventseries/{name}')
         def get_eventseries(name: str, bks: str = "", reduce: bool = False, table_fmt: str = "json"):
-            # Use the parameters directly in the API calls
             event_series_dict = self.event_series_api.getEventSeries(name, bks, reduce)
             response = self.event_series_api.convertToRequestedFormat(name, event_series_dict, table_fmt)
             return response
@@ -95,13 +99,52 @@ class ConferenceCorpusSolution(InputWebSolution):
         def show():
             ui.html(self.queries.as_html())
         await self.setup_content_div(show)
-   
-    
+
+    async def on_lookup_eventseries(self):
+        """
+        lookup the event series and show results
+        """
+        try:
+            name = self.series_name_input.value.strip()
+            if not name:
+                ui.notify("Please enter an event series name", type="warning")
+                return
+            self.result_grid.lod = []
+            self.result_grid.update()
+            dict_of_lods = self.webserver.event_series_api.getEventSeries(name)
+            for source, lod in dict_of_lods.items():
+                if isinstance(lod, list) and len(lod) > 0:
+                    self.result_grid.lod = lod
+                    break
+            if not self.result_grid.lod:
+                ui.notify(f"No results found for '{name}'", type="warning")
+            else:
+                self.result_grid.update()
+                ui.notify(f"Found {len(self.result_grid.lod)} records for '{name}'", type="positive")
+        except Exception as ex:
+            self.handle_exception(ex)
+
+    async def show_eventseries(self):
+        """
+        show the eventseries lookup page
+        """
+        def show():
+            with ui.row():
+                self.series_name_input = ui.input(
+                    label="Event Series (e.g. AISI)",
+                    placeholder="enter event series acronym",
+                    on_change=self.on_lookup_eventseries
+                ).props("size=40")
+                ui.button("lookup", icon="search", on_click=self.on_lookup_eventseries)
+            self.result_grid = ListOfDictsGrid()
+        await self.setup_content_div(show)
+
     def configure_menu(self):
         """
         add a menu entry
         """
-        self.link_button(name="statistics",target="/stats",icon_name="query_stats")
+        self.link_button(name="statistics", target="/stats", icon_name="query_stats")
+        self.link_button(name="eventseries", target="/eventseries", icon_name="event")
         
     async def home(self):
         """

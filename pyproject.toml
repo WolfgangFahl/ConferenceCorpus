@@ -14,16 +14,20 @@ authors = [
 maintainers = [
   { name = "Wolfgang Fahl", email = "wf@WolfgangFahl.com" },
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     'Programming Language :: Python',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
-    'Programming Language :: Python :: 3.11'
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12'
 ]
 dependencies = [
-    "pylodstorage>=0.8.1",
+	# OpenAI Python library to access LLMs (e.g. via OpenRouter)
+	# https://pypi.org/project/openai/
+	"openai>=2.8.1",
+    "pylodstorage>=0.17.4",
     "python-dateutil>=2.8.2",
     "py-3rdparty-mediawiki>=0.8.0",
     "wikirender>=0.0.43",
@@ -43,7 +47,7 @@ dependencies = [
     # https://github.com/WolfgangFahl/PyGenericSpreadSheet/
     "pyGenericSpreadSheet>=0.2.4",
     #https://pypi.org/project/ngwidgets/
-    "ngwidgets>=0.11.1"
+    "ngwidgets>=0.28.0"
 ]
 
 dynamic = ["version"]
