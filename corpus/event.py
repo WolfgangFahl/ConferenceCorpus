@@ -6,8 +6,8 @@ Created on 2021-07-26
 from typing import Callable
 from corpus.config import EventDataSourceConfig
 from lodstorage.lod_csv import CSV
-from lodstorage.entity import EntityManager
-from lodstorage.jsonable import JSONAble
+from lodentity.entity import EntityManager
+from lodentity.jsonable import JSONAble
 from lodstorage.lod import LOD
 from lodstorage.sql import SQLDB
 from corpus.utils.download import Profiler

@@ -4,8 +4,8 @@ Created on 2021-04-16
 @author: wf
 '''
 from enum import Enum
-from lodstorage.jsonable import JSONAble
-from lodstorage.entity import EntityManager
+from lodentity.jsonable import JSONAble
+from lodentity.entity import EntityManager
 from lodstorage.storageconfig import StorageConfig
 
 class RatingType(str,Enum):
