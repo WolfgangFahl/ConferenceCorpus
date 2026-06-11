@@ -18,10 +18,10 @@ requires-python = ">=3.10"
 classifiers = [
     'Programming Language :: Python',
     'Programming Language :: Python :: 3.9',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
-    'Programming Language :: Python :: 3.12'
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13'
 ]
 dependencies = [
 	# OpenAI Python library to access LLMs (e.g. via OpenRouter)

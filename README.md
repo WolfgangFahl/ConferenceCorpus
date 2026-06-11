@@ -2,9 +2,9 @@
 The EventCorpus provides access to academic events and event series from different sources
 
 [![Website ConferenceCorpus](https://img.shields.io/website-up-down-green-red/https/conferencecorpus.bitplan.com.svg)](https://conferencecorpus.bitplan.com)
-[![Documentation Status](https://readthedocs.org/projects/conferencecorpus/badge/?version=latest)](https://conferencecorpus.readthedocs.io/en/latest/?badge=latest)
-[![Github Actions Build](https://github.com/WolfgangFahl/ConferenceCorpus/workflows/Build/badge.svg?branch=main)](https://github.com/WolfgangFahl/ConferenceCorpus/actions?query=workflow%3ABuild+branch%3Amain)
+[![Github Actions Build](https://github.com/WolfgangFahl/ConferenceCorpus/actions/workflows/build.yml/badge.svg)](https://github.com/WolfgangFahl/ConferenceCorpus/actions/workflows/build.yml)
 [![PyPI Status](https://img.shields.io/pypi/v/ConferenceCorpus.svg)](https://pypi.python.org/pypi/ConferenceCorpus/)
+[![API Docs](https://img.shields.io/badge/API-Documentation-blue)](https://WolfgangFahl.github.io/ConferenceCorpus/)
 [![GitHub issues](https://img.shields.io/github/issues/WolfgangFahl/ConferenceCorpus.svg)](https://github.com/WolfgangFahl/ConferenceCorpus/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/WolfgangFahl/ConferenceCorpus.svg)](https://github.com/WolfgangFahl/ConferenceCorpus/issues/?q=is%3Aissue+is%3Aclosed)
 [![pypi](https://img.shields.io/pypi/pyversions/ConferenceCorpus)](https://pypi.org/project/ConferenceCorpus/)
