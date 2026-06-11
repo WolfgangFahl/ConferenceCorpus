@@ -11,7 +11,7 @@ class EventRating(EntityRating):
     '''
     
     def __init__(self,event):
-        super().__init__(event,"Event",event.eventId,event.source)
+        super().__init__(self,event,event.eventId,event.source,"Event")
         
 class EventSeriesRating(EntityRating):
     '''
@@ -19,5 +19,5 @@ class EventSeriesRating(EntityRating):
     '''
     
     def __init__(self,eventSeries):
-        super().__init__(eventSeries,"EventSeries",eventSeries.seriesId,eventSeries.source)
+        super().__init__(self,eventSeries,eventSeries.seriesId,eventSeries.source,"EventSeries")
         
