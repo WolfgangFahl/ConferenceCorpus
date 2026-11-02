@@ -7,9 +7,7 @@ from lodstorage.lod import LOD
 from lodstorage.storageconfig import StorageConfig
 from wikibot3rd.wikipush import WikiPush
 from wikibot3rd.wikiuser import WikiUser
-from wikifile.wikiFile import WikiFile
-from wikifile.wikiFileManager import WikiFileManager
-from wikifile.wikiPage import WikiPage
+from corpus.wikison import WikiSonBackup, WikiSonPage
 
 from corpus.event import Event, EventSeries, EventSeriesManager, EventManager
 from corpus.eventcorpus import EventDataSource,EventDataSourceConfig
@@ -138,15 +136,15 @@ class OREventManager(EventManager):
         self.postProcessLodRecords(lod,wikiId=self.wikiId, debug=self.debug)
         return lod
 
-    def getLoDfromWikiFileManager(self, wikiFileManager:WikiFileManager=None, limit:int=None):
+    def getLoDfromWikiFileManager(self, wikiTextPath:str=None, limit:int=None):
         '''
-        get my list of dicts from the given WikiFileManager
+        get my list of dicts from the given wiki markup directory
 
         Args:
-            wikiFileManager(WikiFileManager): WikiFileManager from which the records should be loaded
+            wikiTextPath(str): the wiki markup directory from which the records should be loaded
             limit(int): limit the amount on loaded records
         '''
-        lod = OrSMW.getLodFromWikiFiles(self.wikiId, OREvent, wikiFileManager=wikiFileManager, limit=limit)
+        lod = OrSMW.getLodFromWikiFiles(self.wikiId, OREvent, wikiTextPath=wikiTextPath, limit=limit)
         self.setAllAttr(lod,"source",f"{self.wikiId}-backup")
         self.postProcessLodRecords(lod,wikiId=self.wikiId, debug=self.debug)
         return lod
@@ -178,15 +176,15 @@ class OREventManager(EventManager):
         self.fromLoD(lod)
         return lod
 
-    def fromWikiFileManager(self, wikiFileManager: WikiFileManager=None, limit:int=None) -> List[dict]:
+    def fromWikiFileManager(self, wikiTextPath: str=None, limit:int=None) -> List[dict]:
         '''
-        read me from wiki markup files using the given WikiFileManager
+        read me from the wiki markup files of the given directory
 
         Args:
-            wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
+            wikiTextPath(str): the wiki markup directory to parse
             limit(int): limit the amount on loaded records
         '''
-        lod = self.getLoDfromWikiFileManager(wikiFileManager, limit=limit)
+        lod = self.getLoDfromWikiFileManager(wikiTextPath, limit=limit)
         self.fromLoD(lod)
         return lod
 
@@ -496,15 +494,15 @@ class OREventSeriesManager(EventSeriesManager):
         self.postProcessLodRecords(lod, wikiId=self.wikiId, debug=self.debug)
         return lod
 
-    def getLoDfromWikiFileManager(self, wikiFileManager: WikiFileManager = None, limit: int = None) -> List[dict]:
+    def getLoDfromWikiFileManager(self, wikiTextPath: str = None, limit: int = None) -> List[dict]:
         '''
-        get my List of Dicts from the given WikiFileManager
+        get my List of Dicts from the given wiki markup directory
 
         Args:
-            wikiFileManager(WikiFileManager): WikiFileManager from which the records should be loaded
+            wikiTextPath(str): the wiki markup directory from which the records should be loaded
             limit(int): limit the amount on loaded records
         '''
-        lod = OrSMW.getLodFromWikiFiles(self.wikiId, OREventSeries, wikiFileManager=wikiFileManager, limit=limit)
+        lod = OrSMW.getLodFromWikiFiles(self.wikiId, OREventSeries, wikiTextPath=wikiTextPath, limit=limit)
         self.setAllAttr(lod, "source", f"{self.wikiId}-backup")
         self.postProcessLodRecords(lod, wikiId=self.wikiId, debug=self.debug)
         return lod
@@ -537,15 +535,15 @@ class OREventSeriesManager(EventSeriesManager):
         self.fromLoD(lod)
         return lod
 
-    def fromWikiFileManager(self, wikiFileManager:WikiFileManager=None, limit:int=None):
+    def fromWikiFileManager(self, wikiTextPath:str=None, limit:int=None):
         '''
-        read me from wiki markup files using the given WikiFileManager
+        read me from the wiki markup files of the given directory
 
         Args:
-            wikiFileManager(WikiFileManager): WikiFileManager to parse the wiki markup files
+            wikiTextPath(str): the wiki markup directory to parse
             limit(int): limit the amount on loaded records
         '''
-        lod = self.getLoDfromWikiFileManager(wikiFileManager, limit=limit)
+        lod = self.getLoDfromWikiFileManager(wikiTextPath, limit=limit)
         self.fromLoD(lod)
         return lod
 
@@ -577,7 +575,7 @@ class OREventSeries(EventSeries):
         # https://confident.dbis.rwth-aachen.de/or/index.php?title=Template:Event_series&action=edit
     ]
 
-    def __init__(self, wikiFile:WikiFile=None):
+    def __init__(self):
         '''
         Constructor
         '''
@@ -786,14 +784,16 @@ class OrSMW:
         queryDivision = 10 if limit is None or limit >= 1000 else 1
         profiler = Profiler(msg=f"querying of {entityType.entityName} records from WikiMarkup", profile=profile)
         pageTitles = wikiPush.query(askQuery=askQuery, limit=limit, queryDivision=queryDivision)
-        wikiPage = WikiPage(wikiId=wikiId, login=False)
         lod = []
         total = len(pageTitles)
         for i, pageTitle in enumerate(pageTitles):
             if showProgress:
                 print(f"({i+1}/{total}) Extracting {entityType.templateName} record from {pageTitle} ...", end=' ')
             try:
-                record = wikiPage.getWikiSonFromPage(pageTitle, entityType.templateName, includeWikiMarkup=True)
+                wikiSonPage = WikiSonPage.ofWiki(wikiId, pageTitle)
+                record = wikiSonPage.record(entityType.templateName, includeWikiMarkup=True)
+                if record is None:
+                    raise ValueError(f"no {entityType.templateName} record on {pageTitle}")
                 record = cls.normalizeProperties(record, entityType, force=False, includeProps=['pageTitle', 'wikiMarkup'])
                 record['pageTitle'] = pageTitle
                 lod.append(record)
@@ -837,39 +837,35 @@ class OrSMW:
     def getLodFromWikiFiles(cls,
                           wikiId: str,
                           entityType: Union[Type[OREvent], Type[OREventSeries]],
-                          wikiFileManager: WikiFileManager = None,
+                          wikiTextPath: str = None,
                           limit: int = None,
                           profile: bool = False) -> List[dict]:
         """
-        Retrieves the event records from the local wikiFiles. The entity records are parsed from the WikiMarkup in the
-        WikiFiles.
+        Retrieves the event records from a local wiki markup directory. The entity records are parsed from the
+        WikiMarkup of the .wiki files.
 
         Args:
             wikiId: id of the wiki
             entityType: entity to retrieve
-            wikiFileManager: wikiFileManager to use. If None the default wikibackup location (~/.or/wikibackup/<wikiId>) will be used
+            wikiTextPath: the wiki markup directory to read. If None the default wikibackup location (~/.or/wikibackup/<wikiId>) will be used
             limit: limit number of retrieved records. If None (default) retrieve all event records
             profile: If True measure and display the elapsed time
 
         Returns:
             LoD: List of entity records
         """
-        profiler = Profiler(msg=f"querying of {entityType.entityName} records over SMW api", profile=profile)
-        if wikiFileManager is None:
+        profiler = Profiler(msg=f"querying of {entityType.entityName} records from wiki markup files", profile=profile)
+        if wikiTextPath is None:
             wikiTextPath = f"{Path.home()}/.or/wikibackup/{wikiId}"
-            wikiFileManager = WikiFileManager(sourceWikiId=wikiId, wikiTextPath=wikiTextPath, login=False)
-        wikiFileDict = wikiFileManager.getAllWikiFiles()
-        lod = wikiFileManager.convertWikiFilesToLOD(wikiFiles=list(wikiFileDict.values()),
-                                                    templateName=entityType.templateName,
-                                                    limit=limit)
+        backup = WikiSonBackup(wikiTextPath)
+        lod = backup.lod(templateName=entityType.templateName, limit=limit)
         for i, record in enumerate(lod):
             pageTitle = record.get("pageTitle")
             record = cls.normalizeProperties(record, entityType, force=False)
             record['pageTitle'] = pageTitle
-            wikiFile = wikiFileDict.get(pageTitle)
-            if isinstance(wikiFile, WikiFile):
-                # ToDo: Decide whether the wikiMarkup is still required since it can now an event record can directly be queried from the wiki, sync problems should be neglectable
-                record["wikiMarkup"] = wikiFile.wikiText
+            page = backup.pages.get(pageTitle)
+            if page is not None:
+                record["wikiMarkup"] = page.wikiText
             lod[i]=record
         profiler.time()
         return lod

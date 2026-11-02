@@ -5,8 +5,7 @@ Created on 2022-03-04
 '''
 import itertools
 from wikibot3rd.wikipush import WikiPush
-from wikifile.wikiFile import WikiFile
-from wikifile.wikiFileManager import WikiFileManager
+from corpus.wikison import WikiSonPage
 
 from corpus.datasources.openresearch import OREvent
 from corpus.version import Version
@@ -196,36 +195,35 @@ class TibkatCmdLine:
             return None, None
         seriesAcronym = eventParts[0].strip()
         ordinal = eventParts[-1].strip()
-        wikiFile = self.getMatchingEventFromWiki(wikiId, seriesAcronym, ordinal)
-        if wikiFile is None:
+        wikiSonPage = self.getMatchingEventFromWiki(wikiId, seriesAcronym, ordinal)
+        if wikiSonPage is None:
             return None, None
         else:
             ppnId = record.get("ppn")
             if ppnId is None:
-                return wikiFile.getPageTitle(), None
+                return wikiSonPage.pageTitle, None
             ppnTemplateName = [r.get("templateParam") for r in OREvent.propertyLookupList if r.get("name") == "TibKatId"][0]
-            wikiFile.updateTemplate(OREvent.templateName, args={ppnTemplateName:ppnId}, overwrite=True)
+            wikiSonPage.update(OREvent.templateName, args={ppnTemplateName:ppnId}, overwrite=True)
             if not isDryRun:
-                wikiFile.pushToWiki("Added TibKatId")
-            return wikiFile.getPageTitle(), ppnId
+                wikiSonPage.push("Added TibKatId")
+            return wikiSonPage.pageTitle, ppnId
 
-    def getMatchingEventFromWiki(self, wikiId:str, acronym:str, ordinal:int) -> Union[WikiFile, None]:
+    def getMatchingEventFromWiki(self, wikiId:str, acronym:str, ordinal:int) -> Union[WikiSonPage, None]:
         """
-        retrieves a matching event form the given wiki and returns the wikiFile
+        retrieves a matching event from the given wiki and returns its page
         Args:
             wikiId: id of the wiki
             acronym: acronym of the event series
             ordinal: ordinal of the event
 
         Returns:
-            WikiFile if a matching event is found otherwise None
+            WikiSonPage if a matching event is found otherwise None
         """
-        manager = WikiFileManager(sourceWikiId=wikiId, targetWikiId=wikiId)
+        wikiPush = WikiPush(fromWikiId=wikiId)
         query = f"{{{{#ask: [[Event in series::{acronym}]][[Ordinal::{ordinal}]]}}}}"
-        qres = list(manager.wikiPush.query(query))
+        qres = list(wikiPush.query(query))
         if qres:
-            wikiFile = manager.getWikiFileFromWiki(pageTitle=qres[0])
-            return wikiFile
+            return WikiSonPage.ofWiki(wikiId, qres[0])
         return None
 
 

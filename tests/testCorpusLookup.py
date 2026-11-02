@@ -31,10 +31,8 @@ class TestCorpusLookup(DataSourceTest):
         dblpDataSource.eventSeriesManager.dblpXml=dblpXml
         
         for lookupId in ["or","orclone"]:
-            orDataSource=lookup.getDataSource(f'{lookupId}-backup')
-            wikiFileManager=TestSMW.getWikiFileManager(wikiId=lookupId)
-            orDataSource.eventManager.wikiFileManager=wikiFileManager
-            orDataSource.eventSeriesManager.wikiFileManager=wikiFileManager
+            # the backup data source reads the wiki markup directory of
+            # TestSMW.getWikiTextPath(lookupId) by itself
             orDataSource=lookup.getDataSource(lookupId)
             wikiUser=TestSMW.getSMW_WikiUser(lookupId)
             orDataSource.eventManager.wikiUser=wikiUser

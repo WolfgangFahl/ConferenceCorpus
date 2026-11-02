@@ -2,7 +2,6 @@ import getpass
 import os
 from os import path
 from wikibot3rd.wikiuser import WikiUser
-from wikifile.wikiFileManager import WikiFileManager
 
 
 class TestSMW:
@@ -62,9 +61,11 @@ class TestSMW:
         return wikiUser
 
     @classmethod
-    def getWikiFileManager(cls, wikiId=None, debug=False):
+    def getWikiTextPath(cls, wikiId=None):
+        '''
+        get the wiki markup directory of the wikibackup of the given wiki
+        '''
         wikiUser = cls.getWikiUser(wikiId)
         home = path.expanduser("~")
         wikiTextPath = f"{home}/.or/wikibackup/{wikiUser.wikiId}"
-        wikiFileManager = WikiFileManager(wikiId, wikiTextPath, login=False, debug=debug)
-        return wikiFileManager
+        return wikiTextPath

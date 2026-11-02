@@ -1,5 +1,5 @@
 from tempfile import NamedTemporaryFile
-from wikifile.wikiFile import WikiFile
+from corpus.wikison import WikiSonPage
 from corpus.datasources.tibkatftx import TibkatCmdLine, main
 from tests.datasourcetoolbox import DataSourceTest
 from tests.testSMW import TestSMW
@@ -100,5 +100,5 @@ class TestTibkatFTX(DataSourceTest):
             return
         tibkatCmd = TibkatCmdLine()
         res = tibkatCmd.getMatchingEventFromWiki(self.testWikiId, "AAAI", 1)
-        self.assertIsInstance(res, WikiFile)
-        self.assertEqual("AAAI 1980", res.getPageTitle())
+        self.assertIsInstance(res, WikiSonPage)
+        self.assertEqual("AAAI 1980", res.pageTitle)

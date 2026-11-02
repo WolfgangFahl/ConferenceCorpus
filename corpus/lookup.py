@@ -17,7 +17,6 @@ from corpus.datasources.wikicfp import WikiCfp
 
 from lodstorage.lod import LOD
 from wikibot3rd.wikiuser import WikiUser
-from wikifile.wikiFileManager import WikiFileManager
 
 import os
 import re
