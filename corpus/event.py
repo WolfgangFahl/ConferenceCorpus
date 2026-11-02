@@ -7,7 +7,7 @@ from typing import Callable
 from corpus.config import EventDataSourceConfig
 from lodstorage.lod_csv import CSV
 from lodentity.entity import EntityManager
-from lodentity.jsonable import JSONAble
+from lodentity.jsonable import JSONAble, JSONAbleList
 from lodstorage.lod import LOD
 from lodstorage.sql import SQLDB
 from corpus.utils.download import Profiler
@@ -451,7 +451,7 @@ class EventSeries(JSONAble):
         return markup
 
 
-class EventBaseManager(EntityManager):
+class EventBaseManager(EntityManager, JSONAbleList):
     '''
     common entity Manager for ConferenceCorpus
     '''

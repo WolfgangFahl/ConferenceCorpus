@@ -4,7 +4,7 @@ Created on 2021-04-16
 @author: wf
 '''
 from enum import Enum
-from lodentity.jsonable import JSONAble
+from lodentity.jsonable import JSONAble, JSONAbleList
 from lodentity.entity import EntityManager
 from lodstorage.storageconfig import StorageConfig
 
@@ -89,7 +89,7 @@ class EntityRating(Rating):
         ]
         return samplesLOD
     
-class RatingManager(EntityManager):
+class RatingManager(EntityManager, JSONAbleList):
     '''
     a manager for Ratings
     '''
